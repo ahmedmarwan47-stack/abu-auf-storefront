@@ -611,6 +611,14 @@ body.no-scroll {
   display: none;
 }
 
+/* The `hidden` attribute only sets display:none via the UA stylesheet, so any
+   author display rule beats it — an element carrying both `hidden` and
+   Tailwind's `.flex` stays visible. This bit the mega-panel's sub-category
+   lists, which rendered all eight at once. */
+[hidden] {
+  display: none !important;
+}
+
 /* Branches governorate filters render as pills below xl (Figma 426:33692).
    Scoped to `.tabs-chips` so the product page's tabs, which stay underlined
    at every width, are untouched. */

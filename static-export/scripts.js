@@ -348,6 +348,82 @@
     </li>`;
   }
 
+  /*
+   * Products mega-panel — matches the live site, which opens a full-width
+   * dropdown under المنتجات on desktop. This used to open the mobile side
+   * drawer at every width, which is a phone pattern on a 1440px window.
+   *
+   * Three columns, RTL order: categories, the active category's
+   * sub-categories, then a product rail. Phones are untouched — the drawer is
+   * still the right control there.
+   */
+  const MEGA_FEATURED = [
+    { name: "عرض سناكس بروتين بزبدة الفول السودانى 35 جم", price: 51, img: "images/abuauf/products/PR000085.webp" },
+    { name: "بسكويت محشو تمر - 12 قطعة", price: 65, img: "images/abuauf/products/image-600x600-1.png" },
+    { name: "بن أبو عوف تركي ساده فاتح 200 جم", price: 308, img: "images/abuauf/products/6223004765353-2-1.webp" },
+    { name: "عرض معمول سادة وقرفة وشيكولاتة", price: 250, img: "images/abuauf/products/330-thumb.webp" },
+  ];
+
+  const LEAF = `<img src="images/abuauf/icons/icon-leaf.svg" alt="" class="w-5 h-5 shrink-0" onerror="this.style.display='none'" />`;
+
+  function megaPanelHTML() {
+    const cats = MAIN_MENU.map((item, i) => {
+      const slug = (item.url || "").replace("/shop/", "");
+      return `<li>
+        <button type="button" data-mega-cat="${i}" class="flex items-center gap-3 px-4 rounded-xl w-full min-h-11 font-semibold text-[#062A1C] text-base text-start transition-colors hover:bg-interaction-base data-[active=true]:bg-interaction-base" data-active="${i === 0}">
+          ${LEAF}
+          <span class="flex-1 min-w-0 truncate">${esc(item.name)}</span>
+          <span class="w-4 h-4 text-neutral-secondary rtl:scale-flip shrink-0">${ICON.arrowRight}</span>
+        </button>
+      </li>`;
+    }).join("");
+
+    const subPanels = MAIN_MENU.map((item, i) => {
+      const href = pageHref(item.url);
+      const kids = (item.children || [])
+        .map(
+          (c) => `<li>
+            <a href="${pageHref(c.url)}" class="flex items-center gap-3 px-4 rounded-xl min-h-11 text-[#062A1C] text-base transition-colors hover:bg-interaction-base">
+              <span class="flex-1 min-w-0 truncate">${esc(c.name)}</span>
+              <span class="w-4 h-4 text-neutral-secondary rtl:scale-flip shrink-0">${ICON.arrowRight}</span>
+            </a>
+          </li>`,
+        )
+        .join("");
+      return `<ul data-mega-sub="${i}" ${i === 0 ? "" : "hidden"} class="flex flex-col gap-1">
+        <li>
+          <a href="${href}" class="flex items-center gap-3 px-4 rounded-xl min-h-11 font-semibold text-cta text-base transition-colors hover:bg-interaction-base">
+            <span class="flex-1 min-w-0 truncate">جميع ${esc(item.name)}</span>
+            <span class="w-4 h-4 rtl:scale-flip shrink-0">${ICON.arrowRight}</span>
+          </a>
+        </li>
+        ${kids}
+      </ul>`;
+    }).join("");
+
+    const featured = MEGA_FEATURED.map(
+      (p) => `<a href="product.html" class="flex items-center gap-3 bg-white hover:shadow-custom4 p-3 rounded-2xl transition-shadow">
+        <span class="flex-1 min-w-0">
+          <span class="block font-medium text-[#062A1C] text-sm leading-5 line-clamp-2">${esc(p.name)}</span>
+          <span class="inline-block bg-accent-yellow mt-1.5 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">EGP ${p.price}.00</span>
+        </span>
+        <img src="${p.img}" alt="" class="bg-interaction-base p-1 rounded-lg w-14 h-14 object-contain shrink-0" loading="lazy" />
+      </a>`,
+    ).join("");
+
+    return `
+      <div id="mega-panel" data-megamenu hidden class="hidden lg:block top-full inset-inline-0 z-40 absolute bg-white shadow-custom3 rounded-b-2xl">
+        <div class="gap-6 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.15fr)] mx-auto p-6 max-w-[1600px]">
+          <ul class="flex flex-col gap-1 pe-6 border-neutral-divider border-e">${cats}</ul>
+          <div class="pe-6 border-neutral-divider border-e">${subPanels}</div>
+          <div class="flex flex-col gap-3">
+            <h3 class="font-bold text-[#062A1C] text-lg">الاكثر مبيعا</h3>
+            <div class="flex flex-col gap-2 bg-interaction-base p-3 rounded-2xl">${featured}</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
   function headerHTML() {
     const checkout = isCheckout();
 
@@ -393,10 +469,10 @@
               ${
                 checkout
                   ? ""
-                  : `<button type="button" data-open="menu" class="hidden lg:flex items-center gap-2.5 bg-cta hover:bg-cta-hover shrink-0 px-6 py-[18px] rounded-full transition-colors">
+                  : `<button type="button" data-megamenu-toggle aria-expanded="false" aria-controls="mega-panel" class="hidden lg:flex items-center gap-2.5 bg-cta hover:bg-cta-hover shrink-0 px-6 py-[18px] rounded-full transition-colors">
                        <img src="images/abuauf/icons/icon-grid.svg" alt="" class="w-6 h-6" />
                        <span class="font-semibold text-white text-xl leading-7 whitespace-nowrap">المنتجات</span>
-                       <span class="w-6 h-6 text-white">${ICON.chevronDown}</span>
+                       <span class="w-6 h-6 text-white transition-transform" data-megamenu-caret>${ICON.chevronDown}</span>
                      </button>
                      <button type="button" data-open="location" class="hidden xl:flex items-center gap-2.5 hover:bg-white/10 px-6 py-[18px] rounded-full min-w-0 transition-colors">
                        <span class="font-semibold text-white text-xl leading-7 truncate">التوصيل الى الشروق - القاهرة</span>
@@ -440,6 +516,7 @@
                    </nav>
                  </div>`
           }
+          ${checkout ? "" : megaPanelHTML()}
         </div>
       </div>`;
 
@@ -638,27 +715,85 @@
         img: "images/abuauf/products/2000102000000.webp",
       },
     ];
-    const cartSubtotal = demoCartItems.reduce(
-      (sum, it) => sum + it.price * it.qty,
-      0,
-    );
+    /*
+     * Drawer figures mirror build/pages/cart.py so the drawer and the cart page
+     * can never quote different numbers. Both are assumptions — the live site
+     * shows a 30 EGP delivery fee and appears to enforce a 150 EGP minimum;
+     * ours are 10 and 100 (flagged in DESIGN-NOTES).
+     */
+    const DELIVERY_FEE = 10;
+    const MIN_ORDER = 100;
+    const cartSubtotal = demoCartItems.reduce((s, it) => s + it.price * it.qty, 0);
+    const shortfall = Math.max(0, MIN_ORDER - cartSubtotal);
+    const belowMin = shortfall > 0;
+
     const cartRows = demoCartItems
       .map(
         (it) => `
       <div class="flex gap-3 py-4 border-neutral-divider border-b">
-        <img src="${it.img}" alt="${esc(it.name)}" class="bg-interaction-base p-1.5 rounded-lg w-[72px] h-[72px] object-contain" />
+        <img src="${it.img}" alt="${esc(it.name)}" class="bg-interaction-base shrink-0 p-1.5 rounded-lg w-[72px] h-[72px] object-contain" />
         <div class="flex-1 min-w-0">
-          <p class="font-semibold text-[#062A1C] text-sm line-clamp-2">${esc(it.name)}</p>
-          <p class="mt-1 font-bold text-[#062A1C] text-sm latin">EGP ${it.price}</p>
-          <div class="inline-flex items-center gap-3 mt-2 px-2 py-1 border border-neutral-divider rounded-full" data-stepper>
-            <button type="button" data-step="-1" class="place-items-center grid w-5 h-5 text-[#062A1C]" aria-label="إنقاص">−</button>
-            <span data-qty class="w-4 text-sm text-center latin">${it.qty}</span>
-            <button type="button" data-step="1" class="place-items-center grid w-5 h-5 text-[#062A1C]" aria-label="زيادة">+</button>
+          <div class="flex justify-between items-start gap-2">
+            <p class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm line-clamp-2">${esc(it.name)}</p>
+            <span class="bg-accent-yellow shrink-0 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">EGP ${it.price}.00</span>
+          </div>
+          <p class="mt-1 text-neutral-secondary text-xs">العدد: <span class="latin">${it.qty}</span></p>
+          <div class="flex justify-between items-center gap-2 mt-2">
+            <div class="inline-flex items-center gap-3 px-2 py-1 border border-neutral-divider rounded-full" data-stepper>
+              <button type="button" data-step="-1" class="place-items-center grid w-8 h-8 text-[#062A1C]" aria-label="إنقاص">−</button>
+              <span data-qty class="w-4 text-sm text-center latin">${it.qty}</span>
+              <button type="button" data-step="1" class="place-items-center grid w-8 h-8 text-[#062A1C]" aria-label="زيادة">+</button>
+            </div>
+            <button type="button" class="min-h-11 text-accent-error text-xs underline">حذف</button>
           </div>
         </div>
       </div>`,
       )
       .join("");
+
+    /* "قد يعجبك أيضا" upsell — real catalogue items, same as the cart page. */
+    const upsell = [
+      { name: "مارشميلو بطيخ - 60 جرام", price: 30, img: "images/abuauf/products/2000102000000.webp" },
+      { name: "بسكويت محشو تمر - 12 قطعة", price: 65, img: "images/abuauf/products/image-600x600-1.png" },
+    ]
+      .map(
+        (p) => `
+        <div class="flex items-center gap-3 bg-white p-3 border border-neutral-divider rounded-2xl">
+          <img src="${p.img}" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-14 h-14 object-contain" loading="lazy" />
+          <div class="flex-1 min-w-0">
+            <p class="font-medium text-[#062A1C] text-sm line-clamp-2">${esc(p.name)}</p>
+            <span class="inline-block bg-accent-yellow mt-1 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">EGP ${p.price}.00</span>
+          </div>
+          <button type="button" data-add-to-cart class="flex items-center gap-1.5 bg-cta hover:bg-cta-hover shrink-0 px-4 rounded-full min-h-11 font-semibold text-white text-sm transition-colors">اضف</button>
+        </div>`,
+      )
+      .join("");
+
+    const cartFooter = `
+        <div class="flex justify-between text-sm">
+          <span class="text-neutral-secondary">مصاريف التوصيل</span>
+          <span class="font-semibold text-[#062A1C] latin">EGP ${DELIVERY_FEE}.00</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-neutral-secondary text-sm">الإجمالي</span>
+          <span class="font-bold text-[#062A1C] text-lg latin">EGP ${cartSubtotal + DELIVERY_FEE}.00</span>
+        </div>
+        <div class="gap-3 grid grid-cols-2 mt-1">
+          <a href="cart.html" class="flex justify-center items-center border-cta hover:bg-interaction-base border rounded-full min-h-11 font-semibold text-cta text-sm transition-colors">عرض السلة</a>
+          ${
+            belowMin
+              ? `<button type="button" disabled class="flex justify-center items-center bg-neutral-disabled rounded-full min-h-11 font-semibold text-white text-sm cursor-not-allowed">اتمام الشراء</button>`
+              : `<a href="checkout.html" class="flex justify-center items-center bg-cta hover:bg-cta-hover rounded-full min-h-11 font-semibold text-white text-sm text-center transition-colors">اتمام الشراء</a>`
+          }
+        </div>
+        ${
+          belowMin
+            ? `<p class="flex items-start gap-2 mt-1 text-accent-error text-xs leading-5">
+                 <span aria-hidden="true">⚠</span>
+                 متبقي <span class="latin">EGP ${shortfall}.00</span> لاستكمال الحد الأدنى للطلب
+               </p>`
+            : ""
+        }`;
 
     return `
     <div data-backdrop class="overlay-backdrop"></div>
@@ -669,14 +804,15 @@
         <h2 class="font-bold text-[#062A1C] text-lg">سلة التسوق</h2>
         <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
       </div>
-      <div class="flex-1 px-5 overflow-y-auto">${cartRows}</div>
-      <div class="shadow-cart-overview px-5 py-4 border-neutral-divider border-t">
-        <div class="flex justify-between mb-3">
-          <span class="text-neutral-secondary text-sm">الإجمالي</span>
-          <span class="font-bold text-[#062A1C] latin">EGP ${cartSubtotal}</span>
+      <div class="flex-1 px-5 overflow-y-auto">
+        ${cartRows}
+        <div class="mt-4">
+          <p class="mb-2 font-bold text-[#062A1C] text-sm">قد يعجبك أيضا</p>
+          <div class="flex flex-col gap-2">${upsell}</div>
         </div>
-        <a href="checkout.html" class="block bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-center transition-colors">أطلب الآن</a>
-        <a href="cart.html" class="block mt-2 py-2 w-full font-medium text-cta text-sm text-center">عرض السلة كاملة</a>
+      </div>
+      <div class="flex flex-col gap-2 shadow-cart-overview px-5 py-4 border-neutral-divider border-t">
+        ${cartFooter}
       </div>
     </aside>
 
@@ -1091,6 +1227,55 @@
   const CHIP_OFF = ["chip-filter", "bg-white", "text-[#062A1C]",
                     "border-neutral-divider", "hover:border-cta"];
 
+  /* ---------------------------------------------------------------
+     Products mega-panel (desktop)
+     --------------------------------------------------------------- */
+  function initMegaMenu() {
+    const toggle = document.querySelector("[data-megamenu-toggle]");
+    const panel = document.getElementById("mega-panel");
+    if (!toggle || !panel) return;
+    const caret = toggle.querySelector("[data-megamenu-caret]");
+
+    const setOpen = (open) => {
+      panel.hidden = !open;
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      if (caret) caret.style.transform = open ? "rotate(180deg)" : "";
+    };
+
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setOpen(panel.hidden);
+    });
+
+    // Switching category is hover on the live site; keep click too so the
+    // panel is reachable without a pointer.
+    const activate = (idx) => {
+      panel.querySelectorAll("[data-mega-cat]").forEach((b) => {
+        b.dataset.active = b.dataset.megaCat === String(idx);
+      });
+      panel.querySelectorAll("[data-mega-sub]").forEach((u) => {
+        u.hidden = u.dataset.megaSub !== String(idx);
+      });
+    };
+    panel.querySelectorAll("[data-mega-cat]").forEach((b) => {
+      const idx = b.dataset.megaCat;
+      b.addEventListener("mouseenter", () => activate(idx));
+      b.addEventListener("focus", () => activate(idx));
+      b.addEventListener("click", () => activate(idx));
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!panel.hidden && !panel.contains(e.target) && !toggle.contains(e.target))
+        setOpen(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !panel.hidden) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+
   function initListing(scope) {
     const grid = scope.querySelector("[data-product-grid]");
     const chips = [...scope.querySelectorAll("[data-filter]")];
@@ -1189,6 +1374,7 @@
 
     initDelegation();
     initStickyNav();
+    initMegaMenu();
     window.kInit(document);
   }
 

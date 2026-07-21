@@ -300,3 +300,50 @@ Centring uses `inset-inline: 0` + `margin-inline: auto` rather than
 `left`/`right`, so it holds in RTL. The modifier is on the location sheet only;
 the account menu sheet stays a sheet because it is `lg:hidden` and never
 appears on desktop.
+
+## Products dropdown and cart drawer — matched to the live site
+
+Both built from screenshots of the live abuauf.com that Ahmed supplied.
+
+### Products dropdown (desktop)
+
+`المنتجات` opened the **mobile side drawer** at every width. The live site opens
+a full-width dropdown under the button on desktop. There is now a three-column
+panel in RTL order — categories, the active category's sub-categories, a
+product rail — that opens on click, switches column two on hover or focus, and
+closes on outside click or Escape. Phones are unchanged: the drawer is still
+the right control there, and the panel is `hidden lg:block`.
+
+**`الاكثر مبيعا` in column three is not ranked by sales.** It is four real
+catalogue items, hard-coded, because `scripts.js` has no access to
+`catalog.json` at runtime by design (no fetch — pages must work from
+`file://`). Same underlying gap as the `الأكثر مبيعاً` sort option: there is no
+sales data anywhere in the scrape. Swap these for a real best-seller list once
+the client provides one.
+
+### Cart drawer
+
+Rebuilt to match: price chip per line, `العدد`, a 44px stepper, `حذف`, a
+`قد يعجبك أيضا` upsell block, delivery-fee line, and the split
+`عرض السلة` / `اتمام الشراء` footer.
+
+Figures mirror `build/pages/cart.py` — `DELIVERY_FEE = 10`, `MIN_ORDER = 100` —
+so the drawer and the cart page can never quote different numbers. **Both are
+our assumptions and both disagree with the live site**, which shows a 30 EGP
+delivery fee and a shortfall implying a 150 EGP minimum (40 in cart, 110
+remaining). Worth confirming the real figures and changing them in one place.
+
+**The below-minimum state is not visible in the demo.** The disabled
+`اتمام الشراء` and the shortfall warning are implemented and mirror the cart
+page's logic, but the sample cart totals 292.50 against a 100 minimum, so the
+branch never renders. To see it, lower the demo quantities or raise
+`MIN_ORDER`.
+
+### A CSS trap worth knowing
+
+The `hidden` attribute only sets `display:none` through the UA stylesheet, so
+**any** author display rule beats it — an element carrying both `hidden` and
+Tailwind's `.flex` stays visible. All eight sub-category lists rendered stacked
+on top of each other until `[hidden] { display: none !important; }` went into
+`styles.css`. Anything in this codebase toggling the `hidden` attribute on a
+flex or grid element depends on that rule.
