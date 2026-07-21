@@ -364,12 +364,12 @@ def product_card(p, slide=True):
             f'data-name-en="{e(p.get("name") or title(p))}" '
             f'data-image="{e(p["image"])}"')
     return f"""
-          <article class="{wrapper}" {keys}>
-            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product.html" class="block relative bg-interaction-base p-4">
+          <article class="product-card {wrapper}" {keys}>
+            <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="{e(p['image'])}" alt="{e(title(p))}"
                      class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
-                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
                       aria-hidden="true">{ICON['expand']}</span>
               </a>
               <div class="flex flex-col flex-1 gap-1.5 p-4">
@@ -385,10 +385,10 @@ def product_card(p, slide=True):
                        accessible state and the painted state cannot drift;
                        styles.css swaps the icon off that selector. -->
                   <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"
+                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
                           >{ICON['heart']}{ICON['heart_full']}</button>
                   <button type="button" data-add-to-cart
-                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                          class="btn-elevate flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                 </div>
               </div>
             </div>
@@ -404,7 +404,7 @@ def category_tile(cat, label=None, href="shop-category.html"):
     name = label or cat["ar"]
     return f"""
         <a href="{href}" class="group flex flex-col items-center gap-4 text-center">
-          <span class="relative bg-beige rounded-full w-[220px] xl:w-[250px] h-[220px] xl:h-[250px] overflow-hidden transition-transform group-hover:scale-[1.03] duration-300">
+          <span class="tile-lift relative bg-beige rounded-full w-[220px] xl:w-[250px] h-[220px] xl:h-[250px] overflow-hidden group-hover:scale-[1.03]">
             <img src="{e(cat['image'])}" alt="{e(name)}" class="w-full h-full object-cover" loading="lazy" />
           </span>
           <span class="flex flex-col gap-1">

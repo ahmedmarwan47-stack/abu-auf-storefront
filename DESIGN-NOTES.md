@@ -108,6 +108,25 @@ copy scraped off `/export`.
 
 ---
 
+### Demo sign-in — must be removed before launch
+
+`login.html` prints a working demo credential pair
+(`demo@abuauf.com` / `AbuAuf2026`) and `scripts.js` carries a `window.abuaufAuth`
+store that checks it **in client-side JavaScript**. It exists so the signed-in
+chrome and the favourites flow can be walked end to end in a static export with
+no backend.
+
+**This is not authentication.** The credentials are hard-coded and readable by
+anyone who opens the file — printing them on the page gives away nothing that
+was not already public. It is a fixture, and it must be replaced wholesale by
+the real backend session before launch, along with the callout block in
+`build/pages/login.py` (`DEMO_EMAIL` / `DEMO_PASSWORD`) and the `[data-logout]`
+control in the account sidebar.
+
+Signed-in state drives `[data-account-link]` / `[data-account-label]` in the
+masthead and `[data-authed-only]` / `[data-anon-only]` anywhere; wiring a real
+session to the same attributes keeps the chrome working.
+
 ## 2. Placeholder copy needing sign-off
 
 Everything below is written in-house in Abu Auf's voice. It is plausible and
@@ -558,6 +577,51 @@ animations should animate first and call `remove()` on completion.
   missed it because that sweep happened to run against an **emptied cart**, so
   no line ever rendered — worth remembering when quoting the sweep: seed the
   cart first.
+
+- **Product photos are cut out, not sitting on a white tile.** 101 of 110 files
+  arrived from the client's CDN as opaque photos on a white studio sweep, and
+  the card plate is `bg-interaction-base` (#EDEFEB — the same value the live
+  site uses), so each one drew a white rectangle inside the beige plate. The
+  handful that shipped with an alpha channel looked right, which is what made
+  it obvious. `build/isolate_products.py` flood-fills near-white **from the
+  border only**, so white *enclosed* by product — packaging, labels,
+  highlights — survives; a naive "all white becomes transparent" pass punches
+  holes through bags. Edge pixels get an alpha ramp so there is no halo.
+  Idempotent, and the originals are in git. 102 isolated, 7 already had alpha,
+  1 was a lone raisin whose background is legitimately 95% of the frame (the
+  runaway-fill guard sits at 98.5% for exactly that reason). **Re-run it after
+  any re-scrape.**
+
+- **Icon sizes are wrapper-driven now.** Every glyph in `ICON` is
+  `w-full h-full` + `currentColor`, so the wrapper decides size and colour.
+  They used to carry their own `w-4`/`w-5`/`w-6` and silently fight it: the
+  masthead chevrons sat in a `w-6 h-6` span but drew at 16px, the breadcrumb
+  arrows drew at 20px inside a 16px box and overflowed, and `menu` was
+  hardcoded `width="31" height="30" stroke="white"` so it ignored both.
+  Masthead chevrons are now a true 18px at stroke-width 2.4 against 16-18px
+  labels.
+
+- **The mega-menu caret eased instead of snapping.** It was flipped with an
+  inline `style.transform`, which competed with the `transition-transform`
+  utility. `.chevron` in `styles.css` owns the transition and the rotation,
+  and every chevron on the site shares it.
+
+- **Selected vs hovered are now distinguishable in the products panel.** Both
+  painted the identical #EDEFEB, and because hovering a category also
+  *activates* it, the whole column read as permanently hovered. Hover is a
+  faint wash; selected is a tinted surface with a brand-green bar on the
+  leading edge and a revealed arrow.
+
+- **The Christmas tree is gone** — it was a seasonal badge on المكسرات
+  (`nav-nuts-badge.png`, now deleted). **The discount glyph moved to the right
+  of its label**, which in RTL means rendering it *before* the text.
+
+- **A shared interaction system** lives at the end of `styles.css`: one easing
+  token (`--ease-out`), two shadow tokens, and classes for card lift
+  (`.product-card__*`), button press (`.btn-elevate`), tile shadow
+  (`.tile-lift`) and link underline sweep (`.link-sweep`). Durations are
+  120-350ms. All of it collapses under `prefers-reduced-motion: reduce`.
+  Prefer extending these over inventing per-component hovers.
 
 - **The Figma footer carries a "Web Design by MITCH DESIGNS" credit.** Retained
   at the client's request — do not remove it again.

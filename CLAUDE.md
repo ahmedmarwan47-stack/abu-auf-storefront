@@ -132,6 +132,16 @@ These have each cost real time. Read them.
   with `onerror="this.style.display='none'"` and did not exist — 8 broken
   images per page that nothing surfaced. The build only validates asset
   references in generated HTML, **not** the ones inside `scripts.js`.
+- **Never put a backtick inside an HTML comment in `scripts.js`.** Nearly all
+  of that file's markup is in template literals, so a backtick in a comment
+  **ends the string** and turns the rest into expressions. The header renders
+  completely empty and nothing reaches the console, because it throws inside a
+  function called during boot. `node --check` does not catch it — the result is
+  still valid JavaScript. This cost two debugging rounds, so `build.py` now
+  fails the build on it. Write `.mega-cat`, not the backticked form.
+- **Icons are wrapper-driven.** Every glyph in `ICON` is `w-full h-full` +
+  `currentColor`; the wrapper sets size and colour. Don't reintroduce a size
+  class on the `<svg>` — it silently fights the wrapper.
 - **Figma asset exports can be pre-transformed.** The logo exported upside-down
   and stretched (net vertical flip + `preserveAspectRatio="none"`). Several
   icons carry `preserveAspectRatio="none"` too. Check exported SVGs render.
@@ -199,6 +209,12 @@ sweep after any colour or spacing change.
 
 Scrapers: `build/scrape_assets.py`, `build/fetch_arabic_names.py`,
 `build/fill_missing_names.py`.
+
+**`build/isolate_products.py`** cuts the white studio background out of the
+product photos (border-connected flood fill, so white *inside* packaging
+survives). Idempotent — it skips anything that already has alpha. **Run it
+after any re-scrape**, or the new files will draw white rectangles inside the
+`#EDEFEB` card plate.
 
 Abu Auf's public routes are `/ar/category/<slug>` and `/ar/products/<slug>` —
 **not** `/product-category/...`, which 404s. Product names are English in the

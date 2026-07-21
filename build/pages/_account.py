@@ -54,8 +54,12 @@ def sidebar(active_slug):
             {items}
             <div class="flex flex-col gap-2 mt-4 pt-4 border-neutral-divider border-t">
               <span class="font-semibold text-neutral-secondary text-sm">تحتاج مساعدة؟</span>
-              <a href="faqs.html" class="font-semibold text-cta text-sm underline">الأسئلة المتداولة</a>
-              <a href="contact-us.html" class="font-semibold text-cta text-sm underline">تواصل معنا</a>
+              <a href="faqs.html" class="link-sweep self-start font-semibold text-cta text-sm">الأسئلة المتداولة</a>
+              <a href="contact-us.html" class="link-sweep self-start font-semibold text-cta text-sm">تواصل معنا</a>
+              <!-- Only meaningful while the demo session is active, so it is
+                   hidden for signed-out visitors by [data-authed-only]. -->
+              <button type="button" data-logout data-authed-only hidden
+                      class="flex items-center gap-2 mt-2 font-semibold text-accent-error text-sm text-start min-h-11">تسجيل الخروج</button>
             </div>
             <a href="index.html" class="flex justify-center items-center gap-2 mt-4 py-3 border border-neutral-divider hover:border-cta rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
               {_icon('out', 'w-4 h-4')} تسجيل الخروج

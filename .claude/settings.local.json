@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(ls -la ~/Downloads 2>/dev/null | head -40; echo \"=== DESKTOP ===\"; ls -la ~/Desktop 2>/dev/null | head -40)",
-      "Bash(find ~ -maxdepth 4 -iname '*koueider*' -o -maxdepth 4 -iname '*kouider*' -o -maxdepth 4 -iname '*abuauf*' -o -maxdepth 4 -iname '*abu-auf*' 2>/dev/null | head -30)"
+      "Bash(find ~ -maxdepth 4 -iname '*koueider*' -o -maxdepth 4 -iname '*kouider*' -o -maxdepth 4 -iname '*abuauf*' -o -maxdepth 4 -iname '*abu-auf*' 2>/dev/null | head -30)",
+      "Bash(python3 build/build.py)",
+      "Bash(node --check static-export/scripts.js)"
     ]
   }
 }

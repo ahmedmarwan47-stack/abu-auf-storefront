@@ -57,6 +57,34 @@ def check_assets(name, html):
     return len(missing)
 
 
+def check_runtime_js():
+    """
+    Catch backticks inside the HTML comments in scripts.js.
+
+    Nearly all of that file's markup lives in template literals, so a stray
+    backtick in a comment silently ENDS the string and turns the rest of the
+    markup into expressions. The failure is brutal and non-obvious: the whole
+    header renders empty, and because it throws inside a function called
+    during boot, nothing reaches the console unless you go looking.
+
+    This has bitten twice — once on `px-4 xl:px-20`, once on `.mega-cat`.
+    `node --check` does NOT catch it: the result is still valid JavaScript,
+    just not the JavaScript anyone meant. Hence a build-time check.
+    """
+    path = os.path.join(EXPORT, "scripts.js")
+    if not os.path.exists(path):
+        return 0
+    with open(path, encoding="utf-8") as f:
+        src = f.read()
+    bad = []
+    for m in re.finditer(r"<!--.*?-->", src, re.S):
+        if "`" in m.group(0):
+            bad.append((src[:m.start()].count("\n") + 1, m.group(0)[:60].replace("\n", " ")))
+    for line, snippet in bad:
+        print(f"    ! backtick inside an HTML comment at scripts.js:{line} -> {snippet}...")
+    return len(bad)
+
+
 def main(only=None):
     targets = [p for p in PAGES if not only or p in only]
     if only:
@@ -77,9 +105,12 @@ def main(only=None):
         status = "ok" if not missing else f"{missing} missing asset(s)"
         print(f"  {mod.SLUG:<28} {len(html):>8,} bytes   {status}")
 
+    bad_js = check_runtime_js()
+
     print(f"\nbuilt {len(targets)} page(s)"
-          + (f"; {total_missing} broken asset reference(s)" if total_missing else ""))
-    return 1 if total_missing else 0
+          + (f"; {total_missing} broken asset reference(s)" if total_missing else "")
+          + (f"; {bad_js} template-literal hazard(s) in scripts.js" if bad_js else ""))
+    return 1 if (total_missing or bad_js) else 0
 
 
 if __name__ == "__main__":

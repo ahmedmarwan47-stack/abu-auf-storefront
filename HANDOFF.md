@@ -165,6 +165,20 @@ as 10 and 11 above:**
 22. **Cart rows overflowed 13px at 320** — missed by the baseline sweep because
     it ran against an emptied cart. **Seed the cart before quoting the sweep.**
 
+**From the visual polish pass:**
+
+23. **Product photos drew a white rectangle inside the beige card plate** —
+    101 of 110 were opaque photos on a white sweep. Now cut out by
+    `build/isolate_products.py`.
+24. **Icons fought their wrappers.** Every glyph carried its own size class, so
+    a chevron in a `w-6 h-6` span drew at 16px and breadcrumb arrows overflowed
+    their box. All glyphs are `w-full h-full` + `currentColor` now.
+25. **A backtick inside an HTML comment in `scripts.js` blanked the entire
+    header.** It ends the template literal. Cost two rounds; `build.py` now
+    fails on it. `node --check` cannot catch this.
+26. **Selected and hovered were the same colour in the products mega-panel**,
+    so the column read as permanently hovered.
+
 ---
 
 ## 5. How to verify you haven't broken anything

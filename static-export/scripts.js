@@ -48,9 +48,10 @@
       image: "images/abuauf/categories/gifts.png",
     },
     {
+      // The seasonal Christmas-tree badge that used to sit here was removed at
+      // Ahmed's request. `desktopNavItem` no longer renders a badge at all.
       name: "المكسرات",
       url: "/shop/nuts-crackers",
-      badge: "images/abuauf/icons/nav-nuts-badge.png",
       image: "images/abuauf/categories/Nuts.webp",
       children: [
         { name: "مكسرات نيئة", url: "/shop/raw-nuts" },
@@ -253,26 +254,35 @@
 
   /* ---------------------------------------------------------------
      SVG icons (ported from the React icon components)
+
+     Every glyph is `w-full h-full` and paints in `currentColor`, so **the
+     wrapper decides the size and the colour** — one rule, no surprises.
+
+     They used to carry their own `w-4`/`w-5`/`w-6`, which silently fought the
+     wrapper: the masthead chevrons sat in a `w-6 h-6` span but drew at 16px,
+     and the breadcrumb arrows drew at 20px inside a 16px box and overflowed
+     it. `menu` was worse — hardcoded `width="31" height="30"` and
+     `stroke="white"`, so it ignored both.
      --------------------------------------------------------------- */
   const ICON = {
     account:
-      '<svg viewBox="0 0 29 29" fill="none" class="w-6 h-6"><path d="M4.47 22.96C7.43 21.29 10.85 20.33 14.5 20.33s7.07.96 10.03 2.63M18.88 11.58a4.38 4.38 0 1 1-8.75 0 4.38 4.38 0 0 1 8.75 0ZM27.63 14.5A13.13 13.13 0 1 1 1.38 14.5a13.13 13.13 0 0 1 26.25 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      '<svg viewBox="0 0 29 29" fill="none" class="w-full h-full"><path d="M4.47 22.96C7.43 21.29 10.85 20.33 14.5 20.33s7.07.96 10.03 2.63M18.88 11.58a4.38 4.38 0 1 1-8.75 0 4.38 4.38 0 0 1 8.75 0ZM27.63 14.5A13.13 13.13 0 1 1 1.38 14.5a13.13 13.13 0 0 1 26.25 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     search:
-      '<svg viewBox="0 0 29 29" fill="none" class="w-6 h-6"><path d="M27.63 27.63 18.88 18.88M21.79 11.58a10.21 10.21 0 1 1-20.42 0 10.21 10.21 0 0 1 20.42 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      '<svg viewBox="0 0 29 29" fill="none" class="w-full h-full"><path d="M27.63 27.63 18.88 18.88M21.79 11.58a10.21 10.21 0 1 1-20.42 0 10.21 10.21 0 0 1 20.42 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     location:
-      '<svg viewBox="0 0 22 20" fill="none" class="w-[22px] h-5"><path d="M16.75 11.75c-3 0-4 2-4 2h-3l-.14-.22c-.86-1.35-1.29-2.03-1.87-2.52-.51-.43-1.11-.76-1.75-.96-.72-.23-1.53-.23-3.13-.23H.75M16.75 11.75c3 0 4 2 4 2M16.75 11.75 15.23 3.38c-.17-.94-.26-1.4-.5-1.75a2 2 0 0 0-.84-.71c-.39-.17-.86-.17-1.81-.17h-.33M3.75 6.75h2M.75 3.75h4M15.75 5.75h1.42a1.5 1.5 0 0 0 .58-2.9c-.2-.09-.42-.1-.58-.1H15.25M6.75 15.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM18.75 16.75a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    menu: '<svg width="31" height="30" viewBox="0 0 31 30" fill="none"><path d="M21 6 9 6M21 12 3 12M15 18H3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      '<svg viewBox="0 0 22 20" fill="none" class="w-full h-full"><path d="M16.75 11.75c-3 0-4 2-4 2h-3l-.14-.22c-.86-1.35-1.29-2.03-1.87-2.52-.51-.43-1.11-.76-1.75-.96-.72-.23-1.53-.23-3.13-.23H.75M16.75 11.75c3 0 4 2 4 2M16.75 11.75 15.23 3.38c-.17-.94-.26-1.4-.5-1.75a2 2 0 0 0-.84-.71c-.39-.17-.86-.17-1.81-.17h-.33M3.75 6.75h2M.75 3.75h4M15.75 5.75h1.42a1.5 1.5 0 0 0 .58-2.9c-.2-.09-.42-.1-.58-.1H15.25M6.75 15.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM18.75 16.75a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    menu: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M20 7H7M20 12H4M16 17H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     close:
-      '<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     chevronDown:
-      '<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    cart: '<svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M2.5 3h1.6c.5 0 .93.35 1.03.84l.34 1.66m0 0 1.4 6.86c.16.8.87 1.37 1.68 1.37h7.9c.79 0 1.48-.54 1.66-1.31l1.3-5.4a.85.85 0 0 0-.83-1.05H5.47M9 20a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm9 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    cart: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M2.5 3h1.6c.5 0 .93.35 1.03.84l.34 1.66m0 0 1.4 6.86c.16.8.87 1.37 1.68 1.37h7.9c.79 0 1.48-.54 1.66-1.31l1.3-5.4a.85.85 0 0 0-.83-1.05H5.47M9 20a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm9 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     arrowRight:
-      '<svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     arrowLeft:
-      '<svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     phone:
-      '<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   };
 
   const isCheckout = () => document.body.getAttribute("data-page") === "checkout";
@@ -359,6 +369,14 @@
     // build-time UI strings — these live in the generated HTML, and are picked
     // up by translateDocument()'s text-node pass rather than by t()
     "خصم 10% لما تستخدم برومو كود": "10% off with promo code",
+    // Demo sign-in
+    "تم تسجيل الدخول بنجاح": "Signed in successfully",
+    "البريد الإلكتروني أو كلمة المرور غير صحيحة": "Incorrect email or password",
+    "تم تسجيل الخروج": "Signed out",
+    "تسجيل الخروج": "Sign out",
+    "حساب تجريبي للاختبار": "Demo account for testing",
+    "استخدم البيانات دي لتجربة تسجيل الدخول والمفضلة:": "Use these details to try signing in and favourites:",
+    "املأ البيانات تلقائياً": "Fill automatically",
     // Listing filter-chip labels. These are the catalogue's OWN English
     // category names copied verbatim out of catalog.json — real client data,
     // not translations written here. The chips were the last visibly-Arabic
@@ -505,24 +523,25 @@
   function desktopNavItem(item) {
     const href = pageHref(item.url);
     const isActive = currentPath() === item.url;
-    const leading = item.badge
-      ? `<img src="${item.badge}" alt="" class="shrink-0 w-[38px] h-[38px] object-contain" />`
-      : "";
-    const trailing = item.icon
-      ? `<img src="${item.icon}" alt="" class="shrink-0 w-7 h-7" />`
+    /* The discount glyph renders BEFORE the label in the DOM, which in RTL
+       puts it on the right-hand side of the text — where Ahmed wants it. It
+       used to come after, so it sat on the left. 24px to sit level with the
+       16px label rather than towering over it. */
+    const markIcon = item.icon
+      ? `<img src="${item.icon}" alt="" class="shrink-0 w-6 h-6" />`
       : "";
 
     const label = `
       <a href="${href}" class="flex flex-col gap-3 pt-3.5 shrink-0 group">
-        <span class="flex items-center gap-1 h-6">
-          <span class="font-semibold text-white text-base leading-6 whitespace-nowrap">${esc(t(item.name))}</span>
-          ${trailing}
+        <span class="flex items-center gap-1.5 h-6">
+          ${markIcon}
+          <span class="font-semibold text-white/90 group-hover:text-white text-base leading-6 whitespace-nowrap transition-colors duration-200">${esc(t(item.name))}</span>
         </span>
         <span class="h-1 w-full bg-[#DCC498] rounded-full origin-center ${isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"} transition-transform duration-[250ms] ease-[cubic-bezier(0.42,0,0.58,1)]"></span>
       </a>`;
 
     if (!item.children || !item.children.length) {
-      return `<li class="flex items-center gap-2.5 shrink-0">${label}${leading}</li>`;
+      return `<li class="flex items-center gap-2.5 shrink-0">${label}</li>`;
     }
 
     const cols = item.children
@@ -533,7 +552,7 @@
       .join("");
 
     return `<li class="group/mega relative flex items-center gap-2 shrink-0">
-      ${label}${leading}
+      ${label}
       <div class="invisible group-hover/mega:visible top-full inset-inline-start-0 z-50 absolute opacity-0 group-hover/mega:opacity-100 pt-3 transition-all duration-200">
         <div class="flex gap-6 bg-white shadow-custom3 p-6 rounded-2xl w-max min-w-[420px]">
           <div class="flex-1">
@@ -578,10 +597,16 @@
     const cats = MAIN_MENU.map((item, i) => {
       const slug = (item.url || "").replace("/shop/", "");
       return `<li>
-        <button type="button" data-mega-cat="${i}" class="flex items-center gap-3 px-4 rounded-xl w-full min-h-11 font-semibold text-[#062A1C] text-base text-start transition-colors hover:bg-interaction-base data-[active=true]:bg-interaction-base" data-active="${i === 0}">
+        <!-- Selected and hovered used to paint the identical #EDEFEB, so the
+             chosen category was indistinguishable from one under the cursor —
+             and because hovering also *activates* a category, the whole column
+             read as permanently hovered. .mega-cat in styles.css gives the
+             two states different treatments: hover is a faint wash, selected
+             is a tinted surface with a brand bar on the leading edge. -->
+        <button type="button" data-mega-cat="${i}" class="mega-cat flex items-center gap-3 px-4 rounded-xl w-full min-h-11 font-semibold text-[#062A1C] text-base text-start" data-active="${i === 0}">
           ${LEAF}
           <span class="flex-1 min-w-0 truncate">${esc(t(item.name))}</span>
-          <span class="w-4 h-4 text-neutral-secondary rtl:scale-flip shrink-0">${ICON.arrowRight}</span>
+          <span class="mega-cat__arrow w-4 h-4 text-neutral-secondary rtl:scale-flip shrink-0">${ICON.arrowRight}</span>
         </button>
       </li>`;
     }).join("");
@@ -694,11 +719,11 @@
                   : `<button type="button" data-megamenu-toggle aria-expanded="false" aria-controls="mega-panel" class="hidden lg:flex items-center gap-3 bg-cta hover:bg-cta-hover shrink-0 px-4 py-2 rounded-full h-12 transition-colors">
                        <img src="images/abuauf/icons/icon-grid.svg" alt="" class="w-6 h-6" />
                        <span class="font-medium text-white text-[18px] leading-6 whitespace-nowrap">${esc(t("المنتجات"))}</span>
-                       <span class="w-6 h-6 text-white transition-transform" data-megamenu-caret>${ICON.chevronDown}</span>
+                       <span class="w-[18px] h-[18px] text-white shrink-0 chevron" data-megamenu-caret>${ICON.chevronDown}</span>
                      </button>
                      <button type="button" data-open="location" class="hidden xl:flex items-center gap-2 hover:text-white/80 py-3 h-12 min-w-0 transition-colors">
                        <span class="font-normal text-white text-[13px] leading-5 truncate">التوصيل الى الشروق - القاهرة</span>
-                       <span class="shrink-0 w-6 h-6 text-white">${ICON.chevronDown}</span>
+                       <span class="shrink-0 w-[18px] h-[18px] text-white chevron">${ICON.chevronDown}</span>
                      </button>`
               }
             </div>
@@ -707,22 +732,29 @@
                  Checkout keeps account and cart but drops search, matching the
                  Figma checkout header — it is not a bare logo bar. -->
             <div class="flex items-center gap-6 shrink-0">
-              <a href="login.html" class="hidden lg:flex items-center gap-3 hover:text-white/80 py-2 h-12 transition-colors">
+              <a href="login.html" data-account-link class="hidden lg:flex items-center gap-3 hover:text-white/80 py-2 h-12 transition-colors">
                 <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-6 h-6" />
-                <span class="font-normal text-white text-[13px] leading-5">${esc(t("الحساب"))}</span>
-                <span class="w-6 h-6 text-white">${ICON.chevronDown}</span>
+                <span class="font-normal text-white text-[13px] leading-5" data-account-label>${esc(t("الحساب"))}</span>
+                <span class="w-[18px] h-[18px] text-white shrink-0 chevron">${ICON.chevronDown}</span>
               </a>
-              ${
-                checkout
-                  ? ""
-                  : `<button type="button" data-open="search" aria-label="بحث" class="place-items-center grid bg-cta hover:bg-cta-hover border-2 border-cta rounded-full transition-colors size-12">
-                       <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
-                     </button>`
-              }
-              <button type="button" data-open="cart" aria-label="السلة" class="relative place-items-center grid bg-accent-yellow hover:bg-accent-500 rounded-full transition-colors size-12">
-                <img src="images/abuauf/icons/icon-cart.svg" alt="" class="w-7 h-7" />
-                <span class="-top-2 -end-2 absolute place-items-center grid bg-white shadow-custom4 px-1.5 rounded-full min-w-[22px] h-[22px] font-semibold text-black text-xs" data-cart-count>2</span>
-              </button>
+              <!-- Search and cart ride along on scroll. Once the masthead has
+                   left the viewport this group is pulled out of flow by
+                   [data-sticky-actions][data-stuck] in styles.css and parked
+                   under the sticky nav on an elevated pill. Driven by the same
+                   scroll handler as the nav so the two can never disagree. -->
+              <div data-sticky-actions class="flex items-center gap-6">
+                ${
+                  checkout
+                    ? ""
+                    : `<button type="button" data-open="search" aria-label="بحث" class="btn-elevate place-items-center grid bg-cta hover:bg-cta-hover border-2 border-cta rounded-full size-12">
+                         <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
+                       </button>`
+                }
+                <button type="button" data-open="cart" aria-label="السلة" class="btn-elevate relative place-items-center grid bg-accent-yellow hover:bg-accent-500 rounded-full size-12">
+                  <img src="images/abuauf/icons/icon-cart.svg" alt="" class="w-7 h-7" />
+                  <span class="-top-2 -end-2 absolute place-items-center grid bg-white shadow-custom4 px-1.5 rounded-full min-w-[22px] h-[22px] font-semibold text-black text-xs" data-cart-count>2</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -766,7 +798,7 @@
             checkout
               ? ""
               : `<div class="flex flex-1 items-center gap-1 min-w-0">
-                   <button type="button" data-open="menu" class="place-items-center grid shrink-0 size-11 -ms-2" aria-label="Menu">${ICON.menu}</button>
+                   <button type="button" data-open="menu" class="place-items-center grid shrink-0 size-11 -ms-2" aria-label="Menu"><span class="w-6 h-6">${ICON.menu}</span></button>
                  </div>`
           }
           <a href="index.html" class="block shrink-0"><img src="images/abuauf/brand/logo-abuauf-white.webp" alt="أبو عوف" class="w-[120px] h-[31px] object-contain" /></a>
@@ -791,7 +823,7 @@
           : `<div class="md:hidden block bg-interaction-base px-4 py-2">
                <button type="button" data-open="location" class="flex justify-between items-center gap-1 bg-cta px-5 py-2.5 rounded-full w-full min-h-11 text-white">
                  <span class="font-semibold text-xs truncate">التوصيل الى الشروق - القاهرة</span>
-                 <span class="shrink-0 w-3.5 h-3.5">${ICON.chevronDown}</span>
+                 <span class="shrink-0 w-4 h-4 chevron">${ICON.chevronDown}</span>
                </button>
              </div>`
       }`;
@@ -1358,6 +1390,11 @@
         delete nav.dataset.stuck;
         nav.classList.remove(...stickyClasses);
       }
+      // Search + cart ride along, on the same threshold as the nav.
+      document.querySelectorAll("[data-sticky-actions]").forEach((el) => {
+        if (should) el.dataset.stuck = "true";
+        else delete el.dataset.stuck;
+      });
     }
     window.addEventListener("scroll", onScroll, { passive: true });
   }
@@ -1665,6 +1702,79 @@
 
   window.abuaufFavs = Favs;
 
+  /* ---------------------------------------------------------------
+     Demo auth
+
+     A local stand-in for a real session so the account and favourites
+     flows can actually be walked end to end. Same contract as the two
+     stores above: localStorage, no fetch, an `auth:change` event.
+
+     THIS IS NOT AUTHENTICATION. The credentials are hard-coded below and
+     printed on the sign-in page; the check happens in client-side JS that
+     anyone can read. It exists so the logged-in chrome and the favourites
+     flow are demonstrable in a static export. **Rip this out and replace it
+     with the real backend before launch** — see DESIGN-NOTES.
+     --------------------------------------------------------------- */
+  const AUTH_KEY = "abuauf:auth";
+  const DEMO_USER = {
+    email: "demo@abuauf.com",
+    password: "AbuAuf2026",
+    name: "محمد عادل",
+    nameEn: "Mohamed Adel",
+  };
+
+  const Auth = (function () {
+    let user = null;
+
+    function emit(reason) {
+      try {
+        if (user) localStorage.setItem(AUTH_KEY, JSON.stringify(user));
+        else localStorage.removeItem(AUTH_KEY);
+      } catch (e) {
+        /* private mode — the session still holds for this page view */
+      }
+      document.dispatchEvent(
+        new CustomEvent("auth:change", { detail: { reason: reason, user: user } }),
+      );
+    }
+
+    return {
+      demo: DEMO_USER,
+      init: function () {
+        try {
+          const raw = localStorage.getItem(AUTH_KEY);
+          user = raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          user = null;
+        }
+        emit("init");
+      },
+      user: function () {
+        return user ? Object.assign({}, user) : null;
+      },
+      isAuthed: function () {
+        return !!user;
+      },
+      /* Returns true on success, false on bad credentials. */
+      login: function (email, password) {
+        const ok =
+          String(email || "").trim().toLowerCase() === DEMO_USER.email &&
+          String(password || "") === DEMO_USER.password;
+        if (!ok) return false;
+        user = { email: DEMO_USER.email, name: DEMO_USER.name, nameEn: DEMO_USER.nameEn };
+        emit("login");
+        return true;
+      },
+      logout: function () {
+        user = null;
+        emit("logout");
+        return this;
+      },
+    };
+  })();
+
+  window.abuaufAuth = Auth;
+
   /* Read a product off the nearest [data-product] element. */
   function productFrom(el) {
     const host = el.closest("[data-product]");
@@ -1749,6 +1859,7 @@
     initLangSwitcher(true);
     window.kInit(document);
     renderCart();
+    document.dispatchEvent(new CustomEvent("auth:change", { detail: { reason: "lang", user: Auth.user() } }));
     // Heart aria-labels come from t(), so they have to be re-derived here —
     // repaint replaces the chrome but the cards are build-time markup.
     syncFavButtons();
@@ -1981,6 +2092,76 @@
     if (countEl) countEl.textContent = String(shown);
   }
 
+  /* ---------------------------------------------------------------
+     Demo auth UI — the sign-in form, and the chrome that reflects it.
+     --------------------------------------------------------------- */
+  function initAuthUI() {
+    Auth.init();
+
+    const paintAccountLinks = () => {
+      const authed = Auth.isAuthed();
+      const u = Auth.user();
+      document.querySelectorAll("[data-account-link]").forEach((el) => {
+        el.setAttribute("href", pageHref(authed ? "/my-account" : "/login"));
+        const label = el.querySelector("[data-account-label]");
+        if (label) {
+          label.textContent = authed
+            ? currentLang() === "en"
+              ? u.nameEn
+              : u.name
+            : t("الحساب");
+        }
+      });
+      document.querySelectorAll("[data-authed-only]").forEach((el) => {
+        el.hidden = !authed;
+      });
+      document.querySelectorAll("[data-anon-only]").forEach((el) => {
+        el.hidden = authed;
+      });
+    };
+
+    document.addEventListener("auth:change", paintAccountLinks);
+    paintAccountLinks();
+
+    // Sign-in form. Beats initDemoForms to the submit because the login form
+    // is not tagged [data-demo-form] — it has a real (demo) credential check.
+    document.querySelectorAll("[data-login-form]").forEach((form) => {
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = (form.querySelector('[name="email"]') || {}).value;
+        const password = (form.querySelector('[name="password"]') || {}).value;
+        if (Auth.login(email, password)) {
+          toast(t("تم تسجيل الدخول بنجاح"));
+          setTimeout(() => (window.location.href = pageHref("/my-account")), 700);
+        } else {
+          toast(t("البريد الإلكتروني أو كلمة المرور غير صحيحة"), "error");
+        }
+      });
+    });
+
+    // One-tap fill, so the demo credentials do not have to be retyped.
+    document.querySelectorAll("[data-demo-fill]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const form = document.querySelector("[data-login-form]");
+        if (!form) return;
+        const email = form.querySelector('[name="email"]');
+        const password = form.querySelector('[name="password"]');
+        if (email) email.value = Auth.demo.email;
+        if (password) password.value = Auth.demo.password;
+        if (email) email.focus();
+      });
+    });
+
+    document.querySelectorAll("[data-logout]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        Auth.logout();
+        toast(t("تم تسجيل الخروج"));
+        setTimeout(() => (window.location.href = pageHref("/")), 600);
+      });
+    });
+  }
+
   function initFavsUI() {
     Favs.init();
 
@@ -2010,10 +2191,14 @@
     if (!toggle || !panel) return;
     const caret = toggle.querySelector("[data-megamenu-caret]");
 
+    /* The caret flip is a class, not an inline transform. As an inline style
+       it fought the `transition-transform` utility and snapped rather than
+       eased; `.chevron` in styles.css owns both the transition and the
+       rotation now, and every chevron on the site shares it. */
     const setOpen = (open) => {
       panel.hidden = !open;
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      if (caret) caret.style.transform = open ? "rotate(180deg)" : "";
+      if (caret) caret.classList.toggle("chevron--open", open);
     };
 
     toggle.addEventListener("click", (e) => {
@@ -2151,6 +2336,7 @@
     initMegaMenu();
     initLangSwitcher();
     initCartUI();
+    initAuthUI();
     initFavsUI();
     // Must run after the chrome is in the DOM and after initFavsUI, so the
     // dictionary pass sees every string on the page. Without this call a

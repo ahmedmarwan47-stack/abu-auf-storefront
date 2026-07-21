@@ -86,7 +86,11 @@ SOCIAL = f"""
 
 
 def auth_page(title_text, description, heading, form_html, page_id, path,
-              crumb, side=True, social=True):
+              crumb, side=True, social=True, form_attrs=""):
+    # `form_attrs` lets a page tag its form for a specific handler — the
+    # sign-in page uses data-login-form, which runs a real (demo) credential
+    # check rather than the generic data-demo-form success toast.
+    attrs = (" " + form_attrs) if form_attrs else ""
     body = f"""{page_header("", [("الرئيسية", "index.html"), (crumb, None)])}
 
       <section class="py-8 xl:py-12">
@@ -94,7 +98,7 @@ def auth_page(title_text, description, heading, form_html, page_id, path,
           {SIDE_CARD if side else ''}
           <div class="flex flex-col gap-6 bg-white shadow-custom4 p-8 xl:p-10 rounded-[20px] min-w-0">
             <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl text-center">{e(heading)}</h1>
-            <form class="flex flex-col gap-5">{form_html}
+            <form class="flex flex-col gap-5"{attrs}>{form_html}
             </form>
             {SOCIAL if social else ''}
           </div>
