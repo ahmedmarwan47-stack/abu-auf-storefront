@@ -1,5 +1,5 @@
 /* =====================================================================
-   scripts.js — shared behaviour for the static Kouider build.
+   scripts.js — shared behaviour for the static Abu Auf build.
 
    Replaces the React runtime with vanilla JS:
      • Injects the shared header, footer and overlay chrome into every
@@ -7,12 +7,16 @@
        point, so markup stays DRY and works from the file:// protocol).
      • Re-implements the interactive pieces that were React components:
        mobile menu drawer, cart drawer, search modal, location bottom
-       sheet, sticky-on-scroll navbar, mega-menu hover, language toggle.
+       sheet, sticky-on-scroll navbar and mega-menu hover.
      • Provides page-level helpers: carousels (replacing Swiper),
        accordions, tabs, quantity steppers, toasts and demo forms.
 
-   Content that the CMS used to supply (menus, footer columns, socials)
-   is baked in below as representative placeholder data.
+   The document is Arabic-first and renders RTL. Anything that positions
+   against a physical edge must use logical properties (ms/me, ps/pe,
+   start/end) so it mirrors correctly.
+
+   Menus, footer columns, socials and contact details below mirror the
+   Abu Auf Figma; product data lives in data/catalog.json.
    ===================================================================== */
 (function () {
   "use strict";
@@ -93,58 +97,74 @@
     { name: "الهدايا", url: "/shop/gifting-seasonal" },
   ];
 
+  /* Column order is RTL reading order: rightmost column first. */
   const FOOTER_COLUMNS = [
     {
-      name: "تسوق",
+      name: "أقسام المنتجات",
       links: [
-        { title: "مكسرات وحبوب ومقرمشات", url: "/shop/nuts-crackers" },
-        { title: "قهوة ومشروبات", url: "/shop/coffee-beverage" },
-        { title: "تمور وفواكه مجففة", url: "/shop/dates-dried-fruits" },
-        { title: "سناكس صحية", url: "/shop/healthy-snacks" },
-        { title: "الهدايا والمشاركة", url: "/shop/gifting-seasonal" },
+        { title: "العروض و الخصومات", url: "/shop/offers-promotions" },
+        { title: "المكسرات", url: "/shop/nuts-crackers" },
+        { title: "القهوة", url: "/shop/coffee-beverage" },
+        { title: "التمور والفواكه المجففة", url: "/shop/dates-dried-fruits" },
+        { title: "الوجبات صحية", url: "/shop/healthy-snacks" },
+        { title: "البهارات والزيوت", url: "/shop/spices-kitchen-baking" },
+        { title: "الهدايا", url: "/shop/gifting-seasonal" },
       ],
     },
     {
-      name: "أبو عوف",
+      name: "عن الشركة",
       links: [
         { title: "قصتنا", url: "/about" },
-        { title: "الفروع", url: "/branches" },
-        { title: "المكافآت", url: "/rewards" },
-        { title: "البلوج", url: "/blogs" },
-        { title: "أتصل بنا", url: "/contact-us" },
+        { title: "فروعنا", url: "/branches" },
+        { title: "وصفاتنا", url: "/recipes" },
+        { title: "التصدير", url: "/export" },
+        { title: "الموزعين في مصر", url: "/distributors" },
+        { title: "شركاء النجاح", url: "/partners" },
+        { title: "فرص وظائف", url: "/careers" },
+        { title: "إبداء الرأي", url: "/contact-us" },
       ],
     },
     {
       name: "المساعدة",
       links: [
-        { title: "الأسئلة الشائعة", url: "/faqs" },
+        { title: "الاسئلة الشائعة", url: "/faqs" },
+        { title: "تعليقات العملاء", url: "/reviews" },
+        { title: "التوصيل أو الاستلام", url: "/return-policy" },
+        { title: "تطبيق الجوال", url: "/app" },
+        { title: "الشروط والاحكام", url: "/terms-conditions" },
         { title: "سياسة الخصوصية", url: "/privacy-policy" },
-        { title: "الشروط والأحكام", url: "/terms-conditions" },
-        { title: "سياسة التوصيل والاسترجاع", url: "/return-policy" },
+        { title: "سياسة الاسترجاع", url: "/return-policy" },
       ],
     },
   ];
 
+  /* Contact details from the Figma footer. */
+  const CONTACT = {
+    hotline: "19969",
+    address: "المنطقة الصناعية 31-33، التجمع الثالث، القاهرة الجديدة، مصر",
+  };
+
+  /* Real Abu Auf accounts; glyphs are the Figma social icon set. */
   const SOCIALS = [
     {
-      title: "Facebook",
-      href: "#",
-      svg: '<path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06C2 17.06 5.66 21.21 10.44 22v-7.03H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.9 3.78-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.9h-2.34V22C18.34 21.21 22 17.06 22 12.06Z"/>',
+      title: "فيسبوك",
+      href: "https://www.facebook.com/abuauf",
+      icon: "images/abuauf/social/icon-facebook.svg",
     },
     {
-      title: "Instagram",
-      href: "#",
-      svg: '<path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16Zm0 3.68A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84Zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4Zm6.4-10.4a1.44 1.44 0 1 0 1.44 1.44 1.44 1.44 0 0 0-1.44-1.44Z"/>',
+      title: "انستجرام",
+      href: "https://www.instagram.com/abuauf_egypt",
+      icon: "images/abuauf/social/icon-instagram.svg",
     },
     {
-      title: "TikTok",
-      href: "#",
-      svg: '<path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-1.84-2.48V9.76a5.68 5.68 0 1 0 4.93 5.63V9.01a7.3 7.3 0 0 0 4.05 1.23V7.15a4.28 4.28 0 0 1-2.99-1.33Z"/>',
+      title: "لينكد إن",
+      href: "https://www.linkedin.com/company/abu-auf",
+      icon: "images/abuauf/social/icon-linkedin.svg",
     },
     {
-      title: "YouTube",
-      href: "#",
-      svg: '<path d="M23 12s0-3.2-.4-4.73a2.5 2.5 0 0 0-1.76-1.77C19.31 5.1 12 5.1 12 5.1s-7.31 0-8.84.4A2.5 2.5 0 0 0 1.4 7.27C1 8.8 1 12 1 12s0 3.2.4 4.73a2.5 2.5 0 0 0 1.76 1.77c1.53.4 8.84.4 8.84.4s7.31 0 8.84-.4a2.5 2.5 0 0 0 1.76-1.77C23 15.2 23 12 23 12Zm-13 3.5v-7l6 3.5Z"/>',
+      title: "يوتيوب",
+      href: "https://www.youtube.com/@abuauf7602",
+      icon: "images/abuauf/social/icon-youtube.svg",
     },
   ];
 
@@ -434,22 +454,50 @@
   /* ---------------------------------------------------------------
      Footer
      --------------------------------------------------------------- */
+  /*
+   * Payment marks, shared by the footer bar and the checkout summary.
+   * Sizes are explicit px rather than percentages: these sit inside centred
+   * flex/grid boxes where a percentage height resolves against the wrong
+   * containing block and distorts the mark.
+   */
+  function paymentMarks(size) {
+    const sm = size === "sm";
+    const card = sm ? "w-[23px] h-4" : "w-[35px] h-6";
+    const radius = sm ? "rounded-sm" : "rounded";
+    const glyphW = sm ? 15 : 22;
+    const glyphH = sm ? 9 : 14;
+    const cod = sm ? "w-[41px] h-4" : "w-[61px] h-6";
+    return `
+      <div class="flex items-center gap-1 md:gap-2">
+        <span class="inline-flex justify-center items-center bg-white border border-neutral-divider ${card} ${radius} overflow-hidden shrink-0">
+          <img src="images/abuauf/payments/pay-meeza.png" alt="Meeza" class="w-full h-full object-contain" />
+        </span>
+        <span class="inline-flex justify-center items-center bg-white border border-neutral-divider ${card} ${radius} shrink-0">
+          <img src="images/abuauf/payments/pay-mastercard-alt.svg" alt="Mastercard" style="width:${glyphW}px;height:${glyphH}px" />
+        </span>
+        <img src="images/abuauf/payments/pay-visa.svg" alt="Visa" class="${card} ${radius} shrink-0" />
+        <img src="images/abuauf/payments/pay-cod.png" alt="الدفع عند الاستلام" class="${cod} object-contain shrink-0" />
+      </div>`;
+  }
+
   function footerHTML() {
+    const copyright = `جميع حقوق النشر تنتمي إلى ابو عوف, <span class="latin">${YEAR}</span>`;
+
     if (isCheckout()) {
-      return `<footer class="bg-neutral-support-bg py-6">
-        <div class="mx-auto max-w-[1392px] px-4 text-center text-bordercolor text-[10px]">© Abdel Rahim Koueider ${YEAR} — All copyrights reserved</div>
+      return `<footer class="bg-black py-6">
+        <div class="mx-auto px-4 max-w-[1392px] text-neutral-secondary text-xs text-center">${copyright}</div>
       </footer>`;
     }
 
     const columns = FOOTER_COLUMNS.map(
       (col) => `
-      <div>
-        <div class="mb-3.5 font-semibold text-white text-[18px] capitalize">${esc(col.name)}</div>
-        <ul class="flex flex-col gap-y-2">
+      <div class="flex-1 min-w-[150px]">
+        <h2 class="mb-5 font-bold text-primary text-base leading-[22px]">${esc(col.name)}</h2>
+        <ul class="flex flex-col gap-2">
           ${col.links
             .map(
               (l) =>
-                `<li><a href="${pageHref(l.url)}" class="text-base font-normal capitalize text-primaryLight hover:underline">${esc(l.title)}</a></li>`,
+                `<li><a href="${pageHref(l.url)}" class="font-semibold text-white hover:text-accent-yellow text-lg xl:text-xl leading-7 transition-colors">${esc(l.title)}</a></li>`,
             )
             .join("")}
         </ul>
@@ -458,51 +506,64 @@
 
     const socials = SOCIALS.map(
       (s) =>
-        `<li><a href="${s.href}" aria-label="Visit our ${s.title} page" class="grid place-items-center w-9 h-9 rounded-full bg-white/10 hover:bg-cta transition-colors text-white"><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">${s.svg}</svg></a></li>`,
+        `<li><a href="${s.href}" target="_blank" rel="noopener noreferrer" aria-label="${esc(s.title)}" class="block opacity-90 hover:opacity-100 transition-opacity">
+           <img src="${s.icon}" alt="" class="w-6 h-6" />
+         </a></li>`,
     ).join("");
 
-    const subscription = `
-      <div class="relative items-start gap-4 grid grid-cols-[auto,1fr] bg-primaryExtraDark xl:p-8 px-4 py-[32px] rounded-[20px] w-full xl:w-[582px] overflow-hidden">
-        <div class="relative w-[74px] xl:w-[122px] h-[71px] xl:h-[117px]">
-          <img src="images/subfooter.svg" alt="Newsletter envelope" class="w-full h-full object-contain" />
+    /* --- pre-footer: newsletter + FAQ, split 50/50 on desktop --- */
+    const preFooter = `
+      <div class="bg-beige border-primary border-b">
+        <div class="flex md:flex-row flex-col justify-center items-stretch gap-8 md:gap-12 mx-auto px-4 xl:px-[190px] py-6 max-w-[1920px]">
+          <div class="flex flex-col justify-center gap-6 py-6 md:py-12 flex-1">
+            <div class="flex flex-col gap-2">
+              <h2 class="font-bold text-[#062A1C] text-2xl md:text-3xl xl:text-4xl leading-tight xl:leading-[48px]">عندك اي اسئلة؟ كل حاجة هنا..</h2>
+              <p class="font-semibold text-primary text-sm xl:text-xl leading-relaxed">لو عندك أي استفسار أو عايز تطرح أي سؤال ، هتلاقي كل حاجة هنا</p>
+            </div>
+            <a href="faqs.html" class="self-start bg-cta hover:bg-cta-hover px-8 xl:px-10 py-3 xl:py-[18px] rounded-full font-semibold text-white text-sm xl:text-xl transition-colors">الاسئلة و الاجابات</a>
+          </div>
+
+          <div class="flex flex-col justify-center gap-6 py-6 md:py-12 flex-1">
+            <div class="flex flex-col gap-2">
+              <h2 class="font-bold text-[#062A1C] text-2xl md:text-3xl xl:text-4xl leading-tight xl:leading-[48px]">اشترك لتعرف على أجدد العروض والخصومات</h2>
+              <p class="font-semibold text-primary text-sm xl:text-xl leading-relaxed">كن أول من يعرف كل ما هو جديد في ابو عوف</p>
+            </div>
+            <form data-newsletter class="flex flex-row-reverse items-center gap-2 bg-transparent py-2 xl:py-[9px] pe-5 ps-2.5 border-2 border-neutral-outline rounded-2xl w-full">
+              <input type="email" required aria-label="البريد الالكتروني"
+                     placeholder="أدخل عنوان البريد الالكتروني"
+                     class="flex-1 bg-transparent outline-none min-w-0 font-semibold text-[#062A1C] placeholder:text-[#ABA08F] text-sm xl:text-base" />
+              <button type="submit" class="bg-cta hover:bg-cta-hover px-5 py-2 xl:py-2.5 rounded-full font-semibold text-white text-sm xl:text-base whitespace-nowrap transition-colors">اشتراك</button>
+            </form>
+          </div>
         </div>
-        <div class="flex flex-col items-start gap-4 col-start-2">
-          <p class="text-[18px] text-neutral-white leading-[140%]">Stay connected — get sweet news &amp; offers.</p>
-        </div>
-        <form data-newsletter class="col-span-2 xl:col-span-1 xl:col-start-2 flex items-center gap-4 bg-white pr-2 pl-4 border border-primary-light rounded-full w-full h-[52px]">
-          <input type="email" required placeholder="Enter your email" class="flex-1 bg-transparent outline-none text-[14px] text-textSecondary" aria-label="Email address" />
-          <button type="submit" class="flex justify-center items-center bg-neutral-support-bg px-6 rounded-full h-[36px] font-medium text-[14px] text-white">Subscribe</button>
-        </form>
       </div>`;
 
-    return `<footer class="bg-neutral-support-bg pt-[60px] pb-[24px]">
-      <div class="flex flex-col gap-y-[60px] mx-auto px-4 2xl:px-0 max-w-[1392px]">
-        <div class="flex flex-col gap-y-[60px] w-full">
-          <div class="relative flex flex-col sm:flex-row gap-4 justify-between items-center pb-[60px] border-bordercolor border-b w-full">
-            <div class="relative w-[242px] h-[42px]"><img src="images/logos/logo-light.png" alt="Kouider" class="w-full h-full object-contain" /></div>
-            <div class="flex flex-col justify-end items-start">
-              <a href="tel:19632" class="flex text-white text-sm dir-ltr">19632</a>
-              <a href="mailto:info@koueider.com" class="flex text-white text-sm dir-ltr">info@koueider.com</a>
-            </div>
+    return `<footer>
+      ${preFooter}
+      <div class="bg-[#062B1C]">
+        <div class="flex xl:flex-row flex-col-reverse gap-10 xl:gap-6 mx-auto px-4 xl:px-[190px] py-6 xl:py-12 max-w-[1920px]">
+          <!-- RTL start (right): brand, hotline, address, socials -->
+          <div class="flex flex-col gap-3 xl:flex-1 xl:order-first">
+            <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[150px] h-[50px] object-contain" />
+            <a href="tel:${CONTACT.hotline}" class="mt-auto xl:mt-10 font-bold text-white text-2xl xl:text-3xl latin">${CONTACT.hotline}</a>
+            <p class="max-w-[277px] font-semibold text-primary text-sm xl:text-base leading-relaxed">${esc(CONTACT.address)}</p>
+            <ul class="flex items-center gap-6 mt-1">${socials}</ul>
           </div>
-          <div class="flex flex-col-reverse xl:flex-row justify-between gap-10">
-            <div class="flex flex-wrap gap-[60px] xl:gap-[80px]">${columns}</div>
-            <div class="flex flex-col items-start xl:items-end gap-[32px]">
-              ${subscription}
-              <ul class="flex items-center gap-4">${socials}</ul>
-            </div>
-          </div>
-          <div class="flex flex-wrap justify-between items-center gap-6">
-            <span class="font-normal text-[10px] text-bordercolor dir-ltr">© Abdel Rahim Koueider ${YEAR} - All copyrights reserved</span>
-            <img src="images/payments.png" alt="payment-methods" width="215" height="24" class="object-contain" />
-            <span class="text-bordercolor text-[10px]"><a href="https://www.mitchdesigns.com" target="_blank" rel="noopener noreferrer" class="hover:underline">Web Design &amp; Development by MitchDesigns</a></span>
+          <!-- link columns -->
+          <div class="flex flex-wrap gap-8 xl:gap-6 xl:flex-[3]">${columns}</div>
+        </div>
+
+        <div class="bg-black">
+          <div class="flex md:flex-row flex-col-reverse justify-between items-center gap-4 mx-auto px-4 xl:px-[190px] py-4 max-w-[1920px] min-h-[60px]">
+            <p class="font-medium text-neutral-secondary text-xs xl:text-base">${copyright}</p>
+            ${paymentMarks()}
           </div>
         </div>
       </div>
     </footer>`;
   }
 
-  const YEAR = 2025; // static build stamp (Date.now avoided for determinism)
+  const YEAR = 2026; // static build stamp (Date.now avoided for determinism)
 
   /* ---------------------------------------------------------------
      Overlays: backdrop, cart drawer, mobile menu, search, location
