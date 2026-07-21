@@ -732,56 +732,10 @@
         `<li><a href="${pageHref(i.url)}" class="flex items-center min-h-11 py-2 text-neutral-secondary text-sm">${esc(i.title)}</a></li>`,
     ).join("");
 
-    /* Sample cart contents — real catalogue items (see data/catalog.json). */
-    const demoCartItems = [
-      {
-        name: "تمر صحاري بالشيكولاته و اللوز - 300 جم",
-        price: 220,
-        qty: 1,
-        img: "images/abuauf/products/6223006310759.webp",
-      },
-      {
-        name: "قراصيا بدون نواه - 100 جم",
-        price: 72.5,
-        qty: 1,
-        img: "images/abuauf/products/2000102000000.webp",
-      },
-    ];
-    /*
-     * Drawer figures mirror build/pages/cart.py so the drawer and the cart page
-     * can never quote different numbers. Both are assumptions — the live site
-     * shows a 30 EGP delivery fee and appears to enforce a 150 EGP minimum;
-     * ours are 10 and 100 (flagged in DESIGN-NOTES).
-     */
-    const DELIVERY_FEE = 10;
-    const MIN_ORDER = 100;
-    const cartSubtotal = demoCartItems.reduce((s, it) => s + it.price * it.qty, 0);
-    const shortfall = Math.max(0, MIN_ORDER - cartSubtotal);
-    const belowMin = shortfall > 0;
-
-    const cartRows = demoCartItems
-      .map(
-        (it) => `
-      <div class="flex gap-3 py-4 border-neutral-divider border-b">
-        <img src="${it.img}" alt="${esc(it.name)}" class="bg-interaction-base shrink-0 p-1.5 rounded-lg w-[72px] h-[72px] object-contain" />
-        <div class="flex-1 min-w-0">
-          <div class="flex justify-between items-start gap-2">
-            <p class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm line-clamp-2">${esc(it.name)}</p>
-            <span class="bg-accent-yellow shrink-0 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">EGP ${it.price}.00</span>
-          </div>
-          <p class="mt-1 text-neutral-secondary text-xs">العدد: <span class="latin">${it.qty}</span></p>
-          <div class="flex justify-between items-center gap-2 mt-2">
-            <div class="inline-flex items-center gap-3 px-2 py-1 border border-neutral-divider rounded-full" data-stepper>
-              <button type="button" data-step="-1" class="place-items-center grid w-8 h-8 text-[#062A1C]" aria-label="إنقاص">−</button>
-              <span data-qty class="w-4 text-sm text-center latin">${it.qty}</span>
-              <button type="button" data-step="1" class="place-items-center grid w-8 h-8 text-[#062A1C]" aria-label="زيادة">+</button>
-            </div>
-            <button type="button" class="min-h-11 text-accent-error text-xs underline">حذف</button>
-          </div>
-        </div>
-      </div>`,
-      )
-      .join("");
+    /* Seed contents for a first-ever visit, so the drawer and cart page are
+       not empty on a fresh browser. Real catalogue items. Once the shopper
+       touches the cart this is never consulted again — Cart owns state. */
+    /* (kept in CART_SEED at module scope) */
 
     /* "قد يعجبك أيضا" upsell — real catalogue items, same as the cart page. */
     const upsell = [
@@ -801,31 +755,25 @@
       )
       .join("");
 
+    /* Static shell only — the numbers and disabled state are filled in by
+       renderCart() on every cart:change. */
     const cartFooter = `
         <div class="flex justify-between text-sm">
           <span class="text-neutral-secondary">مصاريف التوصيل</span>
-          <span class="font-semibold text-[#062A1C] latin">EGP ${DELIVERY_FEE}.00</span>
+          <span class="font-semibold text-[#062A1C] latin">${egp(DELIVERY_FEE)}</span>
         </div>
         <div class="flex justify-between items-center">
           <span class="text-neutral-secondary text-sm">الإجمالي</span>
-          <span class="font-bold text-[#062A1C] text-lg latin">EGP ${cartSubtotal + DELIVERY_FEE}.00</span>
+          <span class="font-bold text-[#062A1C] text-lg latin" data-cart-total>${egp(0)}</span>
         </div>
         <div class="gap-3 grid grid-cols-2 mt-1">
           <a href="cart.html" class="flex justify-center items-center border-cta hover:bg-interaction-base border rounded-full min-h-11 font-semibold text-cta text-sm transition-colors">عرض السلة</a>
-          ${
-            belowMin
-              ? `<button type="button" disabled class="flex justify-center items-center bg-neutral-disabled rounded-full min-h-11 font-semibold text-white text-sm cursor-not-allowed">اتمام الشراء</button>`
-              : `<a href="checkout.html" class="flex justify-center items-center bg-cta hover:bg-cta-hover rounded-full min-h-11 font-semibold text-white text-sm text-center transition-colors">اتمام الشراء</a>`
-          }
+          <a href="checkout.html" data-cart-checkout class="flex justify-center items-center bg-cta hover:bg-cta-hover rounded-full min-h-11 font-semibold text-white text-sm text-center transition-colors">اتمام الشراء</a>
         </div>
-        ${
-          belowMin
-            ? `<p class="flex items-start gap-2 mt-1 text-accent-error text-xs leading-5">
-                 <span aria-hidden="true">⚠</span>
-                 متبقي <span class="latin">EGP ${shortfall}.00</span> لاستكمال الحد الأدنى للطلب
-               </p>`
-            : ""
-        }`;
+        <p data-cart-warning hidden class="flex items-start gap-2 mt-1 text-accent-error text-xs leading-5">
+          <span aria-hidden="true">⚠</span>
+          متبقي <span class="latin" data-cart-shortfall></span> لاستكمال الحد الأدنى للطلب
+        </p>`;
 
     return `
     <div data-backdrop class="overlay-backdrop"></div>
@@ -837,7 +785,7 @@
         <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
       </div>
       <div class="flex-1 px-5 overflow-y-auto">
-        ${cartRows}
+        <div data-cart-lines></div>
         <div class="mt-4">
           <p class="mb-2 font-bold text-[#062A1C] text-sm">قد يعجبك أيضا</p>
           <div class="flex flex-col gap-2">${upsell}</div>
@@ -1260,6 +1208,137 @@
                     "border-neutral-divider", "hover:border-cta"];
 
   /* ---------------------------------------------------------------
+     Cart store
+
+     Single source of truth for cart state, persisted to localStorage so it
+     survives navigation between the standalone pages. No fetch — the store
+     reads product details straight off `[data-product]` markup, so it works
+     from file:// like the rest of the export.
+
+     Every mutation dispatches a `cart:change` CustomEvent on `document`:
+
+       document.addEventListener("cart:change", (e) => {
+         e.detail.reason   // "add" | "qty" | "remove" | "clear" | "init"
+         e.detail.product  // the item involved (absent for clear/init)
+         e.detail.items    // full array after the change
+         e.detail.count    // total units
+         e.detail.subtotal // EGP
+       });
+
+     That event is the hook for micro-interactions — fly-to-cart, badge bounce,
+     row collapse — none of which belong in here.
+     --------------------------------------------------------------- */
+  const CART_KEY = "abuauf:cart";
+
+  /*
+   * Seed for a first-ever visit only, so a fresh browser does not land on an
+   * empty cart and lose the design. Real catalogue items. Written once, on the
+   * first load where no cart key exists; after that the shopper owns the cart,
+   * including deliberately emptying it.
+   */
+  const CART_SEED = [
+    { id: "6223006310759", name: "تمر صحاري بالشيكولاته و اللوز - 300 جم", price: 220, image: "images/abuauf/products/6223006310759.webp", qty: 1 },
+    { id: "2000102000000", name: "قراصيا بدون نواه - 100 جم", price: 72.5, image: "images/abuauf/products/2000102000000.webp", qty: 1 },
+  ];
+
+  const Cart = (function () {
+    let items = [];
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(CART_KEY);
+        // No key at all = first ever visit, so seed. An empty array is a
+        // shopper who emptied their cart on purpose — leave it alone.
+        items = raw === null ? CART_SEED.slice() : JSON.parse(raw);
+        if (!Array.isArray(items)) items = [];
+      } catch (e) {
+        items = [];
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(CART_KEY, JSON.stringify(items));
+      } catch (e) {
+        /* private mode — state still lives for this page view */
+      }
+    }
+
+    function subtotal() {
+      return items.reduce((s, it) => s + Number(it.price) * it.qty, 0);
+    }
+    function count() {
+      return items.reduce((s, it) => s + it.qty, 0);
+    }
+
+    function emit(reason, product) {
+      save();
+      document.dispatchEvent(
+        new CustomEvent("cart:change", {
+          detail: { reason: reason, product: product || null, items: items.slice(), count: count(), subtotal: subtotal() },
+        }),
+      );
+    }
+
+    return {
+      init: function () {
+        load();
+        emit("init");
+      },
+      items: function () {
+        return items.slice();
+      },
+      count: count,
+      subtotal: subtotal,
+      find: function (id) {
+        return items.find((it) => String(it.id) === String(id)) || null;
+      },
+      add: function (product, qty) {
+        qty = Math.max(1, parseInt(qty, 10) || 1);
+        const existing = items.find((it) => String(it.id) === String(product.id));
+        if (existing) existing.qty += qty;
+        else items.push({ id: product.id, name: product.name, price: Number(product.price), image: product.image, qty: qty });
+        emit("add", product);
+        return this;
+      },
+      setQty: function (id, qty) {
+        const it = items.find((x) => String(x.id) === String(id));
+        if (!it) return this;
+        qty = parseInt(qty, 10) || 0;
+        if (qty < 1) return this.remove(id);
+        it.qty = qty;
+        emit("qty", it);
+        return this;
+      },
+      remove: function (id) {
+        const i = items.findIndex((x) => String(x.id) === String(id));
+        if (i === -1) return this;
+        const [gone] = items.splice(i, 1);
+        emit("remove", gone);
+        return this;
+      },
+      clear: function () {
+        items = [];
+        emit("clear");
+        return this;
+      },
+    };
+  })();
+
+  window.abuaufCart = Cart;
+
+  /* Read a product off the nearest [data-product] element. */
+  function productFrom(el) {
+    const host = el.closest("[data-product]");
+    if (!host) return null;
+    const d = host.dataset;
+    if (!d.id || !d.name) return null;
+    return { id: d.id, name: d.name, price: Number(d.price) || 0, image: d.image || "" };
+  }
+
+  const egp = (n) => "EGP " + (Math.round(n * 100) / 100).toFixed(2);
+
+  /* ---------------------------------------------------------------
      Language switcher
 
      Flips `dir` and `lang` on <html> so the RTL↔LTR layout can actually be
@@ -1323,6 +1402,143 @@
           toggle.setAttribute("aria-expanded", "false");
         }
       });
+    });
+  }
+
+  /* ---------------------------------------------------------------
+     Cart rendering — drawer body, badge, cart page
+
+     Everything here is a pure function of Cart state and re-runs on
+     `cart:change`. Nothing mutates state; the handlers below do that.
+     --------------------------------------------------------------- */
+  const DELIVERY_FEE = 10;
+  const MIN_ORDER = 100;
+
+  function cartLineHTML(it) {
+    return `
+      <div class="flex gap-3 py-4 border-neutral-divider border-b" data-cart-line data-id="${esc(String(it.id))}">
+        <img src="${esc(it.image)}" alt="${esc(it.name)}" class="bg-interaction-base shrink-0 p-1.5 rounded-lg w-[72px] h-[72px] object-contain" />
+        <div class="flex-1 min-w-0">
+          <div class="flex justify-between items-start gap-2">
+            <p class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm line-clamp-2">${esc(it.name)}</p>
+            <span data-line-total class="bg-accent-yellow shrink-0 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">${egp(it.price * it.qty)}</span>
+          </div>
+          <p class="mt-1 text-neutral-secondary text-xs">العدد: <span class="latin" data-line-qty>${it.qty}</span></p>
+          <div class="flex justify-between items-center gap-2 mt-2">
+            <div class="inline-flex items-center gap-3 px-2 py-1 border border-neutral-divider rounded-full">
+              <button type="button" data-cart-step="-1" class="place-items-center grid w-8 h-8 text-[#062A1C]" aria-label="إنقاص">−</button>
+              <span class="w-4 text-sm text-center latin" data-line-qty-num>${it.qty}</span>
+              <button type="button" data-cart-step="1" class="place-items-center grid w-8 h-8 text-[#062A1C]" aria-label="زيادة">+</button>
+            </div>
+            <button type="button" data-cart-remove class="min-h-11 text-accent-error text-xs underline">حذف</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderCart() {
+    const items = Cart.items();
+    const sub = Cart.subtotal();
+    const shortfall = Math.max(0, MIN_ORDER - sub);
+    const belowMin = shortfall > 0;
+    const empty = items.length === 0;
+
+    /* Badge — every cart button on the page. */
+    document.querySelectorAll("[data-cart-count]").forEach((el) => {
+      el.textContent = Cart.count();
+      el.hidden = Cart.count() === 0;
+    });
+
+    /*
+     * Keyed reconcile rather than innerHTML replacement. Blowing the list away
+     * on every change would destroy nodes mid-transition and drop focus, which
+     * makes row-level micro-interactions impossible to build on top. Rows that
+     * survive a change keep their DOM node; only genuinely new or gone rows are
+     * created or detached.
+     */
+    document.querySelectorAll("[data-cart-lines]").forEach((host) => {
+      // Drop the server-rendered rows the first time the store paints.
+      host.querySelectorAll("[data-cart-static]").forEach((el) => el.remove());
+      let emptyMsg = host.querySelector("[data-cart-empty]");
+      if (empty && !emptyMsg) {
+        emptyMsg = document.createElement("p");
+        emptyMsg.setAttribute("data-cart-empty", "");
+        emptyMsg.className = "py-10 text-neutral-secondary text-sm text-center";
+        emptyMsg.textContent = "سلتك فارغة.";
+        host.appendChild(emptyMsg);
+      } else if (!empty && emptyMsg) {
+        emptyMsg.remove();
+      }
+
+      const seen = {};
+      items.forEach((it, i) => {
+        seen[it.id] = true;
+        let row = host.querySelector('[data-cart-line][data-id="' + CSS.escape(String(it.id)) + '"]');
+        if (!row) {
+          const tmp = document.createElement("div");
+          tmp.innerHTML = cartLineHTML(it);
+          row = tmp.firstElementChild;
+          host.appendChild(row);
+        } else {
+          // Update in place so the node — and anything animating it — survives.
+          const price = row.querySelector("[data-line-total]");
+          const qtyTxt = row.querySelector("[data-line-qty]");
+          const qtyNum = row.querySelector("[data-line-qty-num]");
+          if (price) price.textContent = egp(it.price * it.qty);
+          if (qtyTxt) qtyTxt.textContent = it.qty;
+          if (qtyNum) qtyNum.textContent = it.qty;
+        }
+        // Keep DOM order in step with state order.
+        if (host.children[i] !== row) host.insertBefore(row, host.children[i] || null);
+      });
+
+      host.querySelectorAll("[data-cart-line]").forEach((row) => {
+        if (!seen[row.dataset.id]) row.remove();
+      });
+    });
+
+    /* Totals + checkout gating, drawer and cart page alike. */
+    document.querySelectorAll("[data-cart-subtotal]").forEach((el) => (el.textContent = egp(sub)));
+    document.querySelectorAll("[data-cart-total]").forEach((el) => (el.textContent = egp(empty ? 0 : sub + DELIVERY_FEE)));
+    document.querySelectorAll("[data-cart-shortfall]").forEach((el) => (el.textContent = egp(shortfall)));
+    document.querySelectorAll("[data-cart-warning]").forEach((el) => (el.hidden = !belowMin || empty));
+    document.querySelectorAll("[data-cart-checkout]").forEach((el) => {
+      const blocked = belowMin || empty;
+      el.classList.toggle("pointer-events-none", blocked);
+      el.classList.toggle("opacity-50", blocked);
+      el.setAttribute("aria-disabled", blocked ? "true" : "false");
+    });
+  }
+
+  function initCartUI() {
+    Cart.init();
+    document.addEventListener("cart:change", renderCart);
+    renderCart();
+
+    document.addEventListener("click", (e) => {
+      const add = e.target.closest("[data-add-to-cart]");
+      if (add) {
+        const product = productFrom(add);
+        if (!product) return;
+        // Respect a quantity stepper sitting next to the button (product page).
+        const scope = add.closest("[data-product]") || document;
+        const qtyEl = scope.querySelector("[data-stepper] [data-qty]");
+        Cart.add(product, qtyEl ? parseInt(qtyEl.textContent, 10) : 1);
+        toast("تمت الإضافة إلى السلة");
+        return;
+      }
+      const step = e.target.closest("[data-cart-step]");
+      if (step) {
+        const line = step.closest("[data-cart-line]");
+        const it = Cart.find(line.dataset.id);
+        if (it) Cart.setQty(it.id, it.qty + parseInt(step.dataset.cartStep, 10));
+        return;
+      }
+      const rm = e.target.closest("[data-cart-remove]");
+      if (rm) {
+        const line = rm.closest("[data-cart-line]");
+        Cart.remove(line.dataset.id);
+      }
     });
   }
 
@@ -1475,6 +1691,7 @@
     initStickyNav();
     initMegaMenu();
     initLangSwitcher();
+    initCartUI();
     window.kInit(document);
   }
 

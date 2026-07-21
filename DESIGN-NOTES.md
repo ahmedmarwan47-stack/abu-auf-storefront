@@ -390,3 +390,62 @@ at minimum: English copy for every page, English UI strings for the chrome in
 `scripts.js`, and a decision on URL strategy (`/en/` routes vs a runtime
 switch). English product names already exist in `catalog.json` as `name`, so
 the catalogue is the one part already covered.
+
+## Cart is now real state, not markup
+
+Before this, `[data-add-to-cart]` had **no handler at all** — clicking "اضف الى
+السلة" anywhere did nothing — and the steppers only incremented a number in the
+DOM. The drawer and cart page were hard-coded HTML.
+
+There is now a cart store in `scripts.js`, exposed as `window.abuaufCart`:
+
+```js
+abuaufCart.items()            // [{id, name, price, image, qty}]
+abuaufCart.add(product, qty)  // merges quantity if the id is already in
+abuaufCart.setQty(id, qty)    // qty < 1 removes the line
+abuaufCart.remove(id)
+abuaufCart.clear()
+abuaufCart.count()            // total units
+abuaufCart.subtotal()         // EGP
+abuaufCart.find(id)
+```
+
+State persists in `localStorage` under `abuauf:cart`, so it survives navigation
+between the standalone pages. No fetch — product details are read straight off
+`[data-product]` markup (`data-id/-name/-price/-image` on every product card and
+the product page), so it still works from `file://`.
+
+### The hook for micro-interactions
+
+Every mutation dispatches `cart:change` on `document`:
+
+```js
+document.addEventListener("cart:change", (e) => {
+  e.detail.reason    // "add" | "qty" | "remove" | "clear" | "init"
+  e.detail.product   // the item involved (null for clear/init)
+  e.detail.items     // full array after the change
+  e.detail.count
+  e.detail.subtotal
+});
+```
+
+**The renderer is a keyed reconcile, not an `innerHTML` swap.** This matters:
+replacing the list wholesale destroys nodes mid-transition and drops focus,
+which makes row-level animation impossible. Rows that survive a change keep
+their DOM node and any state on it — verified by tagging a row, changing its
+quantity, and confirming the same node and the custom attribute survived. Only
+genuinely new or removed rows are created or detached.
+
+One consequence worth knowing when you build exit animations: `remove()` detaches
+the node as part of the same render. If you want a row to animate out, animate
+first and call `remove()` on completion.
+
+### Seeding
+
+A first-ever visit (no `abuauf:cart` key) seeds two real catalogue items so a
+fresh browser doesn't land on an empty cart. An **empty array** is respected as
+a shopper who deliberately emptied their cart, and is never re-seeded.
+
+Server-rendered cart rows carry `data-cart-static` and are cleared the first
+time the store paints, so the page is not blank without JS but never shows
+duplicates with it.

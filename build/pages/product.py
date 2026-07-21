@@ -69,8 +69,11 @@ def build():
       <section class="pt-6 pb-12">
         <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
 
-          <!-- RTL start: details -->
-          <div class="flex flex-col gap-5 bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]">
+          <!-- RTL start: details. data-product lets the cart store read this
+               product straight off the DOM, same as a product card. -->
+          <div class="flex flex-col gap-5 bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]"
+               data-product data-id="{p.get('id', 0)}" data-name="{e(title(p))}"
+               data-price="{p.get('sale') or p.get('price') or 0}" data-image="{e(p['image'])}">
             <div class="flex flex-col gap-3">
               <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">{e(title(p))}</h1>
               {rating("4.8", 126)}

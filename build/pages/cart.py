@@ -62,7 +62,7 @@ def build():
                 </div>
                 <div class="flex justify-between">
                   <span class="text-neutral-secondary">الإجمالي</span>
-                  <span class="font-semibold text-[#062A1C] latin">EGP {money(subtotal)}</span>
+                  <span class="font-semibold text-[#062A1C] latin" data-cart-subtotal>EGP {money(subtotal)}</span>
                 </div>
               </div>
               <button type="button" class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
@@ -70,7 +70,7 @@ def build():
               </button>
               <div class="flex justify-between items-center pt-3 border-neutral-divider border-t">
                 <span class="font-bold text-[#062A1C] text-base">الإجمالي</span>
-                <span class="font-bold text-[#062A1C] text-2xl latin">EGP {money(total)}</span>
+                <span class="font-bold text-[#062A1C] text-2xl latin" data-cart-total>EGP {money(total)}</span>
               </div>
 {points_banner()}
               {order_btn}
@@ -83,7 +83,7 @@ def build():
           </aside>
 
           <!-- RTL end: line items -->
-          <div class="bg-white shadow-custom4 px-6 py-2 rounded-[20px] min-w-0">{lines}
+          <div class="bg-white shadow-custom4 px-6 py-2 rounded-[20px] min-w-0" data-cart-lines>{lines}
           </div>
         </div>
       </section>

@@ -42,7 +42,7 @@
                 </div>
                 <div class="flex justify-between">
                   <span class="text-neutral-secondary">الإجمالي</span>
-                  <span class="font-semibold text-[#062A1C] latin">EGP 512.5</span>
+                  <span class="font-semibold text-[#062A1C] latin" data-cart-subtotal>EGP 512.5</span>
                 </div>
               </div>
               <button type="button" class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
@@ -50,7 +50,7 @@
               </button>
               <div class="flex justify-between items-center pt-3 border-neutral-divider border-t">
                 <span class="font-bold text-[#062A1C] text-base">الإجمالي</span>
-                <span class="font-bold text-[#062A1C] text-2xl latin">EGP 522.5</span>
+                <span class="font-bold text-[#062A1C] text-2xl latin" data-cart-total>EGP 522.5</span>
               </div>
 
             <div class="flex justify-between items-center gap-3 bg-accent-yellow p-4 rounded-xl">
@@ -84,13 +84,16 @@
           </aside>
 
           <!-- RTL end: line items -->
-          <div class="bg-white shadow-custom4 px-6 py-2 rounded-[20px] min-w-0">
+          <div class="bg-white shadow-custom4 px-6 py-2 rounded-[20px] min-w-0" data-cart-lines>
               <!-- The thumb, stepper and price chip are all shrink-0 and with
                    gaps come to ~302px, so in a 295px column they squeezed the
                    title to zero width — product names vanished on mobile. Let
                    the row wrap below sm so the stepper and price drop to a
                    second line, and hold a floor under the title. -->
-              <article class="flex flex-wrap sm:flex-nowrap items-center gap-4 py-5 border-neutral-divider border-b">
+              <!-- data-cart-static: server-rendered so the page is not blank
+                   without JS, but the cart store owns this list once it boots
+                   and clears these on its first render. -->
+              <article data-cart-static class="flex flex-wrap sm:flex-nowrap items-center gap-4 py-5 border-neutral-divider border-b">
                 <img src="images/abuauf/products/6223006310759.webp" alt="تمر صحاري بالشيكولاته و اللوز - 300 جم" class="bg-interaction-base p-2 rounded-xl w-20 h-20 object-contain shrink-0" loading="lazy" />
                 <div class="flex flex-col flex-1 gap-1 min-w-[7rem]">
                   <h3 class="font-semibold text-[#062A1C] text-base line-clamp-2">تمر صحاري بالشيكولاته و اللوز - 300 جم</h3>
@@ -109,7 +112,10 @@
                    title to zero width — product names vanished on mobile. Let
                    the row wrap below sm so the stepper and price drop to a
                    second line, and hold a floor under the title. -->
-              <article class="flex flex-wrap sm:flex-nowrap items-center gap-4 py-5 border-neutral-divider border-b">
+              <!-- data-cart-static: server-rendered so the page is not blank
+                   without JS, but the cart store owns this list once it boots
+                   and clears these on its first render. -->
+              <article data-cart-static class="flex flex-wrap sm:flex-nowrap items-center gap-4 py-5 border-neutral-divider border-b">
                 <img src="images/abuauf/products/2000102000000.webp" alt="قراصيا بدون نواه - 100 جم" class="bg-interaction-base p-2 rounded-xl w-20 h-20 object-contain shrink-0" loading="lazy" />
                 <div class="flex flex-col flex-1 gap-1 min-w-[7rem]">
                   <h3 class="font-semibold text-[#062A1C] text-base line-clamp-2">قراصيا بدون نواه - 100 جم</h3>
@@ -128,7 +134,10 @@
                    title to zero width — product names vanished on mobile. Let
                    the row wrap below sm so the stepper and price drop to a
                    second line, and hold a floor under the title. -->
-              <article class="flex flex-wrap sm:flex-nowrap items-center gap-4 py-5 border-neutral-divider border-b">
+              <!-- data-cart-static: server-rendered so the page is not blank
+                   without JS, but the cart store owns this list once it boots
+                   and clears these on its first render. -->
+              <article data-cart-static class="flex flex-wrap sm:flex-nowrap items-center gap-4 py-5 border-neutral-divider border-b">
                 <img src="images/abuauf/products/6223011437304.webp" alt="تمر صحارى بالشيكولاته غامقه باللوز - 300 جرام" class="bg-interaction-base p-2 rounded-xl w-20 h-20 object-contain shrink-0" loading="lazy" />
                 <div class="flex flex-col flex-1 gap-1 min-w-[7rem]">
                   <h3 class="font-semibold text-[#062A1C] text-base line-clamp-2">تمر صحارى بالشيكولاته غامقه باللوز - 300 جرام</h3>
@@ -153,7 +162,7 @@
           
           <div class="relative carousel " style="--carousel-gap:24px">
             <div class="carousel-track">
-          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-cat="nuts-crackers" data-price="35.5" data-id="1320">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="35.5" data-id="1320" data-name="فول سوداني بالشيكولاتة - 100 جم" data-image="images/abuauf/products/2000208000000.webp">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000208000000.webp" alt="فول سوداني بالشيكولاتة - 100 جم"
@@ -178,7 +187,7 @@
               </div>
             </div>
           </article>
-          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-cat="nuts-crackers" data-price="121.0" data-id="1280">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="121.0" data-id="1280" data-name="عين جمل مقشر - 100 جم" data-image="images/abuauf/products/2000079000000.webp">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000079000000.webp" alt="عين جمل مقشر - 100 جم"
@@ -203,7 +212,7 @@
               </div>
             </div>
           </article>
-          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-cat="nuts-crackers" data-price="156.0" data-id="1287">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="156.0" data-id="1287" data-name="كاجو محمص ملح جامبو - 100 جم" data-image="images/abuauf/products/2000404000000.webp">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000404000000.webp" alt="كاجو محمص ملح جامبو - 100 جم"
@@ -228,7 +237,7 @@
               </div>
             </div>
           </article>
-          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-cat="nuts-crackers" data-price="17.0" data-id="10573">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="17.0" data-id="10573" data-name="سودانى كرى كرى بطعم الجبنة -45 جم" data-image="images/abuauf/products/6223011434013-6.webp">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011434013-6.webp" alt="سودانى كرى كرى بطعم الجبنة -45 جم"
@@ -253,7 +262,7 @@
               </div>
             </div>
           </article>
-          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-cat="nuts-crackers" data-price="146.5" data-id="1288">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="146.5" data-id="1288" data-name="فستق امريكى ملح - 100 جم" data-image="images/abuauf/products/2000197000000.webp">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000197000000.webp" alt="فستق امريكى ملح - 100 جم"
@@ -278,7 +287,7 @@
               </div>
             </div>
           </article>
-          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-cat="nuts-crackers" data-price="33.0" data-id="1319">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="33.0" data-id="1319" data-name="فول سودانى بطعم الجبنه - 100 جم" data-image="images/abuauf/products/Thumb-2000150000000.webp">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Thumb-2000150000000.webp" alt="فول سودانى بطعم الجبنه - 100 جم"
@@ -303,7 +312,7 @@
               </div>
             </div>
           </article>
-          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-cat="nuts-crackers" data-price="45.0" data-id="1343">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="45.0" data-id="1343" data-name="مقرمشات صينية - 100 جم" data-image="images/abuauf/products/2000048000000.webp">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000048000000.webp" alt="مقرمشات صينية - 100 جم"
@@ -328,7 +337,7 @@
               </div>
             </div>
           </article>
-          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-cat="nuts-crackers" data-price="132.0" data-id="1282">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="132.0" data-id="1282" data-name="لوز نىء - 100 جم" data-image="images/abuauf/products/2000065000000.webp">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000065000000.webp" alt="لوز نىء - 100 جم"
@@ -353,7 +362,7 @@
               </div>
             </div>
           </article>
-          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-cat="healthy-snacks" data-price="11.0" data-id="16499">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="healthy-snacks" data-price="11.0" data-id="16499" data-name="بافس بالجبنة 40 جرام" data-image="images/abuauf/products/6223011438028.webp">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011438028.webp" alt="بافس بالجبنة 40 جرام"
@@ -378,7 +387,7 @@
               </div>
             </div>
           </article>
-          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-cat="healthy-snacks" data-price="65.0" data-id="1368">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="healthy-snacks" data-price="65.0" data-id="1368" data-name="بروتين بار براونيز شيكولاتة - 70 جم" data-image="images/abuauf/products/6223006315341-thumb.webp">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006315341-thumb.webp" alt="بروتين بار براونيز شيكولاتة - 70 جم"

@@ -292,7 +292,10 @@ def cart_line(p, qty=1, weight="250 جم"):
                    title to zero width — product names vanished on mobile. Let
                    the row wrap below sm so the stepper and price drop to a
                    second line, and hold a floor under the title. -->
-              <article class="flex flex-wrap sm:flex-nowrap items-center gap-4 py-5 border-neutral-divider border-b">
+              <!-- data-cart-static: server-rendered so the page is not blank
+                   without JS, but the cart store owns this list once it boots
+                   and clears these on its first render. -->
+              <article data-cart-static class="flex flex-wrap sm:flex-nowrap items-center gap-4 py-5 border-neutral-divider border-b">
                 <img src="{e(p['image'])}" alt="{e(_title(p))}" class="bg-interaction-base p-2 rounded-xl w-20 h-20 object-contain shrink-0" loading="lazy" />
                 <div class="flex flex-col flex-1 gap-1 min-w-[7rem]">
                   <h3 class="font-semibold text-[#062A1C] text-base line-clamp-2">{e(_title(p))}</h3>
@@ -346,9 +349,14 @@ def product_card(p, slide=True):
     # Filter/sort keys for the listing pages. Everything here is a real field
     # from catalog.json — `id` doubles as the recency proxy because the
     # catalogue carries no publish date (see DESIGN-NOTES).
-    keys = (f'data-cat="{e(p.get("categorySlug", ""))}" '
+    # data-product marks this as something the cart can read; the cart store
+    # reads name/price/image straight off the card, so adding to the cart needs
+    # no lookup table and still works from file://.
+    keys = (f'data-product data-cat="{e(p.get("categorySlug", ""))}" '
             f'data-price="{p.get("sale") or p.get("price") or 0}" '
-            f'data-id="{p.get("id", 0)}"')
+            f'data-id="{p.get("id", 0)}" '
+            f'data-name="{e(title(p))}" '
+            f'data-image="{e(p["image"])}"')
     return f"""
           <article class="{wrapper}" {keys}>
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
