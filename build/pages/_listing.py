@@ -32,8 +32,8 @@ def listing(title_text, description, heading, trail, chips, products,
       <section class="pt-6">
         <div class="flex flex-col gap-6 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
           {intro_html}
-          <div class="flex justify-between items-center gap-4">
-            <div class="flex gap-2 -mx-1 px-1 overflow-x-auto no-scrollbar">{chip_html}
+          <div class="flex xl:flex-row flex-col items-start xl:items-center xl:justify-between gap-4">
+            <div class="flex gap-2 -mx-1 px-1 w-full xl:flex-1 min-w-0 overflow-x-auto no-scrollbar">{chip_html}
             </div>
 {sort_select(SORT_OPTIONS)}
           </div>

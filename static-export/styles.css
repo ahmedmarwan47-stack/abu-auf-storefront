@@ -80,6 +80,14 @@ label,
   white-space: nowrap;
 }
 
+/* `.label` is a stacked field caption: it sits above its control, which only
+   works if it owns its line. As inline-block it shared a line box with the
+   following <select>, displacing the field past the sheet edge on mobile.
+   Bare <label> keeps inline-block, for controls labelled beside them. */
+.label {
+  display: block;
+}
+
 .corporate-container {
   background: linear-gradient(180deg, #e3f0ff 0%, #fefbfa 30.03%);
   padding-top: 3.5rem;
