@@ -22,10 +22,26 @@ WCAG 2.1 AA requires 4.5:1 for body text and 3:1 for large text (≥24px, or
 green-family look while becoming legible. Needs a designer decision because it
 changes a token pairing used across the footer on every page.
 
-## Content gaps
+## Content gaps — needs client copy before launch
+
+Everything below is written in-house in Abu Auf's voice and product categories.
+It is plausible and on-brand, but it is **not** the client's approved copy.
+
+| Where | Status |
+|-------|--------|
+| FAQs (`build/pages/faqs.py`) | 9 Q&As written in-house. Delivery times, minimum order (100 EGP) and the 14-day return window are **assumptions** — confirm before launch. |
+| Legal pages (privacy, terms, return policy) | Written in-house. **Must be replaced with the client's legal text** — do not launch on these. |
+| Blog & recipes (`build/pages/_posts.py`) | 6 posts written in-house; the live blog is client-rendered so its Arabic copy is not scrapable. |
+| Reviews on the home page | 4 invented testimonials with invented names. Real reviews exist at `/apis/v2/get-all` (rating + author, English) if you want them wired up. |
+| Account pages | Sample customer "محمد عادل", order numbers and wallet balances are illustrative. |
+
+Also outstanding:
 
 - **"صحارة ديلايتس" promo section** (Figma `753:34833`) is omitted from the home
   page pending that sub-brand's logo and product assets.
+- **Branch titles are English.** `ar_title` is blank for every branch in the
+  client's CMS, so `branches.html` shows the English name with the Arabic
+  address. Presented as-is rather than machine-translated.
 
 ## Resolved
 
