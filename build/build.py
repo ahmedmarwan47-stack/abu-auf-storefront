@@ -24,8 +24,14 @@ sys.path.insert(0, os.path.join(HERE, "pages"))
 
 # Page modules, in build order.
 PAGES = [
-    "home", "shop", "shop_category", "product", "cart", "checkout",
-    "thank_you", "login", "register", "forget_password", "reset_password",
+    # commerce
+    "home", "shop", "shop_category", "product", "cart", "checkout", "thank_you",
+    # auth
+    "login", "register", "forget_password", "reset_password",
+    # account
+    "my_account", "my_account_orders", "my_account_order",
+    "my_account_favorites", "my_account_addresses", "my_account_wallet",
+    "my_account_point", "my_account_profile",
 ]
 
 
