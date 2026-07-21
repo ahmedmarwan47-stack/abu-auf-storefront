@@ -1,5 +1,5 @@
 /* =====================================================================
-   styles.css — custom (non-utility) styles for the static Kouider build.
+   styles.css — custom (non-utility) styles for the Abu Auf static build.
 
    Tailwind utility classes are provided at runtime by the Play CDN
    (see tw-config.js). This file ports the project's original
@@ -7,14 +7,21 @@
    the font-family CSS variables the config references, and adds the
    vanilla-JS carousel / drawer / modal styles that replace Swiper and
    the various React overlay components.
+
+   The document is Arabic-first and renders RTL (see <html dir="rtl">).
+   Prefer logical properties (margin-inline, padding-inline, inset-inline)
+   over left/right so both directions stay correct.
    ===================================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..900;1,9..40,100..900&family=Caveat:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;900&display=swap");
 
 /* Font variables referenced by the Tailwind fontFamily tokens. */
 :root {
-  --font-dm-sans: "DM Sans", sans-serif;
-  --font-caveat: "Caveat", cursive;
+  --font-arabic: "Baloo Bhaijaan 2", system-ui, sans-serif;
+  --font-latin: "Inter", system-ui, sans-serif;
+  /* Back-compat aliases for markup not yet rebuilt. */
+  --font-dm-sans: var(--font-arabic);
+  --font-caveat: var(--font-arabic);
 }
 
 html {
@@ -22,11 +29,23 @@ html {
 }
 
 body {
-  font-family: var(--font-dm-sans);
+  font-family: var(--font-arabic);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
   color: #2c3340;
+}
+
+/* Latin runs (prices, SKUs, codes) inside Arabic copy. */
+.font-latin,
+[dir="rtl"] .latin {
+  font-family: var(--font-latin);
+}
+
+/* Numerals read as Latin digits even inside Arabic text. */
+.tabular {
+  font-family: var(--font-latin);
+  font-variant-numeric: tabular-nums;
 }
 
 /* --- ported from globals.css @layer utilities ---------------------- */

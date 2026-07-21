@@ -621,12 +621,55 @@
   /* ---------------------------------------------------------------
      Carousel (Swiper replacement)
      --------------------------------------------------------------- */
+  /*
+   * Browsers disagree on how scrollLeft is reported inside an RTL container.
+   * Detect it once, then express every position as a *logical* offset where
+   * 0 is the start of the track and `maxPos()` is the end — in both
+   * directions. Everything below is written against that logical axis.
+   */
+  const rtlScrollType = (function detect() {
+    const probe = document.createElement("div");
+    probe.dir = "rtl";
+    probe.style.cssText =
+      "position:absolute;top:-9999px;width:100px;height:1px;overflow:scroll;visibility:hidden";
+    probe.innerHTML = '<div style="width:200px;height:1px"></div>';
+    document.body.appendChild(probe);
+    let type = "negative"; // spec: 0 at the right edge, negative going left
+    if (probe.scrollLeft > 0) {
+      type = "positive"; // legacy WebKit: starts at max, counts down
+    } else {
+      probe.scrollLeft = 1;
+      if (probe.scrollLeft !== 0) type = "positive";
+    }
+    probe.remove();
+    return type;
+  })();
+
   function initCarousel(root) {
     const track = root.querySelector(".carousel-track");
     if (!track) return;
     const prev = root.querySelector(".carousel-prev");
     const next = root.querySelector(".carousel-next");
     const dotsWrap = root.querySelector(".carousel-dots");
+
+    const isRTL = () => getComputedStyle(track).direction === "rtl";
+    const maxPos = () =>
+      Math.max(0, track.scrollWidth - track.clientWidth - 1);
+
+    // Physical scrollLeft -> logical offset (0 = start of track).
+    function getPos() {
+      const sl = track.scrollLeft;
+      if (!isRTL()) return sl;
+      return rtlScrollType === "negative" ? -sl : maxPos() - sl;
+    }
+
+    // Logical offset -> physical scrollLeft.
+    function setPos(pos) {
+      const p = Math.max(0, Math.min(maxPos(), pos));
+      if (!isRTL()) track.scrollLeft = p;
+      else if (rtlScrollType === "negative") track.scrollLeft = -p;
+      else track.scrollLeft = maxPos() - p;
+    }
 
     function slideStep() {
       const first = track.querySelector(".carousel-slide");
@@ -637,18 +680,21 @@
     }
 
     function update() {
-      const max = track.scrollWidth - track.clientWidth - 1;
-      if (prev) prev.classList.toggle("is-disabled", track.scrollLeft <= 1);
-      if (next) next.classList.toggle("is-disabled", track.scrollLeft >= max);
+      const pos = getPos();
+      const max = maxPos();
+      if (prev) prev.classList.toggle("is-disabled", pos <= 1);
+      if (next) next.classList.toggle("is-disabled", pos >= max);
       if (dotsWrap) {
         const dots = dotsWrap.querySelectorAll(".carousel-dot");
-        const idx = Math.round(track.scrollLeft / slideStep());
+        const idx = Math.round(pos / slideStep());
         dots.forEach((d, i) => d.classList.toggle("is-active", i === idx));
       }
     }
 
-    if (prev) prev.addEventListener("click", () => (track.scrollLeft -= slideStep()));
-    if (next) next.addEventListener("click", () => (track.scrollLeft += slideStep()));
+    if (prev)
+      prev.addEventListener("click", () => setPos(getPos() - slideStep()));
+    if (next)
+      next.addEventListener("click", () => setPos(getPos() + slideStep()));
 
     if (dotsWrap) {
       const slides = track.querySelectorAll(".carousel-slide");
@@ -659,7 +705,7 @@
         const dot = document.createElement("button");
         dot.type = "button";
         dot.className = "carousel-dot" + (i === 0 ? " is-active" : "");
-        dot.addEventListener("click", () => (track.scrollLeft = i * slideStep()));
+        dot.addEventListener("click", () => setPos(i * slideStep()));
         dotsWrap.appendChild(dot);
       }
     }
@@ -670,9 +716,8 @@
 
     if (root.hasAttribute("data-autoplay")) {
       setInterval(() => {
-        const max = track.scrollWidth - track.clientWidth - 1;
-        if (track.scrollLeft >= max) track.scrollLeft = 0;
-        else track.scrollLeft += slideStep();
+        if (getPos() >= maxPos()) setPos(0);
+        else setPos(getPos() + slideStep());
       }, 4500);
     }
   }
