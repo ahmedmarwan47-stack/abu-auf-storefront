@@ -13,10 +13,10 @@ framework, no server — plain HTML + Tailwind Play CDN + vanilla JS.
 
 Abu Auf is the client; we have rights to their assets.
 
-**Status:** rebrand complete, mobile pass complete, cart is real state with an
-event API, listing filters and nav routes genuinely work, and the chrome is
-measured against the live site. Remaining work is in `DESIGN-NOTES.md` under
-"Open questions" and "Blocked on client data".
+**Status:** rebrand complete, mobile pass complete, cart **and favourites** are
+real state with event APIs, listing filters and nav routes genuinely work, and
+the chrome is measured against the live site. Remaining work is in
+`DESIGN-NOTES.md` under "Open questions" and "Blocked on client data".
 
 ## Hard rules
 
@@ -65,7 +65,7 @@ measured against the live site. Remaining work is in `DESIGN-NOTES.md` under
 
 The build fails loudly on any unresolved asset reference. Keep it that way.
 
-### Two systems inside `scripts.js` worth knowing before you edit it
+### Three systems inside `scripts.js` worth knowing before you edit it
 
 **Cart store** — `window.abuaufCart`, persisted to `localStorage` under
 `abuauf:cart`. `add/setQty/remove/clear/items/count/subtotal/find`. Every
@@ -74,6 +74,21 @@ mutation dispatches `cart:change` on `document` with
 reconcile, not an innerHTML swap** — rows keep their DOM nodes so animations and
 focus survive. Don't "simplify" it back to innerHTML; that breaks the
 micro-interaction work it exists for.
+
+**Favourites store** — `window.abuaufFavs`, `localStorage` key `abuauf:favs`,
+built to the same contract as the cart: `add/remove/toggle/has/items/count/
+clear`, every mutation dispatching `favs:change` with
+`{reason, product, items, count}`. Saved state is expressed by **`aria-pressed`
+on the button and nothing else** — `styles.css` swaps the heart glyph off that
+selector, so the accessible state and the painted state cannot drift. It
+deliberately does not use the `hidden` attribute (see the `[hidden]` trap
+below). `my-account-favorites.html` ships the whole catalogue hidden and
+reveals what is saved, the same way the listing chips filter cards already in
+the DOM — so card markup stays in `components.py` alone.
+
+**Any seeded product must be keyed by its `catalog.json` id**, not its barcode.
+Both stores dedupe on id against the `data-id` on product cards; a barcode key
+silently creates a second line for a product already in the cart.
 
 **i18n** — `t()` for chrome strings and `translateDocument()` for build-time
 copy, both keyed off an `EN` dictionary of exact Arabic strings. Switching

@@ -691,3 +691,25 @@ body.no-scroll {
 .toast--error {
   border-color: #a8200d;
 }
+
+/* --------------------------------------------------------------------------
+   Favourite heart
+
+   The button ships both glyphs and `aria-pressed` picks which one paints, so
+   the accessible state and the visual state are the same attribute and cannot
+   drift out of sync.
+
+   Deliberately NOT the `hidden` attribute: `[hidden]` is forced with
+   `!important` further up this file, so an element toggled that way could
+   never be shown again by a plain rule. Same trap that stacked the mega-menu
+   sub-lists — see CLAUDE.md.
+   -------------------------------------------------------------------------- */
+.fav-btn > svg:nth-of-type(2) {
+  display: none;
+}
+.fav-btn[aria-pressed="true"] > svg:nth-of-type(1) {
+  display: none;
+}
+.fav-btn[aria-pressed="true"] > svg:nth-of-type(2) {
+  display: block;
+}

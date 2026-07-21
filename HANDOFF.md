@@ -22,6 +22,7 @@ mobile pass and a working commerce layer.
 | Accessibility | WCAG 2.1 AA, 0 failures across all 31 pages; tap targets ≥44px |
 | Responsive | verified clean at 320 / 360 / 375 / 390 / 414 |
 | Cart | real state, persisted, with an event API |
+| Favourites | real state, persisted, with an event API |
 | Filters / nav routes | genuinely functional over real catalogue data |
 | Language | direction + chrome + UI strings switch; prose does not (by design) |
 | Baseline commit | `f4dde89` — the pristine Koueider export, for diffing |
@@ -131,6 +132,19 @@ build/
 12. **The `hidden` attribute lost to Tailwind's `.flex`**, so all eight
     mega-menu sub-lists rendered stacked at once.
 13. **Contrast:** see `DESIGN-NOTES.md`. Two of those were my own regressions.
+
+**From the favourites phase — all three are the same "looks live, isn't" class
+as 10 and 11 above:**
+
+14. **The favourite heart had no handler at all** — 184 inert buttons across 7
+    pages, and `my-account-favorites.html` hard-coded six products that nothing
+    could reach. Now a real store; see `DESIGN-NOTES.md` §9.
+15. **The cart drawer's two upsell "اضف" buttons did nothing.** They had
+    `data-add-to-cart` but no `[data-product]` ancestor, so `productFrom()`
+    returned `null` and the click handler returned silently.
+16. **`CART_SEED` keyed its lines by barcode, not catalogue id**, so adding a
+    seeded product from its own card produced **two lines for one product**.
+    Reproduced, fixed, re-verified. Any seed must use catalogue ids.
 
 ---
 
@@ -286,17 +300,22 @@ Real bilingual support means English copy for all 31 pages plus a URL strategy
 5. **Sales / publish-date data.** `الأكثر مبيعاً` restores catalogue order and
    `وصل حديثاً` sorts by id as a proxy. Neither is a real ranking.
 6. **Sign-off on every in-house string**, Arabic and English.
+7. **Real product reviews.** `apis/v2/get-all` used to be listed below as ready
+   to build. **It is not** — it returns 10 rows of QA test data, every one
+   `John` / `"comment"` / 5★, all posted within 11 minutes on 2024-09-17.
+   Wiring it would put visibly fake reviews on the storefront. Details in
+   `DESIGN-NOTES.md` §1. Needs the client to collect real reviews.
 
 **Ready to build when you are:**
 
-7. **Micro-interactions** on the cart — the `cart:change` event API and keyed
-   reconcile exist precisely for this.
-9. **Cart drawer upsell buttons and favourite hearts** are not wired.
-10. **`صحارة ديلايتس` home section** (Figma `753:34833`), pending assets.
-11. **Checkout summary collapse** — the Figma has it collapsible; left expanded
+8. **Micro-interactions** on the cart and favourites — the `cart:change` and
+   `favs:change` event APIs and the keyed reconcile exist precisely for this.
+9. **`صحارة ديلايتس` home section** (Figma `753:34833`), pending assets.
+10. **Checkout summary collapse** — the Figma has it collapsible; left expanded
     at Ahmed's direction.
-12. **Real reviews** could replace the invented testimonials via `apis/v2/get-all`.
-13. **Tell the designer** the Figma still contains the contrast failures the
+11. **A favourites count badge** in the header, now that `Favs.count()` and
+    `favs:change` exist — the cart badge already does exactly this.
+12. **Tell the designer** the Figma still contains the contrast failures the
     build diverges from, and that the live site differs from the Figma on
     several chrome details.
 

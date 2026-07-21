@@ -67,6 +67,30 @@ hard-coded, for the same reason — plus `scripts.js` has no runtime access to
 
 **Needs:** `date_created` and a sales/popularity figure in the scrape.
 
+### Product reviews — the client's endpoint is test data, not reviews
+
+`HANDOFF.md` used to list "real reviews at `apis/v2/get-all`" as ready-to-build.
+**It isn't.** The endpoint returns HTTP 200 and exactly **10 rows**, and every
+one of them is:
+
+| Field | Value across all 10 |
+|---|---|
+| `comment_author` | `John` |
+| `comment_content` | `comment` |
+| `rating` | `5` |
+| `comment_date` | all on 2024-09-17, within 11 minutes |
+
+That is a QA smoke test someone left in the database, not customer feedback.
+Swapping the four invented Arabic testimonials for ten identical
+`John / "comment" / 5★` rows would be **worse** than the placeholder: it would
+put visibly fake reviews on the storefront and read as broken.
+
+So the invented testimonials stay, still flagged as placeholder. Do not "fix"
+this by wiring the endpoint.
+
+**Needs:** the client to collect real reviews, or sign-off on dropping the
+section.
+
 ### Rewards body copy — the client's own page is lorem ipsum
 
 `rewards.html` now exists (the nav used to fall through to `index.html`), but it
@@ -94,7 +118,7 @@ on-brand, and it is **not** the client's approved copy.
 | **Legal pages** (privacy, terms, return policy) | Written in-house. **Must be replaced with the client's legal text — do not launch on these.** |
 | FAQs (`build/pages/faqs.py`) | 9 Q&As. Delivery times and the 14-day return window are **assumptions**. The minimum order now reads 150 EGP, matching the live site and the cart constants |
 | Blog & recipes (`build/pages/_posts.py`) | 6 posts; the live blog is client-rendered so its Arabic copy is not scrapable |
-| Home page reviews | 4 invented testimonials with invented names. Real reviews exist at `apis/v2/get-all` |
+| Home page reviews | 4 invented testimonials with invented names. **There is no real substitute** — see below |
 | Account pages | Sample customer "محمد عادل", order numbers and wallet balances are illustrative |
 | **All English strings** in the `EN` dictionary in `scripts.js` | Standard commerce terminology written in-house — `Offers & Discounts`, `Checkout`, `View cart`. Not the client's wording. **Product names are the one exception** — those are real catalogue data |
 
@@ -273,7 +297,8 @@ Still unresolved: `Account > Wallet` has three frames, none yet built against.
 
 **The build passes WCAG 2.1 AA everywhere** (4.5:1 body, 3:1 large). Achieving
 that required deviating from the Figma. Verified live against computed styles —
-currently **0 failures across all 29 pages, ~4300 text nodes**.
+currently **0 failures across all 31 pages, ~5000 text nodes** (the count rose
+from ~4500 when the favourites page went from 6 cards to the full catalogue).
 
 | Where | Figma | Ratio | Now | Ratio |
 |-------|-------|-------|-----|-------|
@@ -398,6 +423,42 @@ animations should animate first and call `remove()` on completion.
 - **The cart is real state.** `[data-add-to-cart]` previously had no handler at
   all. See `CLAUDE.md` for the `window.abuaufCart` API and the `cart:change`
   event contract.
+
+- **Favourites are real state.** The heart on the product card was inert markup
+  — **184 buttons across 7 pages with no handler anywhere in `scripts.js`**.
+  There is now a `window.abuaufFavs` store built to the same contract as the
+  cart (localStorage `abuauf:favs`, `favs:change` event, no fetch), and
+  `my-account-favorites.html` renders from it instead of hard-coding six
+  products. Saved state is carried by `aria-pressed` alone so the accessible
+  state and the painted state cannot drift; `styles.css` swaps the glyph off
+  that selector. The page ships the whole catalogue hidden and reveals what is
+  saved — the same "filter what is already rendered" approach the listing chips
+  use, which keeps card markup in `components.py` alone. The six products the
+  page used to hard-code are now `FAVS_SEED`, so a fresh browser sees the same
+  design. Verified: 6 seeded → toggle off → 5, persists across pages, empty
+  state at 0, hearts 44×44, 31/31 sweep still clean.
+
+- **Two dead "اضف" buttons in the cart drawer.** The upsell rows carried
+  `data-add-to-cart` but had no `[data-product]` ancestor, so `productFrom()`
+  returned `null` and the handler returned silently — the buttons did nothing
+  at all. Same class as the dead nav routes. Both rows are now `[data-product]`
+  hosts with real catalogue ids.
+
+- **A fabricated product was on display in the cart drawer.** The first upsell
+  row was `مارشميلو بطيخ - 60 جرام` at EGP 30 — it matches **no product in
+  `catalog.json`** and was illustrated with the photograph of a *different*
+  real product (`قراصيا بدون نواه`, id 1445). Replaced with a real catalogue
+  item at the same price (`كرانبيري - 25 جم`, id 1631) so the layout is
+  unchanged. The code comment above it claimed "real catalogue items", which
+  was true of the second row only.
+
+- **`CART_SEED` used barcodes as product ids.** The two seeded lines were keyed
+  `"6223006310759"` and `"2000102000000"` — barcodes lifted off the image
+  filenames, matching no product card's `data-id`. Because `Cart.add()` dedupes
+  on id, adding either seeded product **from its own card created a second line
+  for the same product** instead of incrementing the first. Reproduced in the
+  browser, then fixed to the real catalogue ids `1431` / `1445` and re-verified
+  (qty 1 → 2, one line). **Any future seed must use catalogue ids.**
 
 - **The Figma footer carries a "Web Design by MITCH DESIGNS" credit.** Retained
   at the client's request — do not remove it again.

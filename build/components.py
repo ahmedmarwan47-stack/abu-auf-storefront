@@ -164,9 +164,12 @@ def page_header(heading, trail=None):
       </section>"""
 
 
-def product_grid(products, cols="grid-cols-2 md:grid-cols-3 xl:grid-cols-4"):
+def product_grid(products, cols="grid-cols-2 md:grid-cols-3 xl:grid-cols-4", attrs=""):
+    """`attrs` lets a caller tag the grid (e.g. the favourites page marks its
+    own with data-favs-grid) without duplicating the card markup."""
     cards = "".join(product_card(p, slide=False) for p in products)
-    return f'<div data-product-grid class="gap-4 xl:gap-6 grid {cols}">{cards}\n          </div>'
+    extra = (" " + attrs) if attrs else ""
+    return f'<div data-product-grid{extra} class="gap-4 xl:gap-6 grid {cols}">{cards}\n          </div>'
 
 
 def rating(score="4.8", count=None):
@@ -378,8 +381,12 @@ def product_card(p, slide=True):
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP {money(p['price'])}</span>
                 </div>
                 <div class="flex items-center gap-2 pt-2">
-                  <button type="button" aria-label="أضف إلى المفضلة"
-                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11">{ICON['heart']}</button>
+                  <!-- Saved state is carried by aria-pressed alone, so the
+                       accessible state and the painted state cannot drift;
+                       styles.css swaps the icon off that selector. -->
+                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
+                          class="fav-btn place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"
+                          >{ICON['heart']}{ICON['heart_full']}</button>
                   <button type="button" data-add-to-cart
                           class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
                 </div>

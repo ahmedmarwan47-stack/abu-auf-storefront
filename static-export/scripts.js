@@ -360,6 +360,12 @@
     // up by translateDocument()'s text-node pass rather than by t()
     "اضف الى السلة": "Add to cart",
     "أضف إلى المفضلة": "Add to favourites",
+    "إزالة من المفضلة": "Remove from favourites",
+    "تمت الإضافة إلى المفضلة": "Added to favourites",
+    "تمت الإزالة من المفضلة": "Removed from favourites",
+    "لا توجد منتجات في المفضلة": "No saved products yet",
+    "المنتجات اللي تحفظها هتظهر هنا.": "Products you save will appear here.",
+    "تصفح المنتجات": "Browse products",
     "عرض المزيد": "Show more",
     "تسوق اكتر": "Shop more",
     "تسوق منتجاتنا": "Shop our products",
@@ -890,14 +896,28 @@
        touches the cart this is never consulted again — Cart owns state. */
     /* (kept in CART_SEED at module scope) */
 
-    /* "قد يعجبك أيضا" upsell — real catalogue items, same as the cart page. */
+    /* "قد يعجبك أيضا" upsell — real catalogue items.
+     *
+     * Each row is a `[data-product]` host carrying the real catalogue id,
+     * name, price and image, because `productFrom()` walks up to the nearest
+     * `[data-product]` and bails when there isn't one. Without it the "اضف"
+     * button had `data-add-to-cart` but no product behind it, so the handler
+     * returned silently and the button did nothing at all.
+     *
+     * The first row used to be "مارشميلو بطيخ - 60 جرام" at EGP 30, which
+     * matches NO product in catalog.json and was illustrated with the photo
+     * of a different real product (قراصيا, id 1445). Replaced with a real
+     * catalogue item at the same price so the layout is unchanged.
+     */
     const upsell = [
-      { name: "مارشميلو بطيخ - 60 جرام", price: 30, img: "images/abuauf/products/2000102000000.webp" },
-      { name: "بسكويت محشو تمر - 12 قطعة", price: 65, img: "images/abuauf/products/image-600x600-1.png" },
+      { id: "1631", name: "كرانبيري - 25 جم", price: 30, img: "images/abuauf/products/6223006314092.webp" },
+      { id: "46238", name: "بسكويت محشو تمر - 12 قطعة", price: 65, img: "images/abuauf/products/image-600x600-1.png" },
     ]
       .map(
         (p) => `
-        <div class="flex items-center gap-3 bg-white p-3 border border-neutral-divider rounded-2xl">
+        <div class="flex items-center gap-3 bg-white p-3 border border-neutral-divider rounded-2xl"
+             data-product data-id="${esc(p.id)}" data-name="${esc(p.name)}"
+             data-price="${p.price}" data-image="${esc(p.img)}">
           <img src="${p.img}" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-14 h-14 object-contain" loading="lazy" />
           <div class="flex-1 min-w-0">
             <p class="font-medium text-[#062A1C] text-sm line-clamp-2">${esc(p.name)}</p>
@@ -1389,9 +1409,16 @@
    * first load where no cart key exists; after that the shopper owns the cart,
    * including deliberately emptying it.
    */
+  /*
+   * `id` MUST be the catalog.json product id — the same value product cards
+   * carry in `data-id`. These were previously the barcodes lifted off the
+   * image filenames ("6223006310759", "2000102000000"), which match no card,
+   * so adding a seeded product from its own card created a SECOND line
+   * instead of incrementing the first. Keep these in sync with the catalogue.
+   */
   const CART_SEED = [
-    { id: "6223006310759", name: "تمر صحاري بالشيكولاته و اللوز - 300 جم", price: 220, image: "images/abuauf/products/6223006310759.webp", qty: 1 },
-    { id: "2000102000000", name: "قراصيا بدون نواه - 100 جم", price: 72.5, image: "images/abuauf/products/2000102000000.webp", qty: 1 },
+    { id: "1431", name: "تمر صحاري بالشيكولاته و اللوز - 300 جم", price: 220, image: "images/abuauf/products/6223006310759.webp", qty: 1 },
+    { id: "1445", name: "قراصيا بدون نواه - 100 جم", price: 72.5, image: "images/abuauf/products/2000102000000.webp", qty: 1 },
   ];
 
   const Cart = (function () {
@@ -1480,6 +1507,122 @@
 
   window.abuaufCart = Cart;
 
+  /* ---------------------------------------------------------------
+     Favourites store
+
+     Deliberately the same shape as the cart store above: localStorage, no
+     fetch, product details read straight off `[data-product]` markup so it
+     works from file://. Items are {id, name, price, image} — no qty, a
+     product is either saved or it isn't.
+
+     Every mutation dispatches a `favs:change` CustomEvent on `document`:
+
+       document.addEventListener("favs:change", (e) => {
+         e.detail.reason   // "add" | "remove" | "clear" | "init"
+         e.detail.product  // the item involved (absent for clear/init)
+         e.detail.items    // full array after the change
+         e.detail.count    // number saved
+       });
+
+     Before this the heart button on every product card was inert markup —
+     184 of them across 7 pages, with no handler anywhere in this file.
+     --------------------------------------------------------------- */
+  const FAVS_KEY = "abuauf:favs";
+
+  /*
+   * Seeded on a first-ever visit only, exactly like CART_SEED and for the
+   * same reason: my-account-favorites.html used to hard-code six products,
+   * so a fresh browser would otherwise land on an empty favourites page and
+   * lose the design. These are those same six, by real catalogue id. Once
+   * the shopper touches a heart this is never consulted again.
+   */
+  const FAVS_SEED = [
+    { id: "1320", name: "فول سوداني بالشيكولاتة - 100 جم", price: 35.5, image: "images/abuauf/products/2000208000000.webp" },
+    { id: "1280", name: "عين جمل مقشر - 100 جم", price: 121, image: "images/abuauf/products/2000079000000.webp" },
+    { id: "1287", name: "كاجو محمص ملح جامبو - 100 جم", price: 156, image: "images/abuauf/products/2000404000000.webp" },
+    { id: "10573", name: "سودانى كرى كرى بطعم الجبنة -45 جم", price: 17, image: "images/abuauf/products/6223011434013-6.webp" },
+    { id: "1288", name: "فستق امريكى ملح - 100 جم", price: 146.5, image: "images/abuauf/products/2000197000000.webp" },
+    { id: "1319", name: "فول سودانى بطعم الجبنه - 100 جم", price: 33, image: "images/abuauf/products/Thumb-2000150000000.webp" },
+  ];
+
+  const Favs = (function () {
+    let items = [];
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(FAVS_KEY);
+        // No key = first ever visit, so seed. An empty array is a shopper who
+        // cleared their favourites on purpose — leave it alone.
+        items = raw === null ? FAVS_SEED.slice() : JSON.parse(raw);
+        if (!Array.isArray(items)) items = [];
+      } catch (e) {
+        items = [];
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(FAVS_KEY, JSON.stringify(items));
+      } catch (e) {
+        /* private mode — state still lives for this page view */
+      }
+    }
+
+    function emit(reason, product) {
+      save();
+      document.dispatchEvent(
+        new CustomEvent("favs:change", {
+          detail: { reason: reason, product: product || null, items: items.slice(), count: items.length },
+        }),
+      );
+    }
+
+    return {
+      init: function () {
+        load();
+        emit("init");
+      },
+      items: function () {
+        return items.slice();
+      },
+      count: function () {
+        return items.length;
+      },
+      has: function (id) {
+        return items.some((it) => String(it.id) === String(id));
+      },
+      add: function (product) {
+        if (this.has(product.id)) return this;
+        items.push({ id: product.id, name: product.name, price: Number(product.price), image: product.image });
+        emit("add", product);
+        return this;
+      },
+      remove: function (id) {
+        const i = items.findIndex((x) => String(x.id) === String(id));
+        if (i === -1) return this;
+        const [gone] = items.splice(i, 1);
+        emit("remove", gone);
+        return this;
+      },
+      /* Returns the new state, so callers can react without re-querying. */
+      toggle: function (product) {
+        if (this.has(product.id)) {
+          this.remove(product.id);
+          return false;
+        }
+        this.add(product);
+        return true;
+      },
+      clear: function () {
+        items = [];
+        emit("clear");
+        return this;
+      },
+    };
+  })();
+
+  window.abuaufFavs = Favs;
+
   /* Read a product off the nearest [data-product] element. */
   function productFrom(el) {
     const host = el.closest("[data-product]");
@@ -1551,6 +1694,9 @@
     initLangSwitcher(true);
     window.kInit(document);
     renderCart();
+    // Heart aria-labels come from t(), so they have to be re-derived here —
+    // repaint replaces the chrome but the cards are build-time markup.
+    syncFavButtons();
   }
 
   function initLangSwitcher(skipApply) {
@@ -1730,6 +1876,72 @@
   }
 
   /* ---------------------------------------------------------------
+     Favourites UI
+
+     Two jobs: reflect saved state onto every heart button on the page, and
+     drive the favourites account page.
+
+     The heart's filled/outline state is expressed purely through
+     `aria-pressed` — the accessible state and the visual state are the same
+     attribute, so they cannot drift. styles.css does the icon swap off that
+     selector. Note it does NOT use the `hidden` attribute: `[hidden]` is
+     already forced with `!important` in styles.css, which would make the
+     state impossible to override back on. See CLAUDE.md.
+     --------------------------------------------------------------- */
+  function syncFavButtons(scope) {
+    (scope || document).querySelectorAll("[data-fav-toggle]").forEach((btn) => {
+      const product = productFrom(btn);
+      if (!product) return;
+      const on = Favs.has(product.id);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      btn.setAttribute("aria-label", t(on ? "إزالة من المفضلة" : "أضف إلى المفضلة"));
+    });
+  }
+
+  /*
+   * The favourites page ships every catalogue card in the DOM, hidden, and
+   * this reveals the saved ones — the same "filter what is already rendered"
+   * approach the listing chips use, so the card markup still comes from
+   * components.py alone rather than being duplicated in JS, and it works
+   * from file:// with no fetch.
+   */
+  function renderFavsPage() {
+    const grid = document.querySelector("[data-favs-grid]");
+    if (!grid) return;
+    let shown = 0;
+    grid.querySelectorAll("[data-product]").forEach((card) => {
+      const on = Favs.has(card.dataset.id);
+      card.hidden = !on;
+      if (on) shown++;
+    });
+    const empty = document.querySelector("[data-favs-empty]");
+    if (empty) empty.hidden = shown > 0;
+    grid.hidden = shown === 0;
+    const countEl = document.querySelector("[data-favs-count]");
+    if (countEl) countEl.textContent = String(shown);
+  }
+
+  function initFavsUI() {
+    Favs.init();
+
+    const refresh = () => {
+      syncFavButtons();
+      renderFavsPage();
+    };
+    document.addEventListener("favs:change", refresh);
+    refresh();
+
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-fav-toggle]");
+      if (!btn) return;
+      const product = productFrom(btn);
+      if (!product) return;
+      const on = Favs.toggle(product);
+      toast(on ? "تمت الإضافة إلى المفضلة" : "تمت الإزالة من المفضلة");
+    });
+  }
+
+  /* ---------------------------------------------------------------
      Products mega-panel (desktop)
      --------------------------------------------------------------- */
   function initMegaMenu() {
@@ -1879,6 +2091,7 @@
     initMegaMenu();
     initLangSwitcher();
     initCartUI();
+    initFavsUI();
     window.kInit(document);
   }
 
