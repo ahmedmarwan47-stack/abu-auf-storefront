@@ -205,6 +205,84 @@ def product_gallery(main_img, thumbs, alt):
           </div>"""
 
 
+# --------------------------------------------------------------------------
+# Forms — Figma 'Input Field' section (150:4622)
+# --------------------------------------------------------------------------
+def field(label, name, type_="text", required=False, value="", placeholder="", wrap=""):
+    star = '<span class="text-accent-error">*</span>' if required else ""
+    return f"""
+                <div class="flex flex-col gap-1.5 {wrap}">
+                  <label for="{e(name)}" class="font-medium text-neutral-secondary text-sm">{e(label)}{star}</label>
+                  <input type="{e(type_)}" id="{e(name)}" name="{e(name)}"{' required' if required else ''}
+                         value="{e(value)}" placeholder="{e(placeholder)}"
+                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
+                </div>"""
+
+
+def select_field(label, name, options, required=False, wrap=""):
+    star = '<span class="text-accent-error">*</span>' if required else ""
+    opts = "".join(f'<option value="{e(o)}">{e(o)}</option>' for o in options)
+    return f"""
+                <div class="flex flex-col gap-1.5 {wrap}">
+                  <label for="{e(name)}" class="font-medium text-neutral-secondary text-sm">{e(label)}{star}</label>
+                  <select id="{e(name)}" name="{e(name)}"{' required' if required else ''}
+                          class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors">
+                    <option value="">اختر</option>{opts}
+                  </select>
+                </div>"""
+
+
+def radio_card(name, value, heading, sub="", icon="", checked=False):
+    """Big selectable card — order type, delivery time, delivery method."""
+    sub_html = f'<span class="text-neutral-secondary text-xs">{e(sub)}</span>' if sub else ""
+    return f"""
+                <label class="flex-1 cursor-pointer">
+                  <input type="radio" name="{e(name)}" value="{e(value)}" class="peer sr-only"{' checked' if checked else ''} />
+                  <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors">
+                    <span class="flex items-center gap-3">
+                      <span class="text-cta">{icon}</span>
+                      <span class="flex flex-col">
+                        <span class="font-semibold text-[#062A1C] text-base">{e(heading)}</span>
+                        {sub_html}
+                      </span>
+                    </span>
+                    <span class="text-neutral-outline rtl:scale-flip">{ICON['arrow']}</span>
+                  </span>
+                </label>"""
+
+
+# --------------------------------------------------------------------------
+# Cart
+# --------------------------------------------------------------------------
+def cart_line(p, qty=1, weight="250 جم"):
+    from catalog import money, title as _title
+    return f"""
+              <article class="flex items-center gap-4 py-5 border-neutral-divider border-b">
+                <img src="{e(p['image'])}" alt="{e(_title(p))}" class="bg-interaction-base p-2 rounded-xl w-20 h-20 object-contain shrink-0" loading="lazy" />
+                <div class="flex flex-col flex-1 gap-1 min-w-0">
+                  <h3 class="font-semibold text-[#062A1C] text-base line-clamp-2">{e(_title(p))}</h3>
+                  <span class="text-neutral-secondary text-xs">{e(weight)}</span>
+                  <button type="button" class="mt-1 text-accent-error text-xs underline self-start">حذف</button>
+                </div>
+                <div data-stepper class="inline-flex items-center gap-1 border border-neutral-divider rounded-full shrink-0">
+                  <button type="button" data-step="-1" class="place-items-center grid size-9 font-bold text-[#062A1C] transition-colors hover:bg-interaction-base rounded-full" aria-label="إنقاص">−</button>
+                  <span data-qty class="min-w-[2ch] font-semibold text-[#062A1C] text-sm text-center latin">{qty}</span>
+                  <button type="button" data-step="1" class="place-items-center grid size-9 font-bold text-[#062A1C] transition-colors hover:bg-interaction-base rounded-full" aria-label="زيادة">+</button>
+                </div>
+                <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin shrink-0">EGP {money(p['price'])}</span>
+              </article>"""
+
+
+def points_banner(points=120, discount=12):
+    return f"""
+            <div class="flex justify-between items-center gap-3 bg-accent-yellow p-4 rounded-xl">
+              <span class="font-semibold text-[#062A1C] text-sm leading-6">
+                لديك <span class="latin">{points}</span> نقطة في محفظتك<br />ويمكنك خصم <span class="latin">EGP {discount}</span>
+              </span>
+              <button type="button" class="bg-cta hover:bg-cta-hover px-4 py-2 rounded-full font-semibold text-white text-xs whitespace-nowrap transition-colors">خصم المبلغ</button>
+            </div>"""
+
+
 def bundle_item(p, checked=True):
     """One row of the 'frequently bought together' checklist."""
     from catalog import money, title as _title

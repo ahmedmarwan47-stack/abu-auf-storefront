@@ -356,7 +356,7 @@
                </div>`
         }
         <div class="relative z-40 bg-primary px-4 xl:px-20">
-          <div class="flex ${checkout ? "justify-center" : "justify-between"} items-center border-[#0F6140] border-b h-[100px]">
+          <div class="flex justify-between items-center border-[#0F6140] border-b h-[100px]">
             <!-- RTL start (right edge): logo, products, delivery -->
             <div class="flex items-center gap-6 min-w-0">
               <a href="index.html" class="block shrink-0 w-[180px] h-[60px]">
@@ -377,25 +377,27 @@
               }
             </div>
 
-            <!-- RTL end (left edge): account, search, cart -->
-            ${
-              checkout
-                ? ""
-                : `<div class="flex items-center gap-6 shrink-0">
-                     <a href="login.html" class="hidden lg:flex items-center gap-2.5 hover:bg-white/10 px-6 py-[18px] rounded-full transition-colors">
-                       <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-6 h-6" />
-                       <span class="font-semibold text-white text-xl leading-7">الحساب</span>
-                       <span class="w-6 h-6 text-white">${ICON.chevronDown}</span>
-                     </a>
-                     <button type="button" data-open="search" aria-label="بحث" class="place-items-center grid bg-cta hover:bg-cta-hover border-2 border-cta rounded-full transition-colors size-12">
+            <!-- RTL end (left edge): account, search, cart.
+                 Checkout keeps account and cart but drops search, matching the
+                 Figma checkout header — it is not a bare logo bar. -->
+            <div class="flex items-center gap-6 shrink-0">
+              <a href="login.html" class="hidden lg:flex items-center gap-2.5 hover:bg-white/10 px-6 py-[18px] rounded-full transition-colors">
+                <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-6 h-6" />
+                <span class="font-semibold text-white text-xl leading-7">الحساب</span>
+                <span class="w-6 h-6 text-white">${ICON.chevronDown}</span>
+              </a>
+              ${
+                checkout
+                  ? ""
+                  : `<button type="button" data-open="search" aria-label="بحث" class="place-items-center grid bg-cta hover:bg-cta-hover border-2 border-cta rounded-full transition-colors size-12">
                        <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
-                     </button>
-                     <button type="button" data-open="cart" aria-label="السلة" class="relative place-items-center grid bg-accent-yellow hover:bg-accent-500 rounded-full transition-colors size-[60px]">
-                       <img src="images/abuauf/icons/icon-cart.svg" alt="" class="w-9 h-9" />
-                       <span class="-top-3 -end-3 absolute place-items-center grid bg-white shadow-custom4 px-2 rounded-full min-w-[28px] h-7 font-semibold text-black text-base" data-cart-count>2</span>
-                     </button>
-                   </div>`
-            }
+                     </button>`
+              }
+              <button type="button" data-open="cart" aria-label="السلة" class="relative place-items-center grid bg-accent-yellow hover:bg-accent-500 rounded-full transition-colors size-[60px]">
+                <img src="images/abuauf/icons/icon-cart.svg" alt="" class="w-9 h-9" />
+                <span class="-top-3 -end-3 absolute place-items-center grid bg-white shadow-custom4 px-2 rounded-full min-w-[28px] h-7 font-semibold text-black text-base" data-cart-count>2</span>
+              </button>
+            </div>
           </div>
 
           ${
