@@ -74,7 +74,10 @@
       <section class="py-12 xl:py-16">
         <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
           <h2 class="mb-10 xl:mb-12 font-bold text-[#062A1C] text-3xl xl:text-4xl text-center">تسوق منتجاتنا</h2>
-          <div class="gap-x-6 gap-y-12 grid grid-cols-2 lg:grid-cols-3 justify-items-center">
+          <!-- The Figma mobile home (2595:60104) stacks these one per row; the
+               tiles are 220px wide, so forcing two columns at 375px clipped
+               30px off each. One column below sm, two from sm. -->
+          <div class="gap-x-6 gap-y-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
         <a href="shop-category.html" class="group flex flex-col items-center gap-4 text-center">
           <span class="relative bg-beige rounded-full w-[220px] xl:w-[250px] h-[220px] xl:h-[250px] overflow-hidden transition-transform group-hover:scale-[1.03] duration-300">
             <img src="images/abuauf/categories/Dates.webp" alt="التمور والفواكه المجففة" class="w-full h-full object-cover" loading="lazy" />

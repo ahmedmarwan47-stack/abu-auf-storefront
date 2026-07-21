@@ -26,10 +26,13 @@
 
       <!-- ============================== CART ============================== -->
       <section class="py-8 xl:py-10">
-        <div class="items-start gap-8 grid lg:grid-cols-[380px_1fr] mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="items-start gap-6 lg:gap-8 grid grid-cols-1 lg:grid-cols-[380px_1fr] mx-auto px-4 xl:px-[190px] max-w-[1920px]">
 
-          <!-- RTL start: summary -->
-          <aside class="flex flex-col gap-4 lg:sticky lg:top-4">
+          <!-- RTL start: summary. DOM-first so RTL puts it in the right column
+               at lg; the Figma mobile cart (804:32907) leads with the line
+               items and drops the summary beneath them, so below lg it moves
+               visually to the end. -->
+          <aside class="flex flex-col gap-4 lg:sticky lg:top-4 order-last lg:order-none min-w-0">
             <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
               <div class="flex flex-col gap-2 text-sm">
@@ -81,10 +84,15 @@
           </aside>
 
           <!-- RTL end: line items -->
-          <div class="bg-white shadow-custom4 px-6 py-2 rounded-[20px]">
-              <article class="flex items-center gap-4 py-5 border-neutral-divider border-b">
+          <div class="bg-white shadow-custom4 px-6 py-2 rounded-[20px] min-w-0">
+              <!-- The thumb, stepper and price chip are all shrink-0 and with
+                   gaps come to ~302px, so in a 295px column they squeezed the
+                   title to zero width — product names vanished on mobile. Let
+                   the row wrap below sm so the stepper and price drop to a
+                   second line, and hold a floor under the title. -->
+              <article class="flex flex-wrap sm:flex-nowrap items-center gap-4 py-5 border-neutral-divider border-b">
                 <img src="images/abuauf/products/6223006310759.webp" alt="تمر صحاري بالشيكولاته و اللوز - 300 جم" class="bg-interaction-base p-2 rounded-xl w-20 h-20 object-contain shrink-0" loading="lazy" />
-                <div class="flex flex-col flex-1 gap-1 min-w-0">
+                <div class="flex flex-col flex-1 gap-1 min-w-[7rem]">
                   <h3 class="font-semibold text-[#062A1C] text-base line-clamp-2">تمر صحاري بالشيكولاته و اللوز - 300 جم</h3>
                   <span class="text-neutral-secondary text-xs">250 جم</span>
                   <button type="button" class="mt-1 text-accent-error text-xs underline self-start">حذف</button>
@@ -96,9 +104,14 @@
                 </div>
                 <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin shrink-0">EGP 220</span>
               </article>
-              <article class="flex items-center gap-4 py-5 border-neutral-divider border-b">
+              <!-- The thumb, stepper and price chip are all shrink-0 and with
+                   gaps come to ~302px, so in a 295px column they squeezed the
+                   title to zero width — product names vanished on mobile. Let
+                   the row wrap below sm so the stepper and price drop to a
+                   second line, and hold a floor under the title. -->
+              <article class="flex flex-wrap sm:flex-nowrap items-center gap-4 py-5 border-neutral-divider border-b">
                 <img src="images/abuauf/products/2000102000000.webp" alt="قراصيا بدون نواه - 100 جم" class="bg-interaction-base p-2 rounded-xl w-20 h-20 object-contain shrink-0" loading="lazy" />
-                <div class="flex flex-col flex-1 gap-1 min-w-0">
+                <div class="flex flex-col flex-1 gap-1 min-w-[7rem]">
                   <h3 class="font-semibold text-[#062A1C] text-base line-clamp-2">قراصيا بدون نواه - 100 جم</h3>
                   <span class="text-neutral-secondary text-xs">250 جم</span>
                   <button type="button" class="mt-1 text-accent-error text-xs underline self-start">حذف</button>
@@ -110,9 +123,14 @@
                 </div>
                 <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin shrink-0">EGP 72.5</span>
               </article>
-              <article class="flex items-center gap-4 py-5 border-neutral-divider border-b">
+              <!-- The thumb, stepper and price chip are all shrink-0 and with
+                   gaps come to ~302px, so in a 295px column they squeezed the
+                   title to zero width — product names vanished on mobile. Let
+                   the row wrap below sm so the stepper and price drop to a
+                   second line, and hold a floor under the title. -->
+              <article class="flex flex-wrap sm:flex-nowrap items-center gap-4 py-5 border-neutral-divider border-b">
                 <img src="images/abuauf/products/6223011437304.webp" alt="تمر صحارى بالشيكولاته غامقه باللوز - 300 جرام" class="bg-interaction-base p-2 rounded-xl w-20 h-20 object-contain shrink-0" loading="lazy" />
-                <div class="flex flex-col flex-1 gap-1 min-w-0">
+                <div class="flex flex-col flex-1 gap-1 min-w-[7rem]">
                   <h3 class="font-semibold text-[#062A1C] text-base line-clamp-2">تمر صحارى بالشيكولاته غامقه باللوز - 300 جرام</h3>
                   <span class="text-neutral-secondary text-xs">250 جم</span>
                   <button type="button" class="mt-1 text-accent-error text-xs underline self-start">حذف</button>

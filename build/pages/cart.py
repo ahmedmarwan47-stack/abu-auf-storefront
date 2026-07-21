@@ -46,10 +46,13 @@ def build():
 
       <!-- ============================== CART ============================== -->
       <section class="py-8 xl:py-10">
-        <div class="items-start gap-8 grid lg:grid-cols-[380px_1fr] mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="items-start gap-6 lg:gap-8 grid grid-cols-1 lg:grid-cols-[380px_1fr] mx-auto px-4 xl:px-[190px] max-w-[1920px]">
 
-          <!-- RTL start: summary -->
-          <aside class="flex flex-col gap-4 lg:sticky lg:top-4">
+          <!-- RTL start: summary. DOM-first so RTL puts it in the right column
+               at lg; the Figma mobile cart (804:32907) leads with the line
+               items and drops the summary beneath them, so below lg it moves
+               visually to the end. -->
+          <aside class="flex flex-col gap-4 lg:sticky lg:top-4 order-last lg:order-none min-w-0">
             <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
               <div class="flex flex-col gap-2 text-sm">
@@ -80,7 +83,7 @@ def build():
           </aside>
 
           <!-- RTL end: line items -->
-          <div class="bg-white shadow-custom4 px-6 py-2 rounded-[20px]">{lines}
+          <div class="bg-white shadow-custom4 px-6 py-2 rounded-[20px] min-w-0">{lines}
           </div>
         </div>
       </section>

@@ -263,9 +263,14 @@ def radio_card(name, value, heading, sub="", icon="", checked=False):
 def cart_line(p, qty=1, weight="250 جم"):
     from catalog import money, title as _title
     return f"""
-              <article class="flex items-center gap-4 py-5 border-neutral-divider border-b">
+              <!-- The thumb, stepper and price chip are all shrink-0 and with
+                   gaps come to ~302px, so in a 295px column they squeezed the
+                   title to zero width — product names vanished on mobile. Let
+                   the row wrap below sm so the stepper and price drop to a
+                   second line, and hold a floor under the title. -->
+              <article class="flex flex-wrap sm:flex-nowrap items-center gap-4 py-5 border-neutral-divider border-b">
                 <img src="{e(p['image'])}" alt="{e(_title(p))}" class="bg-interaction-base p-2 rounded-xl w-20 h-20 object-contain shrink-0" loading="lazy" />
-                <div class="flex flex-col flex-1 gap-1 min-w-0">
+                <div class="flex flex-col flex-1 gap-1 min-w-[7rem]">
                   <h3 class="font-semibold text-[#062A1C] text-base line-clamp-2">{e(_title(p))}</h3>
                   <span class="text-neutral-secondary text-xs">{e(weight)}</span>
                   <button type="button" class="mt-1 text-accent-error text-xs underline self-start">حذف</button>

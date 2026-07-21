@@ -93,8 +93,8 @@ def build():
 
       <!-- ============================ ORDER DETAIL ============================ -->
       <section class="pb-12">
-        <div class="items-start gap-6 xl:gap-8 grid lg:grid-cols-[380px_1fr] mx-auto px-4 xl:px-[190px] max-w-[1920px]">
-          <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
+        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 lg:grid-cols-[380px_1fr] mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+          <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px] min-w-0">
             <h2 class="font-bold text-[#062A1C] text-lg">طلب رقم <span class="latin">#{ORDER_NO}</span></h2>
             <div class="flex flex-col">{lines}
             </div>

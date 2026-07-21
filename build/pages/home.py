@@ -120,7 +120,10 @@ def build():
       <section class="py-12 xl:py-16">
         <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
           {section_heading("تسوق منتجاتنا", centered=True)}
-          <div class="gap-x-6 gap-y-12 grid grid-cols-2 lg:grid-cols-3 justify-items-center">{tiles}
+          <!-- The Figma mobile home (2595:60104) stacks these one per row; the
+               tiles are 220px wide, so forcing two columns at 375px clipped
+               30px off each. One column below sm, two from sm. -->
+          <div class="gap-x-6 gap-y-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">{tiles}
           </div>
         </div>
       </section>

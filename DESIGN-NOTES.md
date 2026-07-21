@@ -134,10 +134,16 @@ launch.
 | Route | Chosen | Passed over | Basis |
 |---|---|---|---|
 | Product | `918:34326` (4723px) | `350:25883` (4038px) | 685px more content; includes the FBT block |
+| Cart | `804:32907` (3007px) | `359:18661` (2786px) | 221px more content |
+| Home | `2595:60104` | `753:30987` | **Confirmed by Ahmed**, not inferred |
 
-**`Home` cannot be resolved this way** — `753:30987` and `2595:60104` are both
-exactly 12361.52px tall, so completeness does not separate them. That one needs
-the designer.
+`Home` could not be resolved by completeness — both frames are exactly
+12361.52px tall. Ahmed supplied `2595:60104` directly, so that one is settled
+rather than assumed.
+
+`Collection` has four frames (`350:17805`, `1290:41915`, `1002:40281`,
+`973:48168`), two of them identical at 2593px. Still unresolved — no listing
+page has been built against a mobile frame yet.
 
 ### Product page — price display deviates from the Figma
 
