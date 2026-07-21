@@ -97,3 +97,29 @@ Also outstanding:
   white chip.
 - The Figma footer carries a **"Web Design by MITCH DESIGNS"** credit. Retained
   at the client's request.
+
+## Mobile pass — deviations from the Figma `Mobile` page
+
+The account shell is built from `Account > Overview` (`383:33392`) and
+`Account > menu bottom sheet` (`973:47270`). Two intentional divergences:
+
+- **The sheet lists seven nav rows; the Figma draws six.** The Figma omits
+  `نقاطي`, but `my-account-point.html` exists and is reachable from the desktop
+  sidebar. Both the sidebar and the sheet render from the single `NAV` list in
+  `build/pages/_account.py`, so dropping it from the sheet would have meant
+  hard-coding a second, divergent list. Flagging rather than silently
+  reconciling: **ask the designer whether `نقاطي` is being retired**, and if so
+  remove the page, not just the row.
+- **`تأكيد` closes the sheet; it does not confirm a selection.** In the Figma
+  the rows look selectable with `تأكيد` committing the choice. Here each row is
+  a plain link that navigates on tap, which is the standard pattern and keeps
+  the sheet keyboard- and screen-reader-navigable. `تأكيد` is retained for
+  visual fidelity but is a dismiss. Worth confirming the designer intended
+  select-then-confirm rather than tap-to-navigate.
+
+### Duplicate frames on the Figma `Mobile` page
+
+Several routes have more than one frame — two `Home`, four `Collection`, two
+`Cart`, two `Product`, three `Account > Wallet`, two `Checkout > Info`. Nothing
+marks which is current. Any page built against one of these needs the canonical
+frame confirmed first.

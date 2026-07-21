@@ -732,6 +732,7 @@
     menu: '[data-drawer="menu"]',
     search: '[data-modal="search"]',
     location: '[data-sheet="location"]',
+    accountMenu: '[data-sheet="account-menu"]',
   };
   let openEl = null;
 

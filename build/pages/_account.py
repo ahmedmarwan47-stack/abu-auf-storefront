@@ -20,6 +20,10 @@ I = {
     "user": '<circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4 21a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
     "star": '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',
     "out": '<path d="M15 17l5-5-5-5M20 12H9M12 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>',
+    # Chevron points to the inline end (left in RTL), matching the Figma rows.
+    "chev": '<path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>',
+    "close": '<path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+    "menu": '<path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
 }
 
 NAV = [
@@ -44,7 +48,7 @@ def sidebar(active_slug):
               </a>""" for label, href, icon in NAV)
 
     return f"""
-          <aside class="flex flex-col gap-1 bg-white shadow-custom4 p-5 rounded-[20px] lg:sticky lg:top-4 h-max">
+          <aside class="hidden lg:flex flex-col gap-1 bg-white shadow-custom4 p-5 rounded-[20px] lg:sticky lg:top-4 min-w-0 h-max">
             <span class="bg-accent-yellow px-3 py-1 rounded-full font-semibold text-[#062A1C] text-xs self-start">{e(CUSTOMER['tier'])}</span>
             <h2 class="mt-2 mb-3 font-bold text-[#062A1C] text-xl">مرحبا {e(CUSTOMER['name'])}</h2>
             {items}
@@ -59,14 +63,61 @@ def sidebar(active_slug):
           </aside>"""
 
 
+def _active_label(active_slug):
+    for label, href, _icon_key in NAV:
+        if href == active_slug:
+            return label
+    return NAV[0][0]
+
+
+def mobile_nav(active_slug):
+    """Figma 'Account > menu bottom sheet' (973:47270).
+
+    A 300px sidebar has nowhere to go on a 375px screen, so below `lg` it
+    collapses to a selector row that opens a sheet. Both the sidebar and this
+    sheet render from NAV, so a new account page appears in both or neither.
+    """
+    rows = "".join(f"""
+              <a href="{href}" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base {'text-cta' if href == active_slug else 'text-[#062A1C]'}">
+                <span class="text-cta shrink-0">{_icon(icon)}</span>
+                <span class="flex-1 min-w-0 truncate">{e(label)}</span>
+                <span class="text-neutral-secondary shrink-0">{_icon('chev', 'w-4 h-4')}</span>
+              </a>""" for label, href, icon in NAV)
+
+    return f"""
+          <div class="lg:hidden flex flex-col gap-3 min-w-0">
+            <span class="bg-accent-yellow px-3 py-1 rounded-full font-semibold text-[#062A1C] text-xs self-start">{e(CUSTOMER['tier'])}</span>
+            <h2 class="font-bold text-[#062A1C] text-xl">مرحبا {e(CUSTOMER['name'])}</h2>
+            <button type="button" data-open="accountMenu" class="flex justify-between items-center gap-3 bg-white px-5 py-3.5 border border-neutral-divider rounded-full w-full font-semibold text-[#062A1C] text-base">
+              <span class="flex items-center gap-3 min-w-0">
+                <span class="text-cta shrink-0">{_icon('menu')}</span>
+                <span class="truncate">{e(_active_label(active_slug))}</span>
+              </span>
+              <span class="-rotate-90 text-neutral-secondary shrink-0">{_icon('chev', 'w-4 h-4')}</span>
+            </button>
+          </div>
+
+          <div data-sheet="account-menu" class="lg:hidden bottom-sheet">
+            <div class="bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+            <div class="flex justify-between items-center mb-2">
+              <h2 class="font-bold text-[#062A1C] text-lg">القائمة</h2>
+              <button type="button" data-close class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">{_icon('close', 'w-4 h-4')}</button>
+            </div>
+            <nav class="flex flex-col">{rows}
+            </nav>
+            <button type="button" data-close class="bg-cta hover:bg-cta-hover mt-4 py-3 rounded-full w-full font-semibold text-white transition-colors">تأكيد</button>
+          </div>"""
+
+
 def account_page(title_text, description, content, page_id, path,
                  crumb, active_slug):
     body = f"""{page_header("", [("الرئيسية", "index.html"), ("حسابي", "my-account.html"), (crumb, None)])}
 
       <section class="py-6 xl:py-8">
-        <div class="items-start gap-6 xl:gap-8 grid lg:grid-cols-[300px_1fr] mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 lg:grid-cols-[300px_1fr] mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+{mobile_nav(active_slug)}
 {sidebar(active_slug)}
-          <div class="flex flex-col gap-6">{content}
+          <div class="flex flex-col gap-6 min-w-0">{content}
           </div>
         </div>
       </section>"""
