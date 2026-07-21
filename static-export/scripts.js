@@ -204,6 +204,8 @@
       "/terms-conditions": "terms-conditions.html",
       "/return-policy": "return-policy.html",
       "/blogs": "blogs.html",
+      "/rewards": "rewards.html",
+      "/export": "export.html",
       "/shop": "shop.html",
       "/cart": "cart.html",
       "/checkout": "checkout.html",
@@ -1596,8 +1598,8 @@
      Everything here is a pure function of Cart state and re-runs on
      `cart:change`. Nothing mutates state; the handlers below do that.
      --------------------------------------------------------------- */
-  const DELIVERY_FEE = 10;
-  const MIN_ORDER = 100;
+  const DELIVERY_FEE = 30;
+  const MIN_ORDER = 150;
 
   function cartLineHTML(it) {
     return `

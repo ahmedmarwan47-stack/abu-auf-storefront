@@ -67,11 +67,20 @@ hard-coded, for the same reason — plus `scripts.js` has no runtime access to
 
 **Needs:** `date_created` and a sales/popularity figure in the scrape.
 
-### Two navbar items lead nowhere
+### Rewards body copy — the client's own page is lorem ipsum
 
-`المكافآت` and `منتجات أبو عوف خارج مصر` fall through to `index.html` because
-`/rewards` and `/export` were never built. The Figma has frames for both
-(`973:40830`, `426:29955`).
+`rewards.html` now exists (the nav used to fall through to `index.html`), but it
+is deliberately thin. **The live abuauf.com/rewards is itself unfinished:** its
+H1 is real, its body is Arabic lorem ipsum
+(`لوريم سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت...`). There was no real copy
+to scrape.
+
+What is on our page is real — the live H1 and hero image — plus links to the
+account points and wallet pages that already exist. No rewards programme was
+invented. Contrast `export.html`, which is built entirely from the client's real
+copy scraped off `/export`.
+
+**Needs:** the client to write their rewards copy.
 
 ---
 
@@ -83,21 +92,24 @@ on-brand, and it is **not** the client's approved copy.
 | Where | Status |
 |---|---|
 | **Legal pages** (privacy, terms, return policy) | Written in-house. **Must be replaced with the client's legal text — do not launch on these.** |
-| FAQs (`build/pages/faqs.py`) | 9 Q&As. Delivery times, 100 EGP minimum order and the 14-day return window are **assumptions** |
+| FAQs (`build/pages/faqs.py`) | 9 Q&As. Delivery times and the 14-day return window are **assumptions**. The minimum order now reads 150 EGP, matching the live site and the cart constants |
 | Blog & recipes (`build/pages/_posts.py`) | 6 posts; the live blog is client-rendered so its Arabic copy is not scrapable |
 | Home page reviews | 4 invented testimonials with invented names. Real reviews exist at `apis/v2/get-all` |
 | Account pages | Sample customer "محمد عادل", order numbers and wallet balances are illustrative |
 | **All English strings** in the `EN` dictionary in `scripts.js` | Standard commerce terminology written in-house — `Offers & Discounts`, `Checkout`, `View cart`. Not the client's wording. **Product names are the one exception** — those are real catalogue data |
 
-### Cart figures disagree with the live site
+### Cart figures — now matching the live site
 
-The build uses `DELIVERY_FEE = 10` and `MIN_ORDER = 100`, mirrored between
+The build uses `DELIVERY_FEE = 30` and `MIN_ORDER = 150`, mirrored between
 `build/pages/cart.py` and the drawer in `scripts.js` so the two surfaces can
 never quote different numbers.
 
-**The live site shows a 30 EGP delivery fee and a shortfall implying a 150 EGP
-minimum.** Ours are assumptions. Confirm the real figures and change them in
-both places — it also affects checkout and thank-you.
+These were `10` / `100` until the live site was checked — it shows a **30 EGP
+delivery fee** and a shortfall implying a **150 EGP minimum**, so both were
+corrected across `cart.py`, `checkout.py`, `thank_you.py`,
+`my_account_order.py` and `scripts.js`. Still worth confirming with the client,
+since 150 is inferred from a 40 EGP cart showing 110 remaining rather than
+stated anywhere.
 
 The below-minimum state (disabled checkout + shortfall warning) is implemented
 but not visible in the demo, since the seeded cart exceeds the minimum.

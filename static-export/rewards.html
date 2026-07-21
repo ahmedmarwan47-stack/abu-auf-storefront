@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>المكافآت | أبو عوف</title>
+    <meta name="description" content="اجمع نقاط مع كل طلب من أبو عوف وتابع رصيدك ومستوى عضويتك." />
+    <!-- Tailwind (Play CDN) + Abu Auf design system -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="rewards" data-path="/rewards" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main class="overflow-x-hidden">
+      <section class="pt-6">
+        <div class="flex flex-col gap-4 mx-auto px-4 max-w-[1536px]">
+          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">المكافآت</span></nav>
+          <h1 class="font-bold text-[#062A1C] text-3xl xl:text-5xl">المكافآت</h1>
+        </div>
+      </section>
+
+      <section class="py-8">
+        <div class="flex flex-col gap-8 mx-auto px-4 max-w-[1536px]">
+          <img src="images/abuauf/rewards-hero.webp" alt="كل ما تشتري أكثر من أبوعوف هتكسب نقط و فلوس"
+               class="rounded-[20px] w-full max-h-[420px] object-cover" />
+
+          <div class="flex flex-col gap-4 max-w-[820px]">
+            <h2 class="font-bold text-[#062A1C] text-2xl xl:text-3xl leading-tight">كل ما تشتري أكثر من أبوعوف هتكسب نقط و فلوس</h2>
+            <p class="text-neutral-800 text-base xl:text-lg leading-9">
+              اجمع نقاطك مع كل طلب من أبو عوف، وتابع رصيدك ومستوى عضويتك من صفحة النقاط
+              في حسابك.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <a href="my-account-point.html" class="inline-flex justify-center items-center rounded-full font-semibold transition-colors px-8 py-3 text-base bg-cta hover:bg-cta-hover text-white ">نقاطي</a>
+            <a href="my-account-wallet.html" class="inline-flex justify-center items-center rounded-full font-semibold transition-colors px-8 py-3 text-base border border-cta text-cta hover:bg-interaction-base ">محفظتي</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+  </body>
+</html>

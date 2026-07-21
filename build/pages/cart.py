@@ -7,8 +7,8 @@ from components import (
 
 SLUG = "cart.html"
 
-DELIVERY_FEE = 10.0
-MIN_ORDER = 100.0
+DELIVERY_FEE = 30.0
+MIN_ORDER = 150.0
 
 
 def build():

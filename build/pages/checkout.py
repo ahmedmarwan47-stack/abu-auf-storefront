@@ -12,7 +12,7 @@ from components import (
 
 SLUG = "checkout.html"
 
-DELIVERY_FEE = 10.0
+DELIVERY_FEE = 30.0
 
 STEPS = ["سلة التسوق", "بيانات العميل", "طريقة الدفع", "تأكيد عملية الشراء"]
 

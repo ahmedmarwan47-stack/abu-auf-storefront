@@ -15,11 +15,11 @@ mobile pass and a working commerce layer.
 
 | | |
 |---|---|
-| Pages | 29 / 29 |
+| Pages | 31 / 31 |
 | Koueider references | zero, verified across every file |
 | Products | 99, real names (Arabic + English), prices, images |
 | Branches | 316 across 25 governorates, real |
-| Accessibility | WCAG 2.1 AA, 0 failures across all 29 pages; tap targets ≥44px |
+| Accessibility | WCAG 2.1 AA, 0 failures across all 31 pages; tap targets ≥44px |
 | Responsive | verified clean at 320 / 360 / 375 / 390 / 414 |
 | Cart | real state, persisted, with an event API |
 | Filters / nav routes | genuinely functional over real catalogue data |
@@ -34,7 +34,7 @@ Each was an explicit answer from Ahmed, not an assumption.
 
 | Decision | Choice | Why it matters |
 |---|---|---|
-| **Fidelity** | Rebuild against Figma page by page — *not* a colour reskin | The Figma covers ~all 29 routes, and the RTL flip rewrote layout anyway |
+| **Fidelity** | Rebuild against Figma page by page — *not* a colour reskin | The Figma covers ~all 29 original routes, and the RTL flip rewrote layout anyway |
 | **Language** | Arabic-first, `dir="rtl"` default. Not bilingual | Matches the live abuauf.com, which is Arabic-only. The language toggle added later is a direction/UI test harness, **not** a reversal — see §6 |
 | **Copy** | Real Abu Auf content wherever reachable | Not placeholder-by-default |
 | **Imagery** | Majority scraped from abuauf.com; minority from Figma | Client confirmed rights |
@@ -89,7 +89,7 @@ build/
 └── pages/
     ├── _listing.py _auth.py _account.py _legal.py   # shared layouts
     ├── _geo.py _posts.py                            # shared data
-    └── home.py shop.py product.py … (29 pages)
+    └── home.py shop.py product.py … (31 pages)
 ```
 
 ---
@@ -139,7 +139,7 @@ build/
 ```bash
 cd /path/to/order-base-ecommerce
 
-python3 build/build.py            # must report 29 pages, no missing assets
+python3 build/build.py            # must report 31 pages, no missing assets
 node --check static-export/scripts.js
 grep -ril 'koueider\|kouider' static-export/    # must return nothing
 git status --porcelain            # a rebuild must produce no diff
@@ -153,15 +153,15 @@ git status --porcelain            # a rebuild must produce no diff
 > `lsof -a -p $(lsof -ti tcp:9200) -d cwd -Fn`
 
 Then open any page and paste the **sweep** below into the console. It loads all
-29 pages in a same-origin iframe at a given width and reports real horizontal
+31 pages in a same-origin iframe at a given width and reports real horizontal
 overflow plus WCAG contrast.
 
-**Current baseline: `29/29` clean at 320 / 360 / 375 / 390 / 414, ~4300 text
+**Current baseline: `31/31` clean at 320 / 360 / 375 / 390 / 414, ~4500 text
 nodes checked, 0 contrast failures.**
 
 ```js
 window.__sweep = async function (W) {
-  const pages = ["about","blog","blogs","branches","cart","checkout","contact-us","faqs","forget-password","index","login","my-account-addresses","my-account-favorites","my-account-order","my-account-orders","my-account-point","my-account-profile","my-account-wallet","my-account","privacy-policy","product","register","reset-password","return-policy","shop-category","shop","store-closed","terms-conditions","thank-you"];
+  const pages = ["about","blog","blogs","branches","cart","checkout","contact-us","export","faqs","forget-password","index","login","my-account-addresses","my-account-favorites","my-account-order","my-account-orders","my-account-point","my-account-profile","my-account-wallet","my-account","privacy-policy","product","register","reset-password","return-policy","rewards","shop-category","shop","store-closed","terms-conditions","thank-you"];
   const f = document.createElement("iframe");
   f.style.cssText = "position:fixed;left:-9999px;top:0;border:0;height:844px;width:" + W + "px";
   document.body.appendChild(f);
@@ -201,13 +201,13 @@ window.__sweep = async function (W) {
     if (bad.length || po) probs.push({ page: p, pageOver: po, worst: bad[0] || null }); else clean++;
   }
   f.remove();
-  return { width: W, clean: clean + "/29", problems: probs, contrastChecked: cTotal, contrastFailures: cFail };
+  return { width: W, clean: clean + "/" + pages.length, problems: probs, contrastChecked: cTotal, contrastFailures: cFail };
 };
 await window.__sweep(390);
 ```
 
-Run one width per call — four widths in a single call exceeds the 30s tool
-timeout.
+Run one width per call, and **split the page list into two batches of ~15** —
+all 31 pages in one call exceeds the 30s tool timeout.
 
 ### Two traps this sweep was written around
 
@@ -248,7 +248,7 @@ Arabic placeholder is two steps from anything the client could sign off.
 Every English string in the `EN` dictionary is **in-house placeholder**
 terminology awaiting sign-off. Product names are the one exception.
 
-Real bilingual support means English copy for all 29 pages plus a URL strategy
+Real bilingual support means English copy for all 31 pages plus a URL strategy
 (`/en/` routes vs runtime switch). That is a project, not a toggle.
 
 ---
@@ -277,6 +277,8 @@ Real bilingual support means English copy for all 29 pages plus a URL strategy
 2. **Branch phone numbers and coordinates.** All 316 `phone` fields are empty,
    so the Figma's per-card phone row and `اتجاهات` link are not built. Inventing
    them would send customers to wrong numbers.
+   **Rewards body copy** — the client's own `/rewards` page is lorem ipsum, so
+   `rewards.html` is deliberately thin (see `DESIGN-NOTES.md` §2).
 3. **Real sale prices** — `catalog.json` has one price per product, so the
    Figma's struck-through compare-at price is not rendered.
 4. **Sub-category taxonomy.** No field exists; four of the seven Figma
@@ -289,8 +291,6 @@ Real bilingual support means English copy for all 29 pages plus a URL strategy
 
 7. **Micro-interactions** on the cart — the `cart:change` event API and keyed
    reconcile exist precisely for this.
-8. **`/rewards` and `/export` pages.** Two navbar items currently fall through to
-   the homepage. Figma frames exist (`973:40830`, `426:29955`).
 9. **Cart drawer upsell buttons and favourite hearts** are not wired.
 10. **`صحارة ديلايتس` home section** (Figma `753:34833`), pending assets.
 11. **Checkout summary collapse** — the Figma has it collapsible; left expanded

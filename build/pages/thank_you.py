@@ -4,7 +4,7 @@ from components import carousel, page, product_card, section_heading
 
 SLUG = "thank-you.html"
 
-DELIVERY_FEE = 10.0
+DELIVERY_FEE = 30.0
 ORDER_NO = "304585"
 
 STEPS = [

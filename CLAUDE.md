@@ -8,7 +8,7 @@ deviation.
 
 A **static Abu Auf storefront**, rebuilt from a Koueider/OrderBase static export
 against the Abu Auf Figma (`tQiydoANmIdYWq0IfmTsMz`) and, increasingly, against
-the live site at **abuauf.com**. 29 pages, Arabic-first, right-to-left. No
+the live site at **abuauf.com**. 31 pages, Arabic-first, right-to-left. No
 framework, no server — plain HTML + Tailwind Play CDN + vanilla JS.
 
 Abu Auf is the client; we have rights to their assets.
@@ -133,16 +133,16 @@ These have each cost real time. Read them.
 ## How to verify
 
 ```bash
-python3 build/build.py                    # must report 29 pages, no missing assets
+python3 build/build.py                    # must report 31 pages, no missing assets
 node --check static-export/scripts.js
 grep -ril 'koueider\|kouider' static-export/   # must return nothing
 git status --porcelain                    # rebuild must produce no diff
 (cd static-export && python3 -m http.server <FRESH_PORT>)
 ```
 
-Then in the browser run the **sweep** in `HANDOFF.md` §5 — it loads all 29 pages
+Then in the browser run the **sweep** in `HANDOFF.md` §5 — it loads all 31 pages
 in a same-origin iframe at 320/360/375/390/414 and reports horizontal overflow
-plus WCAG contrast. Current baseline: **29/29 clean at every width, ~4300 text
+plus WCAG contrast. Current baseline: **31/31 clean at every width, ~4500 text
 nodes checked, 0 contrast failures.**
 
 The sweep distinguishes real overflow from intentional `line-clamp`/ellipsis
@@ -150,7 +150,7 @@ truncation. If you quote a number, know which you're quoting.
 
 ## Accessibility baseline
 
-Passes **WCAG 2.1 AA** (4.5:1 body, 3:1 large) across all 29 pages, verified
+Passes **WCAG 2.1 AA** (4.5:1 body, 3:1 large) across all 31 pages, verified
 against computed styles. Tap targets ≥44px. Don't regress either; re-run the
 sweep after any colour or spacing change.
 

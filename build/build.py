@@ -34,6 +34,7 @@ PAGES = [
     "my_account_point", "my_account_profile",
     # content
     "about", "contact_us", "faqs", "branches", "blogs", "blog",
+    "export", "rewards",
     # legal
     "privacy_policy", "terms_conditions", "return_policy",
     # misc

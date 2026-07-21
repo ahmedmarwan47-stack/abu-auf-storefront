@@ -3,7 +3,7 @@ from _account import account_page, card
 from catalog import e, in_category, money
 
 SLUG = "my-account-order.html"
-DELIVERY_FEE = 10.0
+DELIVERY_FEE = 30.0
 
 STEPS = [("تم الطلب", True), ("جاري التحضير", True), ("في الطريق إليك", False), ("تم التسليم", False)]
 CHECK = ('<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" '
