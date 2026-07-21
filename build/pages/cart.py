@@ -46,7 +46,7 @@ def build():
 
       <!-- ============================== CART ============================== -->
       <section class="py-8 xl:py-10">
-        <div class="items-start gap-6 lg:gap-8 grid grid-cols-1 lg:grid-cols-[380px_1fr] mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="items-start gap-6 lg:gap-8 grid grid-cols-1 lg:grid-cols-[380px_1fr] mx-auto px-4 max-w-[1536px]">
 
           <!-- RTL start: summary. DOM-first so RTL puts it in the right column
                at lg; the Figma mobile cart (804:32907) leads with the line
@@ -90,7 +90,7 @@ def build():
 
       <!-- =========================== SHOP MORE =========================== -->
       <section class="py-12">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("تسوق اكتر", "عرض المزيد", "shop.html")}
           {carousel("".join(product_card(x) for x in more))}
         </div>

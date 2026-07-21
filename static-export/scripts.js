@@ -473,7 +473,7 @@
         ${
           checkout
             ? ""
-            : `<div class="relative z-40 bg-beige h-[33px]">
+            : `<div class="relative z-50 bg-beige h-[33px]">
                  <div class="flex justify-between items-center gap-6 px-4 xl:px-20 h-full">
                    <div class="flex items-center gap-6 min-w-0">
                      ${countryButton()}
@@ -492,7 +492,7 @@
                </div>`
         }
         <div class="relative z-40 bg-primary px-4 xl:px-20">
-          <div class="flex justify-between items-center border-[#0F6140] border-b h-[79px]">
+          <div class="flex justify-between items-center mx-auto border-[#0F6140] border-b h-[79px] max-w-[1536px]">
             <!-- RTL start (right edge): logo, products, delivery -->
             <div class="flex items-center gap-6 min-w-0">
               <a href="index.html" class="block shrink-0 w-[180px] h-[60px]">
@@ -529,9 +529,9 @@
                        <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
                      </button>`
               }
-              <button type="button" data-open="cart" aria-label="السلة" class="relative place-items-center grid bg-accent-yellow hover:bg-accent-500 rounded-full transition-colors size-[60px]">
-                <img src="images/abuauf/icons/icon-cart.svg" alt="" class="w-9 h-9" />
-                <span class="-top-3 -end-3 absolute place-items-center grid bg-white shadow-custom4 px-2 rounded-full min-w-[28px] h-7 font-semibold text-black text-base" data-cart-count>2</span>
+              <button type="button" data-open="cart" aria-label="السلة" class="relative place-items-center grid bg-accent-yellow hover:bg-accent-500 rounded-full transition-colors size-12">
+                <img src="images/abuauf/icons/icon-cart.svg" alt="" class="w-7 h-7" />
+                <span class="-top-2 -end-2 absolute place-items-center grid bg-white shadow-custom4 px-1.5 rounded-full min-w-[22px] h-[22px] font-semibold text-black text-xs" data-cart-count>2</span>
               </button>
             </div>
           </div>
@@ -543,7 +543,7 @@
                     the masthead, so it stays opaque once initStickyNav pulls
                     it out of flow with position:fixed. */
               : `<div data-navbar class="relative z-30 bg-primary h-[48px]">
-                   <nav class="mx-auto max-w-[1920px] h-full">
+                   <nav class="mx-auto max-w-[1536px] h-full">
                      <ul class="flex items-start gap-9 h-full overflow-x-auto no-scrollbar">${nav}</ul>
                    </nav>
                  </div>`
@@ -658,7 +658,7 @@
     /* --- pre-footer: newsletter + FAQ, split 50/50 on desktop --- */
     const preFooter = `
       <div class="bg-beige border-primary border-b">
-        <div class="flex md:flex-row flex-col justify-center items-stretch gap-8 md:gap-12 mx-auto px-4 xl:px-[190px] py-6 max-w-[1920px]">
+        <div class="flex md:flex-row flex-col justify-center items-stretch gap-8 md:gap-12 mx-auto px-4 py-6 max-w-[1536px]">
           <div class="flex flex-col justify-center gap-6 py-6 md:py-[42px] flex-1">
             <div class="flex flex-col gap-2">
               <h2 class="font-bold text-[#062A1C] text-2xl md:text-3xl xl:text-4xl leading-tight xl:leading-[48px]">عندك اي اسئلة؟ كل حاجة هنا..</h2>
@@ -685,7 +685,7 @@
     return `<footer>
       ${preFooter}
       <div class="bg-[#062B1C]">
-        <div class="flex xl:flex-row flex-col-reverse gap-10 xl:gap-6 mx-auto px-4 xl:px-[190px] py-6 xl:py-8 max-w-[1920px]">
+        <div class="flex xl:flex-row flex-col-reverse gap-10 xl:gap-6 mx-auto px-4 py-6 xl:py-8 max-w-[1536px]">
           <!-- RTL start (right): brand, hotline, address, socials -->
           <div class="flex flex-col gap-3 xl:flex-1 xl:order-first">
             <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[150px] h-[50px] object-contain" />
@@ -698,7 +698,7 @@
         </div>
 
         <div class="bg-black">
-          <div class="flex md:flex-row flex-col-reverse justify-between items-center gap-4 mx-auto px-4 xl:px-[190px] py-4 max-w-[1920px] min-h-[60px]">
+          <div class="flex md:flex-row flex-col-reverse justify-between items-center gap-4 mx-auto px-4 py-4 max-w-[1536px] min-h-[60px]">
             <a href="https://www.mitchdesigns.com" target="_blank" rel="noopener noreferrer"
                class="flex items-center gap-2 opacity-30 hover:opacity-60 p-1.5 transition-opacity shrink-0" dir="ltr">
               <img src="images/abuauf/brand/mitchdesigns-logomark.svg" alt="" class="w-[30px] h-[30px]" />

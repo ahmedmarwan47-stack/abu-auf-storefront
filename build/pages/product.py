@@ -67,7 +67,7 @@ def build():
 
       <!-- ============================ PRODUCT ============================ -->
       <section class="pt-6 pb-12">
-        <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 max-w-[1536px]">
 
           <!-- RTL start: details. data-product lets the cart store read this
                product straight off the DOM, same as a product card. -->
@@ -115,7 +115,7 @@ def build():
 
       <!-- ==================== FREQUENTLY BOUGHT TOGETHER ==================== -->
       <section class="py-8">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           <div class="bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]">
             <h2 class="mb-6 font-bold text-[#062A1C] text-xl xl:text-2xl">عادة ما يتم شراؤه معاً: أضف هذه العناصر</h2>
             <div class="items-center gap-6 lg:gap-8 grid grid-cols-1 lg:grid-cols-[1fr_auto]">
@@ -135,7 +135,7 @@ def build():
 
       <!-- ============================= RECIPES ============================= -->
       <section class="bg-interaction-base py-12">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("وصفات بالمنتج")}
           <div class="gap-6 xl:gap-8 grid lg:grid-cols-2">{"".join(recipe_card(*r) for r in RECIPES)}
           </div>
@@ -144,7 +144,7 @@ def build():
 
       <!-- ========================= SIMILAR PRODUCTS ========================= -->
       <section class="py-12">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("منتجات مشابهة", "عرض المزيد", "shop-category.html")}
           {carousel("".join(product_card(x) for x in similar))}
         </div>
@@ -152,7 +152,7 @@ def build():
 
       <!-- =========================== MORE FROM US =========================== -->
       <section class="pb-12">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("تسوق اكتر من أبو عوف", "عرض المزيد", "shop.html")}
           {carousel("".join(product_card(x) for x in more))}
         </div>

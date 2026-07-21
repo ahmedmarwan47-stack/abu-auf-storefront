@@ -35,7 +35,7 @@ def build():
     body = f"""{page_header("فروع أبو عوف", [("الرئيسية", "index.html"), ("الفروع", None)])}
 
       <section class="py-6">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           <p class="mb-8 max-w-[720px] text-neutral-secondary text-base xl:text-lg leading-8">
             يوجد أكثر من <span class="latin">{total}</span> فرع لأبو عوف في
             <span class="latin">{len(DATA)}</span> محافظة في مصر — اختر محافظتك لتجد أقرب فرع إليك.

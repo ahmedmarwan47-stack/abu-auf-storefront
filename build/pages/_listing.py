@@ -37,7 +37,7 @@ def listing(title_text, description, heading, trail, chips, products,
 
       <!-- ============================== FILTERS ============================== -->
       <section class="pt-6">
-        <div class="flex flex-col gap-6 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="flex flex-col gap-6 mx-auto px-4 max-w-[1536px]">
           {intro_html}
           <div class="flex xl:flex-row flex-col items-start xl:items-center xl:justify-between gap-4"{' data-listing' if filterable else ''}>
             <div class="flex gap-2 -mx-1 px-1 w-full xl:flex-1 min-w-0 overflow-x-auto no-scrollbar">{chip_html}
@@ -49,7 +49,7 @@ def listing(title_text, description, heading, trail, chips, products,
 
       <!-- ============================== PRODUCTS ============================== -->
       <section class="py-8 xl:py-10">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           <p class="mb-6 text-neutral-secondary text-sm">
             <span class="latin" data-result-count>{len(products)}</span> منتج
           </p>

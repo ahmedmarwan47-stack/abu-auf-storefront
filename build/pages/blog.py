@@ -53,7 +53,7 @@ def build():
       </article>
 
       <section class="py-12">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("مقالات ذات صلة", "كل المقالات", "blogs.html")}
           <div class="gap-6 xl:gap-8 grid md:grid-cols-2 lg:grid-cols-3">{related}
           </div>

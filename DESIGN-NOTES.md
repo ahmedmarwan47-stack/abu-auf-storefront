@@ -449,3 +449,44 @@ a shopper who deliberately emptied their cart, and is never re-seeded.
 Server-rendered cart rows carry `data-cart-static` and are cleared the first
 time the store paints, so the page is not blank without JS but never shows
 duplicates with it.
+
+## Content width now matches the live site (1536px)
+
+Measured on abuauf.com: both the utility bar and the masthead sit in a
+`container mx-auto max-w-screen-2xl` = **1536px**, with the coloured bars
+full-bleed behind them.
+
+Ours used `max-w-[1920px]` with `xl:px-[190px]`. That coincidentally lands near
+1536 at a 1920 viewport, but is wrong everywhere else — at 1440 it gave a
+1060px content column against the live site's ~1408. The header and nav rows had
+no max-width at all and ran to 1745px.
+
+All 36 container declarations across `build/` and `scripts.js` are now
+`mx-auto px-4 max-w-[1536px]`, and the masthead and nav rows are constrained to
+1536 too. Verified at 1920: every content container 1536, masthead 1536, nav
+1536.
+
+## Cart and search buttons unified
+
+The cart button was `size-[60px]` next to a `size-12` search button. The live
+site has both at **48×48**; ours now match, with the glyph and count badge
+scaled to suit.
+
+## Language panel stacking
+
+The panel opened *behind* the nav bar. The utility bar that hosts it was
+`z-40` while the masthead was also `z-40` and later in the DOM, so the masthead
+and its nav painted over the panel. The utility bar is now `z-50`. Verified by
+hit-testing a point near the panel's bottom edge — the panel is what is on top.
+
+**If you add another header layer, keep the order:** utility bar `z-50` >
+masthead `z-40` > nav `z-30`. Anything that opens a dropdown must live in a bar
+above whatever it needs to overlap.
+
+## Note on verifying: use a fresh port
+
+`python3 -m http.server` sends no cache headers, so browsers hold on to
+`scripts.js` and `styles.css` hard. Several "this still looks wrong" moments in
+this project have turned out to be a stale port or a cached asset. Always bump
+the port when checking a CSS/JS change, and confirm what the server is actually
+rooted at.

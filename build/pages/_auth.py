@@ -90,7 +90,7 @@ def auth_page(title_text, description, heading, form_html, page_id, path,
     body = f"""{page_header("", [("الرئيسية", "index.html"), (crumb, None)])}
 
       <section class="py-8 xl:py-12">
-        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 {'lg:grid-cols-2' if side else 'max-w-[560px] mx-auto'} mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 {'lg:grid-cols-2' if side else 'max-w-[560px] mx-auto'} mx-auto px-4 max-w-[1536px]">
           {SIDE_CARD if side else ''}
           <div class="flex flex-col gap-6 bg-white shadow-custom4 p-8 xl:p-10 rounded-[20px] min-w-0">
             <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl text-center">{e(heading)}</h1>

@@ -69,7 +69,7 @@ def build():
 
     body = f"""
       <section class="pt-10 pb-6">
-        <div class="flex flex-col gap-3 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="flex flex-col gap-3 mx-auto px-4 max-w-[1536px]">
           <div class="flex items-center gap-3">
             <span class="place-items-center grid bg-primary rounded-full text-white size-8">{CHECK}</span>
             <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">شكراً لك</h1>
@@ -85,7 +85,7 @@ def build():
 
       <!-- ========================== ORDER TRACKER ========================== -->
       <section class="pb-8">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           <ol class="flex md:flex-row flex-col gap-6 md:gap-2 bg-white shadow-custom4 p-6 rounded-[20px]">{steps_html}
           </ol>
         </div>
@@ -93,7 +93,7 @@ def build():
 
       <!-- ============================ ORDER DETAIL ============================ -->
       <section class="pb-12">
-        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 lg:grid-cols-[380px_1fr] mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 lg:grid-cols-[380px_1fr] mx-auto px-4 max-w-[1536px]">
           <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px] min-w-0">
             <h2 class="font-bold text-[#062A1C] text-lg">طلب رقم <span class="latin">#{ORDER_NO}</span></h2>
             <div class="flex flex-col">{lines}
@@ -132,7 +132,7 @@ def build():
 
       <!-- ============================= SHOP MORE ============================= -->
       <section class="pb-12">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("تسوق اكتر", "عرض المزيد", "shop.html")}
           {carousel("".join(product_card(x) for x in more))}
         </div>

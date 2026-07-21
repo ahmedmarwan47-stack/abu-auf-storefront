@@ -20,7 +20,7 @@ def build():
     body = f"""{page_header("أتصل بنا", [("الرئيسية", "index.html"), ("أتصل بنا", None)])}
 
       <section class="py-8 xl:py-10">
-        <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 max-w-[1536px]">
           <div class="flex flex-col gap-6">
             <p class="text-neutral-800 text-base xl:text-lg leading-8">
               لو عندك أي استفسار أو اقتراح، إحنا هنا. اختار الطريقة اللي تناسبك أو ابعتلنا رسالة وهنرد عليك في أقرب وقت.

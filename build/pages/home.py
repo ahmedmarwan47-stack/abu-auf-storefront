@@ -101,7 +101,7 @@ def build():
     body = f"""
       <!-- ============================== HERO ============================== -->
       <section class="bg-white pt-4 md:pt-6 w-full">
-        <div class="mx-auto px-4 xl:px-20 max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           <div class="relative carousel hero-banners" data-autoplay style="--carousel-gap:16px">
             <div class="carousel-track">{hero_slides}
             </div>
@@ -118,7 +118,7 @@ def build():
 
       <!-- ========================= SHOP BY CATEGORY ========================= -->
       <section class="py-12 xl:py-16">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("تسوق منتجاتنا", centered=True)}
           <!-- The Figma mobile home (2595:60104) stacks these one per row; the
                tiles are 220px wide, so forcing two columns at 375px clipped
@@ -130,7 +130,7 @@ def build():
 
       <!-- =========================== PRODUCT RAILS =========================== -->
       <section class="bg-white py-8 xl:py-12">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]" data-tabs>
+        <div class="mx-auto px-4 max-w-[1536px]" data-tabs>
           <div class="flex justify-center gap-8 xl:gap-12 mb-10 border-neutral-divider border-b">{tab_btns}</div>
 {tab_panels}
         </div>
@@ -138,7 +138,7 @@ def build():
 
       <!-- ============================ GIFTS BANNER ============================ -->
       <section class="py-8 xl:py-12">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           <div class="items-center gap-8 grid lg:grid-cols-2 bg-beige px-6 xl:px-12 py-10 xl:py-0 rounded-[20px] overflow-hidden">
             <div class="flex flex-col gap-4 py-0 xl:py-16">
               <p class="font-semibold text-primary text-lg xl:text-xl">خصم يصل إلى <span class="latin">20٪</span> على قسم</p>
@@ -158,7 +158,7 @@ def build():
 
       <!-- ============================== REVIEWS ============================== -->
       <section class="py-12 xl:py-16">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("أراء العملاء", "كل التعليقات", "faqs.html")}
           <div class="gap-x-24 gap-y-12 grid md:grid-cols-2">{"".join(review_card(*r) for r in REVIEWS)}
           </div>
@@ -167,7 +167,7 @@ def build():
 
       <!-- =============================== ABOUT =============================== -->
       <section class="bg-primary text-white">
-        <div class="items-center grid lg:grid-cols-2 mx-auto max-w-[1920px]">
+        <div class="items-center grid lg:grid-cols-2 mx-auto max-w-[1536px]">
           <div class="flex flex-col gap-6 px-4 xl:ps-[190px] xl:pe-20 py-12 xl:py-20">
             <p class="font-semibold text-accent-yellow text-lg xl:text-xl">عن أبو عوف</p>
             <h2 class="font-bold text-3xl xl:text-5xl leading-tight">نحن نغير مفهوم الأكل الصحي في جميع أنحاء العالم</h2>
@@ -182,7 +182,7 @@ def build():
 
       <!-- =============================== BLOG =============================== -->
       <section class="py-12 xl:py-16">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("آخر الأخبار", "كل المقالات", "blogs.html")}
           <div class="gap-6 xl:gap-8 grid md:grid-cols-2 lg:grid-cols-3">{"".join(blog_card(*b) for b in BLOG)}
           </div>
@@ -191,7 +191,7 @@ def build():
 
       <!-- ============================== RECIPES ============================== -->
       <section class="bg-interaction-base py-12 xl:py-16">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("أشهي الوصفات من أبو عوف")}
           <div class="gap-6 xl:gap-8 grid lg:grid-cols-2">{"".join(recipe_card(*r) for r in RECIPES)}
           </div>
@@ -201,7 +201,7 @@ def build():
 
       <!-- ========================== BRANCHES / EXPORT ========================== -->
       <section class="py-12 xl:py-16">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           <div class="gap-6 xl:gap-12 grid lg:grid-cols-2">
 {info_card("images/abuauf/site/pick-up.webp", "فروع أبو عوف",
            'يوجد أكثر من <span class="latin">150</span> فرع أبو عوف في مصر, أكتشف الأقرب اليك',

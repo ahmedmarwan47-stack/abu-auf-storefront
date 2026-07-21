@@ -114,7 +114,7 @@ def account_page(title_text, description, content, page_id, path,
     body = f"""{page_header("", [("الرئيسية", "index.html"), ("حسابي", "my-account.html"), (crumb, None)])}
 
       <section class="py-6 xl:py-8">
-        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 lg:grid-cols-[300px_1fr] mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 lg:grid-cols-[300px_1fr] mx-auto px-4 max-w-[1536px]">
 {mobile_nav(active_slug)}
 {sidebar(active_slug)}
           <div class="flex flex-col gap-6 min-w-0">{content}

@@ -157,7 +157,7 @@ def page_header(heading, trail=None):
     crumbs = f"{breadcrumb(trail)}" if trail else ""
     return f"""
       <section class="pt-6">
-        <div class="flex flex-col gap-4 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="flex flex-col gap-4 mx-auto px-4 max-w-[1536px]">
           {crumbs}
           <h1 class="font-bold text-[#062A1C] text-3xl xl:text-5xl">{e(heading)}</h1>
         </div>

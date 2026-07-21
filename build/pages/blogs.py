@@ -12,7 +12,7 @@ def build():
     body = f"""{page_header("البلوج", [("الرئيسية", "index.html"), ("البلوج", None)])}
 
       <section class="py-8 xl:py-10">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           <p class="mb-10 max-w-[720px] text-neutral-secondary text-base xl:text-lg leading-8">
             نصائح ووصفات ومعلومات عن القهوة والمكسرات والتمور والأكل الصحي — من فريق أبو عوف.
           </p>

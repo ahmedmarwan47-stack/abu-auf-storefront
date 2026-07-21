@@ -34,7 +34,7 @@ def build():
     body = f"""{page_header("قصتنا", [("الرئيسية", "index.html"), ("قصتنا", None)])}
 
       <section class="py-8">
-        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="mx-auto px-4 max-w-[1536px]">
           <div class="rounded-[20px] overflow-hidden">
             <img src="images/abuauf/site/About-Homepage.webp" alt="فرع أبو عوف" class="w-full h-[280px] xl:h-[460px] object-cover" />
           </div>
@@ -42,7 +42,7 @@ def build():
       </section>
 
       <section class="pb-10">
-        <div class="gap-4 grid grid-cols-2 lg:grid-cols-4 mx-auto px-4 xl:px-[190px] max-w-[1920px]">{stats}
+        <div class="gap-4 grid grid-cols-2 lg:grid-cols-4 mx-auto px-4 max-w-[1536px]">{stats}
         </div>
       </section>
 
