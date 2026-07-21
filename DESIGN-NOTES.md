@@ -1,26 +1,49 @@
 # Abu Auf rebuild — design & accessibility notes
 
-Running list of issues found while building the static export against the
-Abu Auf Figma (`tQiydoANmIdYWq0IfmTsMz`). **The build matches the Figma in every
-case below** — nothing here has been silently "fixed". These are for the
-designer to rule on.
+Notes from building the static export against the Abu Auf Figma
+(`tQiydoANmIdYWq0IfmTsMz`).
 
-## Colour contrast
+## Colour contrast — FIXED, and it diverges from the Figma
 
-WCAG 2.1 AA requires 4.5:1 for body text and 3:1 for large text (≥24px, or
-≥19px bold).
+**The build now passes WCAG 2.1 AA everywhere** (4.5:1 body, 3:1 large text).
+Achieving that required deviating from the Figma in the places listed below.
+**The designer should be told**, because the Figma is still the failing version.
 
-| # | Where | Foreground | Background | Ratio | Verdict |
-|---|-------|-----------|------------|-------|---------|
-| 1 | Footer HQ address | `#185039` Primary/Green | `#062B1C` footer green | ~1.4:1 | **Fails badly.** Body-size text, effectively unreadable. |
-| 2 | Footer column headings ("أقسام المنتجات", "عن الشركة", "المساعدة") | `#185039` | `#062B1C` | ~1.4:1 | **Fails.** Same pairing; these are 16px bold. |
-| 3 | Footer legal / copyright | `#777777` Interaction/Secondary Text | `#000000` | ~4.4:1 | Marginal — just under 4.5:1 at 16px. |
-| 4 | Utility bar links | `#5F5035` | `#E8DFD0` Primary/Beige | ~5.6:1 | Passes. |
+Verified live in-browser (computed styles, not theory) — 0 failures across
+`index` (206 text nodes), `checkout` (109), `my-account` (154) and
+`shop-category` (148).
 
-**Recommendation for 1 and 2:** lift the green to roughly `#7FA894` (≈4.6:1 on
-`#062B1C`), or use `Primary/Beige #E8DFD0` at reduced opacity. Either keeps the
-green-family look while becoming legible. Needs a designer decision because it
-changes a token pairing used across the footer on every page.
+| Where | Figma | Ratio | Now | Ratio |
+|-------|-------|-------|-----|-------|
+| Footer column headings + HQ address | `#185039` on `#062B1C` | **1.64:1** | `onDarkGreen #7FA894` | 5.79:1 |
+| Secondary text everywhere (546 uses) | `#777777` | 4.48 / 3.87 / 3.39 on white / base / beige | `neutral.secondary #5F5F5F` | 6.39 / 5.52 / 4.83 |
+| Legal-bar text on black | — | — | `onBlack #949494` | 6.92:1 |
+| Newsletter placeholder on beige | `#ABA08F` | **1.95:1** | `onBeigeMuted #6B6255` | 4.54:1 |
+| Utility-bar links on beige | `text-white` (bug) | **1.32:1** | `#5F5035` | 5.92:1 |
+| Tab buttons | `#777777` | 4.48:1 | `#5F5F5F` | 6.39:1 |
+| Mobile drawer links | `#868685` / `#bbbbbb` | 3.64 / 1.92 | `neutral.secondary` | 6.39:1 |
+| Breadcrumb `/` separators | `#C6C6C6` | 1.71:1 | `aria-hidden` + `neutral.outline` | decorative |
+
+Two of those were **my own bugs**, not the Figma's: the utility-bar links kept
+`text-white` from the old navy bar after I recoloured it beige (invisible text),
+and `.tab-btn` in `styles.css` hardcoded `#777777` instead of using the token.
+
+### Gotcha worth knowing
+
+`neutral.secondary` is tuned for **light** surfaces and inverts badly on black
+(3.29:1) — that is why `onBlack` exists as a separate token. Don't reuse
+`text-neutral-secondary` on dark backgrounds.
+
+### Tailwind Play CDN gotcha
+
+A nested colour key containing a hyphen — e.g. `primary["on-dark"]` — does
+**not** produce a usable class. `text-primary-on-dark` is ambiguous between
+colour name and shade, so it silently resolves to nothing and the element falls
+back to the inherited body colour. This cost a debugging cycle: the ratios were
+correct on paper while the browser was still painting the old colour. The
+accessibility tokens are therefore **flat** (`onDarkGreen`, `onBlack`,
+`onBeigeMuted`). Always verify colour changes with computed styles in the
+browser, not by reading the config.
 
 ## Content gaps — needs client copy before launch
 

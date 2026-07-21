@@ -104,7 +104,9 @@ def breadcrumb(trail):
         else:
             parts.append(
                 f'<a href="{href}" class="text-neutral-secondary hover:text-primary transition-colors">{e(label)}</a>'
-                f'<span class="text-neutral-disabled">/</span>')
+                # Decorative separator: hidden from assistive tech, and
+                # toned up from #C6C6C6 (1.71:1) so it is still visible.
+                f'<span aria-hidden="true" class="text-neutral-outline">/</span>')
     return (f'<nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm">'
             f'{"".join(parts)}</nav>')
 

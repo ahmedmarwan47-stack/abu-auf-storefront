@@ -326,7 +326,7 @@
     /* --- support (utility) menu --- */
     const support = SUPPORT_MENU.map(
       (i) =>
-        `<a href="${pageHref(i.url)}" class="font-medium text-white hover:text-white/70 text-sm leading-[140%] transition-colors">${esc(i.title)}</a>`,
+        `<a href="${pageHref(i.url)}" class="font-medium text-[#5F5035] hover:text-cta text-sm leading-[140%] transition-colors">${esc(i.title)}</a>`,
     ).join("");
 
     /* --- desktop primary nav --- */
@@ -492,14 +492,14 @@
 
     if (isCheckout()) {
       return `<footer class="bg-black py-6">
-        <div class="mx-auto px-4 max-w-[1392px] text-neutral-secondary text-xs text-center">${copyright}</div>
+        <div class="mx-auto px-4 max-w-[1392px] text-onBlack text-xs text-center">${copyright}</div>
       </footer>`;
     }
 
     const columns = FOOTER_COLUMNS.map(
       (col) => `
       <div class="flex-1 min-w-[150px]">
-        <h2 class="mb-5 font-bold text-primary text-base leading-[22px]">${esc(col.name)}</h2>
+        <h2 class="mb-5 font-bold text-onDarkGreen text-base leading-[22px]">${esc(col.name)}</h2>
         <ul class="flex flex-col gap-2">
           ${col.links
             .map(
@@ -538,7 +538,7 @@
             <form data-newsletter class="flex flex-row-reverse items-center gap-2 bg-transparent py-2 xl:py-[9px] pe-5 ps-2.5 border-2 border-neutral-outline rounded-2xl w-full">
               <input type="email" required aria-label="البريد الالكتروني"
                      placeholder="أدخل عنوان البريد الالكتروني"
-                     class="flex-1 bg-transparent outline-none min-w-0 font-semibold text-[#062A1C] placeholder:text-[#ABA08F] text-sm xl:text-base" />
+                     class="flex-1 bg-transparent outline-none min-w-0 font-semibold text-[#062A1C] placeholder:text-onBeigeMuted text-sm xl:text-base" />
               <button type="submit" class="bg-cta hover:bg-cta-hover px-5 py-2 xl:py-2.5 rounded-full font-semibold text-white text-sm xl:text-base whitespace-nowrap transition-colors">اشتراك</button>
             </form>
           </div>
@@ -553,7 +553,7 @@
           <div class="flex flex-col gap-3 xl:flex-1 xl:order-first">
             <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[150px] h-[50px] object-contain" />
             <a href="tel:${CONTACT.hotline}" class="mt-auto xl:mt-10 font-bold text-white text-2xl xl:text-3xl latin">${CONTACT.hotline}</a>
-            <p class="max-w-[277px] font-semibold text-primary text-sm xl:text-base leading-relaxed">${esc(CONTACT.address)}</p>
+            <p class="max-w-[277px] font-semibold text-onDarkGreen text-sm xl:text-base leading-relaxed">${esc(CONTACT.address)}</p>
             <ul class="flex items-center gap-6 mt-1">${socials}</ul>
           </div>
           <!-- link columns -->
@@ -565,13 +565,13 @@
             <a href="https://www.mitchdesigns.com" target="_blank" rel="noopener noreferrer"
                class="flex items-center gap-2 opacity-30 hover:opacity-60 p-1.5 transition-opacity shrink-0" dir="ltr">
               <img src="images/abuauf/brand/mitchdesigns-logomark.svg" alt="" class="w-[30px] h-[30px]" />
-              <span class="flex flex-col gap-0.5 text-neutral-secondary text-start latin">
+              <span class="flex flex-col gap-0.5 text-onBlack text-start latin">
                 <span class="text-[10px] leading-[14px]">Web Design by</span>
                 <span class="font-medium text-sm leading-4">MITCH DESIGNS</span>
               </span>
             </a>
             ${paymentMarks()}
-            <p class="font-medium text-neutral-secondary text-xs xl:text-base">${copyright}</p>
+            <p class="font-medium text-onBlack text-xs xl:text-base">${copyright}</p>
           </div>
         </div>
       </div>
@@ -587,12 +587,12 @@
     const menuLinks = MAIN_MENU.map(
       (i) => `
       <li class="border-b border-neutral-100">
-        <a href="${pageHref(i.url)}" class="flex items-center justify-between py-3.5 text-textSecondary font-medium">${esc(i.name)}${i.children ? `<span class="w-4 h-4 text-neutral-500">${ICON.arrowRight}</span>` : ""}</a>
+        <a href="${pageHref(i.url)}" class="flex items-center justify-between py-3.5 text-textSecondary font-medium">${esc(i.name)}${i.children ? `<span class="w-4 h-4 text-neutral-secondary">${ICON.arrowRight}</span>` : ""}</a>
       </li>`,
     ).join("");
     const supportLinks = SUPPORT_MENU.map(
       (i) =>
-        `<li><a href="${pageHref(i.url)}" class="block py-2 text-neutral-600 text-sm">${esc(i.title)}</a></li>`,
+        `<li><a href="${pageHref(i.url)}" class="block py-2 text-neutral-secondary text-sm">${esc(i.title)}</a></li>`,
     ).join("");
 
     /* Sample cart contents — real catalogue items (see data/catalog.json). */
@@ -661,7 +661,7 @@
       <div class="flex-1 px-5 py-4 overflow-y-auto">
         <ul>${menuLinks}</ul>
         <div class="mt-6">
-          <p class="mb-1 text-neutral-500 text-xs">روابط أخرى</p>
+          <p class="mb-1 text-neutral-secondary text-xs">روابط أخرى</p>
           <ul>${supportLinks}</ul>
         </div>
         <div class="flex flex-col gap-3 mt-6">

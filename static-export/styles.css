@@ -540,7 +540,8 @@ body.no-scroll {
  */
 .tab-btn {
   cursor: pointer;
-  color: #777777;
+  /* Matches the `neutral.secondary` token; #777777 measured 4.48:1 on white. */
+  color: #5f5f5f;
   border-bottom: 3px solid transparent;
   transition:
     color 0.2s ease,

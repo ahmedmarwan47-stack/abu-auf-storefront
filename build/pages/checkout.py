@@ -39,7 +39,9 @@ def build():
     subtotal = sum(p["price"] for p in items)
     total = subtotal + DELIVERY_FEE
 
-    SEP = '<span class="text-neutral-disabled">/</span>'
+    # Decorative separator — hidden from assistive tech (the steps are
+    # already separate elements) and toned up from #C6C6C6 (1.71:1).
+    SEP = '<span aria-hidden="true" class="text-neutral-outline">/</span>'
     step_parts = []
     for i, s in enumerate(STEPS):
         current = i == 1

@@ -120,7 +120,7 @@ tailwind.config = {
           divider: "#D9D9D9",
           outline: "#868685",
           disabled: "#C6C6C6",
-          "secondary-text": "#777777",
+          "secondary-text": "#5F5F5F",
         },
         neutral: {
           black: "#000000",
@@ -130,7 +130,9 @@ tailwind.config = {
           divider: "#D9D9D9",
           outline: "#868685",
           disabled: "#C6C6C6",
-          secondary: "#777777",
+          // Raised from the Figma's #777777, which failed 4.5:1 on white,
+          // base and beige alike. #5F5F5F clears all three.
+          secondary: "#5F5F5F",
           50: "#f9f9f9",
           100: "#f3f3f3",
           200: "#e5e5e5",
@@ -172,6 +174,20 @@ tailwind.config = {
           amber: "#CC9500",
           red: "#F0263C",
         },
+
+        /* ---- Accessibility tokens --------------------------------------
+           Flat names on purpose: a nested key with a hyphen (e.g.
+           primary["on-dark"]) does not produce a usable class on the Play CDN,
+           because `text-primary-on-dark` is ambiguous between colour and
+           shade. These were verified against WCAG 2.1 AA. */
+        // Green legible on the dark footer #062B1C — 5.79:1.
+        // (The Figma specifies Primary/Green there, which is 1.64:1.)
+        onDarkGreen: "#7FA894",
+        // Muted text on the BLACK legal bar — 6.92:1. `neutral.secondary` is
+        // tuned for light surfaces and inverts badly here (3.29:1).
+        onBlack: "#949494",
+        // Placeholder text on beige #E8DFD0 — 4.54:1 (Figma's #ABA08F is 1.95:1).
+        onBeigeMuted: "#6B6255",
 
         /* ---- Semantic / legacy aliases --------------------------------- */
         success: "#346853",
