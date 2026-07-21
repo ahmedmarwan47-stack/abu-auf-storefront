@@ -3,281 +3,525 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Chocolate Fudge Cake — Abdel Rahim Koueider</title>
-    <meta
-      name="description"
-      content="Order our signature Chocolate Fudge Cake — rich Belgian chocolate sponge layered with silky fudge. Freshly baked and delivered across Egypt."
-    />
-    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <title>علبة معمول بعجوه المجدول مغطى بالشيكولاته - 12 قطعة | أبو عوف</title>
+    <meta name="description" content="اشتري علبة معمول بعجوه المجدول مغطى بالشيكولاته - 12 قطعة من أبو عوف أونلاين — جودة عالية وتوصيل سريع لكل مصر." />
+    <!-- Tailwind (Play CDN) + Abu Auf design system -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="tw-config.js"></script>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" href="images/logos/logo-dark.png" />
+    <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.svg" />
     <script defer src="scripts.js"></script>
   </head>
-  <body data-page="product" data-path="/products/chocolate-fudge-cake" class="antialiased bg-white">
+  <body data-page="product" data-path="/product" class="antialiased bg-white">
     <!-- Shared header is injected here by scripts.js -->
     <div id="site-header"></div>
 
     <main class="overflow-x-hidden">
-      <!-- ============================ PRODUCT DETAIL ============================
-           Source: products/[slug]/page.tsx → section pt-7 md:pt-14 > Container >
-           Breadcrumbs + [ProductImageGallery | ProductInfo]. -->
-      <section class="pt-7 md:pt-14">
-        <div class="container">
-          <!-- Desktop breadcrumb -->
-          <div class="mb-6 lg:mb-[32px] hidden md:block">
-            <nav aria-label="Breadcrumbs">
-              <ol class="m-0 flex w-full list-none flex-wrap items-center gap-x-1 gap-y-2 p-0 text-xs capitalize md:justify-start md:gap-2 text-primaryDark">
-                <li class="whitespace-nowrap text-primaryDark">
-                  <a href="index.html"><span>Home</span></a>
-                  <span class="inline-block ms-2 w-4 h-4 align-middle"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                </li>
-                <li class="whitespace-nowrap text-primaryDark">
-                  <a href="shop.html"><span>Shop</span></a>
-                  <span class="inline-block ms-2 w-4 h-4 align-middle"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                </li>
-                <li class="whitespace-nowrap text-primaryDark">
-                  <a href="shop-category.html"><span>Cakes</span></a>
-                  <span class="inline-block ms-2 w-4 h-4 align-middle"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                </li>
-                <li class="whitespace-nowrap text-primaryDark opacity-50"><span>Chocolate Fudge Cake</span></li>
-              </ol>
-            </nav>
-          </div>
-
-          <div class="flex flex-col gap-6 md:gap-14 xl:gap-0">
-            <div class="flex lg:flex-row flex-col xl:justify-between justify-center gap-6 md:gap-14">
-              <!-- ==================== PRODUCT IMAGE GALLERY ==================== -->
-              <div class="flex flex-col items-start gap-3 xl:gap-[60px] overflow-hidden xl:w-full !max-w-[698px]">
-                <div class="flex flex-col lg:flex-row-reverse items-start gap-3 w-full">
-                  <!-- Main image -->
-                  <figure class="relative bg-black-901 bg-opacity-10 w-full aspect-square rounded-xl overflow-hidden flex-1">
-                    <img id="pdp-main" src="images/singleproduct.png" alt="Chocolate Fudge Cake" class="w-full h-full object-cover" />
-                  </figure>
-                  <!-- Thumbnail strip (horizontal on mobile, vertical on desktop). Click swaps main image. -->
-                  <div class="flex flex-row lg:flex-col gap-2 w-full lg:w-[94px] shrink-0">
-                    <button type="button" onclick="swapMain(this)" data-src="images/singleproduct.png" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-primaryColor transition-all">
-                      <img src="images/singleproduct.png" alt="Chocolate Fudge Cake view 1" class="w-full h-full object-cover" />
-                    </button>
-                    <button type="button" onclick="swapMain(this)" data-src="images/menudeafult.webp" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
-                      <img src="images/menudeafult.webp" alt="Chocolate Fudge Cake view 2" class="w-full h-full object-cover" />
-                    </button>
-                    <button type="button" onclick="swapMain(this)" data-src="images/dummy-images/new-product.png" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
-                      <img src="images/dummy-images/new-product.png" alt="Chocolate Fudge Cake view 3" class="w-full h-full object-cover" />
-                    </button>
-                    <button type="button" onclick="swapMain(this)" data-src="images/secondmemoryimage.png" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
-                      <img src="images/secondmemoryimage.png" alt="Chocolate Fudge Cake view 4" class="w-full h-full object-cover" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Mobile breadcrumb -->
-              <div class="mt-4 mb-2 lg:mb-[32px] md:hidden block">
-                <nav aria-label="Breadcrumbs">
-                  <ol class="m-0 flex w-full list-none flex-wrap items-center gap-x-1 gap-y-2 p-0 text-xs capitalize gap-2 text-primaryDark">
-                    <li class="whitespace-nowrap text-primaryDark"><a href="index.html"><span>Home</span></a><span class="inline-block ms-1 w-4 h-4 align-middle"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
-                    <li class="whitespace-nowrap text-primaryDark"><a href="shop-category.html"><span>Cakes</span></a><span class="inline-block ms-1 w-4 h-4 align-middle"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
-                    <li class="whitespace-nowrap text-primaryDark opacity-50"><span>Chocolate Fudge Cake</span></li>
-                  </ol>
-                </nav>
-              </div>
-
-              <!-- ==================== PRODUCT INFO ==================== -->
-              <div class="md:w-[calc(50%-28px)] w-full">
-                <div class="flex flex-col gap-4 md:gap-[18px] xl:gap-[32px] mb-2 pb-2 lg:pb-[18px]">
-                  <div class="flex flex-col gap-2">
-                    <span class="text-primaryDark font-medium text-sm">Cakes</span>
-                    <div class="flex flex-col items-start gap-2 w-full">
-                      <div class="flex justify-between items-start gap-5 w-full">
-                        <h1 class="text-lg font-semibold text-textSecondary md:text-xl lg:text-3xl">Chocolate Fudge Cake</h1>
-                        <button type="button" aria-label="Add to wishlist" class="shrink-0 grid place-items-center w-10 h-10 md:w-11 md:h-11 rounded-full border border-gray-300 text-gray-500 hover:text-cardbadgecolor hover:border-cardbadgecolor transition-colors">
-                          <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" stroke="currentColor" stroke-width="1.6"/></svg>
-                        </button>
-                      </div>
-                    </div>
-                    <!-- Rating -->
-                    <div class="flex items-center gap-1">
-                      <svg viewBox="0 0 24 24" class="w-5 h-5 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
-                      <div class="flex items-center gap-1">
-                        <h2 class="text-primary text-sm">4.5 rating</h2>
-                        <span class="text-gray-700 text-xs">(128 reviews)</span>
-                      </div>
-                    </div>
-
-                    <!-- ProductActions: price + variations -->
-                    <div class="flex flex-col gap-4 mt-2">
-                      <div class="flex items-center gap-3">
-                        <div class="flex items-baseline gap-1" dir="ltr">
-                          <sub class="text-gray-700 text-lg font-medium">EGP</sub>
-                          <span class="text-2xl font-semibold text-primaryDark md:text-3xl">650</span>
-                          <sub class="text-primaryDark text-lg font-medium">.00</sub>
-                        </div>
-                        <span class="text-base font-medium text-gray-700 line-through md:text-xl">EGP 720</span>
-                      </div>
-
-                      <!-- Variation: Size (pill buttons, single-select) -->
-                      <div class="flex flex-col gap-2" data-variation-group>
-                        <label class="font-semibold text-textSecondary text-base capitalize">Size</label>
-                        <div class="flex flex-wrap gap-3">
-                          <button type="button" class="variation-pill is-active border px-4 py-2 rounded-full text-sm font-medium capitalize transition-colors [&.is-active]:bg-primaryDark [&.is-active]:text-white [&.is-active]:border-primaryDark border-gray-300 text-gray-700">Small (6")</button>
-                          <button type="button" class="variation-pill border px-4 py-2 rounded-full text-sm font-medium capitalize transition-colors [&.is-active]:bg-primaryDark [&.is-active]:text-white [&.is-active]:border-primaryDark border-gray-300 text-gray-700">Medium (8")</button>
-                          <button type="button" class="variation-pill border px-4 py-2 rounded-full text-sm font-medium capitalize transition-colors [&.is-active]:bg-primaryDark [&.is-active]:text-white [&.is-active]:border-primaryDark border-gray-300 text-gray-700">Large (10")</button>
-                        </div>
-                      </div>
-
-                      <!-- Variation: Weight (pill buttons, single-select) -->
-                      <div class="flex flex-col gap-2" data-variation-group>
-                        <label class="font-semibold text-textSecondary text-base capitalize">Weight</label>
-                        <div class="flex flex-wrap gap-3">
-                          <button type="button" class="variation-pill is-active border px-4 py-2 rounded-full text-sm font-medium capitalize transition-colors [&.is-active]:bg-primaryDark [&.is-active]:text-white [&.is-active]:border-primaryDark border-gray-300 text-gray-700">1 kg</button>
-                          <button type="button" class="variation-pill border px-4 py-2 rounded-full text-sm font-medium capitalize transition-colors [&.is-active]:bg-primaryDark [&.is-active]:text-white [&.is-active]:border-primaryDark border-gray-300 text-gray-700">1.5 kg</button>
-                          <button type="button" class="variation-pill border px-4 py-2 rounded-full text-sm font-medium capitalize transition-colors [&.is-active]:bg-primaryDark [&.is-active]:text-white [&.is-active]:border-primaryDark border-gray-300 text-gray-700">2 kg</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Short description -->
-                  <div class="text-gray-700 text-xs md:text-sm border-t border-gray-200 pt-4 lg:pt-[22px] wysiwyg-product">
-                    <p>A rich, moist Belgian chocolate sponge layered with silky chocolate fudge and finished with a glossy ganache. Baked fresh to order and perfect for birthdays, anniversaries and every sweet celebration.</p>
-                  </div>
-
-                  <!-- Ingredients + servings -->
-                  <div class="flex flex-col gap-6">
-                    <div class="flex flex-col gap-2">
-                      <span class="text-textSecondary font-semibold">Ingredients</span>
-                      <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-primaryDark py-1 px-1.5 text-xs font-medium bg-backgroundLocationBar rounded-sm">Belgian chocolate</span>
-                        <span class="text-primaryDark py-1 px-1.5 text-xs font-medium bg-backgroundLocationBar rounded-sm">Fresh cream</span>
-                        <span class="text-primaryDark py-1 px-1.5 text-xs font-medium bg-backgroundLocationBar rounded-sm">Free-range eggs</span>
-                        <span class="text-primaryDark py-1 px-1.5 text-xs font-medium bg-backgroundLocationBar rounded-sm">Butter</span>
-                        <span class="text-primaryDark py-1 px-1.5 text-xs font-medium bg-backgroundLocationBar rounded-sm">Cocoa</span>
-                        <span class="text-primaryDark py-1 px-1.5 text-xs font-medium bg-backgroundLocationBar rounded-sm">Vanilla</span>
-                      </div>
-                    </div>
-                    <div class="flex flex-col gap-[6px]">
-                      <span class="text-[#2C3340] font-bold text-base leading-[140%] flex items-center">Servings</span>
-                      <p class="text-gray-700 font-normal text-base leading-[140%] flex items-center">Serves 8–10 people</p>
-                    </div>
-                  </div>
-
-                  <!-- ProductActionsBottom: quantity stepper + add to cart + delivery -->
-                  <div class="flex flex-col gap-4">
-                    <div class="flex items-center gap-2 md:gap-4">
-                      <!-- Quantity stepper (data-stepper wired by scripts.js) -->
-                      <div data-stepper class="flex items-center justify-between border-2 border-primaryDark rounded-full w-28 md:w-32 px-3 md:px-4 h-12 md:h-[70px]">
-                        <button type="button" data-step="-1" class="text-primaryDark text-2xl leading-none w-6 grid place-items-center" aria-label="Decrease quantity">−</button>
-                        <span data-qty class="text-primaryDark md:text-xl font-medium">1</span>
-                        <button type="button" data-step="1" class="text-primaryDark text-2xl leading-none w-6 grid place-items-center" aria-label="Increase quantity">+</button>
-                      </div>
-                      <!-- Add to cart → opens the shared cart drawer (data-open="cart") -->
-                      <button type="button" data-open="cart" class="flex items-center justify-center gap-2 rounded-full bg-primaryDark hover:bg-primaryExtraDark hover:gap-3 transition-all w-80 h-12 md:h-[70px] text-white">
-                        <span class="text-white font-medium text-sm md:text-xl">Add to cart</span>
-                        <svg viewBox="0 0 24 24" fill="none" class="text-white w-3 h-3"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                      </button>
-                    </div>
-
-                    <!-- Estimated delivery (single product) -->
-                    <div class="flex flex-row justify-center items-center gap-2 bg-backgroundLocationBar px-6 py-2 rounded-[12px] w-full lg:w-[526px]">
-                      <div class="flex flex-row flex-grow justify-between items-center gap-2 w-full">
-                        <div class="flex flex-row items-center gap-3">
-                          <div class="relative w-[43px] h-[42px] scale-x-[-1]"><img src="images/Mailicon.png" alt="delivery" class="w-full h-full object-contain" /></div>
-                          <span class="font-normal text-textSecondary text-[14px] leading-[140%]">Order now | <span class="font-medium">Maadi, Cairo</span></span>
-                        </div>
-                        <button type="button" data-open="location" class="ms-auto"><span class="font-medium text-neutral-support-bg text-[14px] capitalize hover:bg-white hover:rounded-full p-2">Edit</span></button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- ==================== DESCRIPTION / INGREDIENTS TAB BLOCK ==================== -->
-            <div class="pt-4 md:pt-10" data-tabs>
-              <ul class="no-scrollbar -mx-4 flex items-center gap-2.5 overflow-auto px-4 md:mx-0 md:px-0 border-b border-gray-200 pb-0">
-                <li class="whitespace-nowrap"><button type="button" class="tab-btn is-active px-5 py-2.5 text-sm md:text-base font-medium border-b-2 border-transparent [&.is-active]:border-primaryDark [&.is-active]:text-primaryDark text-gray-700 transition-colors" data-tab="desc">Description</button></li>
-                <li class="whitespace-nowrap"><button type="button" class="tab-btn px-5 py-2.5 text-sm md:text-base font-medium border-b-2 border-transparent [&.is-active]:border-primaryDark [&.is-active]:text-primaryDark text-gray-700 transition-colors" data-tab="ingredients">Ingredients</button></li>
-                <li class="whitespace-nowrap"><button type="button" class="tab-btn px-5 py-2.5 text-sm md:text-base font-medium border-b-2 border-transparent [&.is-active]:border-primaryDark [&.is-active]:text-primaryDark text-gray-700 transition-colors" data-tab="delivery">Delivery &amp; storage</button></li>
-              </ul>
-              <div class="pt-6 max-w-[820px]">
-                <div class="tab-panel wysiwyg-product text-gray-700 text-sm md:text-base" data-panel="desc">
-                  <h3>The Koueider signature</h3>
-                  <p>Our Chocolate Fudge Cake is built on three layers of deeply moist Belgian chocolate sponge, brushed with sugar syrup and generously filled with a velvety chocolate fudge. Every cake is finished by hand with a mirror-glaze ganache and delicate chocolate shavings.</p>
-                  <p>Made fresh to order in our Cairo kitchens using the same family recipe we have perfected since 1961.</p>
-                  <ul>
-                    <li>Three layers of Belgian chocolate sponge</li>
-                    <li>Silky chocolate fudge filling</li>
-                    <li>Hand-finished ganache glaze</li>
-                    <li>No artificial preservatives</li>
-                  </ul>
-                </div>
-                <div class="tab-panel wysiwyg-product text-gray-700 text-sm md:text-base" data-panel="ingredients" hidden>
-                  <h3>What's inside</h3>
-                  <p>We use only premium ingredients, sourced fresh every day.</p>
-                  <ul>
-                    <li>Belgian dark chocolate (54% cocoa)</li>
-                    <li>Fresh dairy cream and butter</li>
-                    <li>Free-range eggs</li>
-                    <li>Unbleached wheat flour</li>
-                    <li>Natural vanilla and cocoa powder</li>
-                  </ul>
-                  <p><strong>Allergens:</strong> contains gluten, eggs, dairy and may contain traces of nuts.</p>
-                </div>
-                <div class="tab-panel wysiwyg-product text-gray-700 text-sm md:text-base" data-panel="delivery" hidden>
-                  <h3>Delivery &amp; storage</h3>
-                  <p>Same-day delivery is available across Greater Cairo for orders placed before 4:00 PM. Nationwide delivery arrives within 1–2 business days in insulated packaging.</p>
-                  <ul>
-                    <li>Keep refrigerated at 2–5°C</li>
-                    <li>Best enjoyed within 3 days</li>
-                    <li>Bring to room temperature 20 minutes before serving</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
+      <section class="pt-6">
+        <div class="flex flex-col gap-4 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span class="text-neutral-disabled">/</span><a href="shop-category.html" class="text-neutral-secondary hover:text-primary transition-colors">التمور والفواكه المجففة</a><span class="text-neutral-disabled">/</span><span class="font-semibold text-[#062A1C]">علبة معمول بعجوه المجدول مغطى بالشيكولاته - 12 قطعة</span></nav>
+          <h1 class="font-bold text-[#062A1C] text-3xl xl:text-5xl"></h1>
         </div>
       </section>
 
-      <!-- ============================ RELATED PRODUCTS (carousel) ============================
-           Source: RelatedProducts → ProductsSection(bg-primary-light) with product cards. -->
-      <section class="bg-primary-light py-10 md:py-24">
-        <div class="container flex flex-col gap-10">
-          <header class="flex flex-wrap justify-between items-center gap-4">
-            <h2 class="font-semibold text-textSecondary text-lg md:text-3xl">Related products</h2>
-            <a href="shop-category.html" class="group flex items-center gap-2 text-primaryDark hover:text-cta text-sm md:text-base">
-              Shop more
-              <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4 flex-shrink-0"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <!-- ============================ PRODUCT ============================ -->
+      <section class="pt-6 pb-12">
+        <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+
+          <!-- RTL start: details -->
+          <div class="flex flex-col gap-5 bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]">
+            <div class="flex flex-col gap-3">
+              <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">علبة معمول بعجوه المجدول مغطى بالشيكولاته - 12 قطعة</h1>
+              <div class="flex items-center gap-2"><span class="flex items-center gap-0.5"><span class="text-accent-yellow"><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></span><span class="text-accent-yellow"><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></span><span class="text-accent-yellow"><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></span><span class="text-accent-yellow"><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></span><span class="text-accent-yellow"><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></span></span><span class="font-semibold text-[#062A1C] text-sm latin">4.8</span><span class="text-neutral-secondary text-sm">(<span class="latin">126</span> تقييم)</span></div>
+            </div>
+            <p class="text-neutral-800 text-base leading-8">تمر مجدول فاخر محشو بالمكسرات ومغطى بطبقة من الشيكولاتة الغنية — تحلية طبيعية بدون سكر مضاف، مثالية للضيافة أو كهدية. كل قطعة متغلفة بعناية للحفاظ على طزاجتها وقوامها الطري.</p>
+
+            <div class="flex flex-wrap gap-2"><label class="cursor-pointer"><input type="radio" name="weight" class="peer sr-only" /><span class="inline-flex items-center px-5 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors peer-checked:bg-cta peer-checked:border-cta peer-checked:text-white">500 جم</span></label><label class="cursor-pointer"><input type="radio" name="weight" class="peer sr-only" checked /><span class="inline-flex items-center px-5 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors peer-checked:bg-cta peer-checked:border-cta peer-checked:text-white">250 جم</span></label><label class="cursor-pointer"><input type="radio" name="weight" class="peer sr-only" /><span class="inline-flex items-center px-5 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors peer-checked:bg-cta peer-checked:border-cta peer-checked:text-white">100 جم</span></label></div>
+
+            <div class="flex items-center gap-3">
+              
+              <span class="bg-accent-yellow px-4 py-1.5 rounded-lg font-bold text-[#062A1C] text-2xl latin">EGP 90</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+
+              <div data-stepper class="inline-flex items-center gap-1 border border-neutral-divider rounded-full overflow-hidden">
+                <button type="button" data-step="-1" class="place-items-center grid hover:bg-interaction-base size-11 font-bold text-[#062A1C] text-xl transition-colors" aria-label="إنقاص">−</button>
+                <span data-qty class="min-w-[2ch] font-semibold text-[#062A1C] text-base text-center latin">1</span>
+                <button type="button" data-step="1" class="place-items-center grid hover:bg-interaction-base size-11 font-bold text-[#062A1C] text-xl transition-colors" aria-label="زيادة">+</button>
+              </div>
+              <button type="button" data-add-to-cart class="flex-1 bg-cta hover:bg-cta-hover py-4 rounded-full font-semibold text-white text-base transition-colors">
+                اضف الى السلة
+              </button>
+            </div>
+            <a href="checkout.html" class="py-3.5 border border-cta rounded-full font-semibold text-cta text-base text-center hover:bg-interaction-base transition-colors">
+              اشتري الان
             </a>
-          </header>
 
-          <div class="carousel" style="--carousel-gap: 20px">
-            <div class="carousel-track" data-related-track></div>
-            <button type="button" class="carousel-btn carousel-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            <button type="button" class="carousel-btn carousel-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="flex flex-wrap justify-between items-center gap-3 bg-interaction-base px-4 py-3 rounded-xl">
+              <span class="flex items-center gap-2 font-semibold text-primary text-sm">
+                <span class="place-items-center grid bg-primary rounded-full text-white size-5 text-xs">✓</span>
+                التوصيل خلال ساعتين في القاهرة الكبرى
+              </span>
+              <button type="button" data-open="location" class="font-semibold text-cta text-sm underline">تغيير المنطقة</button>
+            </div>
+
+            <div data-accordion>
+                <div class="accordion-item border-neutral-divider border-b is-open">
+                  <button type="button" class="accordion-trigger flex justify-between items-center gap-4 py-4 w-full text-start">
+                    <span class="font-bold text-[#062A1C] text-base">الفوائد</span>
+                    <span class="accordion-chevron text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  </button>
+                  <div class="accordion-panel">
+                    <div class="pb-4 text-neutral-800 text-sm leading-7">
+                      <ul class="flex flex-col gap-2 ps-5 list-disc">
+                        <li>مصدر طبيعي للطاقة والألياف الغذائية</li>
+                        <li>غني بالبوتاسيوم والمغنيسيوم</li>
+                        <li>بدون سكر مضاف أو ألوان صناعية</li>
+                      </ul></div>
+                  </div>
+                </div>
+                <div class="accordion-item border-neutral-divider border-b">
+                  <button type="button" class="accordion-trigger flex justify-between items-center gap-4 py-4 w-full text-start">
+                    <span class="font-bold text-[#062A1C] text-base">طريقة الحفظ</span>
+                    <span class="accordion-chevron text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  </button>
+                  <div class="accordion-panel">
+                    <div class="pb-4 text-neutral-800 text-sm leading-7">
+                      <ul class="flex flex-col gap-2 ps-5 list-disc">
+                        <li>يحفظ في مكان جاف وبعيد عن أشعة الشمس المباشرة</li>
+                        <li>يفضل الحفظ في الثلاجة بعد الفتح</li>
+                        <li>يستهلك خلال 3 شهور من تاريخ الفتح</li>
+                      </ul></div>
+                  </div>
+                </div>
+              </div>
+          </div>
+
+          <!-- RTL end: gallery -->
+          
+          <div class="flex md:flex-row flex-col-reverse gap-4">
+            <div class="flex md:flex-col gap-3 overflow-x-auto no-scrollbar">
+              <button type="button" class="bg-interaction-base p-2 border-2 border-cta rounded-xl w-20 h-20 shrink-0 transition-colors">
+                <img src="images/abuauf/products/6223006311473-thumb.webp" alt="" class="w-full h-full object-contain" loading="lazy" />
+              </button>
+            </div>
+            <div class="flex-1 bg-interaction-base p-6 xl:p-10 rounded-[20px]">
+              <img src="images/abuauf/products/6223006311473-thumb.webp" alt="علبة معمول بعجوه المجدول مغطى بالشيكولاته - 12 قطعة" class="mx-auto w-full max-w-[520px] h-[300px] xl:h-[440px] object-contain" />
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- ============================ PREPARED SECTION ============================
-           Source: PreparedSection → SectionLinearGradient(top) with copy + image. -->
-      <section class="relative flex flex-col justify-center items-start py-8 md:py-12 px-4 md:px-8 lg:px-16 gap-6 md:gap-10 bg-gradient-to-b from-lightBlue to-neutral-cream">
-        <div class="w-full flex flex-col items-center justify-center gap-2">
-          <div class="w-full mx-auto max-w-[1392px] flex flex-col-reverse lg:flex-row items-center gap-8 md:gap-12 lg:gap-14 isolate">
-            <div class="flex flex-col justify-center items-start gap-2 md:gap-3 flex-1 min-w-0">
-              <span class="font-Caveat font-semibold text-accent-600 text-2xl md:text-3xl leading-10 tracking-tight">Prepared with care</span>
-              <h2 class="font-semibold text-textSecondary text-3xl md:text-5xl leading-[1.2] max-w-[46ch]">Freshly baked,<br class="hidden md:block" /> never frozen</h2>
-              <p class="text-neutral-700 text-base leading-[1.4] max-w-[60ch]">Every dessert is handcrafted the morning it ships, using time-honoured recipes and the finest Egyptian and Belgian ingredients — so it reaches you tasting exactly as it should.</p>
-            </div>
-            <div class="relative flex-1 w-full max-w-[592px]">
-              <div class="relative aspect-square w-full rounded-xl overflow-hidden bg-neutral-100 shadow-custom3">
-                <img src="images/singleproduct.png" alt="Chef preparing a chocolate cake" class="w-full h-full object-cover" />
+      <!-- ==================== FREQUENTLY BOUGHT TOGETHER ==================== -->
+      <section class="py-8">
+        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+          <div class="bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]">
+            <h2 class="mb-6 font-bold text-[#062A1C] text-xl xl:text-2xl">عادة ما يتم شراؤه معاً: أضف هذه العناصر</h2>
+            <div class="items-center gap-8 grid lg:grid-cols-[1fr_auto]">
+              <div class="flex flex-col">
+                <label class="flex items-center gap-3 py-2 cursor-pointer">
+                  <input type="checkbox" checked class="accent-[#163300] rounded w-5 h-5" />
+                  <img src="images/abuauf/products/6223006310759.webp" alt="" class="bg-interaction-base p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
+                  <span class="flex-1 text-[#062A1C] text-sm leading-5 line-clamp-2">تمر صحاري بالشيكولاته و اللوز - 300 جم</span>
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 220</span>
+                </label>
+                <label class="flex items-center gap-3 py-2 cursor-pointer">
+                  <input type="checkbox" checked class="accent-[#163300] rounded w-5 h-5" />
+                  <img src="images/abuauf/products/2000102000000.webp" alt="" class="bg-interaction-base p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
+                  <span class="flex-1 text-[#062A1C] text-sm leading-5 line-clamp-2">قراصيا بدون نواه - 100 جم</span>
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 72.5</span>
+                </label>
+                <label class="flex items-center gap-3 py-2 cursor-pointer">
+                  <input type="checkbox" checked class="accent-[#163300] rounded w-5 h-5" />
+                  <img src="images/abuauf/products/6223011437304.webp" alt="" class="bg-interaction-base p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
+                  <span class="flex-1 text-[#062A1C] text-sm leading-5 line-clamp-2">تمر صحارى بالشيكولاته غامقه باللوز - 300 جرام</span>
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 220</span>
+                </label>
               </div>
-              <div class="absolute left-[15rem] md:left-[-3.5rem] top-[20.5rem] md:top-[6.5rem] w-[100px] h-[100px] md:w-24 md:h-24 rounded-full overflow-hidden shadow-custom4 rotate-12 z-[2]">
-                <img src="images/shoppingwith.webp" alt="Freshly prepared" class="w-full h-full object-cover" />
+              <div class="flex flex-col items-center gap-3 bg-interaction-base p-6 rounded-xl">
+                <span class="text-neutral-secondary text-sm">الإجمالي</span>
+                <span class="font-bold text-[#062A1C] text-2xl latin">EGP 602.5</span>
+                <button type="button" data-add-to-cart class="bg-cta hover:bg-cta-hover px-8 py-3 rounded-full font-semibold text-white text-sm whitespace-nowrap transition-colors">
+                  أضف الجميع الى السلة
+                </button>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================= RECIPES ============================= -->
+      <section class="bg-interaction-base py-12">
+        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+          <div class="flex flex-wrap justify-between items-center gap-4 mb-10"><h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">وصفات بالمنتج</h2></div>
+          <div class="gap-6 xl:gap-8 grid lg:grid-cols-2">
+        <article class="flex bg-white shadow-custom4 rounded-2xl overflow-hidden">
+          <div class="flex flex-col flex-1 gap-2 p-6 xl:p-8">
+            <span class="font-semibold text-primary text-sm">الوصفات</span>
+            <h3 class="font-bold text-[#062A1C] text-xl xl:text-2xl leading-8">كيكة التمر بالقرفة والشيكولاتة البيضاء</h3>
+            <p class="text-neutral-secondary text-base leading-7 line-clamp-2">وصفة سهلة تجمع بين حلاوة التمر ودفء القرفة، جاهزة في أقل من ساعة.</p>
+            <a href="blog.html" class="inline-flex justify-center items-center rounded-full font-semibold transition-colors px-6 py-2.5 text-sm bg-cta hover:bg-cta-hover text-white mt-auto">شاهد الوصفة</a>
+          </div>
+          <div class="relative w-[160px] xl:w-[320px] shrink-0">
+            <img src="images/abuauf/site/4-1-1.webp" alt="كيكة التمر بالقرفة والشيكولاتة البيضاء" class="w-full h-full object-cover" loading="lazy" />
+            <span class="top-4 start-4 absolute inline-flex items-center gap-1.5 bg-white/90 px-3 py-1.5 rounded-full font-semibold text-[#062A1C] text-sm">
+              <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="latin">45</span> د
+            </span>
+          </div>
+        </article>
+        <article class="flex bg-white shadow-custom4 rounded-2xl overflow-hidden">
+          <div class="flex flex-col flex-1 gap-2 p-6 xl:p-8">
+            <span class="font-semibold text-primary text-sm">الوصفات</span>
+            <h3 class="font-bold text-[#062A1C] text-xl xl:text-2xl leading-8">فتوتشيني ألفريدو دجاج مع الكاجو</h3>
+            <p class="text-neutral-secondary text-base leading-7 line-clamp-2">طبق كريمي غني بالمكسرات، مناسب لعشاء سريع في نص ساعة.</p>
+            <a href="blog.html" class="inline-flex justify-center items-center rounded-full font-semibold transition-colors px-6 py-2.5 text-sm bg-cta hover:bg-cta-hover text-white mt-auto">شاهد الوصفة</a>
+          </div>
+          <div class="relative w-[160px] xl:w-[320px] shrink-0">
+            <img src="images/abuauf/site/big.webp" alt="فتوتشيني ألفريدو دجاج مع الكاجو" class="w-full h-full object-cover" loading="lazy" />
+            <span class="top-4 start-4 absolute inline-flex items-center gap-1.5 bg-white/90 px-3 py-1.5 rounded-full font-semibold text-[#062A1C] text-sm">
+              <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="latin">30</span> د
+            </span>
+          </div>
+        </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================= SIMILAR PRODUCTS ========================= -->
+      <section class="py-12">
+        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+          <div class="flex flex-wrap justify-between items-center gap-4 mb-10"><h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">منتجات مشابهة</h2><a href="shop-category.html" class="inline-flex justify-center items-center rounded-full font-semibold transition-colors px-6 py-2.5 text-sm border border-cta text-cta hover:bg-interaction-base ">عرض المزيد</a></div>
+          
+          <div class="relative carousel " style="--carousel-gap:24px">
+            <div class="carousel-track">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/image-600x600-5.webp" alt="كيس سناكس بروتين طماطم بالريحان - 60 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">كيس سناكس بروتين طماطم بالريحان - 60 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 20</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/6223011431074.webp" alt="بسكويت بالبيتزا - 80 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">بسكويت بالبيتزا - 80 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 20</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+            </div>
+            <button type="button" class="hidden xl:grid top-[130px] -start-5 absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-prev" aria-label="السابق">
+              <span class="rtl:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+            <button type="button" class="hidden xl:grid top-[130px] -end-5 absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-next" aria-label="التالي">
+              <span class="ltr:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+            
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================== MORE FROM US =========================== -->
+      <section class="pb-12">
+        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+          <div class="flex flex-wrap justify-between items-center gap-4 mb-10"><h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">تسوق اكتر من أبو عوف</h2><a href="shop.html" class="inline-flex justify-center items-center rounded-full font-semibold transition-colors px-6 py-2.5 text-sm border border-cta text-cta hover:bg-interaction-base ">عرض المزيد</a></div>
+          
+          <div class="relative carousel " style="--carousel-gap:24px">
+            <div class="carousel-track">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000208000000.webp" alt="فول سوداني بالشيكولاتة - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">فول سوداني بالشيكولاتة - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 35.5</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000079000000.webp" alt="عين جمل مقشر - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">عين جمل مقشر - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 121</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000404000000.webp" alt="كاجو محمص ملح جامبو - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">كاجو محمص ملح جامبو - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 156</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/6223011434013-6.webp" alt="سودانى كرى كرى بطعم الجبنة -45 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">سودانى كرى كرى بطعم الجبنة -45 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 17</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000197000000.webp" alt="فستق امريكى ملح - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">فستق امريكى ملح - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 146.5</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/Thumb-2000150000000.webp" alt="فول سودانى بطعم الجبنه - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">فول سودانى بطعم الجبنه - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 33</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000048000000.webp" alt="مقرمشات صينية - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">مقرمشات صينية - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000065000000.webp" alt="لوز نىء - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">لوز نىء - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 132</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000466000000.webp" alt="بن أبو عوف ساده فاتح - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">بن أبو عوف ساده فاتح - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 91</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000463000000.webp" alt="قهوة بن برازيلى سادة فاتح - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">قهوة بن برازيلى سادة فاتح - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 82.5</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+            </div>
+            <button type="button" class="hidden xl:grid top-[130px] -start-5 absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-prev" aria-label="السابق">
+              <span class="rtl:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+            <button type="button" class="hidden xl:grid top-[130px] -end-5 absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-next" aria-label="التالي">
+              <span class="ltr:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+            
           </div>
         </div>
       </section>
@@ -285,91 +529,5 @@
 
     <!-- Shared footer is injected here by scripts.js -->
     <div id="site-footer"></div>
-
-    <!-- Page-specific interactions: gallery thumbnail swap + variation pills + related products -->
-    <script>
-      // --- Gallery: swap the main image when a thumbnail is clicked ---
-      function swapMain(btn) {
-        const main = document.getElementById("pdp-main");
-        if (main) main.src = btn.getAttribute("data-src");
-        document.querySelectorAll(".pdp-thumb").forEach((t) => {
-          t.classList.remove("border-primaryColor");
-          t.classList.add("border-transparent", "opacity-50");
-        });
-        btn.classList.add("border-primaryColor");
-        btn.classList.remove("border-transparent", "opacity-50");
-      }
-
-      // --- Variation pills: single-select within each group ---
-      document.querySelectorAll("[data-variation-group]").forEach((group) => {
-        group.querySelectorAll(".variation-pill").forEach((pill) => {
-          pill.addEventListener("click", () => {
-            group
-              .querySelectorAll(".variation-pill")
-              .forEach((p) => p.classList.remove("is-active"));
-            pill.classList.add("is-active");
-          });
-        });
-      });
-
-      // --- Related products: render canonical cards as carousel slides ---
-      (function () {
-        const IMGS = [
-          "images/menudeafult.webp",
-          "images/dummy-images/new-product.png",
-          "images/dummy-images/new-product-circle.png",
-          "images/secondmemoryimage.png",
-          "images/singleproduct.png",
-        ];
-        const PRODUCTS = [
-          ["Red Velvet Gateau", 590, 0],
-          ["Belgian Truffle Selection", 380, 0],
-          ["Summer Berry Cheesecake", 540, 480],
-          ["Signature Celebration Cake", 720, 0],
-          ["Salted Caramel Tart", 390, 340],
-          ["Vanilla Bean Gateau", 560, 0],
-        ];
-        function card([name, price, sale], i) {
-          const hasSale = sale && sale < price;
-          const cur = hasSale ? sale : price;
-          const intp = Math.floor(cur);
-          const dec = (cur - intp).toFixed(2).substring(1);
-          return `
-          <div class="carousel-slide w-[220px] md:w-[260px]">
-            <div class="group relative">
-              <a href="product.html">
-                <div class="relative rounded-2xl aspect-square overflow-hidden bg-primary-light">
-                  <img src="${IMGS[i % IMGS.length]}" alt="${name}" class="w-full h-full object-cover md:group-hover:scale-110 transition-all" />
-                  ${hasSale ? '<span class="absolute top-3 left-3 bg-cardbadgecolor text-white text-[11px] font-semibold px-2 py-0.5 rounded-full">Sale</span>' : ""}
-                </div>
-              </a>
-              <div class="flex flex-col justify-between gap-4 min-h-28 md:min-h-[116px]">
-                <div class="flex flex-col gap-4 pt-4">
-                  <div class="flex justify-between gap-2.5">
-                    <h3 class="mb-1 font-normal text-blackText text-xs md:text-base leading-normal"><a href="product.html">${name}</a></h3>
-                    <button type="button" aria-label="Add to wishlist" class="text-neutral-400 hover:text-cardbadgecolor transition-colors shrink-0">
-                      <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" stroke="currentColor" stroke-width="1.6"/></svg>
-                    </button>
-                  </div>
-                  <span class="w-fit inline-flex items-center gap-1 text-green-800 text-xs font-medium"><span class="w-1.5 h-1.5 rounded-full bg-green-800"></span>In stock</span>
-                </div>
-                <div class="flex gap-x-2 text-textSecondary flex-col">
-                  <div class="flex items-center gap-0.5" dir="ltr">
-                    <span class="md:text-lg font-medium">EGP</span>
-                    <span class="md:text-2xl font-semibold">${intp}</span>
-                    <span class="md:text-lg font-medium">${dec}</span>
-                  </div>
-                  ${hasSale ? `<span class="text-xs text-gray-700 line-through">EGP ${price}.00</span>` : ""}
-                </div>
-              </div>
-            </div>
-          </div>`;
-        }
-        const track = document.querySelector("[data-related-track]");
-        if (track) track.innerHTML = PRODUCTS.map(card).join("");
-        // scripts.js runs its kInit(document) on DOMContentLoaded (after this inline
-        // script), so the freshly-populated .carousel is picked up automatically.
-      })();
-    </script>
   </body>
 </html>

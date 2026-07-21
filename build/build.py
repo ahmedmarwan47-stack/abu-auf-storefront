@@ -23,7 +23,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "pages"))
 
 # Page modules, in build order.
-PAGES = ["home", "shop", "shop_category"]
+PAGES = ["home", "shop", "shop_category", "product"]
 
 
 def check_assets(name, html):

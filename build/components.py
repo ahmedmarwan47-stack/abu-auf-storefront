@@ -33,9 +33,16 @@ ICON = {
     "clock": '<svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">'
              '<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/>'
              '<path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+    # Horizontal chevron — carousel arrows, "read more" links. Mirrored in RTL
+    # by the caller with rtl:scale-flip / ltr:scale-flip.
     "arrow": '<svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">'
              '<path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" '
              'stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    # Vertical chevron — accordions and dropdowns, where direction is not
+    # affected by writing direction.
+    "chevron": '<svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">'
+               '<path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" '
+               'stroke-linecap="round" stroke-linejoin="round"/></svg>',
 }
 
 
@@ -134,6 +141,80 @@ def page_header(heading, trail=None):
 def product_grid(products, cols="grid-cols-2 md:grid-cols-3 xl:grid-cols-4"):
     cards = "".join(product_card(p, slide=False) for p in products)
     return f'<div class="gap-4 xl:gap-6 grid {cols}">{cards}\n          </div>'
+
+
+def rating(score="4.8", count=None):
+    hearts = "".join(f'<span class="text-accent-yellow">{ICON["heart_full"]}</span>' for _ in range(5))
+    tail = (f'<span class="text-neutral-secondary text-sm">(<span class="latin">{count}</span> تقييم)</span>'
+            if count else "")
+    return (f'<div class="flex items-center gap-2">'
+            f'<span class="flex items-center gap-0.5">{hearts}</span>'
+            f'<span class="font-semibold text-[#062A1C] text-sm latin">{e(score)}</span>{tail}</div>')
+
+
+def variant_chips(options, name="variant"):
+    """Size / weight selector. options: [(label, active)]"""
+    items = "".join(
+        f'<label class="cursor-pointer">'
+        f'<input type="radio" name="{e(name)}" class="peer sr-only"{" checked" if active else ""} />'
+        f'<span class="inline-flex items-center px-5 py-2 border border-neutral-divider rounded-full '
+        f'font-semibold text-[#062A1C] text-sm transition-colors peer-checked:bg-cta '
+        f'peer-checked:border-cta peer-checked:text-white">{e(label)}</span></label>'
+        for label, active in options
+    )
+    return f'<div class="flex flex-wrap gap-2">{items}</div>'
+
+
+def qty_stepper():
+    return """
+              <div data-stepper class="inline-flex items-center gap-1 border border-neutral-divider rounded-full overflow-hidden">
+                <button type="button" data-step="-1" class="place-items-center grid hover:bg-interaction-base size-11 font-bold text-[#062A1C] text-xl transition-colors" aria-label="إنقاص">−</button>
+                <span data-qty class="min-w-[2ch] font-semibold text-[#062A1C] text-base text-center latin">1</span>
+                <button type="button" data-step="1" class="place-items-center grid hover:bg-interaction-base size-11 font-bold text-[#062A1C] text-xl transition-colors" aria-label="زيادة">+</button>
+              </div>"""
+
+
+def accordion(items, multi=False):
+    """items: [(heading, inner_html)] — first is open."""
+    rows = "".join(f"""
+                <div class="accordion-item border-neutral-divider border-b{' is-open' if i == 0 else ''}">
+                  <button type="button" class="accordion-trigger flex justify-between items-center gap-4 py-4 w-full text-start">
+                    <span class="font-bold text-[#062A1C] text-base">{e(heading)}</span>
+                    <span class="accordion-chevron text-cta">{ICON['chevron']}</span>
+                  </button>
+                  <div class="accordion-panel">
+                    <div class="pb-4 text-neutral-800 text-sm leading-7">{body}</div>
+                  </div>
+                </div>""" for i, (heading, body) in enumerate(items))
+    return f'<div data-accordion{" data-accordion-multi" if multi else ""}>{rows}\n              </div>'
+
+
+def product_gallery(main_img, thumbs, alt):
+    """Main image with a thumbnail strip — RTL puts thumbs on the far side."""
+    thumb_html = "".join(f"""
+              <button type="button" class="bg-interaction-base p-2 border-2 {'border-cta' if i == 0 else 'border-transparent hover:border-neutral-divider'} rounded-xl w-20 h-20 shrink-0 transition-colors">
+                <img src="{e(t)}" alt="" class="w-full h-full object-contain" loading="lazy" />
+              </button>""" for i, t in enumerate(thumbs))
+    return f"""
+          <div class="flex md:flex-row flex-col-reverse gap-4">
+            <div class="flex md:flex-col gap-3 overflow-x-auto no-scrollbar">{thumb_html}
+            </div>
+            <div class="flex-1 bg-interaction-base p-6 xl:p-10 rounded-[20px]">
+              <img src="{e(main_img)}" alt="{e(alt)}" class="mx-auto w-full max-w-[520px] h-[300px] xl:h-[440px] object-contain" />
+            </div>
+          </div>"""
+
+
+def bundle_item(p, checked=True):
+    """One row of the 'frequently bought together' checklist."""
+    from catalog import money, title as _title
+    return f"""
+                <label class="flex items-center gap-3 py-2 cursor-pointer">
+                  <input type="checkbox"{' checked' if checked else ''} class="accent-[#163300] rounded w-5 h-5" />
+                  <img src="{e(p['image'])}" alt="" class="bg-interaction-base p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
+                  <span class="flex-1 text-[#062A1C] text-sm leading-5 line-clamp-2">{e(_title(p))}</span>
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP {money(p['price'])}</span>
+                </label>"""
 
 
 # --------------------------------------------------------------------------
