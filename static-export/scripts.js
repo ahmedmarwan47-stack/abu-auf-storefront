@@ -20,80 +20,107 @@
   /* ---------------------------------------------------------------
      Placeholder content (formerly fetched from the CMS)
      --------------------------------------------------------------- */
+  /*
+   * Category names and slugs are the real ones from the Abu Auf WooCommerce
+   * catalog (see data/catalog.json). Arabic labels in the header nav follow
+   * the Figma wording, which is occasionally shorter than the CMS category
+   * name — e.g. "المكسرات" in the nav vs "مكسرات وحبوب ومقرمشات" in the grid.
+   */
   const SUPPORT_MENU = [
-    { title: "About Us", url: "/about" },
-    { title: "Branches", url: "/branches" },
-    { title: "FAQs", url: "/faqs" },
-    { title: "Contact Us", url: "/contact-us" },
+    { title: "قصتنا", url: "/about" },
+    { title: "المكافآت", url: "/rewards" },
+    { title: "الفروع", url: "/branches" },
+    { title: "منتجات أبو عوف خارج مصر", url: "/export" },
+    { title: "البلوج", url: "/blogs" },
+    { title: "سياسة التوصيل والاسترجاع", url: "/return-policy" },
+    { title: "أتصل بنا", url: "/contact-us" },
   ];
 
   const MAIN_MENU = [
     {
-      name: "Cakes",
-      url: "/shop/cakes",
-      image: "images/menudeafult.webp",
+      name: "العروض و الخصومات",
+      url: "/shop/offers-promotions",
+      icon: "images/abuauf/icons/icon-coupon.svg",
+      image: "images/abuauf/categories/gifts.png",
+    },
+    {
+      name: "المكسرات",
+      url: "/shop/nuts-crackers",
+      badge: "images/abuauf/icons/nav-nuts-badge.png",
+      image: "images/abuauf/categories/Nuts.webp",
       children: [
-        { name: "Birthday Cakes", url: "/shop/birthday-cakes" },
-        { name: "Wedding Cakes", url: "/shop/wedding-cakes" },
-        { name: "Cheesecakes", url: "/shop/cheesecakes" },
-        { name: "Cupcakes", url: "/shop/cupcakes" },
-        { name: "Cake Slices", url: "/shop/cake-slices" },
+        { name: "مكسرات نيئة", url: "/shop/raw-nuts" },
+        { name: "مكسرات محمصة ومملحة", url: "/shop/roasted-salted-nuts" },
+        { name: "مكسرات بنكهات", url: "/shop/flavored-nuts" },
+        { name: "تشكيلة مكسرات", url: "/shop/mix-nuts" },
+        { name: "حبوب ومقرمشات", url: "/shop/seeds-crackers" },
       ],
     },
     {
-      name: "Oriental Sweets",
-      url: "/shop/oriental-sweets",
-      image: "images/menudeafult.webp",
+      name: "القهوة",
+      url: "/shop/coffee-beverage",
+      image: "images/abuauf/categories/Drinks-1.webp",
       children: [
-        { name: "Baklava", url: "/shop/baklava" },
-        { name: "Basbousa", url: "/shop/basbousa" },
-        { name: "Kunafa", url: "/shop/kunafa" },
-        { name: "Maamoul", url: "/shop/maamoul" },
+        { name: "قهوة تركي", url: "/shop/turkish-coffee" },
+        { name: "قهوة برازيلي", url: "/shop/brazilian-coffee" },
+        { name: "قهوة مطحونة طازجة", url: "/shop/fresh-grounded-coffee" },
+        { name: "إسبريسو", url: "/shop/espresso" },
+        { name: "قهوة سريعة التحضير", url: "/shop/instant-coffee" },
+        { name: "مشروبات ساخنة", url: "/shop/hot-drinks" },
       ],
     },
     {
-      name: "Chocolate",
-      url: "/shop/chocolate",
-      image: "images/menudeafult.webp",
+      name: "التمور والفواكه المجففة",
+      url: "/shop/dates-dried-fruits",
+      image: "images/abuauf/categories/Dates.webp",
       children: [
-        { name: "Chocolate Boxes", url: "/shop/chocolate-boxes" },
-        { name: "Truffles", url: "/shop/truffles" },
-        { name: "Dates & Chocolate", url: "/shop/dates-chocolate" },
+        { name: "تمور", url: "/shop/dates" },
+        { name: "فواكه مجففة", url: "/shop/dried-fruits" },
       ],
     },
-    { name: "Gateaux", url: "/shop/gateaux" },
-    { name: "Petit Four", url: "/shop/petit-four" },
-    { name: "Gift Boxes", url: "/shop/gift-boxes" },
-    { name: "Seasonal", url: "/shop/seasonal" },
-    { name: "Catering", url: "/shop/catering" },
+    {
+      name: "الوجبات صحية",
+      url: "/shop/healthy-snacks",
+      image: "images/abuauf/categories/Healthy_Snaks2.png",
+      children: [
+        { name: "ألواح صحية", url: "/shop/healthy-bars" },
+        { name: "سناكس بروتين", url: "/shop/protein-snacks" },
+        { name: "حبوب صحية", url: "/shop/healthy-grains" },
+      ],
+    },
+    { name: "المشروبات", url: "/shop/coffee-beverage" },
+    { name: "البهارات والزيوت", url: "/shop/spices-kitchen-baking" },
+    { name: "الهدايا", url: "/shop/gifting-seasonal" },
   ];
 
   const FOOTER_COLUMNS = [
     {
-      name: "Shop",
+      name: "تسوق",
       links: [
-        { title: "Cakes", url: "/shop/cakes" },
-        { title: "Oriental Sweets", url: "/shop/oriental-sweets" },
-        { title: "Chocolate", url: "/shop/chocolate" },
-        { title: "Gift Boxes", url: "/shop/gift-boxes" },
+        { title: "مكسرات وحبوب ومقرمشات", url: "/shop/nuts-crackers" },
+        { title: "قهوة ومشروبات", url: "/shop/coffee-beverage" },
+        { title: "تمور وفواكه مجففة", url: "/shop/dates-dried-fruits" },
+        { title: "سناكس صحية", url: "/shop/healthy-snacks" },
+        { title: "الهدايا والمشاركة", url: "/shop/gifting-seasonal" },
       ],
     },
     {
-      name: "Company",
+      name: "أبو عوف",
       links: [
-        { title: "About Us", url: "/about" },
-        { title: "Branches", url: "/branches" },
-        { title: "Blogs", url: "/blogs" },
-        { title: "Contact Us", url: "/contact-us" },
+        { title: "قصتنا", url: "/about" },
+        { title: "الفروع", url: "/branches" },
+        { title: "المكافآت", url: "/rewards" },
+        { title: "البلوج", url: "/blogs" },
+        { title: "أتصل بنا", url: "/contact-us" },
       ],
     },
     {
-      name: "Support",
+      name: "المساعدة",
       links: [
-        { title: "FAQs", url: "/faqs" },
-        { title: "Privacy Policy", url: "/privacy-policy" },
-        { title: "Terms & Conditions", url: "/terms-conditions" },
-        { title: "Return Policy", url: "/return-policy" },
+        { title: "الأسئلة الشائعة", url: "/faqs" },
+        { title: "سياسة الخصوصية", url: "/privacy-policy" },
+        { title: "الشروط والأحكام", url: "/terms-conditions" },
+        { title: "سياسة التوصيل والاسترجاع", url: "/return-policy" },
       ],
     },
   ];
@@ -200,52 +227,70 @@
   const currentPath = () => document.body.getAttribute("data-path") || "/";
 
   /* ---------------------------------------------------------------
-     Language switcher (EN active, visual only in static build)
+     Country / currency selector.
+     Egypt-only in this build; the markup carries the full control so the
+     export drops straight into the real storefront.
      --------------------------------------------------------------- */
-  function languageSwitcher(mobile) {
-    const wrap = mobile
-      ? "bg-[#EAEBEC]"
-      : "bg-[#FFFFFF33]";
-    const w = mobile ? "122px" : "98px";
-    const h = mobile ? "29px" : "25px";
+  function countryButton() {
     return `
-      <div class="inline-flex relative">
-        <div class="flex flex-row items-center gap-1 ${wrap} p-[2px_3px] rounded-[5px]" style="width:${w};height:${h}">
-          <button type="button" data-lang="en" class="flex justify-center items-center transition-all duration-200 bg-[#EF9E52] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] rounded-[3px] text-white text-xs font-semibold" style="width:${mobile ? "60px" : "48px"};height:${mobile ? "25px" : "20px"}">EN</button>
-          <button type="button" data-lang="ar" class="flex justify-center items-center transition-all duration-200 bg-transparent rounded-[4px] text-white/80 text-xs font-semibold" style="width:${mobile ? "52px" : "40px"};height:${mobile ? "25px" : "20px"}">ع</button>
-        </div>
-      </div>`;
+      <button type="button" class="flex items-center gap-1.5 shrink-0 px-4 py-0.5 rounded-full hover:bg-black/5 transition-colors">
+        <img src="images/abuauf/brand/flag-egypt.svg" alt="" class="rounded-full w-4 h-4 object-cover" />
+        <span class="font-semibold text-[#163300] text-base leading-[26px] whitespace-nowrap">مصر (EGP)</span>
+        <img src="images/abuauf/icons/icon-globe.svg" alt="" class="opacity-70 w-5 h-5" />
+      </button>`;
   }
 
   /* ---------------------------------------------------------------
      Header
      --------------------------------------------------------------- */
+  /*
+   * A nav tab. The 4px underline is the Figma "Highlight" element — it sits in
+   * the layout at all times and only changes opacity, so tabs never shift
+   * vertically on hover or when the active page changes.
+   */
   function desktopNavItem(item) {
     const href = pageHref(item.url);
-    const active = currentPath() === item.url ? "text-white" : "text-white/90";
+    const isActive = currentPath() === item.url;
+    const leading = item.badge
+      ? `<img src="${item.badge}" alt="" class="shrink-0 w-[38px] h-[38px] object-contain" />`
+      : "";
+    const trailing = item.icon
+      ? `<img src="${item.icon}" alt="" class="shrink-0 w-7 h-7" />`
+      : "";
+
+    const label = `
+      <a href="${href}" class="flex flex-col gap-3 pt-3.5 shrink-0 group">
+        <span class="flex items-center gap-1 h-6">
+          <span class="font-semibold text-white group-hover:text-white/80 text-xl leading-7 whitespace-nowrap transition-colors">${esc(item.name)}</span>
+          ${trailing}
+        </span>
+        <span class="h-1 w-full bg-[#DCC498] rounded-full ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-60"} transition-opacity"></span>
+      </a>`;
+
     if (!item.children || !item.children.length) {
-      return `<li class="group relative shrink-0">
-        <a href="${href}" class="flex items-center gap-1 ${active} hover:text-white text-sm font-medium whitespace-nowrap py-1 transition-colors">${esc(item.name)}</a>
-      </li>`;
+      return `<li class="flex items-center gap-2.5 shrink-0">${label}${leading}</li>`;
     }
+
     const cols = item.children
       .map(
         (c) =>
-          `<li><a href="${pageHref(c.url)}" class="block py-1.5 text-textSecondary hover:text-primaryDark text-sm font-medium transition-colors">${esc(c.name)}</a></li>`,
+          `<li><a href="${pageHref(c.url)}" class="block py-1.5 font-medium text-textSecondary hover:text-primary text-base transition-colors">${esc(c.name)}</a></li>`,
       )
       .join("");
-    return `<li class="group relative shrink-0">
-      <a href="${href}" class="flex items-center gap-1 ${active} hover:text-white text-sm font-medium whitespace-nowrap py-1 transition-colors">
-        ${esc(item.name)}<span class="w-3 h-3 transition-transform group-hover:rotate-180">${ICON.chevronDown}</span>
-      </a>
-      <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100 absolute top-full inset-inline-start-0 pt-4 z-50 transition-all duration-200">
-        <div class="flex gap-6 bg-white shadow-custom3 rounded-2xl p-6 w-max min-w-[420px]">
+
+    return `<li class="group/mega relative flex items-center gap-2.5 shrink-0">
+      ${label}${leading}
+      <div class="invisible group-hover/mega:visible top-full inset-inline-start-0 z-50 absolute opacity-0 group-hover/mega:opacity-100 pt-3 transition-all duration-200">
+        <div class="flex gap-6 bg-white shadow-custom3 p-6 rounded-2xl w-max min-w-[420px]">
           <div class="flex-1">
-            <div class="mb-3 font-semibold text-primaryDark text-base capitalize">${esc(item.name)}</div>
-            <ul class="grid grid-cols-2 gap-x-8">${cols}</ul>
-            <a href="${href}" class="inline-flex items-center gap-1 mt-4 font-semibold text-cta hover:text-cta-hover text-sm">View all ${esc(item.name)} ${ICON.arrowRight}</a>
+            <div class="mb-3 font-semibold text-primary text-lg">${esc(item.name)}</div>
+            <ul class="gap-x-8 grid grid-cols-2">${cols}</ul>
+            <a href="${href}" class="inline-flex items-center gap-1 mt-4 font-semibold text-cta hover:text-primary text-base transition-colors">
+              تسوق كل ${esc(item.name)}
+              <span class="w-5 h-5 rtl:scale-flip">${ICON.arrowRight}</span>
+            </a>
           </div>
-          <div class="w-[180px] rounded-xl overflow-hidden bg-primary-light shrink-0">
+          <div class="bg-interaction-base shrink-0 rounded-xl w-[180px] overflow-hidden">
             <img src="${item.image}" alt="${esc(item.name)}" class="w-full h-[160px] object-cover" loading="lazy" />
           </div>
         </div>
@@ -266,104 +311,120 @@
     const nav = MAIN_MENU.map(desktopNavItem).join("");
 
     const desktop = `
-      <div class="hidden md:block ${checkout ? "" : "!min-h-[170px]"}">
+      <div class="hidden md:block">
         ${
           checkout
             ? ""
-            : `<div class="relative z-40 items-center bg-neutral-support-bg px-4 py-[7.5px] w-full">
-                 <div class="flex justify-end items-center gap-6 mx-auto px-4 w-full max-w-[1392px]">
-                   <nav class="flex items-center gap-6">${support}</nav>
-                   ${languageSwitcher(false)}
+            : `<div class="relative z-40 bg-beige h-9">
+                 <div class="flex justify-between items-center gap-6 px-4 xl:px-20 h-full">
+                   <div class="flex items-center gap-6 min-w-0">
+                     ${countryButton()}
+                     <nav class="hidden xl:flex items-center gap-6 min-w-0 overflow-hidden">${support}</nav>
+                   </div>
+                   <div class="hidden lg:flex items-center gap-2 shrink-0">
+                     <span class="grid place-items-center bg-white border border-neutral-divider rounded w-[35px] h-6">
+                       <img src="images/abuauf/payments/pay-mastercard.svg" alt="Mastercard" class="w-[22px] h-[14px]" />
+                     </span>
+                     <img src="images/abuauf/payments/pay-visa.svg" alt="Visa" class="w-[35px] h-6" />
+                   </div>
+                   <p class="hidden lg:block shrink-0 font-bold text-[#5F5035] text-base leading-[22px] whitespace-nowrap">
+                     خصم 10% لما تستخدم برومو كود <span class="latin">DISCOUNT10</span>
+                   </p>
                  </div>
                </div>`
         }
-        <div class="relative z-40 ${checkout ? "bg-[linear-gradient(180deg,#E3F0FF_0%,rgba(255,255,255,0)_100%)] border-t-[4px] lg:!border-t-[10px] border-primaryDark" : "bg-primaryDark border-b border-bordercolor"} py-[22px]">
-          <div class="mx-auto flex max-w-[1392px] items-center ${checkout ? "justify-center relative" : "justify-between"} px-4 2xl:px-0">
-            <a href="index.html" class="block shrink-0">
-              <img src="images/logos/${checkout ? "logo-dark.png" : "logo-light.png"}" alt="kouider-logo" class="object-contain w-[242px] h-[42px]" />
-            </a>
+        <div class="relative z-40 bg-primary px-4 xl:px-20">
+          <div class="flex ${checkout ? "justify-center" : "justify-between"} items-center border-[#0F6140] border-b h-[100px]">
+            <!-- RTL start (right edge): logo, products, delivery -->
+            <div class="flex items-center gap-6 min-w-0">
+              <a href="index.html" class="block shrink-0 w-[180px] h-[60px]">
+                <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-full h-full object-contain" />
+              </a>
+              ${
+                checkout
+                  ? ""
+                  : `<button type="button" data-open="menu" class="hidden lg:flex items-center gap-2.5 bg-cta hover:bg-cta-hover shrink-0 px-6 py-[18px] rounded-full transition-colors">
+                       <img src="images/abuauf/icons/icon-grid.svg" alt="" class="w-6 h-6" />
+                       <span class="font-semibold text-white text-xl leading-7 whitespace-nowrap">المنتجات</span>
+                       <span class="w-6 h-6 text-white">${ICON.chevronDown}</span>
+                     </button>
+                     <button type="button" data-open="location" class="hidden xl:flex items-center gap-2.5 hover:bg-white/10 px-6 py-[18px] rounded-full min-w-0 transition-colors">
+                       <span class="font-semibold text-white text-xl leading-7 truncate">التوصيل الى الشروق - القاهرة</span>
+                       <span class="shrink-0 w-6 h-6 text-white">${ICON.chevronDown}</span>
+                     </button>`
+              }
+            </div>
+
+            <!-- RTL end (left edge): account, search, cart -->
             ${
               checkout
-                ? `<div class="absolute inset-inline-end-4 2xl:inset-inline-end-0">${languageSwitcher(false)}</div>`
-                : `<div class="relative flex items-center gap-4 min-w-max">
-                     <div class="flex items-center gap-[11px]">
-                       <button type="button" data-open="location" class="flex items-center gap-1.5 h-[43px] py-[2px] px-[22px] rounded-full bg-primaryExtraDark shadow-location-btn hover:bg-primaryExtraDark/90 transition-all text-white">
-                         <span class="w-[22px] h-5">${ICON.location}</span>
-                         <span class="flex flex-col items-start gap-0.5 text-start">
-                           <span class="font-normal text-[10px] text-white/75 leading-none">Deliver to</span>
-                           <span class="font-semibold text-xs text-white">New Cairo, 5th Settlement</span>
-                         </span>
-                         <span class="w-3 h-3 text-white">${ICON.chevronDown}</span>
-                       </button>
-                       <button type="button" data-open="search" aria-label="Search" class="flex justify-center items-center bg-white shadow-search-btn p-[10px] rounded-full text-primaryDark size-[44px]">${ICON.search}</button>
-                     </div>
-                     <div class="flex items-center gap-[11px] dir-ltr shrink-0">
-                       <a href="login.html" class="flex items-center gap-1 text-primaryDark" aria-label="Account">
-                         <span class="flex justify-center items-center bg-primaryExtraDark shadow-search-btn p-[10px] rounded-full text-white size-[44px]">${ICON.account}</span>
-                       </a>
-                       <button type="button" data-open="cart" aria-label="Cart" class="relative flex justify-center items-center bg-white p-[10px] rounded-full text-primaryDark size-[44px]">
-                         ${ICON.cart}
-                         <span class="absolute -top-1 -right-1 grid place-items-center bg-cta text-white text-[10px] font-bold rounded-full w-5 h-5" data-cart-count>2</span>
-                       </button>
-                     </div>
+                ? ""
+                : `<div class="flex items-center gap-6 shrink-0">
+                     <a href="login.html" class="hidden lg:flex items-center gap-2.5 hover:bg-white/10 px-6 py-[18px] rounded-full transition-colors">
+                       <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-6 h-6" />
+                       <span class="font-semibold text-white text-xl leading-7">الحساب</span>
+                       <span class="w-6 h-6 text-white">${ICON.chevronDown}</span>
+                     </a>
+                     <button type="button" data-open="search" aria-label="بحث" class="place-items-center grid bg-cta hover:bg-cta-hover border-2 border-cta rounded-full transition-colors size-12">
+                       <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
+                     </button>
+                     <button type="button" data-open="cart" aria-label="السلة" class="relative place-items-center grid bg-accent-yellow hover:bg-accent-500 rounded-full transition-colors size-[60px]">
+                       <img src="images/abuauf/icons/icon-cart.svg" alt="" class="w-9 h-9" />
+                       <span class="-top-3 -end-3 absolute place-items-center grid bg-white shadow-custom4 px-2 rounded-full min-w-[28px] h-7 font-semibold text-black text-base" data-cart-count>2</span>
+                     </button>
                    </div>`
             }
           </div>
+
+          ${
+            checkout
+              ? ""
+              : `<div data-navbar class="relative z-30 h-[54px]">
+                   <nav class="h-full">
+                     <ul class="flex items-start gap-9 h-full overflow-x-auto no-scrollbar">${nav}</ul>
+                   </nav>
+                 </div>`
+          }
         </div>
-        ${
-          checkout
-            ? ""
-            : `<div data-navbar class="w-full bg-primaryDark transition-all duration-300 relative z-30">
-                 <div class="relative mx-auto flex max-w-[1392px] items-center gap-4 2xl:px-0 px-4 py-[11.5px]">
-                   <nav class="w-full"><ul class="flex items-center gap-4 w-full overflow-x-auto no-scrollbar">${nav}</ul></nav>
-                 </div>
-               </div>`
-        }
       </div>`;
 
-    /* --- mobile header --- */
+    /* --- mobile header (refined against the Figma Mobile page later) --- */
     const mobile = `
       <div class="md:hidden block">
         ${
           checkout
             ? ""
-            : `<div class="bg-primaryLight px-3 py-1.5">
-                 <div class="flex items-center justify-between gap-1 text-primaryColor">
-                   <span class="text-[10px]">🎁 Enjoy 10% off your first order with code</span>
-                   <span class="text-[10px] font-semibold uppercase">KOUIDER10</span>
-                 </div>
+            : `<div class="bg-beige px-3 py-1.5">
+                 <p class="font-semibold text-[#5F5035] text-[11px] text-center">
+                   خصم 10% لما تستخدم برومو كود <span class="latin">DISCOUNT10</span>
+                 </p>
                </div>`
         }
-        <div class="relative flex items-center ${checkout ? "justify-center" : "justify-between"} bg-primaryDark text-white px-4 py-6">
+        <div class="relative flex items-center ${checkout ? "justify-center" : "justify-between"} bg-primary px-4 py-4 text-white">
           ${
             checkout
               ? ""
-              : `<button type="button" data-open="menu" class="grid w-8 place-items-center" aria-label="Menu">${ICON.menu}</button>`
+              : `<button type="button" data-open="menu" class="place-items-center grid w-8" aria-label="القائمة">${ICON.menu}</button>`
           }
-          <a href="index.html" class="block"><img src="images/logos/logo-light.png" alt="kouider-logo" class="w-[184px] h-[32px] object-contain" /></a>
+          <a href="index.html" class="block"><img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[132px] h-[44px] object-contain" /></a>
           ${
             checkout
               ? ""
-              : `<button type="button" data-open="cart" class="relative grid place-items-center" aria-label="Cart">${ICON.cart}<span class="absolute -top-1 -right-1 grid place-items-center bg-cta text-white text-[9px] font-bold rounded-full w-4 h-4" data-cart-count>2</span></button>`
+              : `<button type="button" data-open="cart" class="relative place-items-center grid bg-accent-yellow rounded-full size-11" aria-label="السلة">
+                   <img src="images/abuauf/icons/icon-cart.svg" alt="" class="w-7 h-7" />
+                   <span class="-top-1 -end-1 absolute place-items-center grid bg-white rounded-full w-5 h-5 font-bold text-[10px] text-black" data-cart-count>2</span>
+                 </button>`
           }
         </div>
       </div>
       ${
         checkout
           ? ""
-          : `<div class="md:hidden block bg-backgroundLocationBar px-4 py-2">
-               <div class="mx-auto max-w-7xl bg-primaryExtraDark rounded-full px-[22px] py-1">
-                 <button type="button" data-open="location" class="flex items-center gap-1 justify-between py-[10px] w-full">
-                   <span class="flex items-center gap-[3.5px]">
-                     <span class="w-[20px] h-[18px] text-white">${ICON.location}</span>
-                     <span class="flex items-center gap-1">
-                       <span class="font-normal text-white text-[10px] leading-[140%]">Deliver to</span>
-                       <span class="font-semibold text-white text-[12px] leading-[140%]">New Cairo, 5th Settlement</span>
-                     </span>
-                   </span>
-                   <span class="w-[13px] h-[13px] text-white">${ICON.chevronDown}</span>
-                 </button>
-               </div>
+          : `<div class="md:hidden block bg-interaction-base px-4 py-2">
+               <button type="button" data-open="location" class="flex justify-between items-center gap-1 bg-cta px-5 py-2.5 rounded-full w-full text-white">
+                 <span class="font-semibold text-xs truncate">التوصيل الى الشروق - القاهرة</span>
+                 <span class="shrink-0 w-3.5 h-3.5">${ICON.chevronDown}</span>
+               </button>
              </div>`
       }`;
 
@@ -498,20 +559,20 @@
     </aside>
 
     <!-- Mobile menu drawer -->
-    <aside data-drawer="menu" class="side-drawer side-drawer--left" aria-label="Menu">
-      <div class="flex items-center justify-between px-5 py-4 border-b border-neutral-100 bg-primaryDark text-white">
-        <img src="images/logos/logo-light.png" alt="kouider" class="h-7" />
-        <button type="button" data-close class="grid place-items-center w-8 h-8 text-white">${ICON.close}</button>
+    <aside data-drawer="menu" class="side-drawer side-drawer--left" aria-label="القائمة">
+      <div class="flex justify-between items-center bg-primary px-5 py-4 border-neutral-100 border-b text-white">
+        <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[110px] h-9 object-contain" />
+        <button type="button" data-close class="place-items-center grid w-8 h-8 text-white">${ICON.close}</button>
       </div>
-      <div class="flex-1 overflow-y-auto px-5 py-4">
+      <div class="flex-1 px-5 py-4 overflow-y-auto">
         <ul>${menuLinks}</ul>
         <div class="mt-6">
-          <p class="mb-1 text-neutral-500 text-xs uppercase tracking-wide">More</p>
+          <p class="mb-1 text-neutral-500 text-xs">روابط أخرى</p>
           <ul>${supportLinks}</ul>
         </div>
-        <div class="mt-6 flex items-center gap-3">
-          <a href="login.html" class="flex-1 text-center border border-primaryDark text-primaryDark rounded-full py-2.5 text-sm font-medium">Sign in</a>
-          ${languageSwitcher(true)}
+        <div class="flex flex-col gap-3 mt-6">
+          <a href="login.html" class="py-2.5 border border-cta rounded-full font-medium text-cta text-sm text-center">تسجيل الدخول</a>
+          <div class="flex justify-center">${countryButton()}</div>
         </div>
       </div>
     </aside>
