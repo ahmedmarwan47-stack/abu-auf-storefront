@@ -45,7 +45,10 @@ def password_field(label="كلمة السر", name="password"):
 
 
 SIDE_CARD = f"""
-            <aside class="flex flex-col gap-6 bg-interaction-base p-8 xl:p-10 rounded-[20px]">
+            <!-- DOM-first so RTL puts it in the right column at lg. The Figma
+                 auth frame (368:21314) leads with the sign-in form on mobile
+                 and drops this beneath it, so below lg it moves to the end. -->
+            <aside class="flex flex-col gap-6 bg-interaction-base p-8 xl:p-10 rounded-[20px] order-last lg:order-none min-w-0">
               <h2 class="font-bold text-[#062A1C] text-2xl xl:text-3xl text-center">إنشاء حساب جديد</h2>
               <div class="flex justify-center items-center gap-3">
                 <span class="place-items-center grid bg-white rounded-full text-cta size-11">{ICON_HOME}</span>
@@ -73,10 +76,10 @@ SOCIAL = f"""
                 <div class="flex flex-col gap-3 pt-6 border-neutral-divider border-t">
                   <div class="gap-3 grid sm:grid-cols-2">
                     <button type="button" class="flex justify-center items-center gap-2 hover:bg-interaction-base py-3 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
-                      {ICON_FB}<span>سجل بأستخدام فيسبوك</span>
+                      {ICON_GOOGLE}<span>سجل بأستخدام جوجل</span>
                     </button>
                     <button type="button" class="flex justify-center items-center gap-2 hover:bg-interaction-base py-3 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
-                      {ICON_GOOGLE}<span>سجل بأستخدام جوجل</span>
+                      {ICON_FB}<span>سجل بأستخدام فيسبوك</span>
                     </button>
                   </div>
                 </div>"""
@@ -87,9 +90,9 @@ def auth_page(title_text, description, heading, form_html, page_id, path,
     body = f"""{page_header("", [("الرئيسية", "index.html"), (crumb, None)])}
 
       <section class="py-8 xl:py-12">
-        <div class="items-start gap-6 xl:gap-8 grid {'lg:grid-cols-2' if side else 'max-w-[560px] mx-auto'} mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 {'lg:grid-cols-2' if side else 'max-w-[560px] mx-auto'} mx-auto px-4 xl:px-[190px] max-w-[1920px]">
           {SIDE_CARD if side else ''}
-          <div class="flex flex-col gap-6 bg-white shadow-custom4 p-8 xl:p-10 rounded-[20px]">
+          <div class="flex flex-col gap-6 bg-white shadow-custom4 p-8 xl:p-10 rounded-[20px] min-w-0">
             <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl text-center">{e(heading)}</h1>
             <form class="flex flex-col gap-5">{form_html}
             </form>

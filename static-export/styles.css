@@ -581,6 +581,29 @@ body.no-scroll {
   display: none;
 }
 
+/* Branches governorate filters render as pills below xl (Figma 426:33692).
+   Scoped to `.tabs-chips` so the product page's tabs, which stay underlined
+   at every width, are untouched. */
+@media (max-width: 1279.98px) {
+  .tabs-chips {
+    gap: 0.5rem;
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .tabs-chips .tab-btn {
+    background-color: #edefeb;
+    border-bottom: 0;
+    border-radius: 9999px;
+    padding: 0.5rem 1.25rem;
+    color: #062a1c;
+    white-space: nowrap;
+  }
+  .tabs-chips .tab-btn.is-active {
+    background-color: #163300;
+    color: #fff;
+  }
+}
+
 /* Header sticky-nav animation (ported keyframe usage) */
 @keyframes slideDown {
   0% {

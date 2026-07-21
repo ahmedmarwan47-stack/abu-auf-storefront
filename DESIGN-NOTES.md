@@ -198,3 +198,32 @@ staying static on desktop is a behavioural change, not a layout one, so it is
 flagged rather than guessed at. Worth asking whether the collapse is required or
 whether always-visible is acceptable — on a checkout page, hiding the total
 behind a tap is a real conversion decision, not just a styling one.
+
+### Auth pages — form leads on mobile
+
+Figma `Account Sign In/ Create Account` `368:21314`. The create-account panel is
+DOM-first so RTL puts it in the right column at `lg`; the mobile frame leads
+with the sign-in form, so below `lg` the panel moves to the end. Social buttons
+reordered to Google-then-Facebook to match the frame. Covers all four pages
+built on `_auth.py`.
+
+### Branches — two Figma elements are blocked on missing data
+
+Figma `426:33692`. The governorate filters now render as pills below xl,
+scoped via `.tabs-chips` because `.tab-btn` is shared with the home page.
+
+**Not built, and not fakeable:**
+
+- **Per-branch phone numbers.** The frame shows a phone row on every card.
+  `branches.json` has a `phone` field on all 316 branches and **every one of
+  them is empty** — the client's CMS has never populated it. Inventing numbers
+  for real retail locations would send customers to wrong numbers, so the row
+  is omitted entirely rather than filled with placeholders.
+- **`اتجاهات` (directions) links.** Need coordinates or Maps URLs per branch;
+  `branches.json` carries only `title`, `slug`, `address` and the empty
+  `phone`. Nothing to link to.
+
+Both need the client to populate the CMS. Until then these cards will not match
+the frame, and that is the correct outcome — the alternative is a store locator
+that lies. The card badges (`فرع أبو عوف`, `متاح توصيل`) are also absent for
+the same reason: no field distinguishes branch type or delivery availability.

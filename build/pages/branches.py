@@ -41,7 +41,11 @@ def build():
             <span class="latin">{len(DATA)}</span> محافظة في مصر — اختر محافظتك لتجد أقرب فرع إليك.
           </p>
           <div data-tabs>
-            <div class="flex gap-6 mb-8 pb-1 border-neutral-divider border-b overflow-x-auto no-scrollbar">{tabs}</div>
+            <!-- `tabs-chips` restyles these as pills below xl, per the Figma
+                 branches frame (426:33692). Scoped to this strip because
+                 `.tab-btn` is shared with the product page, whose Figma keeps
+                 the underlined treatment at every width. -->
+            <div class="tabs-chips flex gap-6 mb-8 pb-1 border-neutral-divider border-b overflow-x-auto no-scrollbar">{tabs}</div>
             {panels}
           </div>
         </div>
