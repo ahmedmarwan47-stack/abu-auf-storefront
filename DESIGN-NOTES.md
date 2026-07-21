@@ -347,3 +347,46 @@ Tailwind's `.flex` stays visible. All eight sub-category lists rendered stacked
 on top of each other until `[hidden] { display: none !important; }` went into
 `styles.css`. Anything in this codebase toggling the `hidden` attribute on a
 flex or grid element depends on that rule.
+
+## Header, CTA band and footer resized against the live site
+
+These were noticeably taller than abuauf.com. Rather than eyeball the
+screenshots, the live site was opened in the browser and measured directly at
+1920px. Targets and results:
+
+| Band | Live | Was | Now |
+|---|---|---|---|
+| Utility bar | 33 | 36 | 33 |
+| Masthead | 79 | 100 | 79 |
+| Nav row | 48 | 54 | 48 |
+| **Header total** | **161** | **190** | **160** |
+| CTA band | 306 | 317 | 305 |
+| Footer body | 458 | 494 | 462 |
+| **Footer total** | **764** | **811** | **767** |
+
+The masthead pills (`المنتجات`, delivery, account) dropped from `py-[18px]` to
+`py-3` so they still fit the shorter bar.
+
+## Language switcher — real direction toggle, not a translation
+
+Replicated from the live site, measured not guessed: a 288px panel headed
+`اللغة` with `English` and `العربية` rows, a flag per row and a check on the
+active one. Choice persists in `localStorage` across pages.
+
+**It flips `dir` and `lang` on `<html>`, and nothing else.** That makes the
+RTL↔LTR layout genuinely testable — logical properties, mirrored components
+and text alignment all flip, verified across pages — but the copy stays
+Arabic.
+
+This is deliberate. Every string in this build is Arabic; there is no English
+content to switch to, and machine-translating a client's storefront would be
+inventing copy on their behalf. Note this also brushes against a recorded
+client decision: HANDOFF §2 has **"Arabic-first, not bilingual"** as an
+explicit choice, on the grounds that the live site is Arabic-only. The toggle
+does not reverse that — it is a test harness for direction.
+
+**Real bilingual support is a separate, much larger piece of work** and needs,
+at minimum: English copy for every page, English UI strings for the chrome in
+`scripts.js`, and a decision on URL strategy (`/en/` routes vs a runtime
+switch). English product names already exist in `catalog.json` as `name`, so
+the catalogue is the one part already covered.

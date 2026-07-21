@@ -281,13 +281,45 @@
      Egypt-only in this build; the markup carries the full control so the
      export drops straight into the real storefront.
      --------------------------------------------------------------- */
+  /*
+   * Country / language switcher. The live site opens a 288px panel headed
+   * اللغة with English and العربية rows, a flag per row and a check on the
+   * active one — replicated here, measured off abuauf.com rather than eyeballed.
+   *
+   * The toggle really does flip `dir` and `lang` on <html>, which is the point:
+   * it makes the RTL↔LTR layout testable. It does NOT translate page copy —
+   * see initLangSwitcher and DESIGN-NOTES.
+   */
+  const LANGS = [
+    { code: "en", label: "English", dir: "ltr", flag: "images/abuauf/brand/flag-egypt.svg" },
+    { code: "ar", label: "العربية", dir: "rtl", flag: "images/abuauf/brand/flag-egypt.svg" },
+  ];
+
+  const CHECK_ICON =
+    '<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
   function countryButton() {
+    const rows = LANGS.map(
+      (l) => `
+        <button type="button" data-lang="${l.code}" class="flex items-center gap-3 hover:bg-interaction-base px-4 rounded-lg w-full min-h-11 text-start transition-colors">
+          <img src="${l.flag}" alt="" class="rounded-full w-6 h-6 object-cover shrink-0" />
+          <span class="flex-1 min-w-0 text-[#062A1C] text-base">${l.label}</span>
+          <span class="text-cta shrink-0" data-lang-check="${l.code}" hidden>${CHECK_ICON}</span>
+        </button>`,
+    ).join("");
+
     return `
-      <button type="button" class="flex items-center gap-1.5 shrink-0 min-h-11 px-4 py-0.5 rounded-full hover:bg-black/5 transition-colors">
-        <img src="images/abuauf/brand/flag-egypt.svg" alt="" class="rounded-full w-4 h-4 object-cover" />
-        <span class="font-semibold text-[#163300] text-base leading-[26px] whitespace-nowrap">مصر (EGP)</span>
-        <img src="images/abuauf/icons/icon-globe.svg" alt="" class="opacity-70 w-5 h-5" />
-      </button>`;
+      <div class="relative shrink-0" data-lang-switcher>
+        <button type="button" data-lang-toggle aria-expanded="false" class="flex items-center gap-1.5 min-h-11 px-4 py-0.5 rounded-full hover:bg-black/5 transition-colors">
+          <img src="images/abuauf/brand/flag-egypt.svg" alt="" class="rounded-full w-4 h-4 object-cover" />
+          <span class="font-semibold text-[#163300] text-base leading-[26px] whitespace-nowrap" data-lang-label>مصر (العربية)</span>
+          <img src="images/abuauf/icons/icon-globe.svg" alt="" class="opacity-70 w-5 h-5" />
+        </button>
+        <div data-lang-panel hidden class="top-full inset-inline-start-0 z-50 absolute bg-white shadow-custom3 mt-2 p-2 rounded-2xl w-[288px]">
+          <h4 class="mb-1 px-4 py-3 border-neutral-divider border-b font-bold text-[#062A1C] text-base">اللغة</h4>
+          ${rows}
+        </div>
+      </div>`;
   }
 
   /* ---------------------------------------------------------------
@@ -441,7 +473,7 @@
         ${
           checkout
             ? ""
-            : `<div class="relative z-40 bg-beige h-9">
+            : `<div class="relative z-40 bg-beige h-[33px]">
                  <div class="flex justify-between items-center gap-6 px-4 xl:px-20 h-full">
                    <div class="flex items-center gap-6 min-w-0">
                      ${countryButton()}
@@ -460,7 +492,7 @@
                </div>`
         }
         <div class="relative z-40 bg-primary px-4 xl:px-20">
-          <div class="flex justify-between items-center border-[#0F6140] border-b h-[100px]">
+          <div class="flex justify-between items-center border-[#0F6140] border-b h-[79px]">
             <!-- RTL start (right edge): logo, products, delivery -->
             <div class="flex items-center gap-6 min-w-0">
               <a href="index.html" class="block shrink-0 w-[180px] h-[60px]">
@@ -469,12 +501,12 @@
               ${
                 checkout
                   ? ""
-                  : `<button type="button" data-megamenu-toggle aria-expanded="false" aria-controls="mega-panel" class="hidden lg:flex items-center gap-2.5 bg-cta hover:bg-cta-hover shrink-0 px-6 py-[18px] rounded-full transition-colors">
+                  : `<button type="button" data-megamenu-toggle aria-expanded="false" aria-controls="mega-panel" class="hidden lg:flex items-center gap-2.5 bg-cta hover:bg-cta-hover shrink-0 px-5 py-3 rounded-full transition-colors">
                        <img src="images/abuauf/icons/icon-grid.svg" alt="" class="w-6 h-6" />
                        <span class="font-semibold text-white text-xl leading-7 whitespace-nowrap">المنتجات</span>
                        <span class="w-6 h-6 text-white transition-transform" data-megamenu-caret>${ICON.chevronDown}</span>
                      </button>
-                     <button type="button" data-open="location" class="hidden xl:flex items-center gap-2.5 hover:bg-white/10 px-6 py-[18px] rounded-full min-w-0 transition-colors">
+                     <button type="button" data-open="location" class="hidden xl:flex items-center gap-2.5 hover:bg-white/10 px-5 py-3 rounded-full min-w-0 transition-colors">
                        <span class="font-semibold text-white text-xl leading-7 truncate">التوصيل الى الشروق - القاهرة</span>
                        <span class="shrink-0 w-6 h-6 text-white">${ICON.chevronDown}</span>
                      </button>`
@@ -485,7 +517,7 @@
                  Checkout keeps account and cart but drops search, matching the
                  Figma checkout header — it is not a bare logo bar. -->
             <div class="flex items-center gap-6 shrink-0">
-              <a href="login.html" class="hidden lg:flex items-center gap-2.5 hover:bg-white/10 px-6 py-[18px] rounded-full transition-colors">
+              <a href="login.html" class="hidden lg:flex items-center gap-2.5 hover:bg-white/10 px-5 py-3 rounded-full transition-colors">
                 <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-6 h-6" />
                 <span class="font-semibold text-white text-xl leading-7">الحساب</span>
                 <span class="w-6 h-6 text-white">${ICON.chevronDown}</span>
@@ -510,7 +542,7 @@
                  /* bg-primary is carried on the bar itself, not inherited from
                     the masthead, so it stays opaque once initStickyNav pulls
                     it out of flow with position:fixed. */
-              : `<div data-navbar class="relative z-30 bg-primary h-[54px]">
+              : `<div data-navbar class="relative z-30 bg-primary h-[48px]">
                    <nav class="mx-auto max-w-[1920px] h-full">
                      <ul class="flex items-start gap-9 h-full overflow-x-auto no-scrollbar">${nav}</ul>
                    </nav>
@@ -627,7 +659,7 @@
     const preFooter = `
       <div class="bg-beige border-primary border-b">
         <div class="flex md:flex-row flex-col justify-center items-stretch gap-8 md:gap-12 mx-auto px-4 xl:px-[190px] py-6 max-w-[1920px]">
-          <div class="flex flex-col justify-center gap-6 py-6 md:py-12 flex-1">
+          <div class="flex flex-col justify-center gap-6 py-6 md:py-[42px] flex-1">
             <div class="flex flex-col gap-2">
               <h2 class="font-bold text-[#062A1C] text-2xl md:text-3xl xl:text-4xl leading-tight xl:leading-[48px]">عندك اي اسئلة؟ كل حاجة هنا..</h2>
               <p class="font-semibold text-primary text-sm xl:text-xl leading-relaxed">لو عندك أي استفسار أو عايز تطرح أي سؤال ، هتلاقي كل حاجة هنا</p>
@@ -635,7 +667,7 @@
             <a href="faqs.html" class="self-start bg-cta hover:bg-cta-hover px-8 xl:px-10 py-3 xl:py-[18px] rounded-full font-semibold text-white text-sm xl:text-xl transition-colors">الاسئلة و الاجابات</a>
           </div>
 
-          <div class="flex flex-col justify-center gap-6 py-6 md:py-12 flex-1">
+          <div class="flex flex-col justify-center gap-6 py-6 md:py-[42px] flex-1">
             <div class="flex flex-col gap-2">
               <h2 class="font-bold text-[#062A1C] text-2xl md:text-3xl xl:text-4xl leading-tight xl:leading-[48px]">اشترك لتعرف على أجدد العروض والخصومات</h2>
               <p class="font-semibold text-primary text-sm xl:text-xl leading-relaxed">كن أول من يعرف كل ما هو جديد في ابو عوف</p>
@@ -653,7 +685,7 @@
     return `<footer>
       ${preFooter}
       <div class="bg-[#062B1C]">
-        <div class="flex xl:flex-row flex-col-reverse gap-10 xl:gap-6 mx-auto px-4 xl:px-[190px] py-6 xl:py-12 max-w-[1920px]">
+        <div class="flex xl:flex-row flex-col-reverse gap-10 xl:gap-6 mx-auto px-4 xl:px-[190px] py-6 xl:py-8 max-w-[1920px]">
           <!-- RTL start (right): brand, hotline, address, socials -->
           <div class="flex flex-col gap-3 xl:flex-1 xl:order-first">
             <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[150px] h-[50px] object-contain" />
@@ -1228,6 +1260,73 @@
                     "border-neutral-divider", "hover:border-cta"];
 
   /* ---------------------------------------------------------------
+     Language switcher
+
+     Flips `dir` and `lang` on <html> so the RTL↔LTR layout can actually be
+     exercised, and remembers the choice across pages via localStorage.
+
+     It does NOT translate copy. Every string in this build is Arabic — there
+     is no English content to switch to, and machine-translating the client's
+     store into English would be inventing copy. So English mode is an
+     honest direction/layout test: the writing direction, logical properties
+     and mirrored components all flip, the words do not. Real bilingual
+     support is a separate piece of work needing English copy (DESIGN-NOTES).
+     --------------------------------------------------------------- */
+  const LANG_KEY = "abuauf:lang";
+
+  function applyLang(code) {
+    const l = LANGS.find((x) => x.code === code) || LANGS[1];
+    document.documentElement.setAttribute("lang", l.code);
+    document.documentElement.setAttribute("dir", l.dir);
+    document.querySelectorAll("[data-lang-label]").forEach((el) => {
+      el.textContent = l.code === "ar" ? "مصر (العربية)" : "Egypt (English)";
+    });
+    document.querySelectorAll("[data-lang-check]").forEach((el) => {
+      el.hidden = el.dataset.langCheck !== l.code;
+    });
+    try {
+      localStorage.setItem(LANG_KEY, l.code);
+    } catch (e) {
+      /* private mode — the toggle still works for this page view */
+    }
+  }
+
+  function initLangSwitcher() {
+    let stored = "ar";
+    try {
+      stored = localStorage.getItem(LANG_KEY) || "ar";
+    } catch (e) {
+      /* ignore */
+    }
+    applyLang(stored);
+
+    document.querySelectorAll("[data-lang-switcher]").forEach((wrap) => {
+      const toggle = wrap.querySelector("[data-lang-toggle]");
+      const panel = wrap.querySelector("[data-lang-panel]");
+      if (!toggle || !panel) return;
+      toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const open = panel.hidden;
+        panel.hidden = !open;
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      panel.querySelectorAll("[data-lang]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          applyLang(btn.dataset.lang);
+          panel.hidden = true;
+          toggle.setAttribute("aria-expanded", "false");
+        });
+      });
+      document.addEventListener("click", (e) => {
+        if (!panel.hidden && !wrap.contains(e.target)) {
+          panel.hidden = true;
+          toggle.setAttribute("aria-expanded", "false");
+        }
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------------
      Products mega-panel (desktop)
      --------------------------------------------------------------- */
   function initMegaMenu() {
@@ -1375,6 +1474,7 @@
     initDelegation();
     initStickyNav();
     initMegaMenu();
+    initLangSwitcher();
     window.kInit(document);
   }
 
