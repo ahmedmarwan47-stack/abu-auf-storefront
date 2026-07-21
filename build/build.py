@@ -32,6 +32,12 @@ PAGES = [
     "my_account", "my_account_orders", "my_account_order",
     "my_account_favorites", "my_account_addresses", "my_account_wallet",
     "my_account_point", "my_account_profile",
+    # content
+    "about", "contact_us", "faqs", "branches", "blogs", "blog",
+    # legal
+    "privacy_policy", "terms_conditions", "return_policy",
+    # misc
+    "store_closed",
 ]
 
 

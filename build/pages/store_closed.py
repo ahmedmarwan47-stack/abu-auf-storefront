@@ -1,22 +1,11 @@
-<!doctype html>
-<html lang="ar" dir="rtl">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>المتجر مغلق | أبو عوف</title>
-    <meta name="description" content="مواعيد عمل متجر أبو عوف الإلكتروني." />
-    <!-- Tailwind (Play CDN) + Abu Auf design system -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="tw-config.js"></script>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.svg" />
-    <script defer src="scripts.js"></script>
-  </head>
-  <body data-page="store-closed" data-path="/store-closed" class="antialiased bg-white">
-    <!-- Shared header is injected here by scripts.js -->
-    <div id="site-header"></div>
+"""Store closed / out-of-hours notice."""
+from components import page
 
-    <main class="overflow-x-hidden">
+SLUG = "store-closed.html"
+
+
+def build():
+    body = """
       <section class="py-20">
         <div class="flex flex-col items-center gap-5 mx-auto px-4 max-w-[560px] text-center">
           <span class="place-items-center grid bg-interaction-base rounded-full size-24">
@@ -35,10 +24,6 @@
             <a href="branches.html" class="hover:bg-interaction-base px-8 py-3 border border-cta rounded-full font-semibold text-cta text-base transition-colors">أقرب فرع</a>
           </div>
         </div>
-      </section>
-    </main>
-
-    <!-- Shared footer is injected here by scripts.js -->
-    <div id="site-footer"></div>
-  </body>
-</html>
+      </section>"""
+    return page("المتجر مغلق | أبو عوف", "مواعيد عمل متجر أبو عوف الإلكتروني.",
+                body, "store-closed", "/store-closed")

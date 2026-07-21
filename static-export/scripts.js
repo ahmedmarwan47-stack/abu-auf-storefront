@@ -595,22 +595,37 @@
         `<li><a href="${pageHref(i.url)}" class="block py-2 text-neutral-600 text-sm">${esc(i.title)}</a></li>`,
     ).join("");
 
+    /* Sample cart contents — real catalogue items (see data/catalog.json). */
     const demoCartItems = [
-      { name: "Chocolate Fudge Cake", price: 650, qty: 1, img: "images/dummy-images/new-product.png" },
-      { name: "Assorted Baklava Box", price: 420, qty: 1, img: "images/menudeafult.webp" },
+      {
+        name: "تمر صحاري بالشيكولاته و اللوز - 300 جم",
+        price: 220,
+        qty: 1,
+        img: "images/abuauf/products/6223006310759.webp",
+      },
+      {
+        name: "قراصيا بدون نواه - 100 جم",
+        price: 72.5,
+        qty: 1,
+        img: "images/abuauf/products/2000102000000.webp",
+      },
     ];
+    const cartSubtotal = demoCartItems.reduce(
+      (sum, it) => sum + it.price * it.qty,
+      0,
+    );
     const cartRows = demoCartItems
       .map(
         (it) => `
-      <div class="flex gap-3 py-4 border-b border-neutral-100">
-        <img src="${it.img}" alt="${esc(it.name)}" class="w-[72px] h-[72px] rounded-lg object-cover bg-primary-light" />
-        <div class="flex-1">
-          <p class="font-medium text-textSecondary text-sm">${esc(it.name)}</p>
-          <p class="mt-1 font-semibold text-primaryDark text-sm">EGP ${it.price}</p>
-          <div class="inline-flex items-center gap-3 mt-2 border border-neutral-200 rounded-full px-2 py-1" data-stepper>
-            <button type="button" data-step="-1" class="w-5 h-5 grid place-items-center text-primaryDark">−</button>
-            <span data-qty class="text-sm w-4 text-center">${it.qty}</span>
-            <button type="button" data-step="1" class="w-5 h-5 grid place-items-center text-primaryDark">+</button>
+      <div class="flex gap-3 py-4 border-neutral-divider border-b">
+        <img src="${it.img}" alt="${esc(it.name)}" class="bg-interaction-base p-1.5 rounded-lg w-[72px] h-[72px] object-contain" />
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-[#062A1C] text-sm line-clamp-2">${esc(it.name)}</p>
+          <p class="mt-1 font-bold text-[#062A1C] text-sm latin">EGP ${it.price}</p>
+          <div class="inline-flex items-center gap-3 mt-2 px-2 py-1 border border-neutral-divider rounded-full" data-stepper>
+            <button type="button" data-step="-1" class="place-items-center grid w-5 h-5 text-[#062A1C]" aria-label="إنقاص">−</button>
+            <span data-qty class="w-4 text-sm text-center latin">${it.qty}</span>
+            <button type="button" data-step="1" class="place-items-center grid w-5 h-5 text-[#062A1C]" aria-label="زيادة">+</button>
           </div>
         </div>
       </div>`,
@@ -621,16 +636,19 @@
     <div data-backdrop class="overlay-backdrop"></div>
 
     <!-- Cart drawer -->
-    <aside data-drawer="cart" class="side-drawer side-drawer--right" aria-label="Shopping cart">
-      <div class="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
-        <h2 class="font-semibold text-textSecondary text-lg">Your Cart</h2>
-        <button type="button" data-close class="grid place-items-center w-8 h-8 rounded-full hover:bg-neutral-100 text-textSecondary">${ICON.close}</button>
+    <aside data-drawer="cart" class="side-drawer side-drawer--right" aria-label="سلة التسوق">
+      <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
+        <h2 class="font-bold text-[#062A1C] text-lg">سلة التسوق</h2>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
       </div>
-      <div class="flex-1 overflow-y-auto px-5">${cartRows}</div>
-      <div class="px-5 py-4 border-t border-neutral-100 shadow-cart-overview">
-        <div class="flex justify-between mb-3"><span class="text-neutral-600 text-sm">Subtotal</span><span class="font-semibold text-primaryDark">EGP 1,070</span></div>
-        <a href="checkout.html" class="block w-full text-center bg-cta hover:bg-cta-hover text-white font-semibold py-3 rounded-full transition-colors">Checkout</a>
-        <a href="cart.html" class="block w-full text-center mt-2 text-primaryDark font-medium py-2 text-sm">View full cart</a>
+      <div class="flex-1 px-5 overflow-y-auto">${cartRows}</div>
+      <div class="shadow-cart-overview px-5 py-4 border-neutral-divider border-t">
+        <div class="flex justify-between mb-3">
+          <span class="text-neutral-secondary text-sm">الإجمالي</span>
+          <span class="font-bold text-[#062A1C] latin">EGP ${cartSubtotal}</span>
+        </div>
+        <a href="checkout.html" class="block bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-center transition-colors">أطلب الآن</a>
+        <a href="cart.html" class="block mt-2 py-2 w-full font-medium text-cta text-sm text-center">عرض السلة كاملة</a>
       </div>
     </aside>
 
@@ -655,19 +673,19 @@
 
     <!-- Search modal -->
     <div data-modal="search" class="modal-shell">
-      <div class="w-full max-w-[640px] bg-white rounded-2xl shadow-custom3 overflow-hidden" data-modal-box>
-        <div class="flex items-center gap-3 px-5 py-4 border-b border-neutral-100">
-          <span class="w-5 h-5 text-neutral-500">${ICON.search}</span>
-          <input type="search" data-search-input placeholder="Search for cakes, sweets, gifts…" class="flex-1 outline-none text-textSecondary text-base" />
-          <button type="button" data-close class="grid place-items-center w-8 h-8 rounded-full hover:bg-neutral-100 text-textSecondary">${ICON.close}</button>
+      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[640px] overflow-hidden" data-modal-box>
+        <div class="flex items-center gap-3 px-5 py-4 border-neutral-divider border-b">
+          <span class="w-5 h-5 text-neutral-secondary">${ICON.search}</span>
+          <input type="search" data-search-input placeholder="ابحث عن قهوة، مكسرات، تمور…" class="flex-1 outline-none text-[#062A1C] text-base" />
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
         </div>
         <div class="px-5 py-6">
-          <p class="text-neutral-500 text-xs uppercase tracking-wide mb-3">Popular searches</p>
+          <p class="mb-3 text-neutral-secondary text-xs">الأكثر بحثاً</p>
           <div class="flex flex-wrap gap-2">
-            ${["Birthday Cakes", "Baklava", "Chocolate Boxes", "Cheesecake", "Gift Boxes"]
+            ${["قهوة تركي", "مكسرات مشكلة", "تمر مجدول", "زبدة فول سوداني", "بوكس هدايا"]
               .map(
                 (s) =>
-                  `<a href="shop-category.html" class="px-3 py-1.5 rounded-full bg-primary-light text-textSecondary text-sm hover:bg-cta hover:text-white transition-colors">${s}</a>`,
+                  `<a href="shop-category.html" class="bg-interaction-base hover:bg-cta px-3 py-1.5 rounded-full text-[#062A1C] hover:text-white text-sm transition-colors">${s}</a>`,
               )
               .join("")}
           </div>
@@ -677,25 +695,29 @@
 
     <!-- Location bottom sheet -->
     <div data-sheet="location" class="bottom-sheet">
-      <div class="mx-auto w-10 h-1 rounded-full bg-neutral-200 mb-4"></div>
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="font-semibold text-textSecondary text-lg">Choose your location</h2>
-        <button type="button" data-close class="grid place-items-center w-8 h-8 rounded-full hover:bg-neutral-100 text-textSecondary">${ICON.close}</button>
+      <div class="bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="font-bold text-[#062A1C] text-lg">أختار منطقة التوصيل</h2>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
       </div>
       <form data-location-form class="flex flex-col gap-3">
         <label class="block">
-          <span class="label">City</span>
-          <select class="placeholder-select w-full border border-neutral-200 rounded-lg px-3 h-12 mt-1 text-textSecondary">
-            <option>Cairo</option><option>Giza</option><option>Alexandria</option>
+          <span class="label">المدينة</span>
+          <select class="mt-1 px-3 border border-neutral-divider rounded-lg w-full h-12 text-[#062A1C] placeholder-select">
+            ${["القاهرة", "الجيزه", "الاسكندريه", "القليوبيه", "الشرقيه", "الدقهليه", "المنوفيه", "الغربيه"]
+              .map((c) => `<option>${c}</option>`)
+              .join("")}
           </select>
         </label>
         <label class="block">
-          <span class="label">Area</span>
-          <select class="placeholder-select w-full border border-neutral-200 rounded-lg px-3 h-12 mt-1 text-textSecondary">
-            <option>New Cairo</option><option>Nasr City</option><option>Maadi</option><option>Zamalek</option>
+          <span class="label">المنطقة</span>
+          <select class="mt-1 px-3 border border-neutral-divider rounded-lg w-full h-12 text-[#062A1C] placeholder-select">
+            ${["التجمع الخامس", "مدينه نصر", "المعادي", "الزمالك", "هليوبوليس", "الشروق", "الرحاب", "المقطم"]
+              .map((a) => `<option>${a}</option>`)
+              .join("")}
           </select>
         </label>
-        <button type="submit" class="mt-2 bg-cta hover:bg-cta-hover text-white font-semibold py-3 rounded-full transition-colors">Confirm location</button>
+        <button type="submit" class="bg-cta hover:bg-cta-hover mt-2 py-3 rounded-full font-semibold text-white transition-colors">تأكيد المنطقة</button>
       </form>
     </div>
 
@@ -917,20 +939,20 @@
       f.addEventListener("submit", (e) => {
         e.preventDefault();
         f.reset();
-        toast("Thanks for subscribing! 🎉");
+        toast("تم الاشتراك بنجاح! 🎉");
       }),
     );
     scope.querySelectorAll("[data-location-form]").forEach((f) =>
       f.addEventListener("submit", (e) => {
         e.preventDefault();
         closeOverlay();
-        toast("Delivery location updated.");
+        toast("تم تحديث منطقة التوصيل.");
       }),
     );
     scope.querySelectorAll("[data-demo-form]").forEach((f) =>
       f.addEventListener("submit", (e) => {
         e.preventDefault();
-        toast(f.getAttribute("data-demo-form") || "Submitted successfully.");
+        toast(f.getAttribute("data-demo-form") || "تم الإرسال بنجاح.");
         if (f.getAttribute("data-reset") !== "false") f.reset();
         // Optional: navigate to another page after the toast (mock success flow).
         const redirect = f.getAttribute("data-redirect");
