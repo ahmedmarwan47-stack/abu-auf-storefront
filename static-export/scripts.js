@@ -290,6 +290,79 @@
    * it makes the RTL↔LTR layout testable. It does NOT translate page copy —
    * see initLangSwitcher and DESIGN-NOTES.
    */
+  /*
+   * English chrome strings, keyed by the Arabic original so the existing data
+   * literals do not have to be restructured. `t()` returns the Arabic unchanged
+   * unless the document is in English mode.
+   *
+   * IMPORTANT: these English strings are written in-house — standard commerce
+   * terminology, not the client's approved wording. They are placeholder and
+   * flagged as such in DESIGN-NOTES. Page body copy is NOT translated: there is
+   * no English source for it and machine-translating a storefront would be
+   * inventing content. See the "Language" section in DESIGN-NOTES.
+   */
+  const EN = {
+    // primary nav
+    "العروض و الخصومات": "Offers & Discounts",
+    "المكسرات": "Nuts",
+    "القهوة": "Coffee",
+    "التمور والفواكه المجففة": "Dates & Dried Fruits",
+    "الوجبات صحية": "Healthy Snacks",
+    "المشروبات": "Beverages",
+    "البهارات والزيوت": "Spices & Oils",
+    "الهدايا": "Gifting",
+    // masthead + utility
+    "المنتجات": "Products",
+    "الحساب": "Account",
+    "تسجيل الدخول": "Sign in",
+    "قصتنا": "Our Story",
+    "المكافآت": "Rewards",
+    "الفروع": "Branches",
+    "منتجات أبو عوف خارج مصر": "Abu Auf Worldwide",
+    "البلوج": "Blog",
+    "سياسة التوصيل والاسترجاع": "Delivery & Returns",
+    "أتصل بنا": "Contact Us",
+    // footer columns
+    "أقسام المنتجات": "Categories",
+    "عن الشركة": "About",
+    "المساعدة": "Help",
+    "فروعنا": "Our Branches",
+    "وصفاتنا": "Recipes",
+    "التصدير": "Export",
+    "الموزعين في مصر": "Distributors in Egypt",
+    "شركاء النجاح": "Partners",
+    "فرص وظائف": "Careers",
+    "إبداء الرأي": "Feedback",
+    "الاسئلة الشائعة": "FAQs",
+    "تعليقات العملاء": "Reviews",
+    "التوصيل أو الاستلام": "Delivery or Pickup",
+    "تطبيق الجوال": "Mobile App",
+    "الشروط والاحكام": "Terms & Conditions",
+    "سياسة الخصوصية": "Privacy Policy",
+    "سياسة الاسترجاع": "Return Policy",
+    // cart / overlays
+    "سلة التسوق": "Shopping Cart",
+    "قد يعجبك أيضا": "You may also like",
+    "مصاريف التوصيل": "Delivery fee",
+    "الإجمالي": "Total",
+    "عرض السلة": "View cart",
+    "اتمام الشراء": "Checkout",
+    "سلتك فارغة.": "Your cart is empty.",
+    "حذف": "Remove",
+    "اضف": "Add",
+    "القائمة": "Menu",
+    "روابط أخرى": "More links",
+    "الاكثر مبيعا": "Best sellers",
+    "اللغة": "Language",
+  };
+
+  function currentLang() {
+    return document.documentElement.getAttribute("lang") === "en" ? "en" : "ar";
+  }
+  function t(s) {
+    return currentLang() === "en" && EN[s] ? EN[s] : s;
+  }
+
   const LANGS = [
     { code: "en", label: "English", dir: "ltr", flag: "images/abuauf/brand/flag-egypt.svg" },
     { code: "ar", label: "العربية", dir: "rtl", flag: "images/abuauf/brand/flag-egypt.svg" },
@@ -316,7 +389,7 @@
           <img src="images/abuauf/icons/icon-globe.svg" alt="" class="opacity-70 w-5 h-5" />
         </button>
         <div data-lang-panel hidden class="top-full inset-inline-start-0 z-50 absolute bg-white shadow-custom3 mt-2 p-2 rounded-2xl w-[288px]">
-          <h4 class="mb-1 px-4 py-3 border-neutral-divider border-b font-bold text-[#062A1C] text-base">اللغة</h4>
+          <h4 class="mb-1 px-4 py-3 border-neutral-divider border-b font-bold text-[#062A1C] text-base">${esc(t("اللغة"))}</h4>
           ${rows}
         </div>
       </div>`;
@@ -343,7 +416,7 @@
     const label = `
       <a href="${href}" class="flex flex-col gap-3 pt-3.5 shrink-0 group">
         <span class="flex items-center gap-1 h-6">
-          <span class="font-semibold text-white group-hover:text-white/80 text-xl leading-7 whitespace-nowrap transition-colors">${esc(item.name)}</span>
+          <span class="font-semibold text-white group-hover:text-white/80 text-base leading-6 whitespace-nowrap transition-colors">${esc(t(item.name))}</span>
           ${trailing}
         </span>
         <span class="h-1 w-full bg-[#DCC498] rounded-full ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-60"} transition-opacity"></span>
@@ -356,7 +429,7 @@
     const cols = item.children
       .map(
         (c) =>
-          `<li><a href="${pageHref(c.url)}" class="block py-1.5 font-medium text-textSecondary hover:text-primary text-base transition-colors">${esc(c.name)}</a></li>`,
+          `<li><a href="${pageHref(c.url)}" class="block py-1.5 font-medium text-textSecondary hover:text-primary text-base transition-colors">${esc(t(c.name))}</a></li>`,
       )
       .join("");
 
@@ -365,15 +438,15 @@
       <div class="invisible group-hover/mega:visible top-full inset-inline-start-0 z-50 absolute opacity-0 group-hover/mega:opacity-100 pt-3 transition-all duration-200">
         <div class="flex gap-6 bg-white shadow-custom3 p-6 rounded-2xl w-max min-w-[420px]">
           <div class="flex-1">
-            <div class="mb-3 font-semibold text-primary text-lg">${esc(item.name)}</div>
+            <div class="mb-3 font-semibold text-primary text-lg">${esc(t(item.name))}</div>
             <ul class="gap-x-8 grid grid-cols-2">${cols}</ul>
             <a href="${href}" class="inline-flex items-center gap-1 mt-4 font-semibold text-cta hover:text-primary text-base transition-colors">
-              تسوق كل ${esc(item.name)}
+              تسوق كل ${esc(t(item.name))}
               <span class="w-5 h-5 rtl:scale-flip">${ICON.arrowRight}</span>
             </a>
           </div>
           <div class="bg-interaction-base shrink-0 rounded-xl w-[180px] overflow-hidden">
-            <img src="${item.image}" alt="${esc(item.name)}" class="w-full h-[160px] object-cover" loading="lazy" />
+            <img src="${item.image}" alt="${esc(t(item.name))}" class="w-full h-[160px] object-cover" loading="lazy" />
           </div>
         </div>
       </div>
@@ -404,7 +477,7 @@
       return `<li>
         <button type="button" data-mega-cat="${i}" class="flex items-center gap-3 px-4 rounded-xl w-full min-h-11 font-semibold text-[#062A1C] text-base text-start transition-colors hover:bg-interaction-base data-[active=true]:bg-interaction-base" data-active="${i === 0}">
           ${LEAF}
-          <span class="flex-1 min-w-0 truncate">${esc(item.name)}</span>
+          <span class="flex-1 min-w-0 truncate">${esc(t(item.name))}</span>
           <span class="w-4 h-4 text-neutral-secondary rtl:scale-flip shrink-0">${ICON.arrowRight}</span>
         </button>
       </li>`;
@@ -416,7 +489,7 @@
         .map(
           (c) => `<li>
             <a href="${pageHref(c.url)}" class="flex items-center gap-3 px-4 rounded-xl min-h-11 text-[#062A1C] text-base transition-colors hover:bg-interaction-base">
-              <span class="flex-1 min-w-0 truncate">${esc(c.name)}</span>
+              <span class="flex-1 min-w-0 truncate">${esc(t(c.name))}</span>
               <span class="w-4 h-4 text-neutral-secondary rtl:scale-flip shrink-0">${ICON.arrowRight}</span>
             </a>
           </li>`,
@@ -425,7 +498,7 @@
       return `<ul data-mega-sub="${i}" ${i === 0 ? "" : "hidden"} class="flex flex-col gap-1">
         <li>
           <a href="${href}" class="flex items-center gap-3 px-4 rounded-xl min-h-11 font-semibold text-cta text-base transition-colors hover:bg-interaction-base">
-            <span class="flex-1 min-w-0 truncate">جميع ${esc(item.name)}</span>
+            <span class="flex-1 min-w-0 truncate">جميع ${esc(t(item.name))}</span>
             <span class="w-4 h-4 rtl:scale-flip shrink-0">${ICON.arrowRight}</span>
           </a>
         </li>
@@ -449,7 +522,7 @@
           <ul class="flex flex-col gap-1 pe-6 border-neutral-divider border-e">${cats}</ul>
           <div class="pe-6 border-neutral-divider border-e">${subPanels}</div>
           <div class="flex flex-col gap-3">
-            <h3 class="font-bold text-[#062A1C] text-lg">الاكثر مبيعا</h3>
+            <h3 class="font-bold text-[#062A1C] text-lg">${esc(t("الاكثر مبيعا"))}</h3>
             <div class="flex flex-col gap-2 bg-interaction-base p-3 rounded-2xl">${featured}</div>
           </div>
         </div>
@@ -462,7 +535,7 @@
     /* --- support (utility) menu --- */
     const support = SUPPORT_MENU.map(
       (i) =>
-        `<a href="${pageHref(i.url)}" class="font-medium text-[#5F5035] hover:text-cta text-sm leading-[140%] transition-colors">${esc(i.title)}</a>`,
+        `<a href="${pageHref(i.url)}" class="font-semibold text-[#5F5035] hover:text-cta text-[13px] leading-[140%] transition-colors">${esc(t(i.title))}</a>`,
     ).join("");
 
     /* --- desktop primary nav --- */
@@ -503,11 +576,11 @@
                   ? ""
                   : `<button type="button" data-megamenu-toggle aria-expanded="false" aria-controls="mega-panel" class="hidden lg:flex items-center gap-2.5 bg-cta hover:bg-cta-hover shrink-0 px-5 py-3 rounded-full transition-colors">
                        <img src="images/abuauf/icons/icon-grid.svg" alt="" class="w-6 h-6" />
-                       <span class="font-semibold text-white text-xl leading-7 whitespace-nowrap">المنتجات</span>
+                       <span class="font-semibold text-white text-base leading-6 whitespace-nowrap">${esc(t("المنتجات"))}</span>
                        <span class="w-6 h-6 text-white transition-transform" data-megamenu-caret>${ICON.chevronDown}</span>
                      </button>
                      <button type="button" data-open="location" class="hidden xl:flex items-center gap-2.5 hover:bg-white/10 px-5 py-3 rounded-full min-w-0 transition-colors">
-                       <span class="font-semibold text-white text-xl leading-7 truncate">التوصيل الى الشروق - القاهرة</span>
+                       <span class="font-semibold text-white text-base leading-6 truncate">التوصيل الى الشروق - القاهرة</span>
                        <span class="shrink-0 w-6 h-6 text-white">${ICON.chevronDown}</span>
                      </button>`
               }
@@ -519,7 +592,7 @@
             <div class="flex items-center gap-6 shrink-0">
               <a href="login.html" class="hidden lg:flex items-center gap-2.5 hover:bg-white/10 px-5 py-3 rounded-full transition-colors">
                 <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-6 h-6" />
-                <span class="font-semibold text-white text-xl leading-7">الحساب</span>
+                <span class="font-semibold text-white text-base leading-6">${esc(t("الحساب"))}</span>
                 <span class="w-6 h-6 text-white">${ICON.chevronDown}</span>
               </a>
               ${
@@ -568,7 +641,7 @@
           ${
             checkout
               ? ""
-              : `<button type="button" data-open="menu" class="place-items-center grid size-11 -me-2" aria-label="القائمة">${ICON.menu}</button>`
+              : `<button type="button" data-open="menu" class="place-items-center grid size-11 -me-2" aria-label="Menu">${ICON.menu}</button>`
           }
           <a href="index.html" class="block"><img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[132px] h-[44px] object-contain" /></a>
           ${
@@ -636,12 +709,12 @@
     const columns = FOOTER_COLUMNS.map(
       (col) => `
       <div class="flex-1 min-w-[150px]">
-        <h2 class="mb-5 font-bold text-onDarkGreen text-base leading-[22px]">${esc(col.name)}</h2>
+        <h2 class="mb-5 font-bold text-onDarkGreen text-base leading-[22px]">${esc(t(col.name))}</h2>
         <ul class="flex flex-col gap-2">
           ${col.links
             .map(
               (l) =>
-                `<li><a href="${pageHref(l.url)}" class="font-semibold text-white hover:text-accent-yellow text-lg xl:text-xl leading-7 transition-colors">${esc(l.title)}</a></li>`,
+                `<li><a href="${pageHref(l.url)}" class="font-normal text-white hover:text-accent-yellow text-base leading-6 transition-colors">${esc(t(l.title))}</a></li>`,
             )
             .join("")}
         </ul>
@@ -673,6 +746,7 @@
               <p class="font-semibold text-primary text-sm xl:text-xl leading-relaxed">كن أول من يعرف كل ما هو جديد في ابو عوف</p>
             </div>
             <form data-newsletter class="flex flex-row-reverse items-center gap-2 bg-transparent py-2 xl:py-[9px] pe-5 ps-2.5 border-2 border-neutral-outline rounded-2xl w-full">
+              <span class="text-neutral-secondary shrink-0" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="m3 7 8.4 5.6a1 1 0 0 0 1.2 0L21 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
               <input type="email" required aria-label="البريد الالكتروني"
                      placeholder="أدخل عنوان البريد الالكتروني"
                      class="flex-1 bg-transparent outline-none min-w-0 font-semibold text-[#062A1C] placeholder:text-onBeigeMuted text-sm xl:text-base" />
@@ -685,11 +759,11 @@
     return `<footer>
       ${preFooter}
       <div class="bg-[#062B1C]">
-        <div class="flex xl:flex-row flex-col-reverse gap-10 xl:gap-6 mx-auto px-4 py-6 xl:py-8 max-w-[1536px]">
+        <div class="flex xl:flex-row flex-col-reverse gap-10 xl:gap-6 mx-auto px-4 py-6 xl:py-12 max-w-[1536px]">
           <!-- RTL start (right): brand, hotline, address, socials -->
           <div class="flex flex-col gap-3 xl:flex-1 xl:order-first">
-            <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[150px] h-[50px] object-contain" />
-            <a href="tel:${CONTACT.hotline}" class="mt-auto xl:mt-10 font-bold text-white text-2xl xl:text-3xl latin">${CONTACT.hotline}</a>
+            <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[180px] h-[46px] object-contain" />
+            <a href="tel:${CONTACT.hotline}" class="mt-auto xl:mt-10 font-bold text-white text-2xl xl:text-4xl latin">${CONTACT.hotline}</a>
             <p class="max-w-[277px] font-semibold text-onDarkGreen text-sm xl:text-base leading-relaxed">${esc(CONTACT.address)}</p>
             <ul class="flex items-center gap-6 mt-1">${socials}</ul>
           </div>
@@ -724,12 +798,12 @@
     const menuLinks = MAIN_MENU.map(
       (i) => `
       <li class="border-b border-neutral-100">
-        <a href="${pageHref(i.url)}" class="flex items-center justify-between min-h-11 py-3.5 text-textSecondary font-medium">${esc(i.name)}${i.children ? `<span class="w-4 h-4 text-neutral-secondary">${ICON.arrowRight}</span>` : ""}</a>
+        <a href="${pageHref(i.url)}" class="flex items-center justify-between min-h-11 py-3.5 text-textSecondary font-medium">${esc(t(i.name))}${i.children ? `<span class="w-4 h-4 text-neutral-secondary">${ICON.arrowRight}</span>` : ""}</a>
       </li>`,
     ).join("");
     const supportLinks = SUPPORT_MENU.map(
       (i) =>
-        `<li><a href="${pageHref(i.url)}" class="flex items-center min-h-11 py-2 text-neutral-secondary text-sm">${esc(i.title)}</a></li>`,
+        `<li><a href="${pageHref(i.url)}" class="flex items-center min-h-11 py-2 text-neutral-secondary text-sm">${esc(t(i.title))}</a></li>`,
     ).join("");
 
     /* Seed contents for a first-ever visit, so the drawer and cart page are
@@ -759,16 +833,16 @@
        renderCart() on every cart:change. */
     const cartFooter = `
         <div class="flex justify-between text-sm">
-          <span class="text-neutral-secondary">مصاريف التوصيل</span>
+          <span class="text-neutral-secondary">${esc(t("مصاريف التوصيل"))}</span>
           <span class="font-semibold text-[#062A1C] latin">${egp(DELIVERY_FEE)}</span>
         </div>
         <div class="flex justify-between items-center">
-          <span class="text-neutral-secondary text-sm">الإجمالي</span>
+          <span class="text-neutral-secondary text-sm">${esc(t("الإجمالي"))}</span>
           <span class="font-bold text-[#062A1C] text-lg latin" data-cart-total>${egp(0)}</span>
         </div>
         <div class="gap-3 grid grid-cols-2 mt-1">
-          <a href="cart.html" class="flex justify-center items-center border-cta hover:bg-interaction-base border rounded-full min-h-11 font-semibold text-cta text-sm transition-colors">عرض السلة</a>
-          <a href="checkout.html" data-cart-checkout class="flex justify-center items-center bg-cta hover:bg-cta-hover rounded-full min-h-11 font-semibold text-white text-sm text-center transition-colors">اتمام الشراء</a>
+          <a href="cart.html" class="flex justify-center items-center border-cta hover:bg-interaction-base border rounded-full min-h-11 font-semibold text-cta text-sm transition-colors">${esc(t("عرض السلة"))}</a>
+          <a href="checkout.html" data-cart-checkout class="flex justify-center items-center bg-cta hover:bg-cta-hover rounded-full min-h-11 font-semibold text-white text-sm text-center transition-colors">${esc(t("اتمام الشراء"))}</a>
         </div>
         <p data-cart-warning hidden class="flex items-start gap-2 mt-1 text-accent-error text-xs leading-5">
           <span aria-hidden="true">⚠</span>
@@ -781,13 +855,13 @@
     <!-- Cart drawer -->
     <aside data-drawer="cart" class="side-drawer side-drawer--right" aria-label="سلة التسوق">
       <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
-        <h2 class="font-bold text-[#062A1C] text-lg">سلة التسوق</h2>
+        <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("سلة التسوق"))}</h2>
         <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
       </div>
       <div class="flex-1 px-5 overflow-y-auto">
         <div data-cart-lines></div>
         <div class="mt-4">
-          <p class="mb-2 font-bold text-[#062A1C] text-sm">قد يعجبك أيضا</p>
+          <p class="mb-2 font-bold text-[#062A1C] text-sm">${esc(t("قد يعجبك أيضا"))}</p>
           <div class="flex flex-col gap-2">${upsell}</div>
         </div>
       </div>
@@ -797,7 +871,7 @@
     </aside>
 
     <!-- Mobile menu drawer -->
-    <aside data-drawer="menu" class="side-drawer side-drawer--left" aria-label="القائمة">
+    <aside data-drawer="menu" class="side-drawer side-drawer--left" aria-label="Menu">
       <div class="flex justify-between items-center bg-primary px-5 py-4 border-neutral-100 border-b text-white">
         <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[110px] h-9 object-contain" />
         <button type="button" data-close class="place-items-center grid size-11 -me-2 text-white">${ICON.close}</button>
@@ -805,7 +879,7 @@
       <div class="flex-1 px-5 py-4 overflow-y-auto">
         <ul>${menuLinks}</ul>
         <div class="mt-6">
-          <p class="mb-1 text-neutral-secondary text-xs">روابط أخرى</p>
+          <p class="mb-1 text-neutral-secondary text-xs">${esc(t("روابط أخرى"))}</p>
           <ul>${supportLinks}</ul>
         </div>
         <div class="flex flex-col gap-3 mt-6">
@@ -1370,14 +1444,44 @@
     }
   }
 
-  function initLangSwitcher() {
-    let stored = "ar";
-    try {
-      stored = localStorage.getItem(LANG_KEY) || "ar";
-    } catch (e) {
-      /* ignore */
+  /*
+   * Re-render the JS-injected chrome in the new language and swap product
+   * titles to the English names that already exist in catalog.json. Body copy
+   * baked into the page stays Arabic — there is no English source for it.
+   */
+  function repaintForLang() {
+    const header = document.getElementById("site-header");
+    const footer = document.getElementById("site-footer");
+    const overlays = document.getElementById("site-overlays");
+    if (header) header.innerHTML = headerHTML();
+    if (footer) footer.innerHTML = footerHTML();
+    if (overlays) overlays.innerHTML = overlaysHTML();
+
+    // Product titles: data-name is Arabic, data-name-en is the catalogue's
+    // real English name. Nothing invented here.
+    const en = currentLang() === "en";
+    document.querySelectorAll("[data-product][data-name-en]").forEach((card) => {
+      const target = card.querySelector("[data-product-title]");
+      if (!target) return;
+      target.textContent = en ? card.dataset.nameEn : card.dataset.name;
+    });
+
+    initMegaMenu();
+    initLangSwitcher(true);
+    window.kInit(document);
+    renderCart();
+  }
+
+  function initLangSwitcher(skipApply) {
+    if (!skipApply) {
+      let stored = "ar";
+      try {
+        stored = localStorage.getItem(LANG_KEY) || "ar";
+      } catch (e) {
+        /* ignore */
+      }
+      applyLang(stored);
     }
-    applyLang(stored);
 
     document.querySelectorAll("[data-lang-switcher]").forEach((wrap) => {
       const toggle = wrap.querySelector("[data-lang-toggle]");
@@ -1391,9 +1495,11 @@
       });
       panel.querySelectorAll("[data-lang]").forEach((btn) => {
         btn.addEventListener("click", () => {
+          const changed = btn.dataset.lang !== currentLang();
           applyLang(btn.dataset.lang);
           panel.hidden = true;
           toggle.setAttribute("aria-expanded", "false");
+          if (changed) repaintForLang();
         });
       });
       document.addEventListener("click", (e) => {

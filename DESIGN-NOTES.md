@@ -490,3 +490,45 @@ above whatever it needs to overlap.
 this project have turned out to be a stale port or a cached asset. Always bump
 the port when checking a CSS/JS change, and confirm what the server is actually
 rooted at.
+
+## Chrome typography corrected against the live site
+
+Ahmed asked whether the resized bands actually matched *inside* — fonts and
+icons, not just heights. Probing both sites at 1920 found they did not:
+
+| Element | Live | Was | Now |
+|---|---|---|---|
+| Nav row links | 16px / 600 | **20px** | 16 / 600 |
+| Masthead pills (`المنتجات`, delivery, account) | 16px | **20px** | 16px |
+| Footer column links | 16px / 400 | **20px / 600** | 16 / 400 |
+| Utility bar links | 13px / 600 | 14 / 500 | 13 / 600 |
+| Footer logo | 180×46 | 150×50 | 180×46 |
+| Hotline | 36px | 32px | 36px |
+| Newsletter field | has a mail glyph | **missing** | added |
+
+The bands were the right *height* but the type inside was a size too large
+throughout, which is why they still read as heavier. Footer padding went back to
+`xl:py-12` once the links shrank; final: header 160 (live 161), footer 767
+(live 764), CTA band 305 (live 306).
+
+## Language switching — what it now does
+
+`t()` maps chrome strings to English, keyed by the Arabic original. Choosing a
+language re-renders the JS-injected header, footer and overlays, so nav,
+masthead, utility links, footer columns and cart chrome all switch — and
+product titles swap to `catalog.json`'s real English `name`.
+
+**What is still Arabic in English mode, and why:**
+
+- **All page body copy** — headings, intros, FAQ answers, legal text, blog
+  posts, form labels and the build-time buttons on cards. It is baked at build
+  time and there is no English source. Machine-translating a client's storefront
+  would be inventing content on their behalf.
+- Translating it properly means either English copy for all 29 pages, or a
+  build that emits `/en/` variants. Either is a real project, not a toggle.
+
+**The English chrome strings in `EN` are placeholder**, written in-house as
+standard commerce terminology (`Offers & Discounts`, `Checkout`, `View cart`).
+They are not the client's approved wording and need sign-off — the same status
+as the FAQ figures and legal text. Product names are the exception: those come
+from the catalogue and are real.

@@ -356,6 +356,9 @@ def product_card(p, slide=True):
             f'data-price="{p.get("sale") or p.get("price") or 0}" '
             f'data-id="{p.get("id", 0)}" '
             f'data-name="{e(title(p))}" '
+            # Real English name from catalog.json — used by the language
+            # switcher. Not a translation we wrote.
+            f'data-name-en="{e(p.get("name") or title(p))}" '
             f'data-image="{e(p["image"])}"')
     return f"""
           <article class="{wrapper}" {keys}>
@@ -368,7 +371,7 @@ def product_card(p, slide=True):
               </a>
               <div class="flex flex-col flex-1 gap-1.5 p-4">
                 <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product.html" class="hover:text-primary transition-colors">{e(title(p))}</a>
+                  <a href="product.html" data-product-title class="hover:text-primary transition-colors">{e(title(p))}</a>
                 </h3>
                 <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
                   {old}
