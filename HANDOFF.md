@@ -341,22 +341,17 @@ Real bilingual support means English copy for all 31 pages plus a URL strategy
 
 **Ready to build when you are:**
 
-8. **Micro-interactions** on the cart and favourites — the `cart:change` and
-   `favs:change` event APIs and the keyed reconcile exist precisely for this.
-9. **`صحارة ديلايتس` home section** (Figma `753:34833`), pending assets.
-10. **Checkout summary collapse** — the Figma has it collapsible; left expanded
+8. **`صحارة ديلايتس` home section** (Figma `753:34833`), pending assets.
+9. **Checkout summary collapse** — the Figma has it collapsible; left expanded
     at Ahmed's direction.
-11. **A favourites count badge** in the header, now that `Favs.count()` and
-    `favs:change` exist — the cart badge already does exactly this.
-12. **Tell the designer** the Figma still contains the contrast failures the
+10. **Tell the designer** the Figma still contains the contrast failures the
     build diverges from, and that the live site differs from the Figma on
     several chrome details.
-
-13. **Tap targets need a real re-audit.** The "≥44px, audited and passing"
+11. **Tap targets need a real re-audit.** The "≥44px, audited and passing"
     claim does not hold: `cart.html` alone has steppers at 32×32 and `حذف` at
     24 wide. Fixing the stepper needs a layout decision, not a size tweak —
     see `DESIGN-NOTES.md` §7.
-14. **The sticky nav's slide-in animation is unverified.** The bar now
+12. **The sticky nav's slide-in animation is unverified.** The bar now
     genuinely reaches `position: fixed`, but the entrance animation could not
     be confirmed: the automation pane freezes animation timelines
     (`playState: "running"` with `currentTime: 0` after 900ms), so the bar

@@ -623,5 +623,60 @@ animations should animate first and call `remove()` on completion.
   120-350ms. All of it collapses under `prefers-reduced-motion: reduce`.
   Prefer extending these over inventing per-component hovers.
 
+- **Fly-to-cart / fly-to-favourites.** This is what the `cart:change` and
+  `favs:change` event APIs and the keyed reconcile were built for. `flyTo()`
+  clones a bit of the page onto a fixed-position ghost and arcs it to a
+  destination; add-to-cart sends the product image to the cart button,
+  favouriting sends a filled heart to the account button. A ghost clone rather
+  than moving the real node, because the card must stay put and keep working,
+  and a fixed ghost is immune to whatever scroll container it started in.
+
+  **The badge is held, the store is not.** `badgeHold` freezes the *displayed*
+  count while a ghost is in flight so the number ticks up on landing rather
+  than before the item has left. The mutation happens immediately, so state
+  and display can never desync — only the paint lags, by ~720ms. Verified:
+  mid-flight the store reads 3 while the badge still reads 2; on landing both
+  read 3 and the ghost is removed. There is a 1400ms belt-and-braces timeout
+  because a backgrounded tab may never fire `onfinish`, and a stranded ghost
+  would sit over the page forever.
+
+  Removal never flies — only additions. Under `prefers-reduced-motion` there
+  is no ghost at all and the badge updates immediately.
+
+- **The account button gained a favourites counter** (`[data-fav-count]`), so
+  the heart has somewhere to land and "the number goes up" is true for
+  favourites as well as the cart.
+
+- **New cart glyph.** A solid shopping bag with a stroked handle, replacing a
+  Figma-exported basket that carried `preserveAspectRatio="none"` and a
+  hardcoded fill — so it neither inherited colour nor scaled honestly. Now
+  inline (`ICON.cart`) rather than an `<img>`, so it inherits `currentColor`
+  and is wrapper-sized like every other glyph. The cart buttons set
+  `text-[#163300]` explicitly; without it the glyph inherited the body text
+  colour rather than the brand green.
+
+- **Scroll reveal** on the home and product page sections — the single biggest
+  contributor to the site feeling current, and cheap: one IntersectionObserver,
+  unobserved after firing. Anything already on screen at load is revealed
+  *without* animation so the fold never animates in after the fact.
+
+  **The hidden state is gated behind `.js-reveal`**, which `scripts.js` adds to
+  `<html>` only once it runs. Without that gate a JS failure would leave every
+  section stuck at `opacity: 0` — invisible content is a far worse failure than
+  unanimated content. Verified: all 8 home sections reveal on a full scroll,
+  none stranded, and nothing is ever invisible while on screen.
+
+  **When sweeping, force-reveal first** — `d.querySelectorAll('[data-reveal]')
+  .forEach(el => el.setAttribute('data-reveal','in'))` — or below-fold sections
+  are measured at opacity 0. Doing this raised the checked-node count from
+  ~4,500 to ~5,300.
+
+- **`site/Abu-Auf-flags.webp` is cut out too.** It renders inside an
+  `info_card`, whose surface is #EDEFEB, so its baked-in white drew the same
+  box the product photos did. `isolate_products.py` now takes explicit paths
+  for exactly this. **Do not run it on the hero banners or the export-page
+  photos** — those are displayed on white, where a white background is correct
+  and cutting it out only costs image quality.
+
 - **The Figma footer carries a "Web Design by MITCH DESIGNS" credit.** Retained
   at the client's request — do not remove it again.

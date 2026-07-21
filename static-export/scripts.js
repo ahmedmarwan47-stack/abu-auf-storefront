@@ -276,7 +276,15 @@
       '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     chevronDown:
       '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    cart: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M2.5 3h1.6c.5 0 .93.35 1.03.84l.34 1.66m0 0 1.4 6.86c.16.8.87 1.37 1.68 1.37h7.9c.79 0 1.48-.54 1.66-1.31l1.3-5.4a.85.85 0 0 0-.83-1.05H5.47M9 20a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm9 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    /* Shopping bag: solid body, stroked handle. Replaces the old basket,
+       which was a Figma export carrying preserveAspectRatio="none" and a
+       hardcoded fill, so it neither inherited colour nor scaled honestly.
+       Solid reads better than an outline at 28px on the yellow disc. */
+    cart:
+      '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">' +
+      '<path d="M8.75 9.25V6.9a3.25 3.25 0 0 1 6.5 0v2.35" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>' +
+      '<path d="M4.94 8.4h14.12c.63 0 1.12.54 1.06 1.17l-.88 9.09a3 3 0 0 1-2.99 2.71H7.75a3 3 0 0 1-2.99-2.71l-.88-9.09A1.07 1.07 0 0 1 4.94 8.4Z" fill="currentColor"/>' +
+      "</svg>",
     arrowRight:
       '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     arrowLeft:
@@ -733,7 +741,13 @@
                  Figma checkout header — it is not a bare logo bar. -->
             <div class="flex items-center gap-6 shrink-0">
               <a href="login.html" data-account-link class="hidden lg:flex items-center gap-3 hover:text-white/80 py-2 h-12 transition-colors">
-                <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-6 h-6" />
+                <!-- Also the landing pad for the favourites flight, hence
+                     data-fav-target on the icon rather than the whole link. -->
+                <span class="relative shrink-0" data-fav-target>
+                  <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-6 h-6" />
+                  <span data-fav-count hidden
+                        class="-top-1.5 -end-2 absolute place-items-center grid bg-accent-yellow rounded-full min-w-[18px] h-[18px] px-1 font-bold text-[#062A1C] text-[10px] leading-none">0</span>
+                </span>
                 <span class="font-normal text-white text-[13px] leading-5" data-account-label>${esc(t("الحساب"))}</span>
                 <span class="w-[18px] h-[18px] text-white shrink-0 chevron">${ICON.chevronDown}</span>
               </a>
@@ -750,8 +764,8 @@
                          <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
                        </button>`
                 }
-                <button type="button" data-open="cart" aria-label="السلة" class="btn-elevate relative place-items-center grid bg-accent-yellow hover:bg-accent-500 rounded-full size-12">
-                  <img src="images/abuauf/icons/icon-cart.svg" alt="" class="w-7 h-7" />
+                <button type="button" data-open="cart" aria-label="السلة" class="btn-elevate relative place-items-center grid bg-accent-yellow hover:bg-accent-500 rounded-full text-[#163300] size-12">
+                  <span class="w-7 h-7" data-cart-glyph>${ICON.cart}</span>
                   <span class="-top-2 -end-2 absolute place-items-center grid bg-white shadow-custom4 px-1.5 rounded-full min-w-[22px] h-[22px] font-semibold text-black text-xs" data-cart-count>2</span>
                 </button>
               </div>
@@ -809,8 +823,8 @@
                    <button type="button" data-open="search" class="place-items-center grid shrink-0 size-11" aria-label="بحث">
                      <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
                    </button>
-                   <button type="button" data-open="cart" class="relative place-items-center grid bg-accent-yellow shrink-0 rounded-full size-11" aria-label="السلة">
-                     <img src="images/abuauf/icons/icon-cart.svg" alt="" class="w-7 h-7" />
+                   <button type="button" data-open="cart" class="relative place-items-center grid bg-accent-yellow shrink-0 rounded-full text-[#163300] size-11" aria-label="السلة">
+                     <span class="w-7 h-7" data-cart-glyph>${ICON.cart}</span>
                      <span class="-top-1 -end-1 absolute place-items-center grid bg-white rounded-full w-5 h-5 font-bold text-[10px] text-black" data-cart-count>2</span>
                    </button>
                  </div>`
@@ -1327,10 +1341,65 @@
         b.addEventListener("click", () => {
           const delta = parseInt(b.getAttribute("data-step"), 10);
           let v = parseInt(qtyEl.textContent, 10) || 1;
-          v = Math.max(1, v + delta);
-          qtyEl.textContent = v;
+          const next = Math.max(1, v + delta);
+          const changed = next !== v;
+          qtyEl.textContent = next;
+          /* The number slides in from the direction you pressed, so which way
+             it moved is legible without reading the digit. At the floor of 1
+             nothing changed, so nothing animates — the press is a no-op and
+             animating it would imply otherwise. */
+          if (changed && !reduceMotion() && qtyEl.animate) {
+            qtyEl.animate(
+              [
+                { transform: "translateY(" + (delta > 0 ? 8 : -8) + "px)", opacity: 0 },
+                { transform: "translateY(0)", opacity: 1 },
+              ],
+              { duration: 200, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" },
+            );
+          }
         });
       });
+    });
+  }
+
+  /* ---------------------------------------------------------------
+     Scroll reveal
+
+     Sections fade and rise once, the first time they come into view. This is
+     the bulk of what makes the page feel current, and it is cheap: one
+     IntersectionObserver, unobserved after firing, and entirely skipped when
+     the user asks for reduced motion.
+
+     Anything already on screen at load is revealed immediately without
+     animation, so the fold never appears to animate in after the fact.
+     --------------------------------------------------------------- */
+  function initReveal(scope) {
+    const els = [...(scope || document).querySelectorAll("[data-reveal]")];
+    if (!els.length) return;
+    // Only now does the hidden state exist at all — see the .js-reveal gate in
+    // styles.css. Set here rather than in markup so a JS failure degrades to
+    // "no animation" instead of "no content".
+    document.documentElement.classList.add("js-reveal");
+    if (reduceMotion() || !("IntersectionObserver" in window)) {
+      els.forEach((el) => el.setAttribute("data-reveal", "in"));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.setAttribute("data-reveal", "in");
+          io.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.06 },
+    );
+    els.forEach((el) => {
+      if (el.getBoundingClientRect().top < window.innerHeight) {
+        el.setAttribute("data-reveal", "in"); // above the fold: no animation
+      } else {
+        io.observe(el);
+      }
     });
   }
 
@@ -1913,6 +1982,129 @@
   const DELIVERY_FEE = 30;
   const MIN_ORDER = 150;
 
+  /* ---------------------------------------------------------------
+     Fly-to-target
+
+     Clones a bit of the page, arcs it to a destination, and resolves when it
+     lands. Used for add-to-cart (the product image flies to the cart) and for
+     favouriting (a heart flies to the account button).
+
+     Deliberately a ghost clone on `position: fixed` rather than moving the
+     real node: the real card must stay put and keep working, and a fixed
+     ghost is immune to whatever scroll container it started in.
+     --------------------------------------------------------------- */
+  const reduceMotion = () =>
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let badgeHold = 0;
+
+  function syncCartBadges() {
+    document.querySelectorAll("[data-cart-count]").forEach((el) => {
+      el.textContent = Cart.count();
+      el.hidden = Cart.count() === 0;
+    });
+  }
+
+  /* A short scale pulse on the destination, so the landing is felt. */
+  function pulse(el) {
+    if (!el || reduceMotion() || !el.animate) return;
+    el.animate(
+      [
+        { transform: "scale(1)" },
+        { transform: "scale(1.28)", offset: 0.4 },
+        { transform: "scale(0.94)", offset: 0.72 },
+        { transform: "scale(1)" },
+      ],
+      { duration: 420, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" },
+    );
+  }
+
+  /*
+   * `ghostHTML` overrides what flies; by default the source element is cloned.
+   * Resolves as soon as the ghost lands (or immediately when motion is
+   * reduced / the geometry is unusable), so callers can chain the landing
+   * beat without caring which happened.
+   */
+  function flyTo(sourceEl, targetEl, ghostHTML) {
+    if (!sourceEl || !targetEl || reduceMotion() || !document.body.animate) {
+      return Promise.resolve(false);
+    }
+    const s = sourceEl.getBoundingClientRect();
+    const t = targetEl.getBoundingClientRect();
+    if (!s.width || !s.height || !t.width) return Promise.resolve(false);
+
+    const ghost = document.createElement("div");
+    ghost.className = "fly-ghost";
+    ghost.style.cssText =
+      "position:fixed;z-index:200;pointer-events:none;left:" +
+      s.left + "px;top:" + s.top + "px;width:" + s.width + "px;height:" + s.height + "px;";
+    if (ghostHTML) ghost.innerHTML = ghostHTML;
+    else {
+      const clone = sourceEl.cloneNode(true);
+      clone.removeAttribute("id");
+      clone.style.width = "100%";
+      clone.style.height = "100%";
+      ghost.appendChild(clone);
+    }
+    document.body.appendChild(ghost);
+
+    const dx = t.left + t.width / 2 - (s.left + s.width / 2);
+    const dy = t.top + t.height / 2 - (s.top + s.height / 2);
+    // Arc height scales with distance but is capped, so a short hop does not
+    // loop absurdly and a long one still reads as a throw rather than a slide.
+    const lift = Math.min(160, Math.hypot(dx, dy) * 0.32) + 40;
+
+    const anim = ghost.animate(
+      [
+        { transform: "translate(0,0) scale(1)", opacity: 1, offset: 0 },
+        {
+          transform:
+            "translate(" + dx * 0.5 + "px," + (dy * 0.5 - lift) + "px) scale(0.66) rotate(-6deg)",
+          opacity: 0.95,
+          offset: 0.55,
+        },
+        {
+          transform: "translate(" + dx + "px," + dy + "px) scale(0.16) rotate(4deg)",
+          opacity: 0.25,
+          offset: 1,
+        },
+      ],
+      { duration: 720, easing: "cubic-bezier(0.35, 0.05, 0.25, 1)", fill: "forwards" },
+    );
+
+    return new Promise((resolve) => {
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        ghost.remove();
+        resolve(true);
+      };
+      anim.onfinish = finish;
+      // Belt and braces: if the tab is backgrounded the animation may never
+      // fire onfinish, and a stranded ghost would sit over the page forever.
+      setTimeout(finish, 1400);
+    });
+  }
+
+  /* The visible cart button for the current breakpoint. Both exist in the
+     DOM at all times; only one is laid out. */
+  function visibleCartButton() {
+    return (
+      [...document.querySelectorAll('[data-open="cart"]')].find(
+        (b) => b.getBoundingClientRect().width > 0,
+      ) || null
+    );
+  }
+
+  function visibleAccountTarget() {
+    return (
+      [...document.querySelectorAll("[data-fav-target], [data-account-link]")].find(
+        (b) => b.getBoundingClientRect().width > 0,
+      ) || null
+    );
+  }
+
   function cartLineHTML(it) {
     return `
       <div class="flex gap-3 py-4 border-neutral-divider border-b" data-cart-line data-id="${esc(String(it.id))}">
@@ -1947,11 +2139,11 @@
     const belowMin = shortfall > 0;
     const empty = items.length === 0;
 
-    /* Badge — every cart button on the page. */
-    document.querySelectorAll("[data-cart-count]").forEach((el) => {
-      el.textContent = Cart.count();
-      el.hidden = Cart.count() === 0;
-    });
+    /* Badge — every cart button on the page.
+       While a ghost is mid-flight the badge is held at its old value, so the
+       number ticks up at the moment the item lands rather than before it has
+       left. State is still the truth; only the display waits. */
+    if (!badgeHold) syncCartBadges();
 
     /*
      * Keyed reconcile rather than innerHTML replacement. Blowing the list away
@@ -2027,8 +2219,29 @@
         // Respect a quantity stepper sitting next to the button (product page).
         const scope = add.closest("[data-product]") || document;
         const qtyEl = scope.querySelector("[data-stepper] [data-qty]");
+
+        /* Send the product image to the cart, and hold the badge at its old
+           number until it lands. The mutation itself is not delayed — the
+           store updates now, only the badge waits, so nothing can desync. */
+        const img = scope.querySelector && scope.querySelector("img");
+        const target = visibleCartButton();
+        const willFly = img && target && !reduceMotion();
+        if (willFly) badgeHold++;
+
         Cart.add(product, qtyEl ? parseInt(qtyEl.textContent, 10) : 1);
         toast("تمت الإضافة إلى السلة");
+
+        if (willFly) {
+          flyTo(img, target).then(() => {
+            badgeHold = Math.max(0, badgeHold - 1);
+            if (!badgeHold) {
+              syncCartBadges();
+              pulse(target.querySelector("[data-cart-count]") || target);
+              const glyph = target.querySelector("[data-cart-glyph]");
+              if (glyph) pulse(glyph);
+            }
+          });
+        }
         return;
       }
       const step = e.target.closest("[data-cart-step]");
@@ -2168,6 +2381,7 @@
     const refresh = () => {
       syncFavButtons();
       renderFavsPage();
+      syncFavCount();
     };
     document.addEventListener("favs:change", refresh);
     refresh();
@@ -2177,8 +2391,38 @@
       if (!btn) return;
       const product = productFrom(btn);
       if (!product) return;
+
+      const wasOn = Favs.has(product.id);
       const on = Favs.toggle(product);
       toast(on ? "تمت الإضافة إلى المفضلة" : "تمت الإزالة من المفضلة");
+
+      // The heart itself always reacts, so the control feels alive even where
+      // there is nowhere to fly to (the phone masthead has no account icon).
+      pulse(btn);
+      if (!on || wasOn) return;
+
+      const target = visibleAccountTarget();
+      if (!target) return;
+      // A filled heart in the brand red-pink, not a clone of the button — the
+      // button is an outline at rest, and an outline reads as nothing at 16px.
+      const heartGhost =
+        '<span style="display:grid;place-items:center;width:100%;height:100%;color:#e0245e">' +
+        '<svg viewBox="0 0 24 24" fill="currentColor" style="width:100%;height:100%">' +
+        '<path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/>' +
+        "</svg></span>";
+      flyTo(btn, target, heartGhost).then(() => {
+        syncFavCount();
+        pulse(target.querySelector("[data-fav-count]") || target);
+      });
+    });
+  }
+
+  /* Favourites badge on the account button. */
+  function syncFavCount() {
+    const n = Favs.count();
+    document.querySelectorAll("[data-fav-count]").forEach((el) => {
+      el.textContent = n;
+      el.hidden = n === 0;
     });
   }
 
@@ -2315,6 +2559,7 @@
     initDemoForms(scope);
     initPasswordReveals(scope);
     initListing(scope);
+    initReveal(scope);
   };
 
   /* ---------------------------------------------------------------

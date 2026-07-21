@@ -35,8 +35,15 @@ Safety
 
 Usage
 -----
-    python3 build/isolate_products.py            # process
-    python3 build/isolate_products.py --dry-run  # report only
+    python3 build/isolate_products.py                    # the product folder
+    python3 build/isolate_products.py --dry-run          # report only
+    python3 build/isolate_products.py path/to/a.webp ... # specific files
+
+Only run this on artwork that sits on a COLOURED plate. Full-bleed hero
+banners and the photo blocks on the export page are displayed on white, where
+a white background is correct and cutting it out would do nothing but throw
+away image quality. `site/Abu-Auf-flags.webp` needed it because it renders
+inside an `info_card`, whose surface is #EDEFEB.
 """
 import os
 import sys
@@ -158,22 +165,29 @@ def process(path, dry_run=False):
 
 def main():
     dry = "--dry-run" in sys.argv
-    files = sorted(
-        f for f in os.listdir(PRODUCT_DIR)
-        if not f.startswith(".") and f.lower().endswith((".webp", ".png", ".jpg", ".jpeg"))
-    )
+    explicit = [a for a in sys.argv[1:] if not a.startswith("--")]
+    if explicit:
+        paths = [os.path.abspath(a) for a in explicit]
+        where = "%d file(s) given on the command line" % len(paths)
+    else:
+        paths = [
+            os.path.join(PRODUCT_DIR, f) for f in sorted(os.listdir(PRODUCT_DIR))
+            if not f.startswith(".") and f.lower().endswith((".webp", ".png", ".jpg", ".jpeg"))
+        ]
+        where = "%d file(s) in %s" % (len(paths), PRODUCT_DIR)
+
     tally = {}
-    for fn in files:
-        path = os.path.join(PRODUCT_DIR, fn)
+    for path in paths:
+        fn = os.path.basename(path)
         try:
             status, share = process(path, dry)
         except Exception as exc:  # noqa: BLE001 - report, never abort the batch
             status, share = "ERROR: %s" % exc, None
         tally[status] = tally.get(status, 0) + 1
-        if status.startswith("ERROR"):
+        if status.startswith("ERROR") or explicit:
             print("  %-34s %s" % (fn, status))
 
-    print("%d file(s) in %s" % (len(files), PRODUCT_DIR))
+    print(where)
     for k in sorted(tally):
         print("  %-26s %3d" % (k, tally[k]))
     if dry:

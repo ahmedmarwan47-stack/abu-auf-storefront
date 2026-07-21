@@ -90,6 +90,21 @@ the DOM — so card markup stays in `components.py` alone.
 Both stores dedupe on id against the `data-id` on product cards; a barcode key
 silently creates a second line for a product already in the cart.
 
+**Motion** — `flyTo(source, target, ghostHTML?)` arcs a fixed-position clone to
+a destination and resolves on landing; `pulse(el)` is the landing beat.
+`badgeHold` freezes the *displayed* cart count while a ghost is in flight so
+the number lands with the item — the store mutates immediately, only the paint
+waits, so the two can never desync. Everything checks `reduceMotion()` first.
+The shared interaction system (easing token, shadow tokens, `.btn-elevate`,
+`.product-card__*`, `.tile-lift`, `.link-sweep`, `[data-reveal]`) is at the
+foot of `styles.css` — **extend those rather than inventing per-component
+hovers.**
+
+`[data-reveal]`'s hidden state is gated behind `.js-reveal`, which JS adds to
+`<html>` at runtime. Never move that into the markup: if JS fails, the page
+must degrade to *unanimated*, not *invisible*. **When running the sweep,
+force-reveal first** or below-fold content is measured at opacity 0.
+
 **i18n** — `t()` for chrome strings and `translateDocument()` for build-time
 copy, both keyed off an `EN` dictionary of exact Arabic strings. Switching
 language re-renders the injected chrome and walks text nodes, stashing originals

@@ -114,7 +114,7 @@ def build():
       </section>
 
       <!-- ==================== FREQUENTLY BOUGHT TOGETHER ==================== -->
-      <section class="py-8">
+      <section data-reveal class="py-8">
         <div class="mx-auto px-4 max-w-[1536px]">
           <div class="bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]">
             <h2 class="mb-6 font-bold text-[#062A1C] text-xl xl:text-2xl">عادة ما يتم شراؤه معاً: أضف هذه العناصر</h2>
@@ -134,7 +134,7 @@ def build():
       </section>
 
       <!-- ============================= RECIPES ============================= -->
-      <section class="bg-interaction-base py-12">
+      <section data-reveal class="bg-interaction-base py-12">
         <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("وصفات بالمنتج")}
           <div class="gap-6 xl:gap-8 grid lg:grid-cols-2">{"".join(recipe_card(*r) for r in RECIPES)}
@@ -143,7 +143,7 @@ def build():
       </section>
 
       <!-- ========================= SIMILAR PRODUCTS ========================= -->
-      <section class="py-12">
+      <section data-reveal class="py-12">
         <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("منتجات مشابهة", "عرض المزيد", "shop-category.html")}
           {carousel("".join(product_card(x) for x in similar))}
@@ -151,7 +151,7 @@ def build():
       </section>
 
       <!-- =========================== MORE FROM US =========================== -->
-      <section class="pb-12">
+      <section data-reveal class="pb-12">
         <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("تسوق اكتر من أبو عوف", "عرض المزيد", "shop.html")}
           {carousel("".join(product_card(x) for x in more))}
