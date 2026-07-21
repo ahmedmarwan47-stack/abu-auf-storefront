@@ -533,8 +533,25 @@ body.no-scroll {
 }
 
 /* Tabs */
+/*
+ * Tab state is driven by .is-active (toggled in initTabs) rather than by
+ * per-button utility classes, so switching tabs actually restyles them.
+ * The underline is a transparent border at rest so nothing shifts on change.
+ */
 .tab-btn {
   cursor: pointer;
+  color: #777777;
+  border-bottom: 3px solid transparent;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.tab-btn:hover {
+  color: #185039;
+}
+.tab-btn.is-active {
+  color: #062a1c;
+  border-bottom-color: #185039;
 }
 .tab-panel[hidden] {
   display: none;

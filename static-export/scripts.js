@@ -399,8 +399,11 @@
           ${
             checkout
               ? ""
-              : `<div data-navbar class="relative z-30 h-[54px]">
-                   <nav class="h-full">
+                 /* bg-primary is carried on the bar itself, not inherited from
+                    the masthead, so it stays opaque once initStickyNav pulls
+                    it out of flow with position:fixed. */
+              : `<div data-navbar class="relative z-30 bg-primary h-[54px]">
+                   <nav class="mx-auto max-w-[1920px] h-full">
                      <ul class="flex items-start gap-9 h-full overflow-x-auto no-scrollbar">${nav}</ul>
                    </nav>
                  </div>`
@@ -469,9 +472,9 @@
     const cod = sm ? "w-[41px] h-4" : "w-[61px] h-6";
     return `
       <div class="flex items-center gap-1 md:gap-2">
-        <span class="inline-flex justify-center items-center bg-white border border-neutral-divider ${card} ${radius} overflow-hidden shrink-0">
-          <img src="images/abuauf/payments/pay-meeza.png" alt="Meeza" class="w-full h-full object-contain" />
-        </span>
+        <!-- Etisalat Cash ships as white artwork on its own opaque black
+             plate, so it gets no white chip — it would read as a black box. -->
+        <img src="images/abuauf/payments/pay-etisalat-cash.png" alt="اتصالات كاش" class="${card} ${radius} object-cover shrink-0" />
         <span class="inline-flex justify-center items-center bg-white border border-neutral-divider ${card} ${radius} shrink-0">
           <img src="images/abuauf/payments/pay-mastercard-alt.svg" alt="Mastercard" style="width:${glyphW}px;height:${glyphH}px" />
         </span>
@@ -555,8 +558,16 @@
 
         <div class="bg-black">
           <div class="flex md:flex-row flex-col-reverse justify-between items-center gap-4 mx-auto px-4 xl:px-[190px] py-4 max-w-[1920px] min-h-[60px]">
-            <p class="font-medium text-neutral-secondary text-xs xl:text-base">${copyright}</p>
+            <a href="https://www.mitchdesigns.com" target="_blank" rel="noopener noreferrer"
+               class="flex items-center gap-2 opacity-30 hover:opacity-60 p-1.5 transition-opacity shrink-0" dir="ltr">
+              <img src="images/abuauf/brand/mitchdesigns-logomark.svg" alt="" class="w-[30px] h-[30px]" />
+              <span class="flex flex-col gap-0.5 text-neutral-secondary text-start latin">
+                <span class="text-[10px] leading-[14px]">Web Design by</span>
+                <span class="font-medium text-sm leading-4">MITCH DESIGNS</span>
+              </span>
+            </a>
             ${paymentMarks()}
+            <p class="font-medium text-neutral-secondary text-xs xl:text-base">${copyright}</p>
           </div>
         </div>
       </div>
@@ -937,28 +948,25 @@
       const should = window.scrollY > 150;
       if (should === stuck) return;
       stuck = should;
+      // Padding is added only while stuck: in flow the bar inherits the
+      // masthead's padding, but fixed positioning takes it out of that box.
+      const stickyClasses = [
+        "fixed",
+        "top-0",
+        "left-0",
+        "right-0",
+        "z-[100]",
+        "shadow-md",
+        "animate-slideDown",
+        "px-4",
+        "xl:px-20",
+      ];
       if (should) {
         placeholder.style.height = nav.offsetHeight + "px";
-        nav.classList.add(
-          "fixed",
-          "top-0",
-          "left-0",
-          "right-0",
-          "z-[100]",
-          "shadow-md",
-          "animate-slideDown",
-        );
+        nav.classList.add(...stickyClasses);
       } else {
         placeholder.style.height = "0px";
-        nav.classList.remove(
-          "fixed",
-          "top-0",
-          "left-0",
-          "right-0",
-          "z-[100]",
-          "shadow-md",
-          "animate-slideDown",
-        );
+        nav.classList.remove(...stickyClasses);
       }
     }
     window.addEventListener("scroll", onScroll, { passive: true });
