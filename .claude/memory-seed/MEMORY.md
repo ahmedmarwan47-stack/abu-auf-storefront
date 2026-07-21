@@ -1,0 +1,3 @@
+- [Abu Auf rebrand decisions](abu-auf-rebrand-decisions.md) — locked scope for turning the Koueider static export into Abu Auf: Arabic-first RTL, rebuild to Figma, real content.
+- [Abu Auf asset sources](abu-auf-asset-sources.md) — Figma node ids, token values, and the public WooCommerce API / image host the rebrand pulls from.
+- [Abu Auf build system](abu-auf-build-system.md) — two editing layers: runtime files vs build/components.py; never hand-edit generated HTML.
