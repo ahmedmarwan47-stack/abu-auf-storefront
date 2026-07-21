@@ -1003,6 +1003,24 @@
   /* ---------------------------------------------------------------
      Public re-init hook for dynamically added markup
      --------------------------------------------------------------- */
+  /* Password reveal toggles on the auth forms. */
+  function initPasswordReveals(scope) {
+    scope.querySelectorAll("[data-reveal]").forEach((btn) => {
+      const input = scope.getElementById
+        ? scope.getElementById(btn.getAttribute("data-reveal"))
+        : document.getElementById(btn.getAttribute("data-reveal"));
+      if (!input) return;
+      btn.addEventListener("click", () => {
+        const shown = input.type === "text";
+        input.type = shown ? "password" : "text";
+        btn.setAttribute(
+          "aria-label",
+          shown ? "إظهار كلمة السر" : "إخفاء كلمة السر",
+        );
+      });
+    });
+  }
+
   window.kInit = function (scope) {
     scope = scope || document;
     scope.querySelectorAll(".carousel").forEach(initCarousel);
@@ -1010,6 +1028,7 @@
     initTabs(scope);
     initSteppers(scope);
     initDemoForms(scope);
+    initPasswordReveals(scope);
   };
 
   /* ---------------------------------------------------------------

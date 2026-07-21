@@ -3,221 +3,393 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Thank You — Order Confirmed — Abdel Rahim Koueider</title>
-    <meta name="description" content="Your Abdel Rahim Koueider order has been placed successfully. Review your order summary and delivery details." />
-    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <title>تم استلام طلبك | أبو عوف</title>
+    <meta name="description" content="شكراً لك — تم تقديم طلبك بنجاح في أبو عوف." />
+    <!-- Tailwind (Play CDN) + Abu Auf design system -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="tw-config.js"></script>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" href="images/logos/logo-dark.png" />
+    <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.svg" />
     <script defer src="scripts.js"></script>
   </head>
-  <body data-page="thankyou" data-path="/thank-you" class="antialiased bg-white">
+  <body data-page="thank-you" data-path="/thank-you" class="antialiased bg-white">
     <!-- Shared header is injected here by scripts.js -->
     <div id="site-header"></div>
 
     <main class="overflow-x-hidden">
-      <section class="flex flex-col items-center justify-start min-h-screen bg-gradient-to-b from-lightBlue to-white py-[60px] gap-8">
-        <!-- Success header -->
-        <div class="flex flex-col items-center gap-2 w-full max-w-[1200px] px-4">
-          <div class="relative w-[42px] h-[42px] flex items-center justify-center">
-            <svg viewBox="0 0 24 24" fill="none" class="w-[42px] h-[42px] text-success"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/><path d="m8 12 2.5 2.5L16 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <section class="pt-10 pb-6">
+        <div class="flex flex-col gap-3 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+          <div class="flex items-center gap-3">
+            <span class="place-items-center grid bg-primary rounded-full text-white size-8"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">شكراً لك</h1>
           </div>
-          <h1 class="text-[28px] font-semibold text-success text-center leading-[120%]">Thank you, Mariam</h1>
-          <p class="text-[16px] text-textSecondary text-center font-normal leading-[140%]">Your order has been placed successfully</p>
+          <p class="font-semibold text-[#062A1C] text-base">تم تقديم طلبك بنجاح</p>
+          <p class="text-neutral-secondary text-sm leading-7">
+            إذا كانت لديك أسئلة حول طلبك، يمكنك مراسلتنا عبر البريد الإلكتروني على
+            <a href="mailto:info@abuauf.com" class="font-semibold text-cta underline latin">INFO@ABUAUF.COM</a>
+            أو الاتصال بنا على <a href="tel:19969" class="font-semibold text-cta underline latin">19969</a>
+          </p>
         </div>
+      </section>
 
-        <!-- Order card -->
-        <div class="flex flex-col lg:flex-row items-start p-8 gap-6 w-full max-w-[1200px] bg-white shadow-[0px_0px_6px_rgba(0,0,0,0.08)] rounded-xl mx-4">
-          <!-- ---------- Left column ---------- -->
-          <div class="flex flex-col flex-1 gap-8 w-full z-10">
-            <!-- Order number + status -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-customGray pb-4 gap-4">
-              <h2 class="text-[24px] font-semibold text-success leading-[120%]">Order #12345</h2>
-              <div class="flex items-center gap-4">
-                <div class="relative w-[50px] h-[50px] md:w-[76px] md:h-[76px]">
-                  <img src="images/Delivered.png" alt="Order confirmed" class="w-full h-full object-contain" />
+      <!-- ========================== ORDER TRACKER ========================== -->
+      <section class="pb-8">
+        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+          <ol class="flex md:flex-row flex-col gap-6 md:gap-2 bg-white shadow-custom4 p-6 rounded-[20px]">
+              <li class="flex flex-col flex-1 items-center gap-2 text-center">
+                <span class="place-items-center grid rounded-full size-8 bg-primary text-white">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span class="font-semibold text-[#062A1C] text-sm">تم الطلب</span>
+                <span class="max-w-[160px] text-neutral-secondary text-xs leading-5">بأنتظار تأكيد متجر</span>
+              </li>
+              <li class="flex flex-col flex-1 items-center gap-2 text-center">
+                <span class="place-items-center grid rounded-full size-8 bg-primary text-white">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span class="font-semibold text-[#062A1C] text-sm">جاري تجهيز الطلب</span>
+                <span class="max-w-[160px] text-neutral-secondary text-xs leading-5">سيتم تجهيز الطلب قريباً</span>
+              </li>
+              <li class="flex flex-col flex-1 items-center gap-2 text-center">
+                <span class="place-items-center grid rounded-full size-8 bg-interaction-base text-neutral-secondary">
+                  <span class="font-semibold text-sm latin">3</span>
+                </span>
+                <span class="font-semibold text-[#062A1C] text-sm">جاري تجهيز الطلب</span>
+                <span class="max-w-[160px] text-neutral-secondary text-xs leading-5">طلبك في الطريق إليك</span>
+              </li>
+              <li class="flex flex-col flex-1 items-center gap-2 text-center">
+                <span class="place-items-center grid rounded-full size-8 bg-interaction-base text-neutral-secondary">
+                  <span class="font-semibold text-sm latin">4</span>
+                </span>
+                <span class="font-semibold text-[#062A1C] text-sm">تم تسليم الطلب</span>
+                <span class="max-w-[160px] text-neutral-secondary text-xs leading-5">سعدنا بخدمتك ونود أن تراك مرة أخرى</span>
+              </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ============================ ORDER DETAIL ============================ -->
+      <section class="pb-12">
+        <div class="items-start gap-6 xl:gap-8 grid lg:grid-cols-[380px_1fr] mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+          <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
+            <h2 class="font-bold text-[#062A1C] text-lg">طلب رقم <span class="latin">#304585</span></h2>
+            <div class="flex flex-col">
+                <div class="flex items-center gap-3 py-3 border-neutral-divider border-b last:border-0">
+                  <img src="images/abuauf/products/6223006310759.webp" alt="" class="bg-interaction-base p-1.5 rounded-lg w-16 h-16 object-contain shrink-0" loading="lazy" />
+                  <div class="flex flex-col flex-1 gap-0.5 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-sm line-clamp-2">تمر صحاري بالشيكولاته و اللوز - 300 جم</span>
+                    <span class="text-neutral-secondary text-xs">250 جم</span>
+                    <span class="text-neutral-secondary text-xs">عدد <span class="latin">1</span></span>
+                  </div>
+                  <span class="font-bold text-[#062A1C] text-sm latin shrink-0">EGP 220</span>
                 </div>
-                <span class="text-[18px] font-medium capitalize text-accent-yellow">Preparing</span>
+                <div class="flex items-center gap-3 py-3 border-neutral-divider border-b last:border-0">
+                  <img src="images/abuauf/products/2000102000000.webp" alt="" class="bg-interaction-base p-1.5 rounded-lg w-16 h-16 object-contain shrink-0" loading="lazy" />
+                  <div class="flex flex-col flex-1 gap-0.5 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-sm line-clamp-2">قراصيا بدون نواه - 100 جم</span>
+                    <span class="text-neutral-secondary text-xs">250 جم</span>
+                    <span class="text-neutral-secondary text-xs">عدد <span class="latin">1</span></span>
+                  </div>
+                  <span class="font-bold text-[#062A1C] text-sm latin shrink-0">EGP 72.5</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
+              <div class="flex justify-between">
+                <span class="text-neutral-secondary">مصاريف التوصيل</span>
+                <span class="font-semibold text-[#062A1C] latin">EGP 10</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-neutral-secondary">الإجمالي</span>
+                <span class="font-semibold text-[#062A1C] latin">EGP 292.5</span>
               </div>
             </div>
-
-            <!-- Personal information -->
-            <div class="flex flex-col gap-4">
-              <h3 class="text-[24px] font-semibold text-textSecondary">Personal information</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
-                <div class="flex flex-col gap-1">
-                  <p class="text-[14px] text-gray-700">First name</p>
-                  <p class="text-[16px] font-medium text-textSecondary">Mariam Hassan</p>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <p class="text-[14px] text-gray-700">Phone</p>
-                  <p class="text-[16px] font-medium text-textSecondary" dir="ltr">+20 100 123 4567</p>
-                </div>
-                <div class="flex flex-col gap-1 md:col-span-2">
-                  <p class="text-[14px] text-gray-700">Email</p>
-                  <p class="text-[16px] font-medium text-textSecondary">mariam.hassan@example.com</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="w-full h-[1px] bg-customGray"></div>
-
-            <!-- Shipping information -->
-            <div class="flex flex-col gap-4">
-              <h3 class="text-[24px] font-semibold text-textSecondary">Shipping information</h3>
-
-              <div class="flex flex-wrap items-center gap-2 mb-2 border-b border-customGray pb-4">
-                <div class="relative w-[24px] h-[24px] flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" fill="none" class="w-full h-full text-textSecondary"><path d="M3 13h11V6H5.5A2.5 2.5 0 0 0 3 8.5V13Zm11 0h4l3-3.5V16m-7-3v3m9 0v.5m-2.5 3a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm-11 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <span class="text-[16px] font-medium text-textSecondary">Delivery</span>
-                <span class="w-1 h-1 bg-textSecondary rounded-full mx-1"></span>
-                <span class="text-[16px] font-medium text-textSecondary">8 Jul 2026</span>
-                <span class="w-1 h-1 bg-textSecondary rounded-full mx-1"></span>
-                <span class="text-[16px] font-medium text-textSecondary">2:00 PM – 4:00 PM</span>
-              </div>
-
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-8">
-                <div class="flex flex-col gap-1">
-                  <p class="text-[14px] text-gray-700">City</p>
-                  <p class="text-[16px] font-medium text-textSecondary">Cairo</p>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <p class="text-[14px] text-gray-700">Area</p>
-                  <p class="text-[16px] font-medium text-textSecondary">New Cairo</p>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <p class="text-[14px] text-gray-700">District</p>
-                  <p class="text-[16px] font-medium text-textSecondary">5th Settlement</p>
-                </div>
-                <div class="flex flex-col gap-1 md:col-span-3">
-                  <p class="text-[14px] text-gray-700">Address</p>
-                  <p class="text-[16px] font-medium text-textSecondary">Street 90, next to Cairo Festival City</p>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <p class="text-[14px] text-gray-700">Building number</p>
-                  <p class="text-[16px] font-medium text-textSecondary">12</p>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <p class="text-[14px] text-gray-700">Floor</p>
-                  <p class="text-[16px] font-medium text-textSecondary">3</p>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <p class="text-[14px] text-gray-700">Apartment number</p>
-                  <p class="text-[16px] font-medium text-textSecondary">7</p>
-                </div>
-              </div>
+            <div class="flex justify-between items-center pt-3 border-neutral-divider border-t">
+              <span class="font-bold text-[#062A1C] text-base">الإجمالي</span>
+              <span class="font-bold text-[#062A1C] text-2xl latin">EGP 302.5</span>
             </div>
           </div>
 
-          <!-- vertical divider -->
-          <div class="hidden lg:block w-[1px] bg-customGray self-stretch"></div>
-
-          <!-- ---------- Right column: order summary ---------- -->
-          <div class="flex flex-col w-full lg:w-[428px] shrink-0 gap-6">
-            <h3 class="text-[24px] font-semibold text-textSecondary">Order summary</h3>
-
-            <div class="flex flex-col gap-4 max-h-[400px] overflow-y-auto pr-2">
-              <!-- item 1 -->
-              <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                  <div class="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                    <img src="images/dummy-images/new-product.png" alt="Chocolate Fudge Cake" class="w-full h-full object-cover" />
-                  </div>
-                  <div class="flex flex-col gap-[2px]">
-                    <p class="text-[18px] font-medium text-textSecondary line-clamp-1">Chocolate Fudge Cake</p>
-                    <div class="flex items-center gap-1 text-[10px] text-gray-700">
-                      <span>1 Kg</span>
-                      <span class="w-1 h-1 bg-gray-700 rounded-full"></span>
-                      <span>1 items</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-end gap-1 shrink-0">
-                  <span class="text-[12px] text-textSecondary uppercase">EGP</span>
-                  <span class="text-[16px] font-medium text-textSecondary">650</span>
-                </div>
-              </div>
-              <!-- item 2 -->
-              <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                  <div class="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                    <img src="images/menudeafult.webp" alt="Assorted Baklava Box" class="w-full h-full object-cover" />
-                  </div>
-                  <div class="flex flex-col gap-[2px]">
-                    <p class="text-[18px] font-medium text-textSecondary line-clamp-1">Assorted Baklava Box</p>
-                    <div class="flex items-center gap-1 text-[10px] text-gray-700">
-                      <span>500 gm</span>
-                      <span class="w-1 h-1 bg-gray-700 rounded-full"></span>
-                      <span>1 items</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-end gap-1 shrink-0">
-                  <span class="text-[12px] text-textSecondary uppercase">EGP</span>
-                  <span class="text-[16px] font-medium text-textSecondary">420</span>
-                </div>
-              </div>
-              <!-- item 3 -->
-              <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                  <div class="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                    <img src="images/singleproduct.png" alt="Belgian Truffle Selection" class="w-full h-full object-cover" />
-                  </div>
-                  <div class="flex flex-col gap-[2px]">
-                    <p class="text-[18px] font-medium text-textSecondary line-clamp-1">Belgian Truffle Selection</p>
-                    <div class="flex items-center gap-1 text-[10px] text-gray-700">
-                      <span>24 pcs</span>
-                      <span class="w-1 h-1 bg-gray-700 rounded-full"></span>
-                      <span>2 items</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-end gap-1 shrink-0">
-                  <span class="text-[12px] text-textSecondary uppercase">EGP</span>
-                  <span class="text-[16px] font-medium text-textSecondary">760</span>
-                </div>
+          <div class="flex flex-col gap-6 bg-interaction-base p-6 xl:p-8 rounded-[20px]">
+            <div class="flex flex-col gap-4">
+              <h2 class="font-bold text-[#062A1C] text-lg">بيانات العميل</h2>
+              <div class="gap-4 grid sm:grid-cols-2"><div class="flex flex-col gap-0.5"><span class="text-neutral-secondary text-xs">الاسم الأول</span><span class="font-semibold text-[#062A1C] text-sm break-words">محمد</span></div><div class="flex flex-col gap-0.5"><span class="text-neutral-secondary text-xs">اسم العائلة</span><span class="font-semibold text-[#062A1C] text-sm break-words">عادل</span></div><div class="flex flex-col gap-0.5"><span class="text-neutral-secondary text-xs">البريد الالكتروني</span><span class="font-semibold text-[#062A1C] text-sm break-words">MOSAWABI15@GMAIL.COM</span></div><div class="flex flex-col gap-0.5"><span class="text-neutral-secondary text-xs">رقم الهاتف</span><span class="font-semibold text-[#062A1C] text-sm break-words">01148822922</span></div>
               </div>
             </div>
-
-            <div class="flex flex-col gap-4 bg-neutral-50 -mx-4 px-4 py-4 md:bg-transparent md:mx-0 md:px-0 md:py-0 rounded-lg">
-              <div class="w-full h-[1px] bg-gray-300 hidden md:block"></div>
-
-              <div class="flex flex-col gap-3">
-                <div class="flex items-center justify-between">
-                  <span class="text-[14px] font-medium text-textSecondary">Subtotal</span>
-                  <div class="flex items-center gap-1 text-[14px] font-medium text-textSecondary"><span class="text-[12px]">EGP</span> 1,830</div>
-                </div>
-                <div class="flex items-center justify-between">
-                  <span class="text-[14px] font-normal text-gray-700">Shipping</span>
-                  <div class="flex items-center gap-1 text-[14px] font-normal text-gray-700"><span class="text-[12px]">EGP</span> 40</div>
-                </div>
-                <div class="flex items-center justify-between">
-                  <span class="text-[14px] font-normal text-success">Discount</span>
-                  <div class="flex items-center gap-1 text-[14px] font-normal text-success"><span>-</span><span class="text-[12px]">EGP</span> 50</div>
-                </div>
-              </div>
-
-              <div class="w-full h-[1px] bg-gray-300 hidden md:block"></div>
-
-              <div class="flex items-center justify-between">
-                <span class="text-[18px] font-medium text-textSecondary">Total</span>
-                <div class="flex items-center gap-1 text-[18px] font-bold text-textSecondary"><span class="text-[12px] uppercase">EGP</span> 1,820</div>
+            <div class="flex flex-col gap-4 pt-6 border-neutral-divider border-t">
+              <h2 class="font-bold text-[#062A1C] text-lg">بيانات التوصيل</h2>
+              <div class="gap-4 grid sm:grid-cols-2"><div class="flex flex-col gap-0.5"><span class="text-neutral-secondary text-xs">الميعاد المتوقع للتوصيل</span><span class="font-semibold text-[#062A1C] text-sm break-words">23 مارس 2026</span></div><div class="flex flex-col gap-0.5"><span class="text-neutral-secondary text-xs">المدينة</span><span class="font-semibold text-[#062A1C] text-sm break-words">القاهرة</span></div><div class="flex flex-col gap-0.5"><span class="text-neutral-secondary text-xs">الحي</span><span class="font-semibold text-[#062A1C] text-sm break-words">القاهرة الجديدة</span></div><div class="flex flex-col gap-0.5"><span class="text-neutral-secondary text-xs">المنطقة</span><span class="font-semibold text-[#062A1C] text-sm break-words">التجمع</span></div><div class="flex flex-col gap-0.5"><span class="text-neutral-secondary text-xs">رقم العقار و الشارع</span><span class="font-semibold text-[#062A1C] text-sm break-words">شارع 5 عقار رقم 4</span></div><div class="flex flex-col gap-0.5"><span class="text-neutral-secondary text-xs">الطابق</span><span class="font-semibold text-[#062A1C] text-sm break-words">5</span></div><div class="flex flex-col gap-0.5"><span class="text-neutral-secondary text-xs">الشقة</span><span class="font-semibold text-[#062A1C] text-sm break-words">2</span></div>
               </div>
             </div>
+            <a href="my-account-orders.html" class="bg-cta hover:bg-cta-hover px-8 py-3 rounded-full font-semibold text-white text-sm transition-colors self-end">حالة الطلب</a>
+          </div>
+        </div>
+      </section>
 
-            <!-- CTAs -->
-            <div class="flex flex-col gap-3">
-              <a href="my-account-orders.html" class="flex items-center justify-center gap-2 bg-cta hover:bg-cta-hover text-white font-semibold px-7 py-3 rounded-full transition-colors">
-                <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M3 13h8V6H5.5A2.5 2.5 0 0 0 3 8.5V13Zm8 0h6l3-3.5V13m-9 0v4m4 0.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm-9 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Track your order
+      <!-- ============================= SHOP MORE ============================= -->
+      <section class="pb-12">
+        <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+          <div class="flex flex-wrap justify-between items-center gap-4 mb-10"><h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">تسوق اكتر</h2><a href="shop.html" class="inline-flex justify-center items-center rounded-full font-semibold transition-colors px-6 py-2.5 text-sm border border-cta text-cta hover:bg-interaction-base ">عرض المزيد</a></div>
+          
+          <div class="relative carousel " style="--carousel-gap:24px">
+            <div class="carousel-track">
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000208000000.webp" alt="فول سوداني بالشيكولاتة - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
-              <a href="shop.html" class="flex items-center justify-center gap-2 border border-primaryDark text-primaryDark hover:bg-primary-light font-medium px-7 py-3 rounded-full transition-colors">
-                Continue shopping
-                <svg width="19" height="12" viewBox="0 0 19 12" fill="none" class="transition-transform"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5"/></svg>
-              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">فول سوداني بالشيكولاتة - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 35.5</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
             </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000079000000.webp" alt="عين جمل مقشر - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">عين جمل مقشر - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 121</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000404000000.webp" alt="كاجو محمص ملح جامبو - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">كاجو محمص ملح جامبو - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 156</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/6223011434013-6.webp" alt="سودانى كرى كرى بطعم الجبنة -45 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">سودانى كرى كرى بطعم الجبنة -45 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 17</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000197000000.webp" alt="فستق امريكى ملح - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">فستق امريكى ملح - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 146.5</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/Thumb-2000150000000.webp" alt="فول سودانى بطعم الجبنه - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">فول سودانى بطعم الجبنه - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 33</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000048000000.webp" alt="مقرمشات صينية - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">مقرمشات صينية - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/2000065000000.webp" alt="لوز نىء - 100 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">لوز نىء - 100 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 132</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/6223011438028.webp" alt="بافس بالجبنة 40 جرام"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">بافس بالجبنة 40 جرام</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 11</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="carousel-slide w-[260px] xl:w-[300px] shrink-0">
+            <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product.html" class="block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/6223006315341-thumb.webp" alt="بروتين بار براونيز شيكولاتة - 70 جم"
+                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                <span class="bottom-3 start-3 absolute place-items-center grid bg-white/85 hover:bg-white rounded-full text-[#062A1C] transition-colors size-8"
+                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <div class="flex flex-col flex-1 gap-1.5 p-4">
+                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+                  <a href="product.html" class="hover:text-primary transition-colors">بروتين بار براونيز شيكولاتة - 70 جم</a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                  
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 65</span>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" aria-label="أضف إلى المفضلة"
+                          class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta transition-colors shrink-0 size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+                  <button type="button" data-add-to-cart
+                          class="flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm transition-colors">اضف الى السلة</button>
+                </div>
+              </div>
+            </div>
+          </article>
+            </div>
+            <button type="button" class="hidden xl:grid top-[130px] -start-5 absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-prev" aria-label="السابق">
+              <span class="rtl:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+            <button type="button" class="hidden xl:grid top-[130px] -end-5 absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-next" aria-label="التالي">
+              <span class="ltr:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+            
           </div>
         </div>
       </section>
