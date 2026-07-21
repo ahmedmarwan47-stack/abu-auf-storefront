@@ -532,3 +532,68 @@ standard commerce terminology (`Offers & Discounts`, `Checkout`, `View cart`).
 They are not the client's approved wording and need sign-off — the same status
 as the FAQ figures and legal text. Product names are the exception: those come
 from the catalogue and are real.
+
+## Masthead controls, nav hover, and wider translation
+
+### The masthead was three pills; the live site has one
+
+Measured on abuauf.com — this is the main reason our header read heavier even
+at the right height:
+
+| Control | Live | Was |
+|---|---|---|
+| `المنتجات` | **18px / 500**, filled pill, h48, padding 8/16, gap 12 | 20px then 16px, pill |
+| Delivery | **13px / 400**, plain link, no pill | 16–20px in a pill |
+| `تسجيل الدخول` / `الحساب` | **13px / 400**, plain link, no pill | 16–20px in a pill |
+| Cart | 48×48 round | 60×60 |
+
+Only `المنتجات` is a pill on the live site. The other two are plain text links.
+All now match.
+
+The perceived icon misalignment was not a geometry bug — all three children of
+the button centre on the same Y. It was the button being the wrong size and
+weight relative to its 24px icon. `icon-grid.svg` does carry
+`preserveAspectRatio="none"` (the same Figma export quirk as the logo), but its
+viewBox is 17.143×17.142, so the distortion is under 0.01% and is not the cause.
+
+### Nav hover, taken from the live stylesheet
+
+The live rule, read out of `8939158812c59106.css` rather than guessed:
+
+```css
+.hoverFromCenter:after { border-bottom: 4px solid #dcc498; transform: scaleX(0);
+                         transition: transform .25s ease-in-out; }
+.active:after, .hoverFromCenter:hover:after { transform: scaleX(1); }
+```
+
+Our nav already had a `#DCC498` bar but faded it with **opacity**. It now scales
+from the centre on the same curve. Note Tailwind's `ease-in-out` is
+`cubic-bezier(0.4,0,0.2,1)` while CSS `ease-in-out` is `(0.42,0,0.58,1)` — the
+build uses the arbitrary value so it matches the live easing exactly.
+
+### Translation now reaches page copy, not just chrome
+
+`translateDocument()` walks visible text nodes and swaps any whose exact
+trimmed text has a dictionary entry, stashing the Arabic in a `WeakMap` so
+switching back is lossless (verified: round trip restores every string byte for
+byte).
+
+Exact-match only, deliberately. A string with no dictionary entry is left
+alone, which is what keeps prose from becoming half-translated, and means
+adding a translation is just adding a key.
+
+**What now switches:** all chrome, page headings, buttons, sort options, cart
+and summary labels, empty states — plus product names from the catalogue's real
+English `name`.
+
+**What does not, and why:** FAQ answers, legal text, blog posts, About copy,
+product descriptions, testimonials. These are prose. Translating them means
+either English copy from the client or machine translation, and machine
+translation of the **legal pages in particular should not happen at all** —
+those already block launch pending the client's own legal text, and an invented
+English translation of an invented Arabic placeholder is two steps from
+anything the client could sign off.
+
+**Every English string in `EN` is in-house placeholder** — standard commerce
+terminology, not the client's approved wording. Product names are the one
+exception; those are real catalogue data.

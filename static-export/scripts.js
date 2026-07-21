@@ -354,10 +354,87 @@
     "روابط أخرى": "More links",
     "الاكثر مبيعا": "Best sellers",
     "اللغة": "Language",
+    // build-time UI strings — these live in the generated HTML, and are picked
+    // up by translateDocument()'s text-node pass rather than by t()
+    "اضف الى السلة": "Add to cart",
+    "أضف إلى المفضلة": "Add to favourites",
+    "عرض المزيد": "Show more",
+    "تسوق اكتر": "Shop more",
+    "تسوق منتجاتنا": "Shop our products",
+    "كل المنتجات": "All products",
+    "الرئيسية": "Home",
+    "المنتجات": "Products",
+    "منتج": "products",
+    "ترتيب حسب": "Sort by",
+    "الأكثر مبيعاً": "Best selling",
+    "وصل حديثاً": "New arrivals",
+    "السعر: من الأقل": "Price: low to high",
+    "السعر: من الأعلى": "Price: high to low",
+    "سلة التسوق": "Shopping cart",
+    "ملخص السلة": "Cart summary",
+    "تعديل": "Edit",
+    "الإجمالي": "Total",
+    "مصاريف التوصيل": "Delivery fee",
+    "أطلب الآن": "Order now",
+    "اشتري الان": "Buy now",
+    "هل لديك برومو كود؟": "Have a promo code?",
+    "أضف ملاحظات على الطلب": "Add order notes",
+    "لا توجد منتجات في هذا القسم حالياً.": "No products in this section yet.",
+    "شكراً لك": "Thank you",
+    "الاسئلة و الاجابات": "FAQs",
+    "اشتراك": "Subscribe",
+    "أشتراك": "Subscribe",
+    "تسجيل الخروج": "Sign out",
+    "تحتاج مساعدة؟": "Need help?",
+    "الأسئلة المتداولة": "FAQs",
+    "تواصل معنا": "Contact us",
+    "مرحبا": "Welcome",
+    "تأكيد": "Confirm",
+    "إغلاق": "Close",
+    "بحث": "Search",
+    "الفروع": "Branches",
   };
 
   function currentLang() {
     return document.documentElement.getAttribute("lang") === "en" ? "en" : "ar";
+  }
+
+  /*
+   * Build-time copy lives in the generated HTML, so t() cannot reach it. This
+   * walks visible text nodes and swaps any whose exact trimmed text has a
+   * dictionary entry, stashing the Arabic on the node so switching back is
+   * lossless.
+   *
+   * Deliberately exact-match only: a string with no entry is left alone. That
+   * is what keeps page prose — headings, FAQ answers, legal text, blog posts —
+   * in Arabic rather than half-translated, and it means adding a translation is
+   * just adding a dictionary key.
+   */
+  const I18N_STASH = new WeakMap();
+
+  function translateDocument() {
+    const en = currentLang() === "en";
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        const p = node.parentElement;
+        if (!p) return NodeFilter.FILTER_REJECT;
+        const tag = p.tagName;
+        if (tag === "SCRIPT" || tag === "STYLE" || tag === "TITLE") return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+    const nodes = [];
+    let n;
+    while ((n = walker.nextNode())) nodes.push(n);
+
+    nodes.forEach((node) => {
+      const original = I18N_STASH.has(node) ? I18N_STASH.get(node) : node.nodeValue;
+      const key = original.trim();
+      if (!EN[key]) return;
+      if (!I18N_STASH.has(node)) I18N_STASH.set(node, original);
+      node.nodeValue = en ? original.replace(key, EN[key]) : original;
+    });
   }
   function t(s) {
     return currentLang() === "en" && EN[s] ? EN[s] : s;
@@ -416,10 +493,10 @@
     const label = `
       <a href="${href}" class="flex flex-col gap-3 pt-3.5 shrink-0 group">
         <span class="flex items-center gap-1 h-6">
-          <span class="font-semibold text-white group-hover:text-white/80 text-base leading-6 whitespace-nowrap transition-colors">${esc(t(item.name))}</span>
+          <span class="font-semibold text-white text-base leading-6 whitespace-nowrap">${esc(t(item.name))}</span>
           ${trailing}
         </span>
-        <span class="h-1 w-full bg-[#DCC498] rounded-full ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-60"} transition-opacity"></span>
+        <span class="h-1 w-full bg-[#DCC498] rounded-full origin-center ${isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"} transition-transform duration-[250ms] ease-[cubic-bezier(0.42,0,0.58,1)]"></span>
       </a>`;
 
     if (!item.children || !item.children.length) {
@@ -433,7 +510,7 @@
       )
       .join("");
 
-    return `<li class="group/mega relative flex items-center gap-2.5 shrink-0">
+    return `<li class="group/mega relative flex items-center gap-2 shrink-0">
       ${label}${leading}
       <div class="invisible group-hover/mega:visible top-full inset-inline-start-0 z-50 absolute opacity-0 group-hover/mega:opacity-100 pt-3 transition-all duration-200">
         <div class="flex gap-6 bg-white shadow-custom3 p-6 rounded-2xl w-max min-w-[420px]">
@@ -574,13 +651,13 @@
               ${
                 checkout
                   ? ""
-                  : `<button type="button" data-megamenu-toggle aria-expanded="false" aria-controls="mega-panel" class="hidden lg:flex items-center gap-2.5 bg-cta hover:bg-cta-hover shrink-0 px-5 py-3 rounded-full transition-colors">
+                  : `<button type="button" data-megamenu-toggle aria-expanded="false" aria-controls="mega-panel" class="hidden lg:flex items-center gap-3 bg-cta hover:bg-cta-hover shrink-0 px-4 py-2 rounded-full h-12 transition-colors">
                        <img src="images/abuauf/icons/icon-grid.svg" alt="" class="w-6 h-6" />
-                       <span class="font-semibold text-white text-base leading-6 whitespace-nowrap">${esc(t("المنتجات"))}</span>
+                       <span class="font-medium text-white text-[18px] leading-6 whitespace-nowrap">${esc(t("المنتجات"))}</span>
                        <span class="w-6 h-6 text-white transition-transform" data-megamenu-caret>${ICON.chevronDown}</span>
                      </button>
-                     <button type="button" data-open="location" class="hidden xl:flex items-center gap-2.5 hover:bg-white/10 px-5 py-3 rounded-full min-w-0 transition-colors">
-                       <span class="font-semibold text-white text-base leading-6 truncate">التوصيل الى الشروق - القاهرة</span>
+                     <button type="button" data-open="location" class="hidden xl:flex items-center gap-2 hover:text-white/80 py-3 h-12 min-w-0 transition-colors">
+                       <span class="font-normal text-white text-[13px] leading-5 truncate">التوصيل الى الشروق - القاهرة</span>
                        <span class="shrink-0 w-6 h-6 text-white">${ICON.chevronDown}</span>
                      </button>`
               }
@@ -590,9 +667,9 @@
                  Checkout keeps account and cart but drops search, matching the
                  Figma checkout header — it is not a bare logo bar. -->
             <div class="flex items-center gap-6 shrink-0">
-              <a href="login.html" class="hidden lg:flex items-center gap-2.5 hover:bg-white/10 px-5 py-3 rounded-full transition-colors">
+              <a href="login.html" class="hidden lg:flex items-center gap-3 hover:text-white/80 py-2 h-12 transition-colors">
                 <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-6 h-6" />
-                <span class="font-semibold text-white text-base leading-6">${esc(t("الحساب"))}</span>
+                <span class="font-normal text-white text-[13px] leading-5">${esc(t("الحساب"))}</span>
                 <span class="w-6 h-6 text-white">${ICON.chevronDown}</span>
               </a>
               ${
@@ -749,8 +826,8 @@
               <span class="text-neutral-secondary shrink-0" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="m3 7 8.4 5.6a1 1 0 0 0 1.2 0L21 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
               <input type="email" required aria-label="البريد الالكتروني"
                      placeholder="أدخل عنوان البريد الالكتروني"
-                     class="flex-1 bg-transparent outline-none min-w-0 font-semibold text-[#062A1C] placeholder:text-onBeigeMuted text-sm xl:text-base" />
-              <button type="submit" class="bg-cta hover:bg-cta-hover px-5 py-2 xl:py-2.5 rounded-full font-semibold text-white text-sm xl:text-base whitespace-nowrap transition-colors">اشتراك</button>
+                     class="flex-1 bg-transparent outline-none min-w-0 font-normal text-[#062A1C] placeholder:text-onBeigeMuted text-sm xl:text-base" />
+              <button type="submit" class="bg-cta hover:bg-cta-hover px-5 py-2 xl:py-2.5 rounded-full font-bold text-white text-sm xl:text-base whitespace-nowrap transition-colors">اشتراك</button>
             </form>
           </div>
         </div>
@@ -1465,6 +1542,8 @@
       if (!target) return;
       target.textContent = en ? card.dataset.nameEn : card.dataset.name;
     });
+
+    translateDocument();
 
     initMegaMenu();
     initLangSwitcher(true);
