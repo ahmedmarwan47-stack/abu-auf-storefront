@@ -123,3 +123,27 @@ Several routes have more than one frame — two `Home`, four `Collection`, two
 `Cart`, two `Product`, three `Account > Wallet`, two `Checkout > Info`. Nothing
 marks which is current. Any page built against one of these needs the canonical
 frame confirmed first.
+
+### Canonical frame choices (duplicates resolved by "most built-out")
+
+Ahmed's call: where the `Mobile` page has duplicates, build against the most
+built-out frame and record the choice here. Each is an inference from
+completeness, **not** confirmation from the designer — worth a check before
+launch.
+
+| Route | Chosen | Passed over | Basis |
+|---|---|---|---|
+| Product | `918:34326` (4723px) | `350:25883` (4038px) | 685px more content; includes the FBT block |
+
+**`Home` cannot be resolved this way** — `753:30987` and `2595:60104` are both
+exactly 12361.52px tall, so completeness does not separate them. That one needs
+the designer.
+
+### Product page — price display deviates from the Figma
+
+The Figma product frame shows a struck-through original (`EGP55.99`) beside a
+discounted price in an `EGP` badge. The build renders a single yellow price
+chip, because `catalog.json` carries one price per product with no compare-at
+field. Showing a fake "was" price would be inventing data. Needs either a real
+sale price in the catalogue or the designer's sign-off on the single-price
+treatment.

@@ -115,8 +115,8 @@ def build():
         <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
           <div class="bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]">
             <h2 class="mb-6 font-bold text-[#062A1C] text-xl xl:text-2xl">عادة ما يتم شراؤه معاً: أضف هذه العناصر</h2>
-            <div class="items-center gap-8 grid lg:grid-cols-[1fr_auto]">
-              <div class="flex flex-col">{"".join(bundle_item(x) for x in bundle)}
+            <div class="items-center gap-6 lg:gap-8 grid grid-cols-1 lg:grid-cols-[1fr_auto]">
+              <div class="flex flex-col min-w-0">{"".join(bundle_item(x) for x in bundle)}
               </div>
               <div class="flex flex-col items-center gap-3 bg-interaction-base p-6 rounded-xl">
                 <span class="text-neutral-secondary text-sm">الإجمالي</span>

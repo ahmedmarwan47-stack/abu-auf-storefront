@@ -198,7 +198,11 @@ def product_gallery(main_img, thumbs, alt):
                 <img src="{e(t)}" alt="" class="w-full h-full object-contain" loading="lazy" />
               </button>""" for i, t in enumerate(thumbs))
     return f"""
-          <div class="flex md:flex-row flex-col-reverse gap-4">
+          <!-- DOM order puts the info column first so RTL lands it in the right
+               column at lg. The Figma mobile product frame (918:34326) leads
+               with the media, so pull it above the info below lg — visually
+               only, leaving the desktop column order untouched. -->
+          <div class="flex md:flex-row flex-col-reverse gap-4 order-first lg:order-none min-w-0">
             <div class="flex md:flex-col gap-3 overflow-x-auto no-scrollbar">{thumb_html}
             </div>
             <div class="flex-1 bg-interaction-base p-6 xl:p-10 rounded-[20px]">
@@ -290,9 +294,9 @@ def bundle_item(p, checked=True):
     from catalog import money, title as _title
     return f"""
                 <label class="flex items-center gap-3 py-2 cursor-pointer">
-                  <input type="checkbox"{' checked' if checked else ''} class="accent-[#163300] rounded w-5 h-5" />
-                  <img src="{e(p['image'])}" alt="" class="bg-interaction-base p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
-                  <span class="flex-1 text-[#062A1C] text-sm leading-5 line-clamp-2">{e(_title(p))}</span>
+                  <input type="checkbox"{' checked' if checked else ''} class="accent-[#163300] shrink-0 rounded w-5 h-5" />
+                  <img src="{e(p['image'])}" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
+                  <span class="flex-1 min-w-0 text-[#062A1C] text-sm leading-5 line-clamp-2">{e(_title(p))}</span>
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP {money(p['price'])}</span>
                 </label>"""
 
