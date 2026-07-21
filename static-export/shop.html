@@ -28,8 +28,8 @@
       <section class="pt-6">
         <div class="flex flex-col gap-6 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
           
-          <div class="flex xl:flex-row flex-col items-start xl:items-center xl:justify-between gap-4">
-            <div class="flex gap-2 -mx-1 px-1 w-full xl:flex-1 min-w-0 overflow-x-auto no-scrollbar"><a href="shop.html" class="inline-flex items-center px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors bg-cta text-white border-cta">كل المنتجات</a><a href="shop-category.html" class="inline-flex items-center px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">العروض والخصومات</a><a href="shop-category.html" class="inline-flex items-center px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">مكسرات وحبوب ومقرمشات</a><a href="shop-category.html" class="inline-flex items-center px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة ومشروبات</a><a href="shop-category.html" class="inline-flex items-center px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">تمور وفواكه مجففة</a><a href="shop-category.html" class="inline-flex items-center px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">سناكس صحية</a><a href="shop-category.html" class="inline-flex items-center px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">اساسيات المطبخ</a><a href="shop-category.html" class="inline-flex items-center px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">البهارات والزيوت</a><a href="shop-category.html" class="inline-flex items-center px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">الهدايا والمشاركة</a>
+          <div class="flex xl:flex-row flex-col items-start xl:items-center xl:justify-between gap-4" data-listing>
+            <div class="flex gap-2 -mx-1 px-1 w-full xl:flex-1 min-w-0 overflow-x-auto no-scrollbar"><a href="#all" data-filter="all" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors bg-cta text-white border-cta">كل المنتجات</a><a href="#offers-promotions" data-filter="offers-promotions" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">العروض والخصومات</a><a href="#nuts-crackers" data-filter="nuts-crackers" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">مكسرات وحبوب ومقرمشات</a><a href="#coffee-beverage" data-filter="coffee-beverage" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة ومشروبات</a><a href="#dates-dried-fruits" data-filter="dates-dried-fruits" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">تمور وفواكه مجففة</a><a href="#healthy-snacks" data-filter="healthy-snacks" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">سناكس صحية</a><a href="#kitchen-baking" data-filter="kitchen-baking" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">اساسيات المطبخ</a><a href="#spices-kitchen-baking" data-filter="spices-kitchen-baking" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">البهارات والزيوت</a><a href="#gifting-seasonal" data-filter="gifting-seasonal" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">الهدايا والمشاركة</a>
             </div>
 
             <label class="inline-flex items-center gap-2 xl:bg-white px-0 xl:px-4 py-2 border border-transparent xl:border-neutral-divider rounded-full shrink-0">
@@ -45,10 +45,13 @@
       <section class="py-8 xl:py-10">
         <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
           <p class="mb-6 text-neutral-secondary text-sm">
-            <span class="latin">99</span> منتج
+            <span class="latin" data-result-count>99</span> منتج
           </p>
-          <div class="gap-4 xl:gap-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-          <article class="w-full">
+          <p data-empty-state hidden class="py-10 text-neutral-secondary text-base text-center">
+            لا توجد منتجات في هذا القسم حالياً.
+          </p>
+          <div data-product-grid class="gap-4 xl:gap-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+          <article class="w-full" data-cat="offers-promotions" data-price="250.0" data-id="1571">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/330-thumb.webp" alt="عرض معمول (1سادة + 1 قرفه + 1 شيكولاتة و 1 معمول بالشيكولاتة البيضاء )"
@@ -73,7 +76,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="offers-promotions" data-price="250.0" data-id="39400">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/349-thumb.webp" alt="عرض معمول (1 سادة + 1 قرفة + 1 شيكولاتة + 1 فراولة)"
@@ -98,7 +101,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="offers-promotions" data-price="355.0" data-id="1321">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr-666.webp" alt="ابوعوف مكسرات مشكلة - 275 جم"
@@ -123,7 +126,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="offers-promotions" data-price="320.0" data-id="1322">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006317659.webp" alt="كاجو محمص -275 جم"
@@ -148,7 +151,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="offers-promotions" data-price="51.0" data-id="10576">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/PR000085.webp" alt="عرض سناكس بروتين بزبدة الفول السودانى 35 جم ( 3+1 مجانا )"
@@ -173,7 +176,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="offers-promotions" data-price="290.0" data-id="1325">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6224002106353.webp" alt="عين جمل ارباع - 275 جم"
@@ -198,7 +201,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="offers-promotions" data-price="335.0" data-id="1323">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr-642.webp" alt="فستق محمص - 275 جم"
@@ -223,7 +226,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="offers-promotions" data-price="100.0" data-id="10581">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/525-1-1.webp" alt="عرض بريتزل (اشتري 3 بسعر أقل)"
@@ -248,7 +251,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="offers-promotions" data-price="250.0" data-id="1572">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/331-thumb.webp" alt="عرض معمول ( 2 سادة + 1 قرفه + 1 شيكولاتة)"
@@ -273,7 +276,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="offers-promotions" data-price="250.0" data-id="62393">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/332-thumb.webp" alt="عرض معمول (2 شيكولاتة + 1 قرفة + 1 ساده)"
@@ -298,7 +301,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="offers-promotions" data-price="320.0" data-id="1324">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6224002106377-1-1.webp" alt="لوز محمص ملح -275 جم"
@@ -323,7 +326,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="offers-promotions" data-price="50.0" data-id="10574">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/PR000035.webp" alt="عرض لب سورى -250 جم (1+1مجانا)"
@@ -348,7 +351,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="nuts-crackers" data-price="35.5" data-id="1320">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000208000000.webp" alt="فول سوداني بالشيكولاتة - 100 جم"
@@ -373,7 +376,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="nuts-crackers" data-price="121.0" data-id="1280">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000079000000.webp" alt="عين جمل مقشر - 100 جم"
@@ -398,7 +401,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="nuts-crackers" data-price="156.0" data-id="1287">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000404000000.webp" alt="كاجو محمص ملح جامبو - 100 جم"
@@ -423,7 +426,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="nuts-crackers" data-price="17.0" data-id="10573">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011434013-6.webp" alt="سودانى كرى كرى بطعم الجبنة -45 جم"
@@ -448,7 +451,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="nuts-crackers" data-price="146.5" data-id="1288">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000197000000.webp" alt="فستق امريكى ملح - 100 جم"
@@ -473,7 +476,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="nuts-crackers" data-price="33.0" data-id="1319">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Thumb-2000150000000.webp" alt="فول سودانى بطعم الجبنه - 100 جم"
@@ -498,7 +501,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="nuts-crackers" data-price="45.0" data-id="1343">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000048000000.webp" alt="مقرمشات صينية - 100 جم"
@@ -523,7 +526,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="nuts-crackers" data-price="132.0" data-id="1282">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000065000000.webp" alt="لوز نىء - 100 جم"
@@ -548,7 +551,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="coffee-beverage" data-price="91.0" data-id="1358">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000466000000.webp" alt="بن أبو عوف ساده فاتح - 100 جم"
@@ -573,7 +576,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="coffee-beverage" data-price="82.5" data-id="8560">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000463000000.webp" alt="قهوة بن برازيلى سادة فاتح - 100 جم"
@@ -598,7 +601,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="coffee-beverage" data-price="82.5" data-id="8561">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000464000000.webp" alt="قهوة بن برازيلى سادة وسط - 100 جم"
@@ -623,7 +626,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="coffee-beverage" data-price="91.0" data-id="1359">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000467000000.webp" alt="بن أبو عوف ساده وسط - 100 جم"
@@ -648,7 +651,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="coffee-beverage" data-price="110.0" data-id="1361">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000505000000.webp" alt="بن ابوعوف محوج فاتح - 100 جم"
@@ -673,7 +676,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="coffee-beverage" data-price="110.0" data-id="1362">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000506000000.webp" alt="بن ابوعوف محوج وسط - 100 جم"
@@ -698,7 +701,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="coffee-beverage" data-price="200.0" data-id="7482">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004760198.webp" alt="قهوة سريعة التحضير جولد - 85 جرام"
@@ -723,7 +726,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="coffee-beverage" data-price="160.0" data-id="7481">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004760181.webp" alt="قهوة سريعة التحضير كلاسيك(برطمان) - 100 جرام"
@@ -748,7 +751,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="coffee-beverage" data-price="155.0" data-id="10509">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011434167-6.webp" alt="قهوة عربى - 100 جم"
@@ -773,7 +776,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="coffee-beverage" data-price="308.0" data-id="10502">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004765353-2-1.webp" alt="بن أبو عوف تركي ساده فاتح 200 جم"
@@ -798,7 +801,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="coffee-beverage" data-price="99.0" data-id="8558">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000502000000.webp" alt="بن برازيلى فاتح محوج  - 100 جم"
@@ -823,7 +826,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="coffee-beverage" data-price="99.0" data-id="6264">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000503000000.webp" alt="بن برازيلي محوج وسط - 100 جم"
@@ -848,7 +851,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="dates-dried-fruits" data-price="220.0" data-id="1431">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006310759.webp" alt="تمر صحاري بالشيكولاته و اللوز - 300 جم"
@@ -873,7 +876,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="dates-dried-fruits" data-price="72.5" data-id="1445">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000102000000.webp" alt="قراصيا بدون نواه - 100 جم"
@@ -898,7 +901,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="dates-dried-fruits" data-price="220.0" data-id="17436">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011437304.webp" alt="تمر صحارى بالشيكولاته غامقه باللوز - 300 جرام"
@@ -923,7 +926,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="dates-dried-fruits" data-price="30.0" data-id="1631">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006314092.webp" alt="كرانبيري - 25 جم"
@@ -948,7 +951,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="dates-dried-fruits" data-price="40.5" data-id="1437">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000401000000.webp" alt="زبيب أبو عوف جولدن - 100 جم"
@@ -973,7 +976,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="dates-dried-fruits" data-price="195.0" data-id="1432">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006310773.webp" alt="تمر صحاري بالشكولاته - 300 جم"
@@ -998,7 +1001,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="dates-dried-fruits" data-price="25.0" data-id="89548">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr-08.webp" alt="تمر هلال رمضان - 3 قطع"
@@ -1023,7 +1026,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="dates-dried-fruits" data-price="90.0" data-id="1429">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr-1.webp" alt="بلح محشى لوز - 200 جم"
@@ -1048,7 +1051,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="dates-dried-fruits" data-price="32.0" data-id="1451">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/image-600x600-3.webp" alt="زبيب مصري - 100 جم"
@@ -1073,7 +1076,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="dates-dried-fruits" data-price="86.0" data-id="1444">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr.webp" alt="تين اسباني مجفف - 100 جم"
@@ -1098,7 +1101,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="dates-dried-fruits" data-price="156.0" data-id="7483">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000090000000.webp" alt="مشمش مجفف - 100 جم"
@@ -1123,7 +1126,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="dates-dried-fruits" data-price="68.0" data-id="1449">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000479000000.webp" alt="قراصيا بالنواه جامبو - 100 جم"
@@ -1148,7 +1151,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="healthy-snacks" data-price="11.0" data-id="16499">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011438028.webp" alt="بافس بالجبنة 40 جرام"
@@ -1173,7 +1176,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="healthy-snacks" data-price="65.0" data-id="1368">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006315341-thumb.webp" alt="بروتين بار براونيز شيكولاتة - 70 جم"
@@ -1198,7 +1201,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="healthy-snacks" data-price="11.0" data-id="16502">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011438035.webp" alt="بافس بالشطة والليمون 40 جرام"
@@ -1223,7 +1226,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="healthy-snacks" data-price="65.0" data-id="1370">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006312388-thumb.webp" alt="بروتين بار بالشكولاته والقهوه - 70 جم"
@@ -1248,7 +1251,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="healthy-snacks" data-price="65.0" data-id="46238">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/image-600x600-1.png" alt="بسكويت محشو تمر - 12 قطعة"
@@ -1273,7 +1276,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="healthy-snacks" data-price="11.0" data-id="16494">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011438011.webp" alt="بافس بالكاتشب 40 جرام"
@@ -1298,7 +1301,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="healthy-snacks" data-price="20.0" data-id="1576">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/image-600x600-6.webp" alt="مقرمشات بروتين بالباربيكيو المدخن - 60 جرام"
@@ -1323,7 +1326,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="healthy-snacks" data-price="65.0" data-id="1372">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006315389-thumb.webp" alt="بروتين بار بندق - 70 جم"
@@ -1348,7 +1351,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="kitchen-baking" data-price="260.0" data-id="1389">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6224002106438-1-1.webp" alt="لب قرع مقشر – لب أبيض (نئ) - 450 جم"
@@ -1373,7 +1376,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="kitchen-baking" data-price="175.0" data-id="10549">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6224002106414-1-1.webp" alt="لب سورى مقشر \"
@@ -1398,7 +1401,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="kitchen-baking" data-price="160.0" data-id="1387">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004760549.webp" alt="حبوب الشيا - 400 جم"
@@ -1423,7 +1426,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="kitchen-baking" data-price="45.0" data-id="1366">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004768972.webp" alt="ملح الهيمالايا الصخري ناعم - 400 جم"
@@ -1448,7 +1451,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="kitchen-baking" data-price="175.0" data-id="1402">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004763762-1-1.webp" alt="زبده الفول السوداني - 330 جم"
@@ -1473,7 +1476,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="kitchen-baking" data-price="70.0" data-id="1383">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6224002106421-1-1.webp" alt="حبوب بذر الكتان - 450 جم"
@@ -1498,7 +1501,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="kitchen-baking" data-price="35.0" data-id="1483">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006317345.webp" alt="السبع بهارات - 70 جم"
@@ -1523,7 +1526,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="kitchen-baking" data-price="75.0" data-id="1381">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004612626.webp" alt="حبوب الشوفان - 450 جم"
@@ -1548,7 +1551,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="kitchen-baking" data-price="50.0" data-id="1496">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006317369.webp" alt="بابريكا مدخنة - 70 جم"
@@ -1573,7 +1576,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="kitchen-baking" data-price="485.0" data-id="1405">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/97-1.webp" alt="3 عبوات زبده فول سوداني ساده"
@@ -1598,7 +1601,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="kitchen-baking" data-price="35.0" data-id="1487">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006317437.webp" alt="بهارات فراخ -  75 جم"
@@ -1623,7 +1626,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="kitchen-baking" data-price="40.0" data-id="1484">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004763083.webp" alt="زعتر سورى ‘دقُه’- 75 جم"
@@ -1648,7 +1651,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="spices-kitchen-baking" data-price="30.0" data-id="10558">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011431258.webp" alt="فلفل اسود ناعم - 35جم"
@@ -1673,7 +1676,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="spices-kitchen-baking" data-price="17.0" data-id="10560">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011431272.webp" alt="كزبرة ناعمة - 35جم"
@@ -1698,7 +1701,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="spices-kitchen-baking" data-price="35.0" data-id="1498">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006317383.webp" alt="بهارات بطاطس - 75 جم"
@@ -1723,7 +1726,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="spices-kitchen-baking" data-price="35.0" data-id="1506">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006317581.webp" alt="كارى - 75 جم"
@@ -1748,7 +1751,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="spices-kitchen-baking" data-price="45.0" data-id="1512">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006317567.webp" alt="قرفه ناعمه - 70 جم"
@@ -1773,7 +1776,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="spices-kitchen-baking" data-price="55.0" data-id="1502">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006317536.webp" alt="سماق - 75 جم"
@@ -1798,7 +1801,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="spices-kitchen-baking" data-price="40.0" data-id="1511">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004763106.webp" alt="بهارات لحمه - 75 جم"
@@ -1823,7 +1826,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="spices-kitchen-baking" data-price="40.0" data-id="1490">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006317475.webp" alt="بودرة ثوم - 90 جم"
@@ -1848,7 +1851,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="gifting-seasonal" data-price="1750.0" data-id="87692">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr-03_11zon.webp" alt="شنطة رمضان 2"
@@ -1873,7 +1876,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="gifting-seasonal" data-price="1000.0" data-id="87691">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr-02_11zon.webp" alt="شنطة رمضان 1"
@@ -1898,7 +1901,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="gifting-seasonal" data-price="750.0" data-id="87676">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr-01_11zon.webp" alt="بوكس رمضان كرتون"
@@ -1923,7 +1926,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="gifting-seasonal" data-price="870.0" data-id="87667">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr_11zon-1-3.webp" alt="بوكس ياميش بريميوم"
@@ -1948,7 +1951,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="gifting-seasonal" data-price="650.0" data-id="7169">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Dates-Deluxe-Box-Thumb.webp" alt="علبة تمور جولد"
@@ -1973,7 +1976,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="gifting-seasonal" data-price="550.0" data-id="90084">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr-84_11zon.webp" alt="تمر مجدول محشو بالمكسرات - 740 جم"
@@ -1998,7 +2001,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="gifting-seasonal" data-price="400.0" data-id="1270">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/106.webp" alt="سلة هدايا \"
@@ -2023,7 +2026,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="gifting-seasonal" data-price="3500.0" data-id="87678">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr-04_11zon.webp" alt="بوكس رمضان سيلفر"
@@ -2048,7 +2051,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="gifting-seasonal" data-price="530.0" data-id="87662">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr_11zon-1-2.webp" alt="صينية مكسرات وفواكه مجففه"
@@ -2073,7 +2076,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="gifting-seasonal" data-price="250.0" data-id="1269">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/107.webp" alt="سلة هدايا \"
@@ -2098,7 +2101,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="gifting-seasonal" data-price="6000.0" data-id="87683">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Pr-05_11zon.webp" alt="بوكس رمضان جولد"
@@ -2123,7 +2126,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="best-seller" data-price="20.0" data-id="1563">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/image-600x600-5.webp" alt="كيس سناكس بروتين طماطم بالريحان - 60 جم"
@@ -2148,7 +2151,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="best-seller" data-price="20.0" data-id="6390">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011431074.webp" alt="بسكويت بالبيتزا - 80 جم"
@@ -2173,7 +2176,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="best-seller" data-price="90.0" data-id="1454">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006311473-thumb.webp" alt="علبة معمول بعجوه المجدول مغطى بالشيكولاته - 12 قطعة"
@@ -2198,7 +2201,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="new-arrivals" data-price="45.0" data-id="10532">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011433511.webp" alt="بار مكسرات بالبندق والشيكولاته - 40 جم"
@@ -2223,7 +2226,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="new-arrivals" data-price="25.0" data-id="8543">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/image-600x600-4.webp" alt="جيلى بينسون كولا -65 جم"
@@ -2248,7 +2251,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="new-arrivals" data-price="25.0" data-id="33417">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223001690047-thumb.webp" alt="جيلى بينسون فراولة - 65 جم"
@@ -2273,7 +2276,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="new-arrivals" data-price="45.0" data-id="10533">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011433528.webp" alt="بار مكسرات باللوز والبريتزل المملح -40 جم"
@@ -2298,7 +2301,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="chocolate-coated-dates" data-price="30.0" data-id="1331">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004760938.webp" alt="فشار بالكراميل -100 جم"
@@ -2323,7 +2326,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="chocolate-coated-dates" data-price="30.0" data-id="1334">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004760921.webp" alt="فشار مملح بالكراميل - 100 جم"
@@ -2348,7 +2351,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="chocolate-coated-dates" data-price="75.0" data-id="1452">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223006311459-thumb.webp" alt="علبة معمول بعجوه المجدول - 12 قطعة"
@@ -2373,7 +2376,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="baked-crackers" data-price="27.0" data-id="1562">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011431098.webp" alt="كيس شوكوبيللو شوكولا - 100 جم"
@@ -2398,7 +2401,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="baked-crackers" data-price="11.0" data-id="10545">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011433856.webp" alt="توستينو بالجبنة - 50 جم"
@@ -2423,7 +2426,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="baked-crackers" data-price="20.0" data-id="6386">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011431050.webp" alt="بسكويت بالجبنة - 80جم"
@@ -2448,7 +2451,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="baked-crackers" data-price="20.0" data-id="6388">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011431067.webp" alt="بسكويت بالملح - 80جم"
@@ -2473,7 +2476,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="baked-crackers" data-price="30.0" data-id="10542">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011434525.webp" alt="فشار بالجبنه البرميزان والروزمارى - 35 جم"
@@ -2498,7 +2501,7 @@
               </div>
             </div>
           </article>
-          <article class="w-full">
+          <article class="w-full" data-cat="baked-crackers" data-price="8.0" data-id="6610">
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004760402.webp" alt="بريتزل جبنة - 25 جم"

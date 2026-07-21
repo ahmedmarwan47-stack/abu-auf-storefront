@@ -6,8 +6,12 @@ SLUG = "shop.html"
 
 
 def build():
-    chips = [("كل المنتجات", "shop.html")] + [
-        (c["ar"], "shop-category.html") for c in nav_categories()
+    # Three-item chips are live filters. Every slug here is a real
+    # `categorySlug` from catalog.json, so each one has products behind it —
+    # previously these all linked to shop-category.html, which shows coffee
+    # whatever you picked.
+    chips = [("كل المنتجات", "#all", "all")] + [
+        (c["ar"], "#" + c["slug"], c["slug"]) for c in nav_categories()
     ]
     return listing(
         title_text="كل المنتجات | أبو عوف",

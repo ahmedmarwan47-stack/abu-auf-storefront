@@ -111,7 +111,7 @@ def breadcrumb(trail):
             f'{"".join(parts)}</nav>')
 
 
-def chip(label, href="#", active=False):
+def chip(label, href="#", active=False, filter_slug=None):
     """Filter pill — Figma 'Chip Button'.
 
     The mobile Collection frame (350:17805) fills inactive chips with
@@ -120,7 +120,13 @@ def chip(label, href="#", active=False):
     """
     style = ("bg-cta text-white border-cta" if active
              else "chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta")
-    return (f'<a href="{href}" class="inline-flex items-center px-5 py-2 border rounded-full '
+    # `filter_slug` turns the chip into a live client-side filter; without it
+    # the chip stays a plain link. The href is kept either way so the control
+    # still means something with JS off.
+    attr = f' data-filter="{e(filter_slug)}"' if filter_slug else ""
+    # min-h-11 = 44px: WCAG 2.5.5 / HIG minimum tap target. At px-5 py-2 these
+    # measured 38px, which is a miss on a phone.
+    return (f'<a href="{href}"{attr} class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full '
             f'font-semibold text-sm whitespace-nowrap transition-colors {style}">{e(label)}</a>')
 
 
@@ -160,7 +166,7 @@ def page_header(heading, trail=None):
 
 def product_grid(products, cols="grid-cols-2 md:grid-cols-3 xl:grid-cols-4"):
     cards = "".join(product_card(p, slide=False) for p in products)
-    return f'<div class="gap-4 xl:gap-6 grid {cols}">{cards}\n          </div>'
+    return f'<div data-product-grid class="gap-4 xl:gap-6 grid {cols}">{cards}\n          </div>'
 
 
 def rating(score="4.8", count=None):
@@ -337,8 +343,14 @@ def product_card(p, slide=True):
     old = (f'<span class="text-neutral-secondary text-sm line-through latin">EGP {money(p["regular"])}</span>'
            if on_sale else "")
     wrapper = ("carousel-slide w-[260px] xl:w-[300px] shrink-0" if slide else "w-full")
+    # Filter/sort keys for the listing pages. Everything here is a real field
+    # from catalog.json — `id` doubles as the recency proxy because the
+    # catalogue carries no publish date (see DESIGN-NOTES).
+    keys = (f'data-cat="{e(p.get("categorySlug", ""))}" '
+            f'data-price="{p.get("sale") or p.get("price") or 0}" '
+            f'data-id="{p.get("id", 0)}"')
     return f"""
-          <article class="{wrapper}">
+          <article class="{wrapper}" {keys}>
             <div class="flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product.html" class="block relative bg-interaction-base p-4">
                 <img src="{e(p['image'])}" alt="{e(title(p))}"
@@ -420,9 +432,12 @@ def blog_card(img, tag, heading, excerpt, href="blog.html"):
 def recipe_card(img, tag, heading, excerpt, minutes, href="blog.html"):
     return f"""
         <article class="flex bg-white shadow-custom4 rounded-2xl overflow-hidden">
-          <div class="flex flex-col flex-1 gap-2 p-6 xl:p-8">
+          <!-- min-w-0: the image is a fixed 160px shrink-0, so without this the
+               text column's min-content floor pushed the card ~10px wide at
+               320px viewports. -->
+          <div class="flex flex-col flex-1 gap-2 p-6 xl:p-8 min-w-0">
             <span class="font-semibold text-primary text-sm">{e(tag)}</span>
-            <h3 class="font-bold text-[#062A1C] text-xl xl:text-2xl leading-8">{e(heading)}</h3>
+            <h3 class="font-bold text-[#062A1C] text-xl xl:text-2xl leading-8 break-words">{e(heading)}</h3>
             <p class="text-neutral-secondary text-base leading-7 line-clamp-2">{e(excerpt)}</p>
             {button("شاهد الوصفة", href, "primary", "sm", "mt-auto")}
           </div>

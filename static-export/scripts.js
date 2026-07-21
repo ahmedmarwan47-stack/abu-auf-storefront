@@ -173,6 +173,22 @@
   /* ---------------------------------------------------------------
      Route → static-file mapping
      --------------------------------------------------------------- */
+  /* The one category page that was actually built, by slug. */
+  const CATEGORY_PAGE = { "coffee-beverage": "shop-category.html" };
+
+  /* Sub-category slug → parent category slug, taken from the nav itself so the
+     two cannot drift apart. */
+  const CHILD_TO_PARENT = (function () {
+    const m = {};
+    MAIN_MENU.forEach(function (i) {
+      const parent = (i.url || "").replace("/shop/", "");
+      (i.children || []).forEach(function (c) {
+        m[(c.url || "").replace("/shop/", "")] = parent;
+      });
+    });
+    return m;
+  })();
+
   function pageHref(url) {
     if (!url) return "#";
     if (/^https?:\/\//.test(url) || url.startsWith("#") || url.endsWith(".html"))
@@ -200,7 +216,19 @@
       "/my-account": "my-account.html",
     };
     if (map[clean]) return map[clean];
-    if (clean.startsWith("/shop/")) return "shop-category.html";
+    /*
+     * Category routes. Only one category page exists — shop-category.html, the
+     * Figma Collection worked example for coffee — and every /shop/<slug> used
+     * to resolve to it, so tapping "المكسرات" in the nav landed you on coffee.
+     * Real category slugs now open the listing filtered to that category.
+     * Sub-category slugs have no field in catalog.json, so they fall back to
+     * their parent, which MAIN_MENU already records.
+     */
+    if (clean.startsWith("/shop/")) {
+      let slug = clean.slice("/shop/".length);
+      if (CHILD_TO_PARENT[slug]) slug = CHILD_TO_PARENT[slug];
+      return CATEGORY_PAGE[slug] || "shop.html#" + slug;
+    }
     if (clean.startsWith("/products/")) return "product.html";
     if (clean.startsWith("/blogs/")) return "blog.html";
     if (clean.startsWith("/my-account/"))
@@ -255,7 +283,7 @@
      --------------------------------------------------------------- */
   function countryButton() {
     return `
-      <button type="button" class="flex items-center gap-1.5 shrink-0 px-4 py-0.5 rounded-full hover:bg-black/5 transition-colors">
+      <button type="button" class="flex items-center gap-1.5 shrink-0 min-h-11 px-4 py-0.5 rounded-full hover:bg-black/5 transition-colors">
         <img src="images/abuauf/brand/flag-egypt.svg" alt="" class="rounded-full w-4 h-4 object-cover" />
         <span class="font-semibold text-[#163300] text-base leading-[26px] whitespace-nowrap">مصر (EGP)</span>
         <img src="images/abuauf/icons/icon-globe.svg" alt="" class="opacity-70 w-5 h-5" />
@@ -431,7 +459,7 @@
           ${
             checkout
               ? ""
-              : `<button type="button" data-open="menu" class="place-items-center grid w-8" aria-label="القائمة">${ICON.menu}</button>`
+              : `<button type="button" data-open="menu" class="place-items-center grid size-11 -me-2" aria-label="القائمة">${ICON.menu}</button>`
           }
           <a href="index.html" class="block"><img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[132px] h-[44px] object-contain" /></a>
           ${
@@ -448,7 +476,7 @@
         checkout
           ? ""
           : `<div class="md:hidden block bg-interaction-base px-4 py-2">
-               <button type="button" data-open="location" class="flex justify-between items-center gap-1 bg-cta px-5 py-2.5 rounded-full w-full text-white">
+               <button type="button" data-open="location" class="flex justify-between items-center gap-1 bg-cta px-5 py-2.5 rounded-full w-full min-h-11 text-white">
                  <span class="font-semibold text-xs truncate">التوصيل الى الشروق - القاهرة</span>
                  <span class="shrink-0 w-3.5 h-3.5">${ICON.chevronDown}</span>
                </button>
@@ -587,12 +615,12 @@
     const menuLinks = MAIN_MENU.map(
       (i) => `
       <li class="border-b border-neutral-100">
-        <a href="${pageHref(i.url)}" class="flex items-center justify-between py-3.5 text-textSecondary font-medium">${esc(i.name)}${i.children ? `<span class="w-4 h-4 text-neutral-secondary">${ICON.arrowRight}</span>` : ""}</a>
+        <a href="${pageHref(i.url)}" class="flex items-center justify-between min-h-11 py-3.5 text-textSecondary font-medium">${esc(i.name)}${i.children ? `<span class="w-4 h-4 text-neutral-secondary">${ICON.arrowRight}</span>` : ""}</a>
       </li>`,
     ).join("");
     const supportLinks = SUPPORT_MENU.map(
       (i) =>
-        `<li><a href="${pageHref(i.url)}" class="block py-2 text-neutral-secondary text-sm">${esc(i.title)}</a></li>`,
+        `<li><a href="${pageHref(i.url)}" class="flex items-center min-h-11 py-2 text-neutral-secondary text-sm">${esc(i.title)}</a></li>`,
     ).join("");
 
     /* Sample cart contents — real catalogue items (see data/catalog.json). */
@@ -656,7 +684,7 @@
     <aside data-drawer="menu" class="side-drawer side-drawer--left" aria-label="القائمة">
       <div class="flex justify-between items-center bg-primary px-5 py-4 border-neutral-100 border-b text-white">
         <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[110px] h-9 object-contain" />
-        <button type="button" data-close class="place-items-center grid w-8 h-8 text-white">${ICON.close}</button>
+        <button type="button" data-close class="place-items-center grid size-11 -me-2 text-white">${ICON.close}</button>
       </div>
       <div class="flex-1 px-5 py-4 overflow-y-auto">
         <ul>${menuLinks}</ul>
@@ -665,7 +693,7 @@
           <ul>${supportLinks}</ul>
         </div>
         <div class="flex flex-col gap-3 mt-6">
-          <a href="login.html" class="py-2.5 border border-cta rounded-full font-medium text-cta text-sm text-center">تسجيل الدخول</a>
+          <a href="login.html" class="flex justify-center items-center min-h-11 py-2.5 border border-cta rounded-full font-medium text-cta text-sm text-center">تسجيل الدخول</a>
           <div class="flex justify-center">${countryButton()}</div>
         </div>
       </div>
@@ -1044,6 +1072,92 @@
     });
   }
 
+  /* ---------------------------------------------------------------
+     Listing filter + sort
+
+     The export is static, so filtering happens over the cards already in the
+     DOM — no fetch, still works from file://. Cards carry data-cat / data-price
+     / data-id from catalog.json.
+
+     Only chips rendered with a `data-filter` slug take part. Sub-category
+     chips deliberately have none: the catalogue has no sub-category field, so
+     filtering by them would empty the grid (see DESIGN-NOTES).
+     --------------------------------------------------------------- */
+  const CHIP_ON = ["bg-cta", "text-white", "border-cta"];
+  const CHIP_OFF = ["chip-filter", "bg-white", "text-[#062A1C]",
+                    "border-neutral-divider", "hover:border-cta"];
+
+  function initListing(scope) {
+    const grid = scope.querySelector("[data-product-grid]");
+    const chips = [...scope.querySelectorAll("[data-filter]")];
+    if (!grid || !chips.length) return;
+
+    const cards = [...grid.children];
+    cards.forEach((c, i) => (c.dataset.order = i)); // "الأكثر مبيعاً" = as published
+    const countEl = scope.querySelector("[data-result-count]");
+    const emptyEl = scope.querySelector("[data-empty-state]");
+    const select = scope.querySelector("[data-listing] select, select");
+
+    const setChip = (el, on) => {
+      el.classList.remove(...(on ? CHIP_OFF : CHIP_ON));
+      el.classList.add(...(on ? CHIP_ON : CHIP_OFF));
+      el.setAttribute("aria-current", on ? "true" : "false");
+    };
+
+    function apply(slug, sort) {
+      const visible = cards.filter((c) => {
+        const show = slug === "all" || c.dataset.cat === slug;
+        c.hidden = !show;
+        return show;
+      });
+      if (sort && sort !== "popular") {
+        const dir = sort === "price-desc" ? -1 : 1;
+        const key = sort === "newest" ? "id" : "price";
+        visible.sort((a, b) =>
+          sort === "newest"
+            ? Number(b.dataset.id) - Number(a.dataset.id)
+            : dir * (Number(a.dataset.price) - Number(b.dataset.price))
+        );
+      } else {
+        visible.sort((a, b) => Number(a.dataset.order) - Number(b.dataset.order));
+      }
+      visible.forEach((c) => grid.appendChild(c));
+      if (countEl) countEl.textContent = visible.length;
+      if (emptyEl) emptyEl.hidden = visible.length > 0;
+      chips.forEach((c) => setChip(c, c.dataset.filter === slug));
+    }
+
+    let current = "all";
+    chips.forEach((c) =>
+      c.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        current = c.dataset.filter;
+        apply(current, select ? select.value : "popular");
+        history.replaceState(null, "", "#" + current);
+      })
+    );
+    if (select) {
+      select.addEventListener("change", () => apply(current, select.value));
+    }
+
+    const readHash = () => {
+      const h = (location.hash || "").replace("#", "");
+      return h && chips.some((c) => c.dataset.filter === h) ? h : null;
+    };
+
+    // Arriving from the nav at shop.html#<slug> while already on shop.html is
+    // a hash change, not a load — without this the page would sit unfiltered.
+    window.addEventListener("hashchange", () => {
+      const h = readHash();
+      if (!h) return;
+      current = h;
+      apply(current, select ? select.value : "popular");
+    });
+
+    current = readHash() || "all";
+    apply(current, select ? select.value : "popular");
+  }
+
   window.kInit = function (scope) {
     scope = scope || document;
     scope.querySelectorAll(".carousel").forEach(initCarousel);
@@ -1052,6 +1166,7 @@
     initSteppers(scope);
     initDemoForms(scope);
     initPasswordReveals(scope);
+    initListing(scope);
   };
 
   /* ---------------------------------------------------------------

@@ -18,9 +18,16 @@ SORT_OPTIONS = [
 
 def listing(title_text, description, heading, trail, chips, products,
             page_id, path, intro=None, active_chip=None):
+    # A chip may be (label, href) or (label, href, filter_slug). Only the
+    # three-item form becomes a live filter; the two-item form stays a link,
+    # which is what the sub-category chips are until the client's taxonomy
+    # exists (see DESIGN-NOTES).
     chip_html = "".join(
-        chip(label, href, active=(label == active_chip)) for label, href in chips
+        chip(c[0], c[1], active=(c[0] == active_chip),
+             filter_slug=(c[2] if len(c) > 2 else None))
+        for c in chips
     )
+    filterable = any(len(c) > 2 for c in chips)
     intro_html = (
         f'<p class="max-w-[720px] text-neutral-secondary text-base xl:text-lg leading-8">{e(intro)}</p>'
         if intro else ""
@@ -32,7 +39,7 @@ def listing(title_text, description, heading, trail, chips, products,
       <section class="pt-6">
         <div class="flex flex-col gap-6 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
           {intro_html}
-          <div class="flex xl:flex-row flex-col items-start xl:items-center xl:justify-between gap-4">
+          <div class="flex xl:flex-row flex-col items-start xl:items-center xl:justify-between gap-4"{' data-listing' if filterable else ''}>
             <div class="flex gap-2 -mx-1 px-1 w-full xl:flex-1 min-w-0 overflow-x-auto no-scrollbar">{chip_html}
             </div>
 {sort_select(SORT_OPTIONS)}
@@ -44,7 +51,10 @@ def listing(title_text, description, heading, trail, chips, products,
       <section class="py-8 xl:py-10">
         <div class="mx-auto px-4 xl:px-[190px] max-w-[1920px]">
           <p class="mb-6 text-neutral-secondary text-sm">
-            <span class="latin">{len(products)}</span> منتج
+            <span class="latin" data-result-count>{len(products)}</span> منتج
+          </p>
+          <p data-empty-state hidden class="py-10 text-neutral-secondary text-base text-center">
+            لا توجد منتجات في هذا القسم حالياً.
           </p>
           {product_grid(products)}
           <div class="flex justify-center mt-12">

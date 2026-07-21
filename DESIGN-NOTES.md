@@ -227,3 +227,60 @@ Both need the client to populate the CMS. Until then these cards will not match
 the frame, and that is the correct outcome — the alternative is a store locator
 that lies. The card badges (`فرع أبو عوف`, `متاح توصيل`) are also absent for
 the same reason: no field distinguishes branch type or delivery availability.
+
+## Listing filters — now real, and what still cannot filter
+
+Previously every category chip on `shop.html` and every `/shop/<slug>` route in
+the nav resolved to `shop-category.html`, which shows **coffee** whatever you
+picked. Tapping `المكسرات` in the navbar showed coffee. This was not a styling
+bug; the controls were tappable and did the wrong thing.
+
+**Now working, off real catalogue data:**
+
+- Category chips filter the grid client-side over the cards already in the DOM
+  (no fetch, still works from `file://`). Verified: all 9 chips return only
+  their own category, with counts matching `catalog.json` exactly — 12 / 8 / 12
+  / 12 / 8 / 12 / 8 / 11.
+- `/shop/<slug>` nav routes open `shop.html#<slug>`, pre-filtered. Distinct nav
+  destinations went from 1 to 14. Sub-category routes fall back to their parent
+  via `MAIN_MENU`, so `/shop/turkish-coffee` lands on coffee rather than
+  nowhere.
+- Sorting: price low→high and high→low sort on the real `price`/`sale` field.
+
+**Sort options that are not what their label claims:**
+
+| Option | Reality |
+|---|---|
+| `السعر: من الأقل` / `من الأعلى` | real — sorts on price |
+| `وصل حديثاً` | sorts by product **id** descending. WooCommerce ids rise over time so this approximates recency, but the catalogue carries **no publish date** — it is a proxy, not a fact |
+| `الأكثر مبيعاً` | **does nothing** — restores catalogue order. There is no sales data in `catalog.json`. It is the default, so the page looks correct, but it is not ranking by popularity |
+
+Getting these honest needs `date_created` and a sales/popularity figure in the
+scraped catalogue.
+
+**Sub-category chips on `shop-category.html` still do not filter.** They are
+deliberately left as plain links. `catalog.json` has `category` / `categorySlug`
+and **no sub-category field**, and the seven labels come from the Figma, not the
+data. Checked against the 12 real coffee products: `القهوة`, `قهوة مطحونة طازجة`,
+`إسبريسو` and `مشروبات ساخنة` match **zero** products each. Wiring them would
+empty the grid on four of seven taps, which is worse than not filtering. Needs
+the client's sub-category taxonomy.
+
+## Tap targets
+
+Audited every interactive control at 390×844 against the 44px minimum (WCAG
+2.5.5 / HIG). Before: the hamburger was **32×30**, the location bar 38px, filter
+chips 38px, and 10 of 18 mobile-drawer items under 44. All now pass, verified by
+hit-testing each control's centre point after scrolling it into view.
+
+Two nav items go nowhere real: `المكافآت` and `منتجات أبو عوف خارج مصر` both
+fall through to `index.html`, because `/rewards` and `/export` were never built.
+The Figma has frames for both (`973:40830`, `426:29955`). Until they exist, those
+two nav entries silently return the user to the homepage.
+
+## Viewport coverage
+
+Swept all 29 pages at **320 / 360 / 375 / 390 / 414** px. Clean at every width,
+0 contrast failures (3871 text nodes). 320px needed two fixes to the recipe
+card — `min-w-0` on the text column beside its fixed 160px image, then
+`break-words` on the heading once the column could actually shrink.
