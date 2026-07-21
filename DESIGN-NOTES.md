@@ -284,3 +284,19 @@ Swept all 29 pages at **320 / 360 / 375 / 390 / 414** px. Clean at every width,
 0 contrast failures (3871 text nodes). 320px needed two fixes to the recipe
 card — `min-w-0` on the text column beside its fixed 160px image, then
 `break-words` on the heading once the column could actually shrink.
+
+### Location picker — sheet on phones, dialog on desktop
+
+The location overlay was a bottom sheet at every width, including 1440px, where
+a full-width panel pinned to the bottom edge reads as a mobile pattern dropped
+into a desktop window. The live site opens it as a popup there.
+
+`.bottom-sheet--modal` now switches it to a centred dialog from xl: 420px wide,
+22px radius, fade-and-scale instead of slide-up, drag handle hidden (it means
+nothing once the panel is not draggable). Below xl it is unchanged — full
+width, pinned to the bottom, handle visible.
+
+Centring uses `inset-inline: 0` + `margin-inline: auto` rather than
+`left`/`right`, so it holds in RTL. The modifier is on the location sheet only;
+the account menu sheet stays a sheet because it is `lg:hidden` and never
+appears on desktop.

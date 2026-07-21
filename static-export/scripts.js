@@ -722,8 +722,12 @@
     </div>
 
     <!-- Location bottom sheet -->
-    <div data-sheet="location" class="bottom-sheet">
-      <div class="bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+    <!-- Bottom sheet on phones, centred dialog from xl — the live site opens
+         this as a popup on desktop, where a full-width sheet pinned to the
+         bottom of a 1440px window reads as a mobile pattern out of place. -->
+    <div data-sheet="location" class="bottom-sheet bottom-sheet--modal" role="dialog" aria-modal="true" aria-label="أختار منطقة التوصيل">
+      <!-- Drag affordance: meaningless once this is a centred dialog. -->
+      <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
       <div class="flex justify-between items-center mb-4">
         <h2 class="font-bold text-[#062A1C] text-lg">أختار منطقة التوصيل</h2>
         <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
