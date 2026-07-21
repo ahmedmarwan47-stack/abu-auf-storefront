@@ -179,3 +179,22 @@ top-level document after a viewport resize returned stale values here — a
 no-media `!important` rule appeared to have no effect, which is impossible.
 Screenshots and same-origin iframe measurements were both accurate. Prefer
 those; if computed styles contradict a screenshot, distrust the computed style.
+
+### Checkout — mobile ordering, and one gap
+
+Figma `Checkout > Info` `753:36339` (2554px), taken over `753:34950` (2242px)
+per the most-built-out rule. Inferred from completeness, not confirmed.
+
+The Figma puts the order summary **between** the page header and the form body
+on mobile. That was impossible while the `h1` and step nav lived inside the form
+column, so the header is now its own grid item spanning both columns at `lg`.
+Desktop is unchanged — every `order` resets at `lg` and the header row is short
+and right-aligned, so it occupies the same visual position as before.
+
+**Not implemented: the summary is collapsible in the Figma.** The mobile frame
+shows a chevron on `ملخص السلة`, so it opens and closes; the build renders it
+always-expanded with a `تعديل` link instead. Making it collapse on mobile while
+staying static on desktop is a behavioural change, not a layout one, so it is
+flagged rather than guessed at. Worth asking whether the collapse is required or
+whether always-visible is acceptable — on a checkout page, hiding the total
+behind a tap is a real conversion decision, not just a styling one.

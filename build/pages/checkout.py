@@ -69,15 +69,20 @@ def build():
 
     body = f"""
       <section class="py-8">
-        <div class="items-start gap-10 grid lg:grid-cols-[1fr_380px] mx-auto px-4 xl:px-[120px] max-w-[1600px]">
+        <div class="items-start gap-10 grid grid-cols-1 lg:grid-cols-[1fr_380px] mx-auto px-4 xl:px-[120px] max-w-[1600px]">
+
+          <!-- Header is its own grid item spanning both columns, because the
+               Figma mobile checkout (753:36339) puts the order summary directly
+               beneath it, ahead of the form body — which is impossible while
+               the header lives inside the form column. At lg every order resets
+               and this spans row 1, leaving the desktop columns as they were. -->
+          <div class="flex flex-col gap-3 order-1 lg:order-none lg:col-span-2 min-w-0">
+            <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">إتمام عملية الشراء بأمان</h1>
+            <nav aria-label="خطوات الشراء" class="flex flex-wrap items-center gap-2">{steps_html}</nav>
+          </div>
 
           <!-- RTL start: form -->
-          <div class="flex flex-col gap-8">
-            <div class="flex flex-col gap-3">
-              <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">إتمام عملية الشراء بأمان</h1>
-              <nav aria-label="خطوات الشراء" class="flex flex-wrap items-center gap-2">{steps_html}</nav>
-            </div>
-
+          <div class="flex flex-col gap-8 order-3 lg:order-none min-w-0">
             <form class="flex flex-col gap-8">
               <fieldset class="flex flex-col gap-4">
                 <legend class="mb-3 font-bold text-[#062A1C] text-lg">نوع الطلب</legend>
@@ -153,7 +158,7 @@ def build():
           </div>
 
           <!-- RTL end: summary -->
-          <aside class="lg:top-4 lg:sticky flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
+          <aside class="lg:top-4 lg:sticky flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px] order-2 lg:order-none min-w-0">
             <div class="flex justify-between items-center">
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
               <a href="cart.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">تعديل</a>
