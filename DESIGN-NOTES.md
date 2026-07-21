@@ -24,17 +24,28 @@ changes a token pairing used across the footer on every page.
 
 ## Content gaps
 
-- **Product names are English only.** The public WooCommerce Store API returns
-  English `name` values for every product; `?lang=ar`, `Accept-Language: ar` and
-  `X-WPML-Language: ar` all return the same. The live storefront is a
-  client-rendered Next.js app, so the Arabic names are not in its served HTML
-  either. The Arabic set exists somewhere (the live site displays it) but is not
-  publicly reachable. Currently the build shows the real English names on an
-  otherwise fully Arabic page. **Needs a decision** — see the project README
-  discussion or ask the client for a name export.
-
 - **"صحارة ديلايتس" promo section** (Figma `753:34833`) is omitted from the home
   page pending that sub-brand's logo and product assets.
+
+## Resolved
+
+- **Arabic product names — solved.** The WooCommerce Store API only ever returns
+  English names (`?lang=ar`, `Accept-Language: ar` and `X-WPML-Language: ar` all
+  return English). But the Arabic storefront *server-renders* names into its
+  Next.js RSC flight payload at `https://www.abuauf.com/ar/category/<slug>`,
+  keyed by the same product slug the Store API returns. Category routes only
+  render their first page, so the remainder were fetched per product from
+  `/ar/products/<slug>`. Coverage is now **99/99**, stored as `nameAr` in
+  `static-export/data/catalog.json`. Scripts:
+  `fetch_arabic_names.py` and `fill_missing_names.py`.
+  Note the site's public routes are `/ar/category/<slug>` and
+  `/ar/products/<slug>` — **not** `/product-category/…`, which 404s.
+
+- **Live site vs Figma — HQ address differs.** The Figma footer says "المنطقة
+  الصناعية 31-33، التجمع الثالث، القاهرة الجديدة، مصر"; the live site says
+  "مبني 05 B ميدهاوس ، الحرم الجامعي ، المنطقة الخامسة - طريق السخنة" and also
+  shows a tax number. The build currently uses the Figma address. Worth
+  confirming which is current before launch.
 
 ## Figma export quirks worth knowing
 

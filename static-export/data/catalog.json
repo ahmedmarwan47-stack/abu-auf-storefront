@@ -136,7 +136,8 @@
    "price": 250.0,
    "regular": 325.0,
    "sale": 250.0,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "عرض معمول (1سادة + 1 قرفه + 1 شيكولاتة و 1 معمول بالشيكولاتة البيضاء )"
   },
   {
    "id": 39400,
@@ -152,7 +153,8 @@
    "price": 250.0,
    "regular": 325.0,
    "sale": 250.0,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "عرض معمول (1 سادة + 1 قرفة + 1 شيكولاتة + 1 فراولة)"
   },
   {
    "id": 1321,
@@ -168,7 +170,8 @@
    "price": 355.0,
    "regular": 355.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "ابوعوف مكسرات مشكلة - 275 جم"
   },
   {
    "id": 1322,
@@ -184,7 +187,8 @@
    "price": 320.0,
    "regular": 320.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "كاجو محمص -275 جم"
   },
   {
    "id": 10576,
@@ -200,7 +204,8 @@
    "price": 51.0,
    "regular": 51.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "عرض سناكس بروتين بزبدة الفول السودانى 35 جم ( 3+1 مجانا )"
   },
   {
    "id": 1325,
@@ -216,7 +221,8 @@
    "price": 290.0,
    "regular": 290.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "عين جمل ارباع - 275 جم"
   },
   {
    "id": 1323,
@@ -232,7 +238,8 @@
    "price": 335.0,
    "regular": 335.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "فستق محمص - 275 جم"
   },
   {
    "id": 10581,
@@ -248,7 +255,8 @@
    "price": 100.0,
    "regular": 130.0,
    "sale": 100.0,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "عرض بريتزل (اشتري 3 بسعر أقل)"
   },
   {
    "id": 1572,
@@ -264,7 +272,8 @@
    "price": 250.0,
    "regular": 325.0,
    "sale": 250.0,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "عرض معمول ( 2 سادة + 1 قرفه + 1 شيكولاتة)"
   },
   {
    "id": 62393,
@@ -280,7 +289,8 @@
    "price": 250.0,
    "regular": 325.0,
    "sale": 250.0,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "عرض معمول (2 شيكولاتة + 1 قرفة + 1 ساده)"
   },
   {
    "id": 1324,
@@ -296,7 +306,8 @@
    "price": 320.0,
    "regular": 320.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "لوز محمص ملح -275 جم"
   },
   {
    "id": 10574,
@@ -312,7 +323,8 @@
    "price": 50.0,
    "regular": 50.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "عرض لب سورى -250 جم (1+1مجانا)"
   },
   {
    "id": 1320,
@@ -328,7 +340,8 @@
    "price": 35.5,
    "regular": 35.5,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "فول سوداني بالشيكولاتة - 100 جم"
   },
   {
    "id": 1280,
@@ -344,7 +357,8 @@
    "price": 121.0,
    "regular": 121.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "عين جمل مقشر - 100 جم"
   },
   {
    "id": 1287,
@@ -360,7 +374,8 @@
    "price": 156.0,
    "regular": 156.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "كاجو محمص ملح جامبو - 100 جم"
   },
   {
    "id": 10573,
@@ -376,7 +391,8 @@
    "price": 17.0,
    "regular": 17.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "سودانى كرى كرى بطعم الجبنة -45 جم"
   },
   {
    "id": 1288,
@@ -392,7 +408,8 @@
    "price": 146.5,
    "regular": 146.5,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "فستق امريكى ملح - 100 جم"
   },
   {
    "id": 1319,
@@ -408,7 +425,8 @@
    "price": 33.0,
    "regular": 33.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "فول سودانى بطعم الجبنه - 100 جم"
   },
   {
    "id": 1343,
@@ -424,7 +442,8 @@
    "price": 45.0,
    "regular": 45.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "مقرمشات صينية - 100 جم"
   },
   {
    "id": 1282,
@@ -440,7 +459,8 @@
    "price": 132.0,
    "regular": 132.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "لوز نىء - 100 جم"
   },
   {
    "id": 1358,
@@ -456,7 +476,8 @@
    "price": 91.0,
    "regular": 91.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بن أبو عوف ساده فاتح - 100 جم"
   },
   {
    "id": 8560,
@@ -472,7 +493,8 @@
    "price": 82.5,
    "regular": 82.5,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "قهوة بن برازيلى سادة فاتح - 100 جم"
   },
   {
    "id": 8561,
@@ -488,7 +510,8 @@
    "price": 82.5,
    "regular": 82.5,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "قهوة بن برازيلى سادة وسط - 100 جم"
   },
   {
    "id": 1359,
@@ -504,7 +527,8 @@
    "price": 91.0,
    "regular": 91.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بن أبو عوف ساده وسط - 100 جم"
   },
   {
    "id": 1361,
@@ -520,7 +544,8 @@
    "price": 110.0,
    "regular": 110.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بن ابوعوف محوج فاتح - 100 جم"
   },
   {
    "id": 1362,
@@ -536,7 +561,8 @@
    "price": 110.0,
    "regular": 110.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بن ابوعوف محوج وسط - 100 جم"
   },
   {
    "id": 7482,
@@ -552,7 +578,8 @@
    "price": 200.0,
    "regular": 200.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "قهوة سريعة التحضير جولد - 85 جرام"
   },
   {
    "id": 7481,
@@ -568,7 +595,8 @@
    "price": 160.0,
    "regular": 160.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "قهوة سريعة التحضير كلاسيك(برطمان) - 100 جرام"
   },
   {
    "id": 10509,
@@ -584,7 +612,8 @@
    "price": 155.0,
    "regular": 155.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "قهوة عربى - 100 جم"
   },
   {
    "id": 10502,
@@ -600,7 +629,8 @@
    "price": 308.0,
    "regular": 308.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بن أبو عوف تركي ساده فاتح 200 جم"
   },
   {
    "id": 8558,
@@ -616,7 +646,8 @@
    "price": 99.0,
    "regular": 99.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بن برازيلى فاتح محوج  - 100 جم"
   },
   {
    "id": 6264,
@@ -632,7 +663,8 @@
    "price": 99.0,
    "regular": 99.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بن برازيلي محوج وسط - 100 جم"
   },
   {
    "id": 1431,
@@ -648,7 +680,8 @@
    "price": 220.0,
    "regular": 220.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "تمر صحاري بالشيكولاته و اللوز - 300 جم"
   },
   {
    "id": 1445,
@@ -664,7 +697,8 @@
    "price": 72.5,
    "regular": 72.5,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "قراصيا بدون نواه - 100 جم"
   },
   {
    "id": 17436,
@@ -680,7 +714,8 @@
    "price": 220.0,
    "regular": 220.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "تمر صحارى بالشيكولاته غامقه باللوز - 300 جرام"
   },
   {
    "id": 1631,
@@ -696,7 +731,8 @@
    "price": 30.0,
    "regular": 30.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "كرانبيري - 25 جم"
   },
   {
    "id": 1437,
@@ -712,7 +748,8 @@
    "price": 40.5,
    "regular": 40.5,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "زبيب أبو عوف جولدن - 100 جم"
   },
   {
    "id": 1432,
@@ -728,7 +765,8 @@
    "price": 195.0,
    "regular": 195.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "تمر صحاري بالشكولاته - 300 جم"
   },
   {
    "id": 89548,
@@ -744,7 +782,8 @@
    "price": 25.0,
    "regular": 25.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "تمر هلال رمضان - 3 قطع"
   },
   {
    "id": 1429,
@@ -760,7 +799,8 @@
    "price": 90.0,
    "regular": 90.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بلح محشى لوز - 200 جم"
   },
   {
    "id": 1451,
@@ -776,7 +816,8 @@
    "price": 32.0,
    "regular": 32.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "زبيب مصري - 100 جم"
   },
   {
    "id": 1444,
@@ -792,7 +833,8 @@
    "price": 86.0,
    "regular": 86.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "تين اسباني مجفف - 100 جم"
   },
   {
    "id": 7483,
@@ -808,7 +850,8 @@
    "price": 156.0,
    "regular": 156.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "مشمش مجفف - 100 جم"
   },
   {
    "id": 1449,
@@ -824,7 +867,8 @@
    "price": 68.0,
    "regular": 68.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "قراصيا بالنواه جامبو - 100 جم"
   },
   {
    "id": 16499,
@@ -840,7 +884,8 @@
    "price": 11.0,
    "regular": 11.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بافس بالجبنة 40 جرام"
   },
   {
    "id": 1368,
@@ -856,7 +901,8 @@
    "price": 65.0,
    "regular": 65.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بروتين بار براونيز شيكولاتة - 70 جم"
   },
   {
    "id": 16502,
@@ -872,7 +918,8 @@
    "price": 11.0,
    "regular": 11.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بافس بالشطة والليمون 40 جرام"
   },
   {
    "id": 1370,
@@ -888,7 +935,8 @@
    "price": 65.0,
    "regular": 65.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بروتين بار بالشكولاته والقهوه - 70 جم"
   },
   {
    "id": 46238,
@@ -904,7 +952,8 @@
    "price": 65.0,
    "regular": 65.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بسكويت محشو تمر - 12 قطعة"
   },
   {
    "id": 16494,
@@ -920,7 +969,8 @@
    "price": 11.0,
    "regular": 11.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بافس بالكاتشب 40 جرام"
   },
   {
    "id": 1576,
@@ -936,7 +986,8 @@
    "price": 20.0,
    "regular": 20.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "مقرمشات بروتين بالباربيكيو المدخن - 60 جرام"
   },
   {
    "id": 1372,
@@ -952,7 +1003,8 @@
    "price": 65.0,
    "regular": 65.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بروتين بار بندق - 70 جم"
   },
   {
    "id": 1389,
@@ -968,7 +1020,8 @@
    "price": 260.0,
    "regular": 260.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "لب قرع مقشر – لب أبيض (نئ) - 450 جم"
   },
   {
    "id": 10549,
@@ -984,7 +1037,8 @@
    "price": 175.0,
    "regular": 175.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "لب سورى مقشر \\"
   },
   {
    "id": 1387,
@@ -1000,7 +1054,8 @@
    "price": 160.0,
    "regular": 160.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "حبوب الشيا - 400 جم"
   },
   {
    "id": 1366,
@@ -1016,7 +1071,8 @@
    "price": 45.0,
    "regular": 45.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "ملح الهيمالايا الصخري ناعم - 400 جم"
   },
   {
    "id": 1402,
@@ -1032,7 +1088,8 @@
    "price": 175.0,
    "regular": 175.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "زبده الفول السوداني - 330 جم"
   },
   {
    "id": 1383,
@@ -1048,7 +1105,8 @@
    "price": 70.0,
    "regular": 70.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "حبوب بذر الكتان - 450 جم"
   },
   {
    "id": 1483,
@@ -1064,7 +1122,8 @@
    "price": 35.0,
    "regular": 35.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "السبع بهارات - 70 جم"
   },
   {
    "id": 1381,
@@ -1080,7 +1139,8 @@
    "price": 75.0,
    "regular": 75.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "حبوب الشوفان - 450 جم"
   },
   {
    "id": 1496,
@@ -1096,7 +1156,8 @@
    "price": 50.0,
    "regular": 50.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بابريكا مدخنة - 70 جم"
   },
   {
    "id": 1405,
@@ -1112,7 +1173,8 @@
    "price": 485.0,
    "regular": 525.0,
    "sale": 485.0,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "3 عبوات زبده فول سوداني ساده"
   },
   {
    "id": 1487,
@@ -1128,7 +1190,8 @@
    "price": 35.0,
    "regular": 35.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بهارات فراخ -  75 جم"
   },
   {
    "id": 1484,
@@ -1144,7 +1207,8 @@
    "price": 40.0,
    "regular": 40.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "زعتر سورى ‘دقُه’- 75 جم"
   },
   {
    "id": 10558,
@@ -1160,7 +1224,8 @@
    "price": 30.0,
    "regular": 30.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "فلفل اسود ناعم - 35جم"
   },
   {
    "id": 10560,
@@ -1176,7 +1241,8 @@
    "price": 17.0,
    "regular": 17.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "كزبرة ناعمة - 35جم"
   },
   {
    "id": 1498,
@@ -1192,7 +1258,8 @@
    "price": 35.0,
    "regular": 35.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بهارات بطاطس - 75 جم"
   },
   {
    "id": 1506,
@@ -1208,7 +1275,8 @@
    "price": 35.0,
    "regular": 35.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "كارى - 75 جم"
   },
   {
    "id": 1512,
@@ -1224,7 +1292,8 @@
    "price": 45.0,
    "regular": 45.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "قرفه ناعمه - 70 جم"
   },
   {
    "id": 1502,
@@ -1240,7 +1309,8 @@
    "price": 55.0,
    "regular": 55.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "سماق - 75 جم"
   },
   {
    "id": 1511,
@@ -1256,7 +1326,8 @@
    "price": 40.0,
    "regular": 40.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بهارات لحمه - 75 جم"
   },
   {
    "id": 1490,
@@ -1272,7 +1343,8 @@
    "price": 40.0,
    "regular": 40.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بودرة ثوم - 90 جم"
   },
   {
    "id": 87692,
@@ -1288,7 +1360,8 @@
    "price": 1750.0,
    "regular": 1750.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "شنطة رمضان 2"
   },
   {
    "id": 87691,
@@ -1304,7 +1377,8 @@
    "price": 1000.0,
    "regular": 1000.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "شنطة رمضان 1"
   },
   {
    "id": 87676,
@@ -1320,7 +1394,8 @@
    "price": 750.0,
    "regular": 750.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بوكس رمضان كرتون"
   },
   {
    "id": 87667,
@@ -1336,7 +1411,8 @@
    "price": 870.0,
    "regular": 870.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بوكس ياميش بريميوم"
   },
   {
    "id": 7169,
@@ -1352,7 +1428,8 @@
    "price": 650.0,
    "regular": 650.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "علبة تمور جولد"
   },
   {
    "id": 90084,
@@ -1368,7 +1445,8 @@
    "price": 550.0,
    "regular": 550.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "تمر مجدول محشو بالمكسرات - 740 جم"
   },
   {
    "id": 1270,
@@ -1384,7 +1462,8 @@
    "price": 400.0,
    "regular": 400.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "سلة هدايا \\"
   },
   {
    "id": 87678,
@@ -1400,7 +1479,8 @@
    "price": 3500.0,
    "regular": 3500.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بوكس رمضان سيلفر"
   },
   {
    "id": 87662,
@@ -1416,7 +1496,8 @@
    "price": 530.0,
    "regular": 530.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "صينية مكسرات وفواكه مجففه"
   },
   {
    "id": 1269,
@@ -1432,7 +1513,8 @@
    "price": 250.0,
    "regular": 250.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "سلة هدايا \\"
   },
   {
    "id": 87683,
@@ -1448,7 +1530,8 @@
    "price": 6000.0,
    "regular": 6000.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بوكس رمضان جولد"
   },
   {
    "id": 1563,
@@ -1464,7 +1547,8 @@
    "price": 20.0,
    "regular": 20.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "كيس سناكس بروتين طماطم بالريحان - 60 جم"
   },
   {
    "id": 6390,
@@ -1480,7 +1564,8 @@
    "price": 20.0,
    "regular": 20.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بسكويت بالبيتزا - 80 جم"
   },
   {
    "id": 1454,
@@ -1496,7 +1581,8 @@
    "price": 90.0,
    "regular": 90.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "علبة معمول بعجوه المجدول مغطى بالشيكولاته - 12 قطعة"
   },
   {
    "id": 10532,
@@ -1512,7 +1598,8 @@
    "price": 45.0,
    "regular": 45.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بار مكسرات بالبندق والشيكولاته - 40 جم"
   },
   {
    "id": 8543,
@@ -1528,7 +1615,8 @@
    "price": 25.0,
    "regular": 25.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "جيلى بينسون كولا -65 جم"
   },
   {
    "id": 33417,
@@ -1544,7 +1632,8 @@
    "price": 25.0,
    "regular": 25.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "جيلى بينسون فراولة - 65 جم"
   },
   {
    "id": 10533,
@@ -1560,7 +1649,8 @@
    "price": 45.0,
    "regular": 45.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بار مكسرات باللوز والبريتزل المملح -40 جم"
   },
   {
    "id": 1331,
@@ -1576,7 +1666,8 @@
    "price": 30.0,
    "regular": 30.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "فشار بالكراميل -100 جم"
   },
   {
    "id": 1334,
@@ -1592,7 +1683,8 @@
    "price": 30.0,
    "regular": 30.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "فشار مملح بالكراميل - 100 جم"
   },
   {
    "id": 1452,
@@ -1608,7 +1700,8 @@
    "price": 75.0,
    "regular": 75.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "علبة معمول بعجوه المجدول - 12 قطعة"
   },
   {
    "id": 1562,
@@ -1624,7 +1717,8 @@
    "price": 27.0,
    "regular": 27.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "كيس شوكوبيللو شوكولا - 100 جم"
   },
   {
    "id": 10545,
@@ -1640,7 +1734,8 @@
    "price": 11.0,
    "regular": 11.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "توستينو بالجبنة - 50 جم"
   },
   {
    "id": 6386,
@@ -1656,7 +1751,8 @@
    "price": 20.0,
    "regular": 20.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بسكويت بالجبنة - 80جم"
   },
   {
    "id": 6388,
@@ -1672,7 +1768,8 @@
    "price": 20.0,
    "regular": 20.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بسكويت بالملح - 80جم"
   },
   {
    "id": 10542,
@@ -1688,7 +1785,8 @@
    "price": 30.0,
    "regular": 30.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "فشار بالجبنه البرميزان والروزمارى - 35 جم"
   },
   {
    "id": 6610,
@@ -1704,7 +1802,8 @@
    "price": 8.0,
    "regular": 8.0,
    "sale": null,
-   "currency": "EGP"
+   "currency": "EGP",
+   "nameAr": "بريتزل جبنة - 25 جم"
   }
  ]
 }
