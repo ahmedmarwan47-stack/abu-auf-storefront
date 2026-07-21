@@ -713,3 +713,36 @@ body.no-scroll {
 .fav-btn[aria-pressed="true"] > svg:nth-of-type(2) {
   display: block;
 }
+
+/* --------------------------------------------------------------------------
+   Sticky nav
+
+   The nav bar ships with `relative` in its base class list, and initStickyNav
+   used to add Tailwind's `fixed` on top. Both are single-class selectors, so
+   specificity ties and SOURCE ORDER decides — Tailwind emits `.relative`
+   after `.fixed`, so `.relative` won and the bar never actually stuck. The
+   classes were being added correctly the whole time; they just lost the
+   cascade. (Same family as the `[hidden]` and `xl:` CDN traps above: when a
+   utility silently loses, author the rule here with a selector that wins.)
+
+   [data-navbar][data-stuck="true"] is (0,2,0) and beats `.relative` (0,1,0)
+   regardless of emit order. inset-inline rather than left/right so it holds
+   in RTL.
+   -------------------------------------------------------------------------- */
+[data-navbar][data-stuck="true"] {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 100;
+}
+
+/* The slide-in starts at translateY(-100%), i.e. fully off-screen. If the
+   animation never advances, the bar is stuck there and invisible — worse
+   than not sticking at all. Honour reduced-motion by skipping straight to
+   the resting position rather than animating into it. */
+@media (prefers-reduced-motion: reduce) {
+  [data-navbar][data-stuck="true"].animate-slideDown {
+    animation: none;
+    transform: none;
+  }
+}

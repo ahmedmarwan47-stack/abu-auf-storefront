@@ -138,6 +138,19 @@ stated anywhere.
 The below-minimum state (disabled checkout + shortfall warning) is implemented
 but not visible in the demo, since the seeded cart exceeds the minimum.
 
+### Mobile masthead: live has a store icon we cannot replicate
+
+At 390 the live masthead runs `cart · search · [logo] · store · hamburger`,
+with the store and hamburger grouped in a white pill. Ours now matches except
+for the **store/branches icon** — no such glyph exists anywhere in the project
+(`ICON` carries account, search, location, menu, close, chevronDown, cart,
+arrowRight, arrowLeft, phone) and the live site renders its icons inline, so
+there was nothing to scrape. **Left out rather than invented.** The search
+button is new: mobile previously had no way to search at all.
+
+Live packs those controls at 36×36; ours stay 44×44 for WCAG 2.5.5, the
+standing accessibility deviation.
+
 ### Other content gaps
 
 - **`صحارة ديلايتس` promo section** (Figma `753:34833`) omitted pending assets.
@@ -200,6 +213,23 @@ below were measured in the browser on abuauf.com at 1920, not eyeballed.
 | Utility bar / masthead / nav | 33 / 79 / 48 (total 161) | 33 / 79 / 48 (160) |
 | Footer (CTA + main + legal) | 306 / 390 / 68 (total 764) | 305 / 462 (767) |
 | Cart & search buttons | 48×48 both | 48×48 both |
+| Masthead logo | **120×31** (aspect 3.91) | 120×31 |
+
+### The header was 64px narrower than the page, on every page
+
+The three header bands were wrapped in `px-4 xl:px-20`, with `max-w-[1536px]`
+on the *inner* container. Because the 80px was subtracted **before** the cap
+applied, the cap never bound: at a 1440 viewport the logo's outer edge landed
+at 1345 while page content and the footer ran to 1409. Measured at **exactly
+64px on all 31 pages**.
+
+On the live site that offset is **zero** — the logo's outer edge sits precisely
+on the content container edge. Fixed by moving the inline padding off the
+full-bleed background element and onto the inner `mx-auto px-4 max-w-[1536px]`
+container, which is the same container the rest of the site uses. The
+mega-panel's cap came down from 1600 to 1536 at the same time, since it hangs
+off a now-full-bleed parent and would otherwise have been 64px wider than the
+nav above it.
 
 Before this, containers were `max-w-[1920px]` with `xl:px-[190px]` — near-right
 at 1920 but a 1060px column at 1440 against the live site's ~1408 — and the
@@ -315,9 +345,29 @@ Two of those were **my own bugs**, not the Figma's: the utility-bar links kept
 `text-white` after I recoloured the bar beige (invisible text), and `.tab-btn`
 hardcoded `#777777` instead of the token.
 
-**Tap targets** are separately audited at ≥44px (WCAG 2.5.5). Before that pass
-the hamburger was 32×30, the location bar 38px, filter chips 38px, and 10 of 18
+**Tap targets** were audited at ≥44px (WCAG 2.5.5). Before that pass the
+hamburger was 32×30, the location bar 38px, filter chips 38px, and 10 of 18
 mobile-drawer items under 44.
+
+### That tap-target claim is no longer accurate — open issue
+
+A fresh measurement of `cart.html` at 390 found **58 controls under 44×44**.
+Most are inline text links inside a block of text, which WCAG 2.5.5 explicitly
+exempts, but several are discrete controls that are not exempt:
+
+| Control | Size | Where |
+|---|---|---|
+| Stepper `−` / `+` | **32×32** | every cart line, drawer and cart page |
+| `حذف` remove | **24 wide** (44 tall) | every cart line |
+| `خصم المبلغ` apply promo | 89×**34** | cart page |
+| `أضف` | 76×**36** | cart page |
+
+Left as-is deliberately: enlarging the stepper to 44px pushes the row back over
+its 320px budget (44+16+44+8+16+2 = 130, plus `حذف` and the gap = 162 against
+141 available), so it needs a layout decision — wrap the row, or move `حذف` —
+not a size tweak. **Flagged rather than silently redesigned.** Re-audit the
+whole site's tap targets before trusting the "≥44px, audited and passing"
+claim elsewhere.
 
 ---
 
@@ -459,6 +509,55 @@ animations should animate first and call `remove()` on completion.
   for the same product** instead of incrementing the first. Reproduced in the
   browser, then fixed to the real catalogue ids `1431` / `1445` and re-verified
   (qty 1 → 2, one line). **Any future seed must use catalogue ids.**
+
+- **The brand logo was the wrong artwork.** `logo-abuauf-white.svg` was five
+  paths all filled white — **the green leaf was missing entirely** — and it was
+  drawn at 180×60 (aspect 3.0) against the real mark's 3.91, so it was both
+  oversized and the wrong shape. Replaced with the client's own asset,
+  `abuauf.com/images/logo_white.webp` (524×134), which carries the leaf in
+  **#4AA948** (sampled from the file). Now 120×31 in the masthead, matching
+  live exactly. The mobile masthead and drawer had also inherited the stretched
+  3.0 box (132×44, 110×36) and are now 132×34 and 110×28; the footer's 180×46
+  was already the correct aspect and only needed the asset swapped.
+
+- **`icon-leaf.svg` did not exist.** All 8 mega-panel category bullets were
+  broken images on every page, and the reference carried
+  `onerror="this.style.display='none'"` so they failed **silently** — the build's
+  asset check never saw it because the reference lives in `scripts.js`, not in
+  generated HTML. The icon is now drawn from the brand mark's own leaf in
+  #4AA948, and the `onerror` swallow is gone so the next missing asset is
+  visible. **The leaf icon is in-house artwork** derived from the client's logo;
+  it is not a Figma export and should be replaced if the designer supplies one.
+
+- **The language switch only ever applied to the page you clicked on.**
+  `translateDocument()` was called from `repaintForLang()` alone, which runs on
+  the toggle click — **never on page load**. So navigating with English stored
+  gave you English chrome (rendered through `t()` at render time) over entirely
+  Arabic page copy. Measured coverage in English mode was **17–43% of visible
+  text nodes, ~26% average**. Split out as `applyLangToContent()` and called on
+  boot as well; coverage is now **59–95%, ~75% average**. The remainder is
+  genuine prose with no English source (FAQ answers, About copy, blog posts)
+  plus Arabic-only branch names and addresses.
+
+- **Listing filter chips now translate**, using the catalogue's own English
+  category names copied verbatim from `catalog.json` — real client data, not
+  translations written here.
+
+- **The sticky nav never actually stuck.** `initStickyNav` added Tailwind's
+  `fixed`, but the bar's base classes include `relative`; both are single-class
+  selectors, so specificity ties and **source order decides** — Tailwind emits
+  `.relative` after `.fixed`. The classes were being applied correctly all
+  along, they just lost the cascade. Now driven by
+  `[data-navbar][data-stuck="true"]` in `styles.css` (0,2,0 beats 0,1,0),
+  positioned with `inset-inline` so it holds in RTL. **Same family as the
+  `[hidden]` and `xl:` CDN traps** — when a utility silently loses, author the
+  rule in `styles.css`.
+
+- **Cart line rows overflowed 13px at 320.** Stepper (122) + `حذف` (24) + gap
+  (8) came to 154 inside a 141px column. The documented "31/31 clean" baseline
+  missed it because that sweep happened to run against an **emptied cart**, so
+  no line ever rendered — worth remembering when quoting the sweep: seed the
+  cart first.
 
 - **The Figma footer carries a "Web Design by MITCH DESIGNS" credit.** Retained
   at the client's request — do not remove it again.

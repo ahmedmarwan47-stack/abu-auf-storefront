@@ -358,6 +358,20 @@
     "اللغة": "Language",
     // build-time UI strings — these live in the generated HTML, and are picked
     // up by translateDocument()'s text-node pass rather than by t()
+    "خصم 10% لما تستخدم برومو كود": "10% off with promo code",
+    // Listing filter-chip labels. These are the catalogue's OWN English
+    // category names copied verbatim out of catalog.json — real client data,
+    // not translations written here. The chips were the last visibly-Arabic
+    // UI left on the shop pages in English mode.
+    "العروض والخصومات": "Offers & Promotions",
+    "مكسرات وحبوب ومقرمشات": "Nuts | Seeds & Crackers",
+    "قهوة ومشروبات": "Coffee & Beverages",
+    "تمور وفواكه مجففة": "Dates & Dried Fruits",
+    "سناكس صحية": "Snacks",
+    "اساسيات المطبخ": "Kitchen & Baking",
+    "الهدايا والمشاركة": "Gifting & Sharing",
+    "الحلويات": "Confectionary",
+    "مخبوزات وبسكويت": "Baked Snacks & Biscuits",
     "اضف الى السلة": "Add to cart",
     "أضف إلى المفضلة": "Add to favourites",
     "إزالة من المفضلة": "Remove from favourites",
@@ -554,7 +568,11 @@
     { name: "عرض معمول سادة وقرفة وشيكولاتة", price: 250, img: "images/abuauf/products/330-thumb.webp" },
   ];
 
-  const LEAF = `<img src="images/abuauf/icons/icon-leaf.svg" alt="" class="w-5 h-5 shrink-0" onerror="this.style.display='none'" />`;
+  /* No onerror handler. This previously carried onerror="this.style.display
+     ='none'", and the file it points at did not exist — so all 8 mega-panel
+     category bullets failed silently on every page and nothing surfaced it.
+     A missing asset should be visible, not swallowed. */
+  const LEAF = `<img src="images/abuauf/icons/icon-leaf.svg" alt="" class="w-5 h-5 shrink-0" />`;
 
   function megaPanelHTML() {
     const cats = MAIN_MENU.map((item, i) => {
@@ -603,7 +621,10 @@
 
     return `
       <div id="mega-panel" data-megamenu hidden class="hidden lg:block top-full inset-inline-0 z-40 absolute bg-white shadow-custom3 rounded-b-2xl">
-        <div class="gap-6 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.15fr)] mx-auto p-6 max-w-[1600px]">
+        <!-- 1536 to match the nav above it. The panel is now full-bleed (its
+             positioning parent lost its padding), so a 1600 cap would have
+             left the panel 64px wider than the nav it hangs off. -->
+        <div class="gap-6 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.15fr)] mx-auto p-6 max-w-[1536px]">
           <ul class="flex flex-col gap-1 pe-6 border-neutral-divider border-e">${cats}</ul>
           <div class="pe-6 border-neutral-divider border-e">${subPanels}</div>
           <div class="flex flex-col gap-3">
@@ -632,7 +653,7 @@
           checkout
             ? ""
             : `<div class="relative z-50 bg-beige h-[33px]">
-                 <div class="flex justify-between items-center gap-6 px-4 xl:px-20 h-full">
+                 <div class="flex justify-between items-center gap-6 mx-auto px-4 max-w-[1536px] h-full">
                    <div class="flex items-center gap-6 min-w-0">
                      ${countryButton()}
                      <nav class="hidden xl:flex items-center gap-6 min-w-0 overflow-hidden">${support}</nav>
@@ -649,12 +670,23 @@
                  </div>
                </div>`
         }
-        <div class="relative z-40 bg-primary px-4 xl:px-20">
-          <div class="flex justify-between items-center mx-auto border-[#0F6140] border-b h-[79px] max-w-[1536px]">
+        <!-- Full-bleed background; the inline padding belongs to the inner
+             container, not out here. With px-4 xl:px-20 on this element the
+             80px was subtracted BEFORE max-w-[1536px] applied, so the cap
+             never bound and the header sat 64px inside the page content edge
+             on every page. On the live site the logo's outer edge lands
+             exactly on the content container edge. -->
+        <div class="relative z-40 bg-primary">
+          <div class="flex justify-between items-center mx-auto px-4 border-[#0F6140] border-b h-[79px] max-w-[1536px]">
             <!-- RTL start (right edge): logo, products, delivery -->
             <div class="flex items-center gap-6 min-w-0">
-              <a href="index.html" class="block shrink-0 w-[180px] h-[60px]">
-                <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-full h-full object-contain" />
+              <!-- The client's own asset (abuauf.com/images/logo_white.webp,
+                   524x134). The hand-derived SVG it replaced was five white
+                   paths with the green leaf missing entirely, and was drawn at
+                   180x60 (aspect 3.0) against the real mark's 3.91. Live
+                   renders it 120x31. -->
+              <a href="index.html" class="block shrink-0 w-[120px] h-[31px]">
+                <img src="images/abuauf/brand/logo-abuauf-white.webp" alt="أبو عوف" class="w-full h-full object-contain" />
               </a>
               ${
                 checkout
@@ -701,7 +733,7 @@
                     the masthead, so it stays opaque once initStickyNav pulls
                     it out of flow with position:fixed. */
               : `<div data-navbar class="relative z-30 bg-primary h-[48px]">
-                   <nav class="mx-auto max-w-[1536px] h-full">
+                   <nav class="mx-auto px-4 max-w-[1536px] h-full">
                      <ul class="flex items-start gap-9 h-full overflow-x-auto no-scrollbar">${nav}</ul>
                    </nav>
                  </div>`
@@ -722,20 +754,34 @@
                  </p>
                </div>`
         }
-        <div class="relative flex items-center ${checkout ? "justify-center" : "justify-between"} bg-primary px-4 py-4 text-white">
+        <!-- Both side groups are flex-1, so the logo sits dead-centre no
+             matter how many controls each side holds — matching the live
+             site's mx-auto logo without a transform, which keeps it RTL-safe.
+             min-w-0 because a flex-1 child otherwise cannot shrink below its
+             content (the most common bug class in this codebase).
+             Live packs these at 36x36; ours stay 44x44 for WCAG 2.5.5, which
+             is the project's standing accessibility deviation. -->
+        <div class="relative flex items-center ${checkout ? "justify-center" : "justify-between"} gap-2 bg-primary px-4 py-2 text-white">
           ${
             checkout
               ? ""
-              : `<button type="button" data-open="menu" class="place-items-center grid size-11 -me-2" aria-label="Menu">${ICON.menu}</button>`
+              : `<div class="flex flex-1 items-center gap-1 min-w-0">
+                   <button type="button" data-open="menu" class="place-items-center grid shrink-0 size-11 -ms-2" aria-label="Menu">${ICON.menu}</button>
+                 </div>`
           }
-          <a href="index.html" class="block"><img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[132px] h-[44px] object-contain" /></a>
+          <a href="index.html" class="block shrink-0"><img src="images/abuauf/brand/logo-abuauf-white.webp" alt="أبو عوف" class="w-[120px] h-[31px] object-contain" /></a>
           ${
             checkout
               ? ""
-              : `<button type="button" data-open="cart" class="relative place-items-center grid bg-accent-yellow rounded-full size-11" aria-label="السلة">
-                   <img src="images/abuauf/icons/icon-cart.svg" alt="" class="w-7 h-7" />
-                   <span class="-top-1 -end-1 absolute place-items-center grid bg-white rounded-full w-5 h-5 font-bold text-[10px] text-black" data-cart-count>2</span>
-                 </button>`
+              : `<div class="flex flex-1 justify-end items-center gap-1 min-w-0">
+                   <button type="button" data-open="search" class="place-items-center grid shrink-0 size-11" aria-label="بحث">
+                     <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
+                   </button>
+                   <button type="button" data-open="cart" class="relative place-items-center grid bg-accent-yellow shrink-0 rounded-full size-11" aria-label="السلة">
+                     <img src="images/abuauf/icons/icon-cart.svg" alt="" class="w-7 h-7" />
+                     <span class="-top-1 -end-1 absolute place-items-center grid bg-white rounded-full w-5 h-5 font-bold text-[10px] text-black" data-cart-count>2</span>
+                   </button>
+                 </div>`
           }
         </div>
       </div>
@@ -847,7 +893,7 @@
         <div class="flex xl:flex-row flex-col-reverse gap-10 xl:gap-6 mx-auto px-4 py-6 xl:py-12 max-w-[1536px]">
           <!-- RTL start (right): brand, hotline, address, socials -->
           <div class="flex flex-col gap-3 xl:flex-1 xl:order-first">
-            <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[180px] h-[46px] object-contain" />
+            <img src="images/abuauf/brand/logo-abuauf-white.webp" alt="أبو عوف" class="w-[180px] h-[46px] object-contain" />
             <a href="tel:${CONTACT.hotline}" class="mt-auto xl:mt-10 font-bold text-white text-2xl xl:text-4xl latin">${CONTACT.hotline}</a>
             <p class="max-w-[277px] font-semibold text-onDarkGreen text-sm xl:text-base leading-relaxed">${esc(CONTACT.address)}</p>
             <ul class="flex items-center gap-6 mt-1">${socials}</ul>
@@ -972,7 +1018,7 @@
     <!-- Mobile menu drawer -->
     <aside data-drawer="menu" class="side-drawer side-drawer--left" aria-label="Menu">
       <div class="flex justify-between items-center bg-primary px-5 py-4 border-neutral-100 border-b text-white">
-        <img src="images/abuauf/brand/logo-abuauf-white.svg" alt="أبو عوف" class="w-[110px] h-9 object-contain" />
+        <img src="images/abuauf/brand/logo-abuauf-white.webp" alt="أبو عوف" class="w-[110px] h-[28px] object-contain" />
         <button type="button" data-close class="place-items-center grid size-11 -me-2 text-white">${ICON.close}</button>
       </div>
       <div class="flex-1 px-5 py-4 overflow-y-auto">
@@ -1296,24 +1342,20 @@
       const should = window.scrollY > 150;
       if (should === stuck) return;
       stuck = should;
-      // Padding is added only while stuck: in flow the bar inherits the
-      // masthead's padding, but fixed positioning takes it out of that box.
-      const stickyClasses = [
-        "fixed",
-        "top-0",
-        "left-0",
-        "right-0",
-        "z-[100]",
-        "shadow-md",
-        "animate-slideDown",
-        "px-4",
-        "xl:px-20",
-      ];
+      /* Positioning is driven by data-stuck, not by Tailwind's `fixed`.
+         The bar's base classes include `relative`, which ties `.fixed` on
+         specificity and wins on source order, so the utility never took
+         effect and this bar never actually stuck. styles.css carries the
+         real rule. No inline padding either: the <nav> inside is already
+         mx-auto px-4 max-w-[1536px], so it centres itself once fixed. */
+      const stickyClasses = ["shadow-md", "animate-slideDown"];
       if (should) {
         placeholder.style.height = nav.offsetHeight + "px";
+        nav.dataset.stuck = "true";
         nav.classList.add(...stickyClasses);
       } else {
         placeholder.style.height = "0px";
+        delete nav.dataset.stuck;
         nav.classList.remove(...stickyClasses);
       }
     }
@@ -1671,6 +1713,28 @@
    * titles to the English names that already exist in catalog.json. Body copy
    * baked into the page stays Arabic — there is no English source for it.
    */
+  /* Apply the current language to build-time page content: the catalogue's
+     real English product names, then the exact-match dictionary pass.
+
+     Split out of repaintForLang() so it can ALSO run on first paint. Without
+     that, opening any page with English already stored left every build-time
+     string in Arabic — the JS-injected chrome came out English because it is
+     rendered through t() at render time, but translateDocument() only ever
+     ran on a toggle click, never on load. So the language appeared to change
+     on the page you clicked and then half-revert on every page you navigated
+     to. */
+  function applyLangToContent() {
+    // data-name is Arabic, data-name-en is the catalogue's real English
+    // name. Nothing invented here.
+    const en = currentLang() === "en";
+    document.querySelectorAll("[data-product][data-name-en]").forEach((card) => {
+      const target = card.querySelector("[data-product-title]");
+      if (!target) return;
+      target.textContent = en ? card.dataset.nameEn : card.dataset.name;
+    });
+    translateDocument();
+  }
+
   function repaintForLang() {
     const header = document.getElementById("site-header");
     const footer = document.getElementById("site-footer");
@@ -1679,16 +1743,7 @@
     if (footer) footer.innerHTML = footerHTML();
     if (overlays) overlays.innerHTML = overlaysHTML();
 
-    // Product titles: data-name is Arabic, data-name-en is the catalogue's
-    // real English name. Nothing invented here.
-    const en = currentLang() === "en";
-    document.querySelectorAll("[data-product][data-name-en]").forEach((card) => {
-      const target = card.querySelector("[data-product-title]");
-      if (!target) return;
-      target.textContent = en ? card.dataset.nameEn : card.dataset.name;
-    });
-
-    translateDocument();
+    applyLangToContent();
 
     initMegaMenu();
     initLangSwitcher(true);
@@ -1757,13 +1812,18 @@
             <span data-line-total class="bg-accent-yellow shrink-0 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">${egp(it.price * it.qty)}</span>
           </div>
           <p class="mt-1 text-neutral-secondary text-xs">العدد: <span class="latin" data-line-qty>${it.qty}</span></p>
+          <!-- gap-1 until sm: at 320 the stepper (122) + حذف (24) + gap (8)
+               came to 154 inside a 141px column, overflowing the row by 13px.
+               The tighter gap brings it to 138. The baseline sweep missed
+               this because it happened to run against an emptied cart, so no
+               line ever rendered. -->
           <div class="flex justify-between items-center gap-2 mt-2">
-            <div class="inline-flex items-center gap-3 px-2 py-1 border border-neutral-divider rounded-full">
-              <button type="button" data-cart-step="-1" class="place-items-center grid w-8 h-8 text-[#062A1C]" aria-label="إنقاص">−</button>
+            <div class="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 border border-neutral-divider rounded-full">
+              <button type="button" data-cart-step="-1" class="place-items-center grid shrink-0 w-8 h-8 text-[#062A1C]" aria-label="إنقاص">−</button>
               <span class="w-4 text-sm text-center latin" data-line-qty-num>${it.qty}</span>
-              <button type="button" data-cart-step="1" class="place-items-center grid w-8 h-8 text-[#062A1C]" aria-label="زيادة">+</button>
+              <button type="button" data-cart-step="1" class="place-items-center grid shrink-0 w-8 h-8 text-[#062A1C]" aria-label="زيادة">+</button>
             </div>
-            <button type="button" data-cart-remove class="min-h-11 text-accent-error text-xs underline">حذف</button>
+            <button type="button" data-cart-remove class="shrink-0 min-h-11 text-accent-error text-xs underline">حذف</button>
           </div>
         </div>
       </div>`;
@@ -2092,6 +2152,10 @@
     initLangSwitcher();
     initCartUI();
     initFavsUI();
+    // Must run after the chrome is in the DOM and after initFavsUI, so the
+    // dictionary pass sees every string on the page. Without this call a
+    // stored English preference only styled the chrome.
+    applyLangToContent();
     window.kInit(document);
   }
 

@@ -498,7 +498,7 @@ def page(title_text, description, body, page_id, path, main_class="overflow-x-hi
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="tw-config.js"></script>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.svg" />
+    <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.webp" />
     <script defer src="scripts.js"></script>
   </head>
   <body data-page="{e(page_id)}" data-path="{e(path)}" class="antialiased bg-white">

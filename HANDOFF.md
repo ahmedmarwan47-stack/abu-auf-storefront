@@ -146,6 +146,25 @@ as 10 and 11 above:**
     seeded product from its own card produced **two lines for one product**.
     Reproduced, fixed, re-verified. Any seed must use catalogue ids.
 
+**From the UI audit — all six were pre-existing and site-wide:**
+
+17. **The header sat 64px inside the page content edge on all 31 pages.**
+    `px-4 xl:px-20` wrapped the bands *outside* `max-w-[1536px]`, so the cap
+    never bound. Live's offset is zero.
+18. **The logo was the wrong artwork** — hand-derived SVG, all-white, **green
+    leaf missing**, drawn at aspect 3.0 against the real mark's 3.91. Replaced
+    with the client's own file.
+19. **`icon-leaf.svg` never existed**; 8 broken images per page, hidden by an
+    `onerror` that set `display:none`. Silent failure by construction.
+20. **The language switch only applied to the page you clicked on** —
+    `translateDocument()` ran on toggle, never on load. English coverage was
+    ~26%; it is now ~75%.
+21. **The sticky nav never stuck.** `.relative` in the base classes beat the
+    added `.fixed` on source order. Now driven from `styles.css` on a
+    higher-specificity selector.
+22. **Cart rows overflowed 13px at 320** — missed by the baseline sweep because
+    it ran against an emptied cart. **Seed the cart before quoting the sweep.**
+
 ---
 
 ## 5. How to verify you haven't broken anything
@@ -318,6 +337,17 @@ Real bilingual support means English copy for all 31 pages plus a URL strategy
 12. **Tell the designer** the Figma still contains the contrast failures the
     build diverges from, and that the live site differs from the Figma on
     several chrome details.
+
+13. **Tap targets need a real re-audit.** The "≥44px, audited and passing"
+    claim does not hold: `cart.html` alone has steppers at 32×32 and `حذف` at
+    24 wide. Fixing the stepper needs a layout decision, not a size tweak —
+    see `DESIGN-NOTES.md` §7.
+14. **The sticky nav's slide-in animation is unverified.** The bar now
+    genuinely reaches `position: fixed`, but the entrance animation could not
+    be confirmed: the automation pane freezes animation timelines
+    (`playState: "running"` with `currentTime: 0` after 900ms), so the bar
+    read as parked at `translateY(-48px)`. A `prefers-reduced-motion` guard is
+    in place so it can never end up hidden. **Confirm in a real browser.**
 
 **Not yet tested anywhere:** the site has **never been opened in Safari or on a
 physical device**. All verification has been Chromium at emulated viewports.

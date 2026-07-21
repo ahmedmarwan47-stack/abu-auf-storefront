@@ -122,6 +122,16 @@ These have each cost real time. Read them.
   element with both `hidden` and `.flex` stays visible. `styles.css` carries
   `[hidden] { display: none !important; }` — anything toggling `hidden` on a
   flex/grid element depends on it.
+- **Two Tailwind utilities in the same group tie on specificity, so emit order
+  wins.** Adding `fixed` to an element whose base classes include `relative`
+  does nothing — Tailwind emits `.relative` after `.fixed`. The sticky nav was
+  broken this way for the whole project. Same remedy as the `xl:` trap: author
+  the rule in `styles.css` on a selector that outranks a single class, e.g.
+  `[data-navbar][data-stuck="true"]` (0,2,0).
+- **Never let a missing asset fail silently.** `icon-leaf.svg` was referenced
+  with `onerror="this.style.display='none'"` and did not exist — 8 broken
+  images per page that nothing surfaced. The build only validates asset
+  references in generated HTML, **not** the ones inside `scripts.js`.
 - **Figma asset exports can be pre-transformed.** The logo exported upside-down
   and stretched (net vertical flip + `preserveAspectRatio="none"`). Several
   icons carry `preserveAspectRatio="none"` too. Check exported SVGs render.
@@ -137,7 +147,13 @@ These have each cost real time. Read them.
 ## Layout constants
 
 - **Content container is `mx-auto px-4 max-w-[1536px]`** — measured off the live
-  site. Coloured bars stay full-bleed behind it.
+  site. Coloured bars stay full-bleed behind it. **The padding belongs on the
+  same element as the cap**, not on a wrapper outside it: the header bands
+  carried `px-4 xl:px-20` on the outer element, which subtracted 80px *before*
+  `max-w-[1536px]` applied, so the cap never bound and the header ran 64px
+  narrower than the page on all 31 pages.
+- **Masthead logo is 120×31**; the real mark's aspect is **3.91** (524×134).
+  Anything at aspect 3.0 is the old stretched box.
 - **Header bands:** utility 33px, masthead 79px, nav 48px (total 161 live / 160
   ours). Footer 764 live / 767 ours.
 - **Header z-order:** utility `z-50` > masthead `z-40` > nav `z-30`. Anything
@@ -157,8 +173,13 @@ git status --porcelain                    # rebuild must produce no diff
 
 Then in the browser run the **sweep** in `HANDOFF.md` §5 — it loads all 31 pages
 in a same-origin iframe at 320/360/375/390/414 and reports horizontal overflow
-plus WCAG contrast. Current baseline: **31/31 clean at every width, ~4500 text
+plus WCAG contrast. Current baseline: **31/31 clean at every width, ~5000 text
 nodes checked, 0 contrast failures.**
+
+**Seed the cart before you quote that number.** An earlier "31/31 clean" was
+measured against an emptied cart, so no cart line ever rendered and a 13px
+overflow at 320 went unnoticed. `localStorage.removeItem("abuauf:cart")` before
+sweeping re-seeds it.
 
 The sweep distinguishes real overflow from intentional `line-clamp`/ellipsis
 truncation. If you quote a number, know which you're quoting.
