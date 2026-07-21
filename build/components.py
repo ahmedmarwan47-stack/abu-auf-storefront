@@ -112,19 +112,37 @@ def breadcrumb(trail):
 
 
 def chip(label, href="#", active=False):
-    """Filter pill — Figma 'Chip Button'."""
+    """Filter pill — Figma 'Chip Button'.
+
+    The mobile Collection frame (350:17805) fills inactive chips with
+    interaction-base and drops the outline; the desktop Web frame keeps the
+    white-on-outline treatment. Carry both rather than pick one.
+    """
     style = ("bg-cta text-white border-cta" if active
-             else "bg-white text-[#062A1C] border-neutral-divider hover:border-cta")
+             else "chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta")
     return (f'<a href="{href}" class="inline-flex items-center px-5 py-2 border rounded-full '
             f'font-semibold text-sm whitespace-nowrap transition-colors {style}">{e(label)}</a>')
 
 
+_SORT_ICON = ('<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true">'
+              '<path d="M7 4v16m0 0-3-3m3 3 3-3M17 20V4m0 0-3 3m3-3 3 3" '
+              'stroke="currentColor" stroke-width="1.7" stroke-linecap="round" '
+              'stroke-linejoin="round"/></svg>')
+
+
 def sort_select(options, label="ترتيب حسب"):
+    """Sort control.
+
+    The mobile Collection frame (350:17805) shows this bare — a sort glyph and
+    the current value, no chrome and no 'ترتيب حسب' prefix. The desktop frame
+    keeps the outlined pill with its label, so the chrome is xl-only.
+    """
     opts = "".join(f'<option value="{e(v)}">{e(t)}</option>' for v, t in options)
     return f"""
-            <label class="inline-flex items-center gap-2 bg-white px-4 py-2 border border-neutral-divider rounded-full shrink-0">
-              <span class="text-neutral-secondary text-sm">{e(label)}</span>
-              <select class="bg-transparent font-semibold text-[#062A1C] text-sm outline-none cursor-pointer">{opts}</select>
+            <label class="inline-flex items-center gap-2 xl:bg-white px-0 xl:px-4 py-2 border border-transparent xl:border-neutral-divider rounded-full shrink-0">
+              <span class="xl:hidden text-cta">{_SORT_ICON}</span>
+              <span class="hidden xl:inline text-neutral-secondary text-sm">{e(label)}</span>
+              <select class="bg-transparent font-semibold text-[#062A1C] text-sm outline-none cursor-pointer appearance-none xl:appearance-auto border-0 xl:border xl:border-neutral-divider">{opts}</select>
             </label>"""
 
 

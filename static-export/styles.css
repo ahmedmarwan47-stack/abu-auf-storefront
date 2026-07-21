@@ -479,6 +479,21 @@ select {
   transform: translateX(0);
 }
 
+/* Filter chips, inactive state.
+   The mobile Collection frame (350:17805) fills these with interaction-base
+   and drops the outline; desktop keeps white-on-outline. Expressed here rather
+   than as `bg-interaction-base xl:bg-white` because the Play CDN did not apply
+   the xl: variant to these anchors at all — verified against computed styles,
+   where an identical probe element resolved to white at 1440 while the chips
+   stayed filled. `a.chip-filter` (0,1,1) outranks Tailwind's `.bg-white`
+   (0,1,0), so this wins regardless of the CDN's emit order. */
+@media (max-width: 1279.98px) {
+  a.chip-filter {
+    background-color: #edefeb;
+    border-color: transparent;
+  }
+}
+
 /* Bottom sheet (mobile location) */
 .bottom-sheet {
   position: fixed;

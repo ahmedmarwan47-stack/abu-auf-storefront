@@ -153,3 +153,29 @@ chip, because `catalog.json` carries one price per product with no compare-at
 field. Showing a fake "was" price would be inventing data. Needs either a real
 sale price in the catalogue or the designer's sign-off on the single-price
 treatment.
+
+### Listing pages — mobile filter treatment
+
+Figma `Collection` `350:17805` (confirmed by Ahmed; four frames exist, two of
+them identical at 2593px, so completeness could not pick one).
+
+Mobile diverges from desktop in two ways, so both are carried rather than one
+replacing the other:
+
+- **Inactive chips** are filled with interaction-base and lose their outline;
+  desktop keeps white-on-outline.
+- **The sort control** is bare — a sort glyph plus the current value, no
+  chrome and no `ترتيب حسب` prefix. Desktop keeps the outlined pill and label.
+
+The chip rule lives in `styles.css` under a media query, not as
+`bg-interaction-base xl:bg-white`. The Play CDN did not apply the `xl:` variant
+to these anchors: an identical probe element created at runtime resolved to
+white at 1440 while the chips themselves stayed filled. `a.chip-filter`
+(0,1,1) outranks Tailwind's `.bg-white` (0,1,0), so the authored rule wins
+regardless of what the CDN emits or in what order.
+
+**Caution for whoever verifies this next:** `getComputedStyle` read from the
+top-level document after a viewport resize returned stale values here — a
+no-media `!important` rule appeared to have no effect, which is impossible.
+Screenshots and same-origin iframe measurements were both accurate. Prefer
+those; if computed styles contradict a screenshot, distrust the computed style.
