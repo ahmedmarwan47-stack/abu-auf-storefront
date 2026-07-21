@@ -1,0 +1,572 @@
+/* =====================================================================
+   styles.css — custom (non-utility) styles for the static Kouider build.
+
+   Tailwind utility classes are provided at runtime by the Play CDN
+   (see tw-config.js). This file ports the project's original
+   src/app/globals.css @layer/component rules almost verbatim, wires up
+   the font-family CSS variables the config references, and adds the
+   vanilla-JS carousel / drawer / modal styles that replace Swiper and
+   the various React overlay components.
+   ===================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..900;1,9..40,100..900&family=Caveat:wght@400;500;600;700&display=swap");
+
+/* Font variables referenced by the Tailwind fontFamily tokens. */
+:root {
+  --font-dm-sans: "DM Sans", sans-serif;
+  --font-caveat: "Caveat", cursive;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-dm-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  color: #2c3340;
+}
+
+/* --- ported from globals.css @layer utilities ---------------------- */
+
+.container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+  width: 100%;
+  max-width: 1400px;
+}
+@media (min-width: 768px) {
+  .container {
+    padding-inline: 3.5rem;
+  }
+}
+
+.disabled:not(label) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+label.disabled {
+  pointer-events: none;
+}
+
+label,
+.label {
+  display: inline-block;
+  font-weight: 500;
+  color: #2b2525;
+  font-size: 14px;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.corporate-container {
+  background: linear-gradient(180deg, #e3f0ff 0%, #fefbfa 30.03%);
+  padding-top: 3.5rem;
+  padding-bottom: 5rem;
+}
+.corporate-container:not(.centered) {
+  padding-top: 2.75rem;
+  padding-bottom: 8rem;
+}
+
+.beforeUnderline {
+  position: relative;
+}
+.beforeUnderline::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0.5rem;
+  height: 2px;
+  background-color: #969696;
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+}
+.beforeUnderline:hover::before {
+  bottom: -0.125rem;
+  opacity: 1;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.para-tagline {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 140%;
+}
+.heading4 {
+  font-size: 20px;
+  text-wrap: pretty;
+}
+@media (min-width: 1024px) {
+  .heading4 {
+    font-size: 32px;
+  }
+}
+
+img {
+  max-width: 100%;
+  user-select: none;
+}
+
+input,
+select,
+textarea {
+  outline: none;
+  width: 100%;
+  border-radius: 0.5rem;
+  caret-color: #ab7c5f;
+}
+
+select {
+  border: 1px solid #d5dad1;
+  cursor: pointer;
+}
+
+/* Custom select chevrons (ported) */
+.label-select {
+  background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2224%22%20height%3D%2225%22%20viewBox%3D%220%200%2024%2025%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M19%209.5L12%2016.5L5%209.5%22%20stroke%3D%22%23111827%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 20px) center;
+  -moz-appearance: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+.placeholder-select {
+  background:
+    url("data:image/svg+xml,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M19%209L12%2016L5%209%22%20stroke%3D%22%23969696%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E")
+      no-repeat;
+  background-position: calc(100% - 10px) center !important;
+  appearance: none !important;
+}
+
+.product-card-shadow {
+  box-shadow: 0px 0px 6px 0px #00000026;
+}
+
+.direction-ltr,
+.dir-ltr {
+  direction: ltr !important;
+}
+
+/* Hide scrollbar helpers (ported) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.styled-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  margin-top: 1rem;
+}
+.styled-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #2c3340;
+}
+.styled-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 0.25rem;
+}
+
+/* WYSIWYG content styles (ported, used by policy/blog/product pages) */
+.wysiwyg h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.wysiwyg h4 {
+  font-size: 14px;
+  font-weight: 600;
+}
+.wysiwyg p {
+  font-weight: 500;
+}
+.wysiwyg p + p {
+  margin-top: 22px;
+}
+.wysiwyg h3 ~ h3 {
+  margin-top: 44px;
+}
+.wysiwyg ul {
+  margin-top: 12px;
+}
+.wysiwyg li + li {
+  margin-top: 10px;
+}
+.wysiwyg li {
+  display: flex;
+  align-items: center;
+}
+.wysiwyg li::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  background-image: url("images/icons/check@2x.svg");
+  background-repeat: no-repeat;
+  background-size: 15px;
+  background-position: center;
+  border-radius: 1000px;
+  display: inline-flex;
+  background-color: #5c3f7f;
+  vertical-align: middle;
+  margin-inline-end: 8px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.wysiwyg-blog h1,
+.wysiwyg-blog h2,
+.wysiwyg-blog h3,
+.wysiwyg-blog h4,
+.wysiwyg-blog h5,
+.wysiwyg-blog h6 {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.5;
+  color: #2c3340;
+  margin-bottom: 8px;
+}
+.wysiwyg-blog p {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #787878;
+  margin-bottom: 32px;
+}
+.wysiwyg-blog img {
+  border-radius: 18px;
+  margin-bottom: 32px;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.wysiwyg-product ul {
+  list-style-type: disc;
+  margin: 0.5rem 0;
+  padding-inline-start: 1.5rem;
+}
+.wysiwyg-product ol {
+  list-style-type: decimal;
+  margin: 0.5rem 0;
+  padding-inline-start: 1.5rem;
+}
+.wysiwyg-product li {
+  margin-bottom: 0.25rem;
+}
+.wysiwyg-product h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 1rem 0 0.5rem;
+  color: #2c3340;
+}
+.wysiwyg-product p {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.have-points li {
+  display: flex;
+  align-items: center;
+}
+.have-points li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 100%;
+  display: inline-block;
+  background-color: #f7f2ea;
+  vertical-align: middle;
+  margin: 0 8px;
+  flex: none;
+}
+
+/* Slide up / down (ported) */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes slideDownSheet {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+.animate-slide-down {
+  animation: slideDownSheet 0.3s ease-out;
+}
+
+/* =====================================================================
+   Vanilla carousel — replaces Swiper.
+   Markup: .carousel > .carousel-track > .carousel-slide*, plus optional
+   .carousel-prev / .carousel-next buttons and a .carousel-dots container.
+   Behaviour is driven by scripts.js (scroll-snap + arrow/dot controls).
+   ===================================================================== */
+.carousel {
+  position: relative;
+}
+.carousel-track {
+  display: flex;
+  gap: var(--carousel-gap, 16px);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+.carousel-slide {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+}
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0px 2px 3px rgba(84, 34, 5, 0.2);
+  color: #774d32;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease;
+}
+.carousel-btn:hover {
+  background: #f7f2ea;
+}
+.carousel-btn.is-disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+.carousel-prev {
+  inset-inline-start: -10px;
+}
+.carousel-next {
+  inset-inline-end: -10px;
+}
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+.carousel-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background-color: #b1714d;
+  opacity: 0.3;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+}
+.carousel-dot.is-active {
+  opacity: 1;
+}
+[dir="rtl"] .carousel-btn svg {
+  transform: scaleX(-1);
+}
+
+/* =====================================================================
+   Drawers / overlays — cart drawer, mobile menu, bottom sheet, modals.
+   Toggled by adding/removing `.is-open` (see scripts.js).
+   ===================================================================== */
+.overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+.overlay-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Side drawer (cart / mobile menu) */
+.side-drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 100;
+  width: min(420px, 90vw);
+  max-width: 90vw;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+}
+.side-drawer--right {
+  inset-inline-end: 0;
+  transform: translateX(110%);
+}
+.side-drawer--left {
+  inset-inline-start: 0;
+  width: min(340px, 88vw);
+  transform: translateX(-110%);
+}
+.side-drawer.is-open {
+  transform: translateX(0);
+}
+[dir="rtl"] .side-drawer--right {
+  transform: translateX(-110%);
+}
+[dir="rtl"] .side-drawer--left {
+  transform: translateX(110%);
+}
+[dir="rtl"] .side-drawer.is-open {
+  transform: translateX(0);
+}
+
+/* Bottom sheet (mobile location) */
+.bottom-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  padding: 20px 16px 28px;
+  transform: translateY(110%);
+  transition: transform 0.3s ease;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.bottom-sheet.is-open {
+  transform: translateY(0);
+}
+
+/* Centered modal (search / generic) */
+.modal-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8vh 16px 16px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease;
+}
+.modal-shell.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* Accordion (FAQ) */
+.accordion-item .accordion-panel {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s ease;
+}
+.accordion-item.is-open .accordion-panel {
+  max-height: 600px;
+}
+.accordion-item .accordion-chevron {
+  transition: transform 0.3s ease;
+}
+.accordion-item.is-open .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+/* Tabs */
+.tab-btn {
+  cursor: pointer;
+}
+.tab-panel[hidden] {
+  display: none;
+}
+
+/* Header sticky-nav animation (ported keyframe usage) */
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.animate-slideDown {
+  animation: slideDown 0.35s ease-out forwards;
+}
+@keyframes customBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10%);
+  }
+}
+.animate-customBounce {
+  animation: customBounce 3s ease-in-out infinite;
+}
+
+/* Toast (replaces react-toastify) */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  inset-inline-end: 20px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  background: #fff;
+  color: #2c3340;
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.16);
+  font-size: 14px;
+  font-weight: 500;
+  border-inline-start: 4px solid #16bb55;
+  animation: slideUp 0.25s ease-out;
+}
+.toast--error {
+  border-color: #a8200d;
+}
