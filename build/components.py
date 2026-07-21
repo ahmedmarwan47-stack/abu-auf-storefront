@@ -87,6 +87,55 @@ def carousel(slides_html, gap=24, arrows_top="130px", autoplay=False, dots=False
           </div>"""
 
 
+def breadcrumb(trail):
+    """trail: [(label, href|None)] — the last item is the current page."""
+    parts = []
+    for i, (label, href) in enumerate(trail):
+        last = i == len(trail) - 1
+        if last or not href:
+            parts.append(f'<span class="font-semibold text-[#062A1C]">{e(label)}</span>')
+        else:
+            parts.append(
+                f'<a href="{href}" class="text-neutral-secondary hover:text-primary transition-colors">{e(label)}</a>'
+                f'<span class="text-neutral-disabled">/</span>')
+    return (f'<nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm">'
+            f'{"".join(parts)}</nav>')
+
+
+def chip(label, href="#", active=False):
+    """Filter pill — Figma 'Chip Button'."""
+    style = ("bg-cta text-white border-cta" if active
+             else "bg-white text-[#062A1C] border-neutral-divider hover:border-cta")
+    return (f'<a href="{href}" class="inline-flex items-center px-5 py-2 border rounded-full '
+            f'font-semibold text-sm whitespace-nowrap transition-colors {style}">{e(label)}</a>')
+
+
+def sort_select(options, label="ترتيب حسب"):
+    opts = "".join(f'<option value="{e(v)}">{e(t)}</option>' for v, t in options)
+    return f"""
+            <label class="inline-flex items-center gap-2 bg-white px-4 py-2 border border-neutral-divider rounded-full shrink-0">
+              <span class="text-neutral-secondary text-sm">{e(label)}</span>
+              <select class="bg-transparent font-semibold text-[#062A1C] text-sm outline-none cursor-pointer">{opts}</select>
+            </label>"""
+
+
+def page_header(heading, trail=None):
+    """Breadcrumb + page title block used by every inner page."""
+    crumbs = f"{breadcrumb(trail)}" if trail else ""
+    return f"""
+      <section class="pt-6">
+        <div class="flex flex-col gap-4 mx-auto px-4 xl:px-[190px] max-w-[1920px]">
+          {crumbs}
+          <h1 class="font-bold text-[#062A1C] text-3xl xl:text-5xl">{e(heading)}</h1>
+        </div>
+      </section>"""
+
+
+def product_grid(products, cols="grid-cols-2 md:grid-cols-3 xl:grid-cols-4"):
+    cards = "".join(product_card(p, slide=False) for p in products)
+    return f'<div class="gap-4 xl:gap-6 grid {cols}">{cards}\n          </div>'
+
+
 # --------------------------------------------------------------------------
 # Commerce
 # --------------------------------------------------------------------------

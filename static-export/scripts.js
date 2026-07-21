@@ -92,7 +92,9 @@
         { name: "حبوب صحية", url: "/shop/healthy-grains" },
       ],
     },
-    { name: "المشروبات", url: "/shop/coffee-beverage" },
+    // Distinct from القهوة above: sharing a slug made both tabs read as the
+    // active page at once.
+    { name: "المشروبات", url: "/shop/hot-drinks" },
     { name: "البهارات والزيوت", url: "/shop/spices-kitchen-baking" },
     { name: "الهدايا", url: "/shop/gifting-seasonal" },
   ];
