@@ -402,6 +402,243 @@ Two details worth keeping:
   column count from the item count, so a two-benefit product gets two columns
   rather than a hole.
 
+### Search and cart now ride along on mobile too, on a green plate
+
+Ahmed asked for the desktop ride-along on mobile (2026-07-22). The mobile
+masthead scrolls away completely and there is no 48px nav at that width to sit
+under, so once you were a screen down the only route back to the cart was
+scrolling to the top.
+
+The mobile search/cart group now carries the **same `data-sticky-actions` hook**
+as the desktop one, so `initStickyNav` drives both from one handler on one
+threshold and they cannot disagree about whether the page has scrolled. Two
+things differ from the desktop rule, both forced rather than chosen:
+
+- **It parks at `top: 8px`**, not `top: 60px`. There is no nav to sit beneath.
+- **The plate is `#185039`, not translucent white.** The desktop rule's
+  `rgba(255,255,255,.92)` works only because the desktop search button carries
+  `bg-cta` under a white glyph. The mobile search button is a bare glyph and
+  `icon-search.svg` is **white** — on a white plate it disappears entirely.
+  Reusing the header's own green keeps both glyphs on exactly the pairing they
+  already pass AA against, so this adds no new contrast surface.
+
+Dropping the desktop rule's `backdrop-filter` here was deliberate and not just
+thrift: blurring live backdrop pixels under a `position: fixed` element
+re-rasterises on every frame of every scroll, which is the same cost the
+product-card change below exists to remove.
+
+Overlays are `z-100` against the pill's `z-90`, so opening search, cart or the
+menu covers it rather than fighting it — verified, not assumed.
+
+### Two mobile scroll-performance bugs, both measured
+
+Ahmed reported scroll lag and "sometimes it doesn't want to scroll"
+(2026-07-22). Two independent causes, both confirmed in the browser:
+
+**1. Every product card held a permanent compositing layer.**
+`.product-card__frame` carried an unconditional `will-change: transform` to
+prime its 4px hover lift. Counted live: **35 promoted layers on the home page,
+99 on `shop.html`** — one per card, held for the life of the page whether or
+not the card was ever pointed at. That is the exact misuse MDN warns about, and
+on a phone it is paid as scroll jank and memory pressure to prime a transform a
+touch device **can never fire**. Removed outright rather than moved to `:hover`:
+the compositor already promotes for the duration of a transform transition, so
+the hint was buying nothing on desktop either. Now **0 promoted layers**.
+
+All the card `:hover` rules moved behind `@media (hover: hover) and (pointer:
+fine)` at the same time, which also fixes a second-order bug — on touch,
+`:hover` latches after a tap and stays latched, so a tapped card sat lifted and
+zoomed, looking stuck under a pointer that was never there. That is the
+`CLAUDE.md` selected-vs-hover rule arrived at from the other direction.
+`:focus-within` is deliberately **not** gated, so keyboard focus still reveals
+the quick-look chip on a touchscreen laptop.
+
+**2. The carousels were eating vertical scroll.** This is the "won't scroll"
+half. A rail is a horizontal scroll container with `scroll-snap-type: x
+mandatory`, and the home page stacks four of them down its length — so a thumb
+drag beginning on a rail, which is most of the page's height, was a coin toss.
+When the browser's gesture disambiguation locked to the horizontal axis the
+rail consumed the gesture, the mandatory snap pinned it to the current slide,
+and the page did not move at all. It reads as the site freezing, not as a
+carousel working. `.carousel-track` now sets `touch-action: pan-x pinch-zoom`,
+handing the vertical axis straight back to the page. **`pinch-zoom` is kept
+explicitly** — bare `pan-x` would also kill zoom on every rail, trading a WCAG
+1.4.4 regression for a scroll fix. `overscroll-behavior-x: contain` stops a
+fling off the end of a rail chaining into a browser back-navigation.
+
+Sweep after these changes: `pageOver: 0` everywhere, **0 contrast failures
+across ~4,900 text nodes**. The residual `sr-only` and `carousel-dot` offenders
+the sweep reports were verified byte-identical against a stashed baseline —
+they pre-date this work. `sr-only` is 1px-clipped by design and the sweep's
+`byDesign` filter only covers `ellipsis`/`line-clamp`, so it does not catch it.
+
+### The same scroll pass, on desktop (Ahmed, 2026-07-22)
+
+The mobile pass above fixed mobile. Ahmed reported the lag on desktop too, and
+the causes were different ones — none of them touched by `touch-action` or by
+the `will-change` removal.
+
+**1. A blurred backdrop on a fixed element, held for the whole page.** The
+sticky search/cart pill carried `background: rgba(255,255,255,.92)` over
+`backdrop-filter: blur(10px)`. A blurred backdrop has to re-read and
+re-rasterise whatever is behind it **every frame**, and because the pill sticks
+the moment you pass 150px it did that for the entire scrolled length of every
+page. The mobile rule had already dropped the blur for exactly this reason —
+desktop just never followed. Now an opaque `#fff`, which is strictly *more*
+contrast than 92% white over unknown content, so no pairing needed re-checking.
+
+**2. One `update()` per scroll EVENT, not per frame.** `.carousel-track`'s
+handler called `requestAnimationFrame(update)` unconditionally, so a burst of
+scroll events inside a single frame queued a callback each — and momentum
+scrolling and snap-settling both produce exactly that burst. Now latched to one
+per frame.
+
+**3. `update()` forced a synchronous layout on every call.** It interleaved
+geometry reads with class writes, and reached `getComputedStyle` twice per
+call — once inside `getPos()`, which runs on every scroll frame. Direction now
+comes from `document.documentElement.dir` (an attribute read, no style recalc,
+and `dir` is only ever set on the root element — verified across all 130
+pages); the gap is measured once and re-measured only on resize; and every read
+happens before the first write. Measured against a reconstruction of the old
+shape in the browser: **~1.7x cheaper per call**, on top of the far larger win
+from calling it once a frame instead of N times.
+
+**4. Every language switch leaked a listener set and a timer per rail.**
+`kInit()` re-runs over the whole document on repaint and `initCarousel` was not
+idempotent, so each toggle bound another scroll listener, another resize
+listener and another autoplay `setInterval` to every carousel — compounding
+scroll work, and autoplay timers fighting each other for the same `scrollLeft`.
+Guarded on `data-carousel-ready`. Verified: two full `kInit` re-runs now add
+**0** listeners and **0** timers.
+
+**5. Autoplay ran forever.** A bare `setInterval` that kept ticking in a hidden
+tab (queueing a smooth-scroll animation nobody could see), kept ticking while
+the visitor was reading or dragging the rail, and ran under
+`prefers-reduced-motion`. Now stops on `visibilitychange`, stops while a
+pointer or the keyboard is inside the carousel, and never starts under reduced
+motion. `scroll-behavior: smooth` is gated behind the same preference.
+
+**Frame timing could not be measured in this environment** — the browser pane
+reports `visibilityState: "hidden"`, where `requestAnimationFrame` does not
+fire and CSS transitions do not advance. The numbers above are counts and
+per-call benchmarks, which are real; an fps figure would not have been. (The
+same trap made a working `aria-pressed` style look broken: the transitioned
+properties were frozen at their start value while the untransitioned one had
+already changed.)
+
+### The language switch now covers the whole site, in three passes
+
+Ahmed asked for every string to convert, not just the chrome (2026-07-22).
+Measured before: **1,457 of 1,524** distinct Arabic strings had no dictionary
+entry — about **70% of every page stayed Arabic** — plus 499 Arabic attribute
+values the switch never looked at at all.
+
+Adding keys could not have fixed most of it. `translateDocument()` matched
+whole text nodes only, so three surfaces were structurally unreachable:
+
+- **Any run broken by an inline child.** `4.8 (126 تقييم)` is three text nodes
+  because the rating and count are `.latin` spans; no fragment of it could
+  match any key, however the dictionary was written. Same for the best-seller
+  badge, the delivery promise, every account-menu row, every form label with a
+  required marker. Fixed with a **template pass**: an element is keyed on its
+  content with element children replaced by `{0}`, `{1}`…, so one key covers
+  every product, price and rank, and the original child nodes are spliced back
+  in — `.latin` spans keep their class, their digits and any state on them.
+  Applying a translation that would drop a slot is refused outright: losing a
+  price to a typo'd entry is worse than staying in Arabic.
+- **Attributes.** `placeholder` / `aria-label` / `title` / `alt` now switch.
+- **`<title>` and the meta description.** A page that reads English and titles
+  itself in Arabic is half-switched.
+
+The dictionary moved to **`build/i18n.py`**, generated into
+`static-export/i18n-en.js` on every build (so it cannot go stale against the
+markup, same contract as the Tailwind build). It lives there because that is
+the only place that can read `catalog.json` — all 99 product names resolve to
+the client's **own English `name` field** rather than being retyped — and
+because formulaic families are better looped than listed: gallery labels alone
+would be 40 hand-written entries, and the mega-menu's `"تسوق كل " + name` links
+are built by *concatenation*, so the string that reaches the DOM is not a
+literal anywhere and is now generated from the same category list the nav uses.
+
+It is a plain script, not a fetch, so **translation still works from
+`file://`** — search remains the only feature that does not.
+
+Result: **0 untranslated text nodes and 0 untranslated attributes** across a
+16-page sample covering every layout. The only Arabic left in English mode is
+the **310 branch street addresses**, deliberately — a postal address is not
+copy, and transliterating "برج نفرتيتى - تقاطع جمال عبد الناصر" would produce
+something a courier cannot use. Governorate *names* do translate, because they
+are also section headings.
+
+Round trip ar → en → ar restores `textContent`, element count and comment count
+exactly; `index.html` and `cart.html` come back byte-identical. Whitespace
+*between* the parts of a templated element is normalised to single spaces and
+does not survive — that is the price of a collapsed dictionary key, and HTML
+collapses runs of whitespace in text anyway, so nothing moves on screen.
+
+**Status of the English: still placeholder, and now in two tiers.**
+`build/i18n.py` splits them deliberately, because they do not carry the same
+authority. `UI` is our own interface copy — standard commerce terminology,
+written in-house, the same status the chrome strings always had. `COPY`/`COPY2`
+is the **client's own marketing and product prose**, translated in-house
+because there is no English source for any of it: the Store API returns English
+*names* but never English *descriptions*. That is the one place in this project
+where we write English for text the client wrote in Arabic. It is honest
+translation — nothing machine-translated, nothing claiming more than the Arabic
+does — but it is our words for their product and **needs their approval before
+launch**.
+
+### Translating the site exposed two latent layout bugs
+
+Both were always there. Arabic simply happened to be short enough to hide them,
+which is worth recording: a layout verified in one language is not verified.
+
+- **`<fieldset>` carries a UA `min-inline-size: min-content`**, which outranks
+  the `min-width: auto` every other flex/grid child gets and **cannot be
+  cancelled by a `min-w-0` utility** — the utility sets `min-width`, the UA
+  rule sets `min-inline-size`, and the logical property wins. The checkout
+  order-type fieldset held the form at 359px inside a 328px track at 375, and
+  the page's `overflow-x-hidden` ate the difference: clipped copy no scrolling
+  could reach. `styles.css` now sets `fieldset { min-inline-size: 0 }`
+  site-wide. This is the `min-w-0` rule from `CLAUDE.md`, in the one place a
+  `min-w-0` class cannot express it.
+- **`label { white-space: nowrap }`** sat on the bare element selector,
+  inherited from the original static export, and was therefore inherited by
+  everything a label wraps — including the checkout order-type cards, a whole
+  sentence of body copy that physically could not wrap at any width in any
+  language. Now scoped to `.label`, the short stacked caption it was written
+  for. A caption may reasonably refuse to wrap; a label that *contains* layout
+  must not decide that for its contents.
+
+Also fixed while re-balancing: the cart line's stepper + delete row had a
+hand-tuned 320px budget balanced against the Arabic `حذف`. "Remove" is ~21px
+wider and put the row 7px over the same 141px column — the identical failure,
+one translation later. It now wraps rather than being re-tuned, so it stays
+one line wherever it fits and does not need re-balancing for the next language.
+
+**Sweep after all of the above, seeded cart, two lines at two-digit quantity:
+33 pages x 2 languages at 375 and at 320 — `pageOver: 0` everywhere, 0 real
+overflow, 0 contrast failures across ~1,970 text nodes per language.** The
+residual `sr-only` entries the sweep reports pre-date this work (1px-clipped by
+design; the `byDesign` filter only covers `ellipsis`/`line-clamp`).
+
+### Product short descriptions were rendering raw markup
+
+Not a design decision — a defect found while auditing translatable text. 20 of
+the 99 products carry pasted editor debris inside the client's own
+`short_description`: `<span data-sheets-root="1">` from a Google Sheets paste,
+`x_MsoListParagraph` from Word, and on `product-8543` an entire
+`<div class="… AIPRM__conversation__response">` wrapper, which is what a ChatGPT
+web export leaves behind. `descAr` goes through `e()` into a `<p>`, so all of
+it escaped and **rendered as literal visible angle brackets in body copy**.
+
+Stripped at render (`_plain()` in `build/pages/product.py`), not in the JSON:
+`catalog.json` is fetched data and is meant to stay a faithful copy of what the
+client's endpoints return, so laundering it in place would mean the next
+re-scrape silently reintroduces this. **The underlying data problem is the
+client's to fix** — worth raising with them, since it is in their live product
+records, not only in our copy.
+
 ### The scroll reveal is site-wide, and carries a failsafe
 
 Ahmed asked for an entrance animation across the whole site (2026-07-22). The

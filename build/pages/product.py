@@ -21,6 +21,7 @@ client never wrote copy for renders without a description rather than with
 ours — same rule as the branch phone numbers.
 """
 import re
+from html import unescape
 
 from catalog import BRANCH_COUNT, PRODUCTS, e, in_category, money, rail_products, title
 from components import (
@@ -140,6 +141,31 @@ def _clean_client_html(html):
     return f'<div class="desc-rich">{cleaned}</div>'
 
 
+def _plain(text):
+    """Strip markup out of a field that is supposed to be plain prose.
+
+    `descAr` is the client's `short_description` and goes through e() into a
+    <p>, so anything tag-shaped inside it escapes and renders as LITERAL
+    VISIBLE MARKUP. It does contain such things: 20 of the 99 products carry
+    pasted editor debris in that field — `<span data-sheets-root="1">` from a
+    Google Sheets paste, `x_MsoListParagraph` from Word, and on product-8543 a
+    whole `<div class="... AIPRM__conversation__response">` wrapper, which is
+    what a ChatGPT web export leaves behind. Those pages were printing raw
+    angle brackets at the shopper in body copy.
+
+    Fixed here rather than in the scraped JSON on purpose: catalog.json is
+    fetched data and is meant to stay a faithful copy of what the client's
+    endpoints return (CLAUDE.md, "real data over invented data"). Laundering
+    it in place would mean the next re-scrape silently reintroduces this. The
+    presentation layer is the right place to be defensive about it, and the
+    underlying data problem is the client's to fix — flagged in DESIGN-NOTES.
+    """
+    if not text:
+        return ""
+    stripped = re.sub(r"<[^>]*>", " ", text)
+    return re.sub(r"\s+", " ", unescape(stripped)).strip()
+
+
 def _render(p):
     hero = p["id"] == _hero()["id"]
     on_sale = p.get("sale") and p["sale"] < p["regular"]
@@ -160,7 +186,7 @@ def _render(p):
 
     # Description: the hero's curated paragraph, or the client's own Arabic
     # short_description. No fallback prose — absence is honest, filler is not.
-    desc = DESCRIPTION if hero else (p.get("descAr") or "")
+    desc = DESCRIPTION if hero else _plain(p.get("descAr"))
     desc_html = (
         f'<p class="text-neutral-800 text-base leading-8">{e(desc)}</p>' if desc else ""
     )

@@ -77,6 +77,22 @@ label,
   color: #2b2525;
   font-size: 14px;
   text-transform: capitalize;
+}
+
+/* `white-space: nowrap` is scoped to `.label` — the short stacked caption it
+   was written for — and NOT to every <label> on the site.
+
+   It arrived on the bare element selector in the original static export and
+   was inherited by everything a label wraps, which here includes the
+   checkout order-type cards: a whole sentence of body copy that physically
+   could not wrap, at any width, in any language. It was invisible while the
+   copy was Arabic and short enough to fit; in English "Send this order as a
+   gift to someone you love" ran 31px past the card and the page's
+   `overflow-x-hidden` ate it.
+
+   A caption may reasonably refuse to wrap. A label that CONTAINS layout must
+   not decide that for its contents. */
+.label {
   white-space: nowrap;
 }
 
@@ -266,9 +282,30 @@ select {
   gap: var(--carousel-gap, 16px);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
   -ms-overflow-style: none;
   scrollbar-width: none;
+
+  /* Give the page back the vertical axis.
+
+     Reported as "sometimes it doesn't want to scroll" on mobile. A rail is a
+     horizontal scroll container with `scroll-snap-type: x mandatory`, and the
+     home page carries four of them stacked down the page — so a thumb drag
+     that starts on a product rail, which is most of the page's height, is a
+     coin toss. If the browser's gesture disambiguation locks to the
+     horizontal axis, the rail consumes the gesture, the snap holds it at the
+     current slide, and the page does not move at all. It reads as the site
+     freezing, not as a carousel working.
+
+     `pan-x` says this element handles horizontal panning only; anything
+     vertical is passed straight to the page. `pinch-zoom` is kept explicitly
+     because bare `pan-x` would also disable zoom on the rails, which is a
+     WCAG 1.4.4 regression traded for a scroll fix — not a trade worth making.
+
+     overscroll-behavior-x stops a fling that reaches the end of a rail from
+     chaining outward into page-level horizontal scroll or a browser back
+     navigation. */
+  touch-action: pan-x pinch-zoom;
+  overscroll-behavior-x: contain;
 
   /* Room for the slides' shadows INSIDE the clip region.
 
@@ -298,6 +335,16 @@ select {
      shows at the very start and end of a rail. Left clipped on purpose. */
   padding-block: 10px 20px;
   margin-block: -10px -16px;
+}
+/* Smooth scrolling is the arrows' and dots' animation, so it belongs behind
+   the motion preference like every other animation on this site. It was set
+   unconditionally, which also meant a reduced-motion visitor got an animated
+   slide on every arrow press. Only programmatic scrollLeft writes are
+   affected — a user drag is never smoothed by this property. */
+@media (prefers-reduced-motion: no-preference) {
+  .carousel-track {
+    scroll-behavior: smooth;
+  }
 }
 .carousel-track::-webkit-scrollbar {
   display: none;
@@ -666,6 +713,28 @@ body.no-scroll {
   display: none !important;
 }
 
+/* A <fieldset> carries a UA `min-inline-size: min-content`, which OUTRANKS
+   the `min-width: auto` every other flex/grid child gets and cannot be
+   cancelled by a `min-w-0` utility on the element — the utility sets
+   min-width, the UA rule sets min-inline-size, and the logical property wins.
+
+   So a fieldset silently refuses to shrink below the widest unbreakable run
+   of its contents, and pushes its parent out with it. Caught on checkout at
+   375 in English: the نوع الطلب fieldset held the form at 359px inside a
+   328px track, 31px of copy clipped away by the page's `overflow-x-hidden`
+   where no scrolling could reach it. Arabic never showed it, because
+   "أرسل الطلب كهدية لشخص تحبه" has a narrower min-content than "Send this
+   order as a gift to someone you love" — the bug was always there, and only
+   became visible once the site actually translated.
+
+   Site-wide rather than on the one fieldset: every fieldset on the site is a
+   layout container inside a constrained column, and none of them wants this
+   behaviour. This is the `min-w-0` rule from CLAUDE.md, in the one place a
+   `min-w-0` class cannot express it. */
+fieldset {
+  min-inline-size: 0;
+}
+
 /* Branches governorate filters render as pills below xl (Figma 426:33692).
    Scoped to `.tabs-chips` so the product page's tabs, which stay underlined
    at every width, are untouched. */
@@ -920,7 +989,22 @@ body.no-scroll {
 /* --- Search + cart, elevated and along for the ride ----------------------
    Desktop only: the mobile masthead has its own controls and stays in flow.
    Parked under the 48px sticky nav, aligned to the same content edge the rest
-   of the chrome uses. */
+   of the chrome uses.
+
+   The plate is OPAQUE. It used to be rgba(255,255,255,.92) over a
+   backdrop-filter: blur(10px), which is the single most expensive thing this
+   site did while scrolling: a blurred backdrop on a position:fixed element
+   has to re-read and re-rasterise whatever is behind it on every frame, and
+   because this pill sticks the moment you pass 150px it was doing that for
+   the entire scrolled length of every page. The mobile rule below already
+   dropped the blur for exactly this reason; Ahmed reported the same lag on
+   desktop (2026-07-22), and it is the same cause.
+
+   Nothing is lost. Opaque #fff is strictly more contrast than 92% white over
+   unknown content, so the glyph pairings underneath stay valid without
+   re-verifying, and at 8px padding behind a pill of controls the blur was
+   never legible as an effect - it was paying a per-frame cost for a texture
+   you could only see by looking for it. */
 @media (min-width: 768px) {
   [data-sticky-actions][data-stuck="true"] {
     position: fixed;
@@ -930,9 +1014,40 @@ body.no-scroll {
     gap: 12px;
     padding: 8px;
     border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.92);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    background: #fff;
+    box-shadow: var(--lift-shadow);
+    animation: actionsDrop 0.28s var(--ease-out) both;
+  }
+}
+/* Mobile gets the same ride-along, on its own terms.
+
+   Two things differ from the desktop rule above, both deliberate:
+
+   - It parks at the top edge, not under a nav. The 48px nav bar lives in the
+     `hidden md:block` desktop header, so at this width there is nothing to sit
+     beneath and `top: 60px` would leave it floating in dead space.
+
+   - The plate is brand green, not a translucent white blur. The mobile search
+     button is a bare glyph with no fill of its own and icon-search.svg is
+     WHITE - on the desktop rule's rgba(255,255,255,.92) plate it would vanish
+     completely. Desktop gets away with white because its search button carries
+     bg-cta underneath. Reusing the header's own green keeps both glyphs on
+     exactly the colour pairing they already pass AA against, so this adds no
+     new contrast surface to verify. Dropping the backdrop-filter is a bonus:
+     blurring live backdrop pixels on a fixed element re-rasterises every frame
+     of every scroll, which is the same cost this pass just removed from the
+     product cards. */
+@media (max-width: 767px) {
+  [data-sticky-actions][data-stuck="true"] {
+    position: fixed;
+    top: 8px;
+    inset-inline-end: 8px;
+    z-index: 90;
+    flex: none;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 9999px;
+    background: #185039;
     box-shadow: var(--lift-shadow);
     animation: actionsDrop 0.28s var(--ease-out) both;
   }
@@ -967,14 +1082,32 @@ body.no-scroll {
 /* --- Product cards -------------------------------------------------------
    The card lifts, the image grows very slightly inside its plate, and the
    quick-look chip fades up. `overflow: hidden` on the plate keeps the zoom
-   from escaping its rounded corner. */
+   from escaping its rounded corner.
+
+   Every :hover here is gated behind (hover: hover). Two reasons, both
+   measured on this site rather than assumed:
+
+   1. `will-change: transform` used to sit unconditionally on
+      .product-card__frame, so EVERY card on the page held a permanently
+      promoted compositing layer whether or not it was ever pointed at —
+      35 of them on the home page, 99 on shop.html, counted in the browser.
+      That is precisely the case MDN warns against, and on a phone it is
+      paid as scroll jank and memory pressure in exchange for priming a
+      transform a touch device can never fire. Dropped outright: the
+      transition below is short and the compositor promotes for the
+      duration of a transform transition on its own, so the hint was
+      buying nothing even on desktop.
+   2. On touch, :hover latches after a tap and stays latched until you tap
+      elsewhere — so a tapped card sat lifted and zoomed, looking stuck
+      under a pointer that was never there. That is the same failure the
+      selected-vs-hover rule in CLAUDE.md exists to prevent, reached from
+      the other direction.
+
+   :focus-within is deliberately NOT gated — keyboard focus must still
+   reveal the quick-look chip on a touchscreen laptop, where (hover: hover)
+   may not match. */
 .product-card__frame {
   transition: transform 0.22s var(--ease-out), box-shadow 0.22s var(--ease-out);
-  will-change: transform;
-}
-.product-card:hover .product-card__frame {
-  transform: translateY(-4px);
-  box-shadow: var(--lift-shadow);
 }
 .product-card__media {
   overflow: hidden;
@@ -982,18 +1115,27 @@ body.no-scroll {
 .product-card__media img {
   transition: transform 0.35s var(--ease-out);
 }
-.product-card:hover .product-card__media img {
-  transform: scale(1.05);
-}
 .product-card__peek {
   opacity: 0;
   transform: translateY(6px);
   transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
 }
-.product-card:hover .product-card__peek,
 .product-card:focus-within .product-card__peek {
   opacity: 1;
   transform: translateY(0);
+}
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover .product-card__frame {
+    transform: translateY(-4px);
+    box-shadow: var(--lift-shadow);
+  }
+  .product-card:hover .product-card__media img {
+    transform: scale(1.05);
+  }
+  .product-card:hover .product-card__peek {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Category tiles already scale; give them a shadow to match the cards. */
@@ -1200,6 +1342,32 @@ input:checked + span .radio-dot::after {
    (see CLAUDE.md); this is accent-yellow at roughly 15% over white. */
 input:checked + .radio-card-accent {
   background: #fdf7e6;
+}
+
+/* --- Points discount button, two tiers ------------------------------------
+   Primary while it offers the discount, tertiary once it only takes it back
+   (Ahmed, 2026-07-22). Undoing a discount is not the primary thing on a
+   checkout page, and in full CTA green it competed with اتمام الشراء for the
+   same eye.
+
+   Driven off `aria-pressed`, which syncPointsUI already writes — the same
+   contract the favourites buttons use, so the accessible state and the
+   painted state cannot drift apart. The selector is (0,2,0), which is what it
+   takes to beat the `bg-cta` / `text-white` utilities on the element (see the
+   emit-order trap in CLAUDE.md).
+
+   #163300 on the banner's #EDC843 measures 8.58:1, so dropping the fill costs
+   no contrast — it gains some. The hover wash is the same ink at 10%, which
+   keeps the tertiary state's hover transient rather than making it look like
+   a second filled tier. */
+.points-apply[aria-pressed="true"] {
+  background: transparent;
+  color: #163300;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.points-apply[aria-pressed="true"]:hover {
+  background: rgba(22, 51, 0, 0.1);
 }
 @media (prefers-reduced-motion: reduce) {
   .radio-dot,

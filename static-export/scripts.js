@@ -482,32 +482,172 @@
     "الفروع": "Branches",
   };
 
+  /* The BULK of the dictionary is generated, not written above: build/i18n.py
+     emits static-export/i18n-en.js, because it is the only place that can
+     read catalog.json — so all 99 product names come from the client's own
+     English `name` field instead of being retyped here, and the formulaic
+     families (gallery labels, governorate rows) are looped rather than listed.
+     See DESIGN-NOTES for which parts of it are client copy awaiting sign-off.
+
+     A plain script, deliberately not a fetch: translation therefore still
+     works from file://, where search — the one runtime reader of
+     catalog.json — does not.
+
+     The literals above are the FLOOR and win any collision. If i18n-en.js
+     fails to load, the chrome still switches languages instead of the whole
+     feature dying silently. */
+  const EN_TPL = {};
+  (function mergeGeneratedDictionary() {
+    const g = window.ABUAUF_I18N;
+    if (!g) return;
+    if (g.text) {
+      Object.keys(g.text).forEach((k) => {
+        if (!(k in EN)) EN[k] = g.text[k];
+      });
+    }
+    if (g.tpl) Object.assign(EN_TPL, g.tpl);
+  })();
+
   function currentLang() {
     return document.documentElement.getAttribute("lang") === "en" ? "en" : "ar";
   }
 
   /*
-   * Build-time copy lives in the generated HTML, so t() cannot reach it. This
-   * walks visible text nodes and swaps any whose exact trimmed text has a
-   * dictionary entry, stashing the Arabic on the node so switching back is
-   * lossless.
+   * Build-time copy lives in the generated HTML, so t() cannot reach it.
+   * translateDocument() is the pass that does, and it runs in three parts
+   * because build-time copy shows up in three shapes.
    *
-   * Deliberately exact-match only: a string with no entry is left alone. That
-   * is what keeps page prose — headings, FAQ answers, legal text, blog posts —
-   * in Arabic rather than half-translated, and it means adding a translation is
-   * just adding a dictionary key.
+   * It used to be ONE part: walk text nodes, swap any whose exact trimmed
+   * text has a dictionary entry. That left most of the site in Arabic even
+   * where a translation existed, for two structural reasons rather than for
+   * want of dictionary keys (Ahmed: "the language transition doesn't work in
+   * every text node", 2026-07-22):
+   *
+   *   1. A run of copy broken by ANY inline child is several text nodes, and
+   *      no fragment of it matches anything. `4.8 (126 تقييم)` is three nodes
+   *      because the rating and the count are `.latin` spans, so it could
+   *      never match however the dictionary was written. Same for the
+   *      best-seller badge, the delivery promise, every account-menu row
+   *      (icon + label), and every form label with a required marker. The
+   *      TEMPLATE pass below fixes that by keying on the element with its
+   *      element children replaced by {0}, {1}… — one key covers every
+   *      product, price and rank, and the original child nodes are spliced
+   *      back in, so `.latin` spans and their digits survive untouched.
+   *
+   *   2. Text in ATTRIBUTES was never looked at at all — 86 distinct Arabic
+   *      placeholder/aria-label/title/alt values across the site, including
+   *      every gallery thumbnail's label and every form's placeholder.
+   *
+   * Everything is stashed on first translation so switching back is lossless,
+   * and every pass is still exact-match: a string with no entry is left in
+   * Arabic rather than half-translated.
    */
-  const I18N_STASH = new WeakMap();
+  const I18N_STASH = new WeakMap(); // text node  -> original nodeValue
+  const TPL_STASH = new WeakMap(); // element    -> { ar, slots }
+  const ATTR_STASH = new WeakMap(); // element    -> { attr: original }
 
-  function translateDocument() {
-    const en = currentLang() === "en";
+  const I18N_SKIP = { SCRIPT: 1, STYLE: 1, TITLE: 1, NOSCRIPT: 1, svg: 1 };
+  const I18N_ATTRS = ["placeholder", "aria-label", "title", "alt"];
+  const collapse = (s) => s.replace(/\s+/g, " ").trim();
+
+  const inSkipped = (el) => {
+    for (let n = el; n; n = n.parentElement) {
+      if (I18N_SKIP[n.tagName]) return true;
+    }
+    return false;
+  };
+
+  /* An element's content as a template: text kept verbatim, each element
+     child replaced by a positional slot. Returns null unless there is BOTH
+     real text and at least one slot — anything else is already covered by the
+     plain text-node pass.
+
+     The KEY is whitespace-collapsed so a dictionary entry can be written on
+     one line regardless of how the generator happened to indent the markup.
+     The element's own leading and trailing whitespace is kept aside and put
+     back on apply, so a round trip does not quietly eat the space that
+     separated this element's last word from whatever follows it.
+
+     Whitespace BETWEEN the parts is normalised to single spaces and does not
+     survive a round trip — that is the price of a collapsed key, and it is
+     the right price: HTML collapses runs of whitespace in text anyway, so
+     nothing moves on screen. Measured on ar -> en -> ar: textContent, element
+     count and comment count all restore exactly, and index.html and cart.html
+     come back byte-identical. */
+  function templateOf(el) {
+    let raw = "";
+    const slots = [];
+    let hasText = false;
+    for (const n of el.childNodes) {
+      if (n.nodeType === 3) {
+        raw += n.nodeValue;
+        if (n.nodeValue.trim()) hasText = true;
+      } else if (n.nodeType === 1) {
+        raw += "{" + slots.length + "}";
+        slots.push(n);
+      }
+      // comments contribute nothing to copy and are dropped on rebuild
+    }
+    if (!hasText || !slots.length) return null;
+    return {
+      tpl: collapse(raw),
+      slots,
+      lead: raw.match(/^\s*/)[0],
+      tail: raw.match(/\s*$/)[0],
+    };
+  }
+
+  /* Rebuild an element from a template, re-inserting the ORIGINAL child
+     elements rather than clones — so a `.latin` span keeps its class, its
+     digits, and any listener or state attached to it. */
+  function applyTemplate(el, tpl, slots, lead, tail) {
+    // Refuse to apply a translation that would drop a slot: losing a price or
+    // a product image to a typo'd dictionary entry is far worse than leaving
+    // the string in Arabic.
+    for (let i = 0; i < slots.length; i++) {
+      if (tpl.indexOf("{" + i + "}") === -1) return false;
+    }
+    const frag = document.createDocumentFragment();
+    (lead || "") &&
+      frag.appendChild(document.createTextNode(lead));
+    tpl.split(/(\{\d+\})/).forEach((part) => {
+      if (!part) return;
+      const m = /^\{(\d+)\}$/.exec(part);
+      if (m) frag.appendChild(slots[+m[1]]);
+      else frag.appendChild(document.createTextNode(part));
+    });
+    if (tail) frag.appendChild(document.createTextNode(tail));
+    el.textContent = "";
+    el.appendChild(frag);
+    return true;
+  }
+
+  function translateTemplates(en) {
+    document.querySelectorAll("*").forEach((el) => {
+      if (inSkipped(el)) return;
+      const stashed = TPL_STASH.get(el);
+      if (stashed) {
+        // Already handled once; drive it from the stash so repeated switches
+        // stay lossless and never re-key off already-translated text.
+        const target = en ? EN_TPL[stashed.ar] : stashed.ar;
+        if (target) {
+          applyTemplate(el, target, stashed.slots, stashed.lead, stashed.tail);
+        }
+        return;
+      }
+      const t = templateOf(el);
+      if (!t || !EN_TPL[t.tpl]) return;
+      TPL_STASH.set(el, { ar: t.tpl, slots: t.slots, lead: t.lead, tail: t.tail });
+      if (en) applyTemplate(el, EN_TPL[t.tpl], t.slots, t.lead, t.tail);
+    });
+  }
+
+  function translateTextNodes(en) {
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
         if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
         const p = node.parentElement;
-        if (!p) return NodeFilter.FILTER_REJECT;
-        const tag = p.tagName;
-        if (tag === "SCRIPT" || tag === "STYLE" || tag === "TITLE") return NodeFilter.FILTER_REJECT;
+        if (!p || inSkipped(p)) return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
       },
     });
@@ -517,11 +657,65 @@
 
     nodes.forEach((node) => {
       const original = I18N_STASH.has(node) ? I18N_STASH.get(node) : node.nodeValue;
-      const key = original.trim();
+      const key = collapse(original);
       if (!EN[key]) return;
       if (!I18N_STASH.has(node)) I18N_STASH.set(node, original);
-      node.nodeValue = en ? original.replace(key, EN[key]) : original;
+      if (!en) {
+        node.nodeValue = original;
+        return;
+      }
+      // Preserve the node's own leading/trailing whitespace: it is often the
+      // only thing separating it from an adjacent inline element.
+      const lead = original.match(/^\s*/)[0];
+      const tail = original.match(/\s*$/)[0];
+      node.nodeValue = lead + EN[key] + tail;
     });
+  }
+
+  function translateAttributes(en) {
+    document.querySelectorAll("[placeholder],[aria-label],[title],[alt]").forEach((el) => {
+      if (inSkipped(el)) return;
+      let stash = ATTR_STASH.get(el);
+      I18N_ATTRS.forEach((a) => {
+        const cur = el.getAttribute(a);
+        if (cur === null) return;
+        const original = stash && a in stash ? stash[a] : cur;
+        const key = collapse(original);
+        if (!EN[key]) return;
+        if (!stash) {
+          stash = {};
+          ATTR_STASH.set(el, stash);
+        }
+        if (!(a in stash)) stash[a] = original;
+        el.setAttribute(a, en ? EN[key] : original);
+      });
+    });
+  }
+
+  /* The tab title and the meta description are copy too — a page that reads
+     English and titles itself in Arabic is half-switched. */
+  let headStash = null;
+  function translateHead(en) {
+    const meta = document.querySelector('meta[name="description"]');
+    if (!headStash) {
+      headStash = { title: document.title, desc: meta ? meta.content : null };
+    }
+    const tk = collapse(headStash.title);
+    document.title = en && EN[tk] ? EN[tk] : headStash.title;
+    if (meta && headStash.desc !== null) {
+      const dk = collapse(headStash.desc);
+      meta.content = en && EN[dk] ? EN[dk] : headStash.desc;
+    }
+  }
+
+  function translateDocument() {
+    const en = currentLang() === "en";
+    // Templates FIRST: it rebuilds child lists, which would invalidate a text
+    // node list collected before it ran.
+    translateTemplates(en);
+    translateTextNodes(en);
+    translateAttributes(en);
+    translateHead(en);
   }
   function t(s) {
     return currentLang() === "en" && EN[s] ? EN[s] : s;
@@ -909,7 +1103,16 @@
           ${
             checkout
               ? ""
-              : `<div class="flex flex-1 justify-end items-center gap-1 min-w-0">
+              : `<!-- Same data-sticky-actions hook as the desktop masthead, so one
+                       scroll handler drives both and they can never disagree about
+                       whether the page has scrolled. The mobile masthead scrolls
+                       away completely - there is no sticky nav at this width - so
+                       without this, search and cart leave the screen entirely and
+                       the only way back to the cart is to scroll to the top. It
+                       also gives the fly-to-cart flight a real on-screen target on
+                       mobile instead of the clamp-to-edge fallback. Parked and
+                       painted by the max-width rule in styles.css. -->
+                 <div data-sticky-actions class="flex flex-1 justify-end items-center gap-1 min-w-0">
                    <button type="button" data-open="search" class="place-items-center grid shrink-0 size-11" aria-label="بحث">
                      <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
                    </button>
@@ -1219,49 +1422,61 @@
       </div>
     </div>
 
-    <!-- Locale popup: country/currency + language, applied TOGETHER.
-         A modal rather than the dropdown it replaced: the live site's
-         dropdown applies each row the moment it is clicked, which repaints
-         the page once per choice - Ahmed wants to pick both and pay the
-         repaint once, so the rows here only set radios and nothing happens
-         until تطبيق. -->
-    <div data-modal="locale" class="modal-shell">
-      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[400px] overflow-hidden" data-modal-box>
-        <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
-          <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("الدولة واللغة"))}</h2>
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
-        </div>
-        <div class="flex flex-col gap-5 p-5">
-          <fieldset class="flex flex-col gap-2">
-            <legend class="mb-2 font-bold text-[#062A1C] text-sm">${esc(t("الدولة و العملة"))}</legend>
-            ${COUNTRIES.map(
-              (c) => `
-            <label class="cursor-pointer">
-              <input type="radio" name="locale-country" value="${c.code}" class="peer sr-only"${c.code === currentCountry().code ? " checked" : ""} />
-              <span class="flex items-center gap-3 px-4 py-2.5 border-2 border-neutral-divider peer-checked:border-cta rounded-xl min-h-11 transition-colors">
-                <img src="${c.flag}" alt="" class="rounded-full w-6 h-6 object-cover shrink-0" />
-                <span class="flex-1 min-w-0 text-[#062A1C] text-sm">${esc(c.ar)} <span class="latin">(${c.currency})</span></span>
-                <span class="radio-dot shrink-0" aria-hidden="true"></span>
-              </span>
-            </label>`,
-            ).join("")}
-          </fieldset>
-          <fieldset class="flex flex-col gap-2">
-            <legend class="mb-2 font-bold text-[#062A1C] text-sm">${esc(t("اللغة"))}</legend>
-            ${LANGS.map(
-              (l) => `
-            <label class="cursor-pointer">
-              <input type="radio" name="locale-lang" value="${l.code}" class="peer sr-only"${l.code === currentLang() ? " checked" : ""} />
-              <span class="flex items-center gap-3 px-4 py-2.5 border-2 border-neutral-divider peer-checked:border-cta rounded-xl min-h-11 transition-colors">
-                <span class="w-5 h-5 text-neutral-secondary shrink-0" aria-hidden="true">${ICON.globe}</span>
-                <span class="flex-1 min-w-0 text-[#062A1C] text-sm">${l.label}</span>
-                <span class="radio-dot shrink-0" aria-hidden="true"></span>
-              </span>
-            </label>`,
-            ).join("")}
-          </fieldset>
-          <button type="button" data-locale-apply class="bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm transition-colors">${esc(t("تطبيق"))}</button>
-        </div>
+    <!-- Locale picker: country/currency + language, applied TOGETHER.
+         Not the dropdown it replaced: the live site's dropdown applies each
+         row the moment it is clicked, which repaints the page once per
+         choice - Ahmed wants to pick both and pay the repaint once, so the
+         rows here only set radios and nothing happens until تطبيق.
+
+         A BOTTOM SHEET on phones and tablets, a centred dialog from xl
+         (Ahmed, 2026-07-22). It was a .modal-shell at every width, so on a
+         phone a control reached from the bottom of the menu drawer opened as
+         a small floating card in the middle of the screen - a desktop popup
+         shape on a surface where the thumb is nowhere near it. This is the
+         same .bottom-sheet--modal pattern the location sheet already uses,
+         reused rather than re-invented, so the site has ONE sheet system and
+         one breakpoint at which sheets become dialogs.
+
+         Stacking: .bottom-sheet and .side-drawer both sit at z-100 and the
+         sheet is emitted later, so it lands above the still-open menu drawer
+         it was launched from rather than behind it. Verified, not assumed. -->
+    <div data-sheet="locale" class="bottom-sheet bottom-sheet--modal" role="dialog" aria-modal="true" aria-labelledby="locale-sheet-title">
+      <!-- Drag affordance: meaningless once this is a centred dialog. -->
+      <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 id="locale-sheet-title" class="font-bold text-[#062A1C] text-lg">${esc(t("الدولة واللغة"))}</h2>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+      </div>
+      <div class="flex flex-col gap-5">
+        <fieldset class="flex flex-col gap-2">
+          <legend class="mb-2 font-bold text-[#062A1C] text-sm">${esc(t("الدولة و العملة"))}</legend>
+          ${COUNTRIES.map(
+            (c) => `
+          <label class="cursor-pointer">
+            <input type="radio" name="locale-country" value="${c.code}" class="peer sr-only"${c.code === currentCountry().code ? " checked" : ""} />
+            <span class="flex items-center gap-3 px-4 py-2.5 border-2 border-neutral-divider peer-checked:border-cta rounded-xl min-h-11 transition-colors">
+              <img src="${c.flag}" alt="" class="rounded-full w-6 h-6 object-cover shrink-0" />
+              <span class="flex-1 min-w-0 text-[#062A1C] text-sm">${esc(c.ar)} <span class="latin">(${c.currency})</span></span>
+              <span class="radio-dot shrink-0" aria-hidden="true"></span>
+            </span>
+          </label>`,
+          ).join("")}
+        </fieldset>
+        <fieldset class="flex flex-col gap-2">
+          <legend class="mb-2 font-bold text-[#062A1C] text-sm">${esc(t("اللغة"))}</legend>
+          ${LANGS.map(
+            (l) => `
+          <label class="cursor-pointer">
+            <input type="radio" name="locale-lang" value="${l.code}" class="peer sr-only"${l.code === currentLang() ? " checked" : ""} />
+            <span class="flex items-center gap-3 px-4 py-2.5 border-2 border-neutral-divider peer-checked:border-cta rounded-xl min-h-11 transition-colors">
+              <span class="w-5 h-5 text-neutral-secondary shrink-0" aria-hidden="true">${ICON.globe}</span>
+              <span class="flex-1 min-w-0 text-[#062A1C] text-sm">${l.label}</span>
+              <span class="radio-dot shrink-0" aria-hidden="true"></span>
+            </span>
+          </label>`,
+          ).join("")}
+        </fieldset>
+        <button type="button" data-locale-apply class="bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm transition-colors">${esc(t("تطبيق"))}</button>
       </div>
     </div>
 
@@ -1339,7 +1554,7 @@
     cart: '[data-drawer="cart"]',
     menu: '[data-drawer="menu"]',
     search: '[data-modal="search"]',
-    locale: '[data-modal="locale"]',
+    locale: '[data-sheet="locale"]',
     address: '[data-modal="address"]',
     location: '[data-sheet="location"]',
     accountMenu: '[data-sheet="account-menu"]',
@@ -1580,11 +1795,38 @@
   function initCarousel(root) {
     const track = root.querySelector(".carousel-track");
     if (!track) return;
+
+    /* kInit() re-runs across the whole document on every language switch, and
+       nothing here used to be idempotent. So each toggle bound a SECOND
+       scroll listener, a second resize listener and a second autoplay timer
+       to every rail on the page — scroll work that compounded with each
+       toggle, and autoplay timers that then fought each other over the same
+       scrollLeft. Bind once. */
+    if (root.dataset.carouselReady === "true") return;
+    root.dataset.carouselReady = "true";
+
     const prev = root.querySelector(".carousel-prev");
     const next = root.querySelector(".carousel-next");
     const dotsWrap = root.querySelector(".carousel-dots");
 
-    const isRTL = () => getComputedStyle(track).direction === "rtl";
+    /* Direction is read off <html>, not off the track's computed style.
+       getComputedStyle forces a style recalc, and this used to sit inside
+       getPos() — which runs on every scroll frame, twice per update(). `dir`
+       is only ever set on the root element (verified across all 130 pages),
+       so an attribute read is an exact substitute for a computed one here and
+       costs nothing. It also stays correct across a language switch, which a
+       value cached at init time would not. */
+    const isRTL = () => document.documentElement.getAttribute("dir") === "rtl";
+
+    /* The gap DOES need computed style, so it is read once and re-read only
+       on resize — it cannot change otherwise. */
+    let gap = 16;
+    function measureGap() {
+      const style = getComputedStyle(track);
+      gap = parseFloat(style.columnGap || style.gap || "16") || 16;
+    }
+    measureGap();
+
     const maxPos = () =>
       Math.max(0, track.scrollWidth - track.clientWidth - 1);
 
@@ -1606,21 +1848,52 @@
     function slideStep() {
       const first = track.querySelector(".carousel-slide");
       if (!first) return track.clientWidth;
-      const style = getComputedStyle(track);
-      const gap = parseFloat(style.columnGap || style.gap || "16") || 16;
       return first.getBoundingClientRect().width + gap;
     }
 
+    /* Every geometry read happens before the first class write. Interleaving
+       them — read scrollLeft, toggle a class, read scrollWidth, toggle
+       another — invalidates layout between reads, so each later read forces a
+       synchronous re-layout. On the home page that was four rails paying it
+       on every scroll frame. */
     function update() {
       const pos = getPos();
       const max = maxPos();
+      const idx = Math.round(pos / slideStep());
       if (prev) prev.classList.toggle("is-disabled", pos <= 1);
       if (next) next.classList.toggle("is-disabled", pos >= max);
       if (dotsWrap) {
-        const dots = dotsWrap.querySelectorAll(".carousel-dot");
-        const idx = Math.round(pos / slideStep());
-        dots.forEach((d, i) => d.classList.toggle("is-active", i === idx));
+        dotsWrap
+          .querySelectorAll(".carousel-dot")
+          .forEach((d, i) => d.classList.toggle("is-active", i === idx));
       }
+    }
+
+    /* One update per FRAME, not one per event. The scroll handler used to
+       call requestAnimationFrame unconditionally, so a burst of scroll events
+       arriving inside a single frame queued a callback each — every one of
+       them repeating the same layout reads to arrive at the same answer.
+       Momentum scrolling and scroll-snap settling both produce exactly that
+       burst. */
+    let ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        ticking = false;
+        update();
+      });
+    }
+
+    let resizing = false;
+    function onResize() {
+      if (resizing) return;
+      resizing = true;
+      window.requestAnimationFrame(() => {
+        resizing = false;
+        measureGap();
+        update();
+      });
     }
 
     if (prev)
@@ -1642,15 +1915,46 @@
       }
     }
 
-    track.addEventListener("scroll", () => window.requestAnimationFrame(update));
-    window.addEventListener("resize", update);
+    /* passive: this handler never calls preventDefault, and saying so up
+       front lets the compositor start the scroll without waiting to find
+       out. */
+    track.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
     update();
 
     if (root.hasAttribute("data-autoplay")) {
-      setInterval(() => {
-        if (getPos() >= maxPos()) setPos(0);
-        else setPos(getPos() + slideStep());
-      }, 4500);
+      /* Was a bare setInterval that ran for the life of the page. Three
+         problems, all of them paid on the main thread:
+
+         - It kept ticking in a hidden or backgrounded tab, queueing a smooth
+           scroll animation every 4.5s that nobody could see.
+         - It kept ticking while the visitor was reading the rail or dragging
+           it, yanking the slide out from under them mid-gesture.
+         - It ran under prefers-reduced-motion, where an unbidden auto-advance
+           is precisely the motion the preference asks us not to make.
+
+         Now it stops on hidden, stops while a pointer or the keyboard is
+         inside the carousel, and never starts at all under reduced motion. */
+      let timer = null;
+      const stop = () => {
+        if (timer) clearInterval(timer);
+        timer = null;
+      };
+      const start = () => {
+        if (timer || reduceMotion() || document.hidden) return;
+        timer = setInterval(() => {
+          if (getPos() >= maxPos()) setPos(0);
+          else setPos(getPos() + slideStep());
+        }, 4500);
+      };
+      root.addEventListener("pointerenter", stop);
+      root.addEventListener("pointerleave", start);
+      root.addEventListener("focusin", stop);
+      root.addEventListener("focusout", start);
+      document.addEventListener("visibilitychange", () =>
+        document.hidden ? stop() : start(),
+      );
+      start();
     }
   }
 
@@ -2469,7 +2773,7 @@
     document.addEventListener("click", (e) => {
       const apply = e.target.closest("[data-locale-apply]");
       if (!apply) return;
-      const modal = apply.closest('[data-modal="locale"]');
+      const modal = apply.closest('[data-sheet="locale"]');
       const country = modal.querySelector('input[name="locale-country"]:checked');
       const lang = modal.querySelector('input[name="locale-lang"]:checked');
       const langChanged = lang && lang.value !== currentLang();
@@ -2797,8 +3101,17 @@
                came to 154 inside a 141px column, overflowing the row by 13px.
                The tighter gap brings it to 138. The baseline sweep missed
                this because it happened to run against an emptied cart, so no
-               line ever rendered. -->
-          <div class="flex justify-between items-center gap-2 mt-2">
+               line ever rendered.
+
+               flex-wrap because that budget is language-dependent and was
+               only ever balanced against the Arabic. "Remove" is about 21px
+               wider than "حذف", which put the row 7px over the same 141px
+               column in English at 320 — the identical failure, one
+               translation later. Wrapping is the fix that does not need
+               re-balancing for the next language: the row stays on one line
+               wherever it fits (375 and up, both languages) and drops the
+               button below the stepper only where it genuinely cannot. -->
+          <div class="flex flex-wrap justify-between items-center gap-2 mt-2">
             <!-- p-1, matching the product page counter's uniform 4px inset
                  between container and buttons - the px-2 py-1 it had gave
                  8px sides against 4px verticals and read as a different
@@ -2863,10 +3176,20 @@
       b.textContent = d ? t("إلغاء الخصم") : t("خصم المبلغ");
       b.setAttribute("aria-pressed", d ? "true" : "false");
     });
-    // The banner's message follows the state: spent points must not keep
-    // being offered as available.
-    document.querySelectorAll("[data-points-idle]").forEach((el) => (el.hidden = !!d));
-    document.querySelectorAll("[data-points-used]").forEach((el) => (el.hidden = !d));
+    /* The banner's message follows the state: spent points must not keep
+       being offered as available.
+
+       `invisible`, not `hidden`. The two copies are stacked in one grid cell
+       (see points_banner in components.py) so that the banner keeps the
+       height of its tallest state — toggling them in and out of flow instead
+       collapsed the banner by 100px on press and shunted the whole order
+       summary up under the cursor. */
+    document
+      .querySelectorAll("[data-points-idle]")
+      .forEach((el) => el.classList.toggle("invisible", !!d));
+    document
+      .querySelectorAll("[data-points-used]")
+      .forEach((el) => el.classList.toggle("invisible", !d));
     /* Deliberately no totals work here. The checkout summary used to be
        static build-time markup with its own data-base-total, so this function
        carried a second, parallel set of totals hooks. It now carries the cart

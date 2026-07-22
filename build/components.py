@@ -744,22 +744,39 @@ def radio_card(name, value, heading, sub="", icon="", checked=False, accent=Fals
     2026-07-22). `h-full` on the face: paired cards share a flex row, so the
     one without a subtitle used to stand shorter than its neighbour.
 
-    accent=True is the gift treatment — the icon sits on an accent-yellow
-    chip and the checked card takes a warm wash (`.radio-card-accent`), so
-    إهداء reads as an occasion while the default order stays logistics.
+    accent=True is the gift treatment: the checked card takes a warm wash
+    (`.radio-card-accent`), so إهداء reads as an occasion while the default
+    order stays logistics.
+
+    The glyph is bare on every card, gift included. It used to sit on an
+    accent-yellow `rounded-full size-10` chip when accent=True, which made
+    one option in a pick-one group carry a filled badge the other five did
+    not — a circle around an icon reads as a token or an avatar, and next to
+    the real `.radio-dot` on the same row it read as a second, competing
+    indicator. Ahmed asked for it gone (2026-07-22). The wash still marks the
+    gift card, and it only paints when the card is actually chosen, which is
+    the distinction that was wanted in the first place.
     """
     sub_html = f'<span class="text-neutral-secondary text-xs">{e(sub)}</span>' if sub else ""
-    icon_html = (
-        f'<span class="place-items-center grid bg-accent-yellow rounded-full size-10 text-[#062A1C] shrink-0">{icon}</span>'
-        if accent else f'<span class="text-cta">{icon}</span>'
-    )
+    icon_html = f'<span class="text-cta shrink-0">{icon}</span>'
     return f"""
-                <label class="flex-1 cursor-pointer">
+                <!-- min-w-0 on BOTH nested flex children. A flex item's
+                     min-width is `auto`, so without these the label column
+                     cannot shrink below its longest line and pushes the whole
+                     checkout form wider than its grid track. Caught at 375 in
+                     English, where the form ran 31px over and the page's
+                     `overflow-x-hidden` swallowed it — clipped copy that no
+                     amount of scrolling reveals, which is exactly why
+                     CLAUDE.md calls this the most common bug class here.
+                     Arabic never showed it: "أرسل الطلب كهدية لشخص تحبه" is
+                     simply shorter than "Send this order as a gift to someone
+                     you love". Latent until the site actually translated. -->
+                <label class="flex-1 min-w-0 cursor-pointer">
                   <input type="radio" name="{e(name)}" value="{e(value)}" class="peer sr-only"{' checked' if checked else ''} />
                   <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full{' radio-card-accent' if accent else ''}">
-                    <span class="flex items-center gap-3">
+                    <span class="flex items-center gap-3 min-w-0">
                       {icon_html}
-                      <span class="flex flex-col">
+                      <span class="flex flex-col min-w-0">
                         <span class="font-semibold text-[#062A1C] text-base">{e(heading)}</span>
                         {sub_html}
                       </span>
@@ -812,18 +829,52 @@ def points_banner(points=100, discount=100):
     """
     return f"""
             <div data-points-banner data-points-discount="{discount}" class="flex justify-between items-center gap-3 bg-accent-yellow p-4 rounded-xl">
-              <!-- Two copies of the message, one per state, toggled by
-                   syncPointsUI. With one copy the banner kept promising
-                   "لديك 100 نقطة" AFTER the points were spent — the state
-                   changed under it and the words did not (Ahmed,
-                   2026-07-22). -->
-              <span class="font-semibold text-[#062A1C] text-sm leading-6" data-points-idle>
-                لديك <span class="latin">{points}</span> نقطة في محفظتك<br />ويمكنك خصم <span class="latin">EGP {discount}</span>
+              <!-- The two states are STACKED in one grid cell, not shown and
+                   hidden in flow, and they swap on `invisible` rather than on
+                   the `hidden` attribute. Both therefore always occupy
+                   layout, so the banner is permanently as tall as its tallest
+                   state and does not resize when the button is pressed.
+
+                   That matters more than it sounds. In the 380px summary
+                   column this message wraps hard, and the idle copy is a line
+                   longer than the used copy — measured, the banner collapsed
+                   from 230px to 130px on press, jumping the entire order
+                   summary up 100px under the shopper's cursor. A min-height
+                   cannot fix that, because the height that needs reserving
+                   depends on where the text happens to wrap at that width.
+
+                   `visibility: hidden` also keeps the inactive copy out of
+                   the accessibility tree, so nothing reads both. -->
+              <span class="grid items-center" data-points-msg>
+                <!-- Two copies of the message, one per state, toggled by
+                     syncPointsUI. With one copy the banner kept promising
+                     "لديك 100 نقطة" AFTER the points were spent — the state
+                     changed under it and the words did not (Ahmed,
+                     2026-07-22). -->
+                <span class="col-start-1 row-start-1 font-semibold text-[#062A1C] text-sm leading-6" data-points-idle>
+                  لديك <span class="latin">{points}</span> نقطة في محفظتك<br />ويمكنك خصم <span class="latin">EGP {discount}</span>
+                </span>
+                <!-- One clause, not two. This used to end "وتم خصم EGP 100 من
+                     الإجمالي", which is word for word what the خصم النقاط row
+                     in the summary directly below already says — the same fact
+                     stated twice, two elements apart (Ahmed, 2026-07-22). The
+                     summary row is the one that stays: it is load-bearing
+                     arithmetic, the line that makes subtotal + delivery -
+                     discount reconcile to الإجمالي. What is left here is the
+                     only thing the summary does NOT say, which is what became
+                     of the wallet. -->
+                <span class="col-start-1 row-start-1 font-semibold text-[#062A1C] text-sm leading-6 invisible" data-points-used>
+                  استخدمت <span class="latin">{points}</span> نقطة من محفظتك
+                </span>
               </span>
-              <span class="font-semibold text-[#062A1C] text-sm leading-6" data-points-used hidden>
-                استخدمت <span class="latin">{points}</span> نقطة من محفظتك<br />وتم خصم <span class="latin">EGP {discount}</span> من الإجمالي
-              </span>
-              <button type="button" data-points-apply class="bg-cta hover:bg-cta-hover px-4 py-2 rounded-full font-semibold text-white text-xs whitespace-nowrap transition-colors">خصم المبلغ</button>
+              <!-- Tier is state-driven, off the same aria-pressed syncPointsUI
+                   already sets — applying is the primary action, taking the
+                   discount back is not, and a destructive-ish undo painted in
+                   full CTA green competes with اتمام الشراء further down the
+                   page. `.points-apply` in styles.css carries both tiers; the
+                   pressed selector is (0,2,0) so it outranks the bg-cta and
+                   text-white utilities here. -->
+              <button type="button" data-points-apply aria-pressed="false" class="points-apply bg-cta hover:bg-cta-hover px-4 py-2 rounded-full font-semibold text-white text-xs whitespace-nowrap transition-colors">خصم المبلغ</button>
             </div>"""
 
 
@@ -1159,6 +1210,12 @@ def page(title_text, description, body, page_id, path, main_class="overflow-x-hi
     <link rel="stylesheet" href="tailwind.css" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.webp" />
+    <!-- The English dictionary, generated by build/i18n.py. Also `defer`, and
+         listed FIRST: deferred scripts run in document order, so this has
+         always defined window.ABUAUF_I18N by the time scripts.js boots and
+         merges it. A plain script rather than a fetch, so the language switch
+         still works from file://. -->
+    <script defer src="i18n-en.js"></script>
     <script defer src="scripts.js"></script>
   </head>
   <body data-page="{e(page_id)}" data-path="{e(path)}" class="antialiased bg-white">

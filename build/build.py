@@ -141,6 +141,17 @@ def main(only=None):
             print(f"unknown page(s): {', '.join(sorted(unknown))}")
             return 1
 
+    # The English dictionary, BEFORE the pages: every page links i18n-en.js, so
+    # generating it first means check_assets() below is validating a file that
+    # actually exists on this run rather than one left over from the last.
+    # Regenerated unconditionally, for the same reason the Tailwind build is —
+    # a dictionary that can go stale against the markup is a dictionary that
+    # silently stops translating the strings you just changed.
+    import i18n
+    i18n_text, i18n_tpl, i18n_bytes = i18n.write()
+    print(f"  {'i18n-en.js':<28} {i18n_bytes:>8,} bytes   "
+          f"{i18n_text} text, {i18n_tpl} templates")
+
     total_missing = 0
     extra_pages = 0
     for name in targets:
