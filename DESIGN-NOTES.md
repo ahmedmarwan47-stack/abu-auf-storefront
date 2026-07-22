@@ -34,14 +34,44 @@ distinguishes branch type or delivery availability.
 
 **Needs:** the client to populate the CMS.
 
-### Product compare-at price — `product.html`
+### Two gift baskets are indistinguishable in Arabic
 
-The Figma shows a struck-through original beside a discounted price.
-`catalog.json` carries one price per product with no compare-at field. Showing a
-fake "was" price is fabricating a discount.
+Three products came out of the scrape with damaged names. `catalog.py` now
+repairs what it can on load — `html.unescape` for the English side, which was
+shipping literal `&#8220;` to the page in English mode, and stripping the
+stray backslashes on the Arabic side:
 
-**Needs:** real sale prices in the catalogue, or sign-off on the single-price
-treatment.
+| id | Arabic (was) | English |
+|---|---|---|
+| 1269 | `سلة هدايا \\` | Gift Basket "Small" |
+| 1270 | `سلة هدايا \\` | Gift Basket "Medium" |
+| 10549 | `لب سورى مقشر \\` | Raw Sunflower Seeds "Raw" – 450 g |
+
+The backslashes are all that survived of a quoted size suffix in the
+storefront's flight payload. So **1269 and 1270 are now both plain
+`سلة هدايا`** — same name, same page title, adjacent in the shop grid, with
+nothing to tell them apart but the price.
+
+The English says Small and Medium. Writing `صغيرة`/`وسط` into the Arabic would
+be **authoring product names for the client**, which is the line this project
+does not cross — same rule as the branch phone numbers. Left identical and
+flagged.
+
+**Needs:** the client to confirm the real Arabic names, or a re-scrape that
+recovers the suffix.
+
+### ~~Product compare-at price~~ — RESOLVED, and the struck prices are real
+
+This entry used to read "`catalog.json` carries one price per product with no
+compare-at field". **That is out of date** — re-checked 2026-07-22. The
+catalogue now carries `regular`, `sale` and `onSale` straight from the Store
+API, and exactly **6 of 99** products are genuinely discounted (`regular` and
+`price` differ on those 6 and no others).
+
+So the struck-through `EGP 325 → EGP 250` on the listing grid is the client's
+own pricing, not a fabricated discount, and a product loses the treatment the
+moment the client's sale ends. Left here rather than deleted because the old
+wording would otherwise lead a reader to assume the opposite.
 
 ### Sub-category filtering — `shop-category.html`
 
@@ -61,9 +91,14 @@ products each. Wiring them would empty the grid on four of seven taps.
 | `وصل حديثاً` | sorts by product **id** descending. Ids rise over time so it approximates recency, but there is **no publish date** in the catalogue |
 | `الأكثر مبيعاً` | **does nothing** — restores catalogue order. There is no sales data anywhere in the scrape |
 
-The `الاكثر مبيعا` rail in the products mega-panel is four real catalogue items,
-hard-coded, for the same reason — plus `scripts.js` has no runtime access to
-`catalog.json` by design.
+The `الاكثر مبيعا` rail in the products mega-panel is four real catalogue
+items, hard-coded, for the same reason.
+
+It used to be hard-coded *also* because `scripts.js` had no runtime access to
+`catalog.json`. That is no longer true — site search fetches it (§3) — so the
+rail **could** now be driven by real `popularityRank`, which every product
+already carries. Worth doing; it was left alone in the search pass to keep
+that change reviewable on its own.
 
 **Needs:** `date_created` and a sales/popularity figure in the scrape.
 
@@ -90,6 +125,118 @@ this by wiring the endpoint.
 
 **Needs:** the client to collect real reviews, or sign-off on dropping the
 section.
+
+Confirmed again from the Store API while building the product page's social
+proof: every product returns `average_rating: "0"` and `review_count: 0`. The
+`4.8 (126 تقييم)` on `product.html` is therefore still invented placeholder —
+it is the one number in that header block that is not real.
+
+### The points discount works, but the points are still fiction
+
+The "خصم المبلغ" banner on cart and checkout now genuinely applies its
+EGP 100 to the totals (Ahmed pressed it and nothing happened, 2026-07-22).
+scripts.js stores it under `abuauf:pointsDiscount`, renders a "خصم النقاط"
+row in the cart summary, the drawer, and checkout, caps it at the order's own
+worth, and a second press cancels it. What remains demo: the 100-point
+balance itself — no wallet endpoint exists — and the discount is applied
+client-side only. Both need the client's loyalty system to become real.
+
+**Needs:** a wallet/loyalty endpoint, and the real points-to-EGP rate.
+
+### Social proof — the rank is real, an absolute sold-count is not
+
+The product page shows a best-seller badge and a "ضمن أفضل 10 مبيعاً" line.
+Both are driven by `popularityRank` in `catalog.json`, written by
+`build/fetch_popularity.py`, which walks the Store API's `orderby=popularity`
+— WooCommerce's own total-sales ordering — across the client's whole
+653-product store. So the badge is earned: a product carries it only while the
+client's real sales put it in the top 20, and silently loses it otherwise.
+
+The reference design Ahmed supplied reads **"500+ sold this week"**, and that
+specific number could not be sourced. No public endpoint exposes absolute sales
+volume, let alone windowed to a week. Rather than fabricate a figure — the
+exact failure mode the invented rating above is already flagged for — the page
+states the rank, which is true, checkable and carries the same "other people
+are buying this" push.
+
+**Needs:** if the client wants a literal unit count, they need to expose a
+sales feed. `sold_proof()` in `components.py` is the single place to change.
+
+### Every product now has its own page — and what that multiplied
+
+`build_many()` in `build/pages/product.py` generates `product-<id>.html` for
+all 99 catalogue products (Ahmed reported every card opening the same coffee
+page). Card links in `components.py` and the mega-panel featured tiles carry
+the id; `product.html` remains as the hero's page so nothing that linked to it
+breaks. Per-page content is only what we genuinely have per product:
+
+- **Description and the "الفوائد" accordion are the client's own Arabic**,
+  fetched by `build/fetch_descriptions.py` from the storefront's flight
+  payload (`descAr` / `descHtmlAr` in `catalog.json`). 97 of 99 products have
+  it; **`maamoul-offer-2-chocolate-1-cinnamon-1-plain` (62393) and
+  `cranberry-25-gm` (1631) have none** — the client never wrote any — and
+  render without a description rather than with invented prose.
+- **The reassurance strip is on every page** — product benefits on the hero,
+  the `SERVICE_ITEMS` service trio on the other 98 (see the strip's own
+  section below). Initially hero-only; Ahmed asked for the layout to be
+  uniform across products the same day.
+- **The bundle block builds from the product's own category** and is dropped
+  below two companions.
+- **The placeholder `4.8 (126 تقييم)` rating is now on 99 pages, not one.**
+  Same status as above — the review endpoint returns zeros for everything —
+  but the exposure is multiplied; if the client won't collect reviews, the
+  block is now worth dropping site-wide in one edit.
+- **The recipes section is identical on all 99 pages** under the heading
+  "وصفات بالمنتج", which claims a product affinity the two recipes don't have
+  (they are the site's only two recipe cards). Kept for layout parity; needs
+  either per-category recipes from the client or a neutral heading.
+
+**Needs:** client copy for the two products above; a decision on the rating
+block; sign-off on the recipes heading.
+
+### Product gallery photography — real, but 26 products still have one photo
+
+`fetch_galleries.py` pulled **296 genuine extra photographs** off the client's
+own CDN, giving 73 of our 99 products a real multi-shot gallery: the product on
+coloured sweeps, opened, styled with its ingredients. This is the client's own
+photography, not stock and not invented.
+
+The remaining **26 products have exactly one photograph**, and no amount of
+scraping will change that — their API image lists contain the same shot twice,
+at 600px and 1400px. `product_gallery()` suppresses the thumbnail strip
+entirely at one image, so those products degrade to the single-image layout
+rather than showing a one-item carousel.
+
+**Needs:** the client to shoot the missing 26. Once uploaded, a re-run of
+`python3 build/fetch_galleries.py` picks them up with no code change.
+
+Gallery shots are painted `cover`, filling the plate edge to edge; the main
+shot is painted `contain` inside the plate's padding. That is not a style
+preference — the main image is a background-isolated cut-out with no backdrop
+of its own and needs the plate's colour around it, while the gallery shots are
+finished photographs. Containing a photograph strands it in a letterboxed ring
+of `#EDEFEB`, which is what Ahmed flagged as the "weird appearance". The plate
+carries a **fixed height** with border-box padding so the two modes swap
+without the column resizing, and the `/gallery/` path segment is what tells
+them apart.
+
+### Size chips are real SKUs, and there are no product variations
+
+Worth knowing before anyone tries to "finish" the variant selector: **Abu Auf
+do not model size as a WooCommerce variation.** Every product returns
+`type: "simple"`, `variations: []`, `attributes: []`, `weight: ""`. Each size
+is its own product, with the weight in the name.
+
+So the chips are recovered by grouping the store on the de-suffixed name
+(`fetch_sizes.py`), and each chip carries that SKU's real price *and its real
+product id* — selecting 200 جم repoints `data-price` **and** `data-id`, so the
+cart adds the SKU actually chosen. Getting only the price right would put the
+wrong item in the basket at the right price, which is worse than doing nothing.
+
+Two caveats baked into the scraper: grouping is by name because that is the
+only signal available, and where two live SKUs share a size at different prices
+the cheaper wins, on the grounds that showing the higher of two prices for the
+identical thing is the worse failure.
 
 ### Rewards body copy — the client's own page is lorem ipsum
 
@@ -182,6 +329,176 @@ standing accessibility deviation.
 ---
 
 ## 3. Deliberate deviations from the Figma
+
+### The scroll reveal is site-wide, and carries a failsafe
+
+Ahmed asked for an entrance animation across the whole site (2026-07-22). The
+`[data-reveal]` system already existed but had been hand-applied to home,
+product and the auth layout only — 14 elements — so most of the site scrolled
+dead. It is now injected centrally by `_with_reveal()` in `components.py` onto
+every `<section>` of every page, which keeps it one decision rather than 37.
+
+Two properties worth preserving:
+
+- **Above-the-fold sections are never animated.** The observer marks anything
+  already in the viewport as revealed without transitioning it, so arriving on
+  a page does not trigger a wave of fades. Only content you scroll to moves.
+- **A 2.5s failsafe reveals anything still pending.** This is not belt-and-
+  braces paranoia: `IntersectionObserver` genuinely does not fire in a hidden
+  or backgrounded document — verified here, where even a default-config
+  control observer stayed silent and the affected sections rendered visibly
+  washed out. Before the reveal went site-wide the cost of that was one home
+  rail; now it would be most of every page. The failsafe holds the system's
+  founding rule — degrade to *unanimated*, never to *invisible*.
+
+The sweep must force-reveal before measuring or it reads the whole page at
+opacity 0. `HANDOFF.md` §5 does this; do not drop that line.
+
+### Search reads `catalog.json` at runtime — the one place that does
+
+Everywhere else the catalogue is baked in at build time on purpose, and
+`scripts.js` deliberately had no runtime access to it. Search cannot work that
+way: it has to reach products that are not on the current page. So the modal
+`fetch`es `data/catalog.json` once, lazily, on first open, and caches it.
+
+Two consequences, both accepted:
+
+- **Search needs HTTP.** It cannot work from `file://`, unlike the category
+  chips, which filter cards already in the DOM specifically so they would.
+  Everything else on the page still works from `file://`; only search degrades,
+  and it degrades to a message rather than a spinner that never resolves.
+- **Arabic is folded before matching.** The catalogue writes `قهوة` with a
+  `ة` and shoppers type `ه`; `ى`/`ي` and `أ إ آ`/`ا` are used
+  interchangeably; tashkeel is never typed. Without folding, `قهوه` returned
+  nothing while `قهوة` returned six, which reads as a broken search rather
+  than a spelling difference.
+
+The five idle chips are no longer labelled `الأكثر بحثاً`. There is no search
+analytics behind this build, so calling them the most-searched was inventing
+data — and the old terms (`قهوة تركي`, `بوكس هدايا`) matched **zero**
+catalogue products, so every chip was a guaranteed empty result. They are now
+`اقتراحات البحث`, counted off the real product names at 5–7 hits each.
+
+### Checkout's CTA is still a link, so its `required` fields never fire
+
+The checkout form has `required` on 12 fields and native validation enabled,
+but the primary CTA is an `<a href="thank-you.html">` sitting inside the form
+rather than a submit button — so the browser never validates and an order can
+be placed with every field empty. The summary and the empty-basket guard were
+fixed in this pass; **this was left alone at Ahmed's direction** (2026-07-22),
+as converting it to a real submit is a flow decision, not a markup fix.
+
+**Needs:** a decision on whether checkout should validate client-side before
+advancing, and what "advancing" means without a backend.
+
+### `SITE_ORIGIN` is empty, so canonical and `og:url` are not emitted
+
+`components.py` gates the three absolute-URL tags behind `SITE_ORIGIN`, which
+is deliberately blank. This build is not deployed, and `abuauf.com` is the
+client's *existing* live site — pointing canonical at it would tell search
+engines these pages are duplicates of someone else's. The relative tags
+(og:title, og:description, og:type, og:site_name, og:locale, twitter:card,
+theme-color) ship on all 130 pages regardless.
+
+**Needs:** the production host, set once, before launch.
+
+### Hero banners are taller than the artwork, so the sides are cropped
+
+Requested by Ahmed: more height on the home hero. The banners are supplied at
+exactly 1440×440 (desktop) and 505×680 (mobile), so height can only come from
+cropping — the slide box is now `md:aspect-[1440/470]` / `aspect-[505/728]`
+with `object-cover`, about +7%.
+
+**How far this can go is set by one banner.** `UAE-Abuauf-desktop-Ar.webp`
+carries the أبو عوف wordmark hard against the trailing edge, its ® at roughly
+96% of the width. At 1440/470 the crop is 46px a side and the ® survives with
+about 8px to spare; past that the mark starts losing its registered symbol.
+Verified by rendering the crop, not by eye. **Re-check this if a banner is
+swapped**, and ask the client for taller artwork if more height is wanted —
+that is the honest fix.
+
+### Rating marks are stars (Ahmed, 2026-07-22), and 4.8 draws as 4.8
+
+Two things were wrong with the rating: five identical full marks sat next to
+the text "4.8", contradicting it, and the marks were spaced far enough apart to
+read as five separate objects rather than one score.
+
+The fifth mark is now filled to the exact fraction (80% for 4.8) by layering
+one glyph over another and clipping by width, so the empty and full states are
+guaranteed the same shape. The clip uses `inset-inline-start`, so it fills from
+the right in RTL.
+
+**The marks are stars.** They shipped as the brand heart, flagged here as a
+brand decision to be asked about — Ahmed answered on 2026-07-22: stars. The
+deciding observation stands on its own: on the product page the heart row sat
+one gesture away from the card's *favourites* heart, so a rating read as a
+save-count. The heart now means favourites and nothing else; `rating()` is
+shared, so the swap is site-wide by construction.
+
+The unfilled remainder is `#E4D9B4`, about 1.9:1 on white. That is deliberate
+and not a contrast failure: it is a decorative shape, the row carries
+`role="img"` with the score as its label, and the numeric value is printed
+beside it in full-contrast text.
+
+### The product page's worked example is no longer the Figma's product
+
+The Figma hero is a chocolate-dates product and the page used to render
+`معمول بعجوه المجدول مغطى بالشيكولاته` to match it. That product has exactly
+one photograph on the client's CMS, so it could not demonstrate the gallery
+Ahmed asked for.
+
+It then became `قهوة بن برازيلى سادة فاتح - 100 جم`, and the reason is worth
+recording because it is a genuine trade rather than a preference.
+
+Ahmed asked for the weight chips to move the price. Only **10 of our 99
+products are sold in more than one size at all**, and the dates product is not
+one of them — it is a single 300 جم SKU, so on that page the chips could only
+ever have been theatre. The coffee is the one product that makes *every*
+signal on the page real at once:
+
+| Signal | Coffee (current) | Dates (previous) |
+|---|---|---|
+| Real size SKUs | **3** — 50/100/200 جم at 69/82.5/220 | 1 |
+| Real gallery photos | 3 | 9 |
+| Popularity rank | **#12** — badge earned | #7 |
+
+The cost is a thinner gallery, 3 shots instead of 9. That was judged the
+smaller loss: the gallery still works and still shows real photography, whereas
+size-to-price cannot be shown at all without a multi-size product.
+
+`_hero()` falls through a list of names in order, so **both previous picks are
+still in it** — move a name to the front to switch the page back. If you do,
+note that `DESCRIPTION`, `BENEFITS`, `STORAGE` and `BENEFIT_ITEMS` in that file
+all describe the coffee and would need rewriting; the breadcrumb category is
+already read off the product and needs nothing.
+
+### The product page's reassurance strip: benefits on the hero, services elsewhere
+
+The three icons under the CTA mirror the reference design's "100% vegan /
+60-day guarantee / 3rd-party tested" row. **None of those specific claims are
+made about Abu Auf's products by anyone**, so none of them are used. On the
+hero the row carries the product's own benefits — light roast, Brazilian
+beans, smooth taste — a translation of the client's own English `shortDesc`
+for that SKU plus what the product name states.
+
+It first shipped carrying delivery/returns/branch-pickup instead; Ahmed asked
+for product benefits, matching the reference. The delivery line still exists on
+the page, in its own strip below.
+
+When every product got its own page (2026-07-22), Ahmed asked for the layout
+to be uniform across all 99 — so the other 98 pages carry the strip too, with
+`SERVICE_ITEMS` in `product.py`: two-hour delivery (restates the row lower on
+the same page), 14-day returns (restates return-policy.html), and the branch
+count (computed from `branches.json`, never typed). Per-product benefit trios
+for 98 products would have been mass invention; service restatements are the
+exact use `trust_row()`'s contract describes. The three service strings are
+in-house Arabic, unsigned like the rest.
+
+Still unsigned-off, like every translated string in this build. The line worth
+holding is the distinction that decided the copy: *"light roast"* restates the
+client's own product name, whereas *"third-party tested"* is an auditable claim
+about a supply chain. Restate; never invent. `trust_row()` takes its items as
+an argument, so a signed-off claim drops straight in.
 
 ### Contrast — sanctioned by Ahmed
 
@@ -380,6 +697,7 @@ exempts, but several are discrete controls that are not exempt:
 | `حذف` remove | **24 wide** (44 tall) | every cart line |
 | `خصم المبلغ` apply promo | 89×**34** | cart page |
 | `أضف` | 76×**36** | cart page |
+| Card stepper `−` / `+` | 44×44, except **40.7×44** | `shop.html` at 320 only, and only at a 2-digit quantity |
 
 Left as-is deliberately: enlarging the stepper to 44px pushes the row back over
 its 320px budget (44+16+44+8+16+2 = 130, plus `حذف` and the gap = 162 against
@@ -387,6 +705,24 @@ its 320px budget (44+16+44+8+16+2 = 130, plus `حذف` and the gap = 162 against
 not a size tweak. **Flagged rather than silently redesigned.** Re-audit the
 whole site's tap targets before trusting the "≥44px, audited and passing"
 claim elsewhere.
+
+The product-card stepper is the one case that was sized deliberately against
+this budget rather than inheriting it. It holds a full 44×44 everywhere except
+`shop.html` at exactly 320px with a two-digit quantity, where the card is
+128.5px wide — 96.5px of content — and 44 + 16 + 44 = 104 does not fit. The
+buttons absorb the 7px rather than the row overflowing, landing at 40.7px. The
+alternatives were all worse: a hard 104px floor overflowed the card, and an
+88px floor left the control wedged beside the heart at 414 and squeezed the
+taps to 38px. See the `basis` note in §8.
+
+### Cart-line quantity clips past two digits — pre-existing, found in passing
+
+`[data-line-qty-num]` in the cart drawer is a fixed `w-4` (16px). Measured: `1`
+and `10` fit, `99` is 1px over, `123` is 7px over and visibly clipped. Not
+touched, because widening it puts the row back over the 320px budget described
+above — the same layout decision that is already blocking the stepper resize.
+Only reachable at a quantity of 100+, which takes a hundred taps to reach from
+the UI.
 
 ---
 
@@ -432,6 +768,34 @@ below `lg` to a single max-content column — this hit the account shell, cart,
 thank-you and the product FBT block. Grep for both patterns when adding a
 two-column layout.
 
+### `min-width` sizes a flex item; `flex-basis` also breaks the line
+
+Building the product-card stepper burned three rebuild-and-sweep rounds on
+this. Two different jobs get confused:
+
+- **When does the control drop to its own line?** That is decided by the item's
+  **flex base size**. `min-width` does not participate.
+- **How small may it get once it is there?** That is `min-width`.
+
+Using `min-width` for both is a trap with no good value. At `min-w-[104px]`
+(the comfortable size) the control could not shrink into the 96.5px card on
+`shop.html` at 320, so the row overflowed by 6px. At `min-w-[88px]` it fit, but
+it also still *fit beside the heart* at 414, so it never wrapped and the taps
+were squeezed to 38px. `grow shrink basis-[104px]` gets both: 104 decides the
+wrap, and the control still shrinks to 96.5 once it is alone.
+
+Two riders, both of which bit:
+
+- **Do not write `flex-1 basis-[104px]`.** Tailwind emits the `flex` shorthand
+  *after* `basis`, so `flex: 1 1 0%` silently resets the basis to 0 and the
+  wrap never happens. Use the longhands, `grow shrink basis-[…]`. Same family
+  of bug as the `relative`/`fixed` emit-order trap in CLAUDE.md.
+- **A nested flex container needs its own `min-w-0`.** The stepper is itself a
+  flex row, so its automatic minimum resolved to its own min-content (103px)
+  and it refused to shrink to the 97px row *even though its children could
+  shrink*. Measured: buttons at 44 each, `flex-shrink: 1`, `min-width: 36px`,
+  and still a 6px overflow. `min-w-0` on the container is what released it.
+
 ### Figma exports can be pre-transformed
 
 The logo exports upside-down and stretched: its wrapper carries
@@ -446,12 +810,21 @@ near-square so distortion there is under 0.01%.
 The first mark is **Etisalat Cash**, not Meeza, and ships as white artwork on an
 opaque black plate — it must not be placed on a white chip.
 
-### Verify on a fresh port, and trust screenshots over computed styles
+### Serve with no-store, and trust screenshots over computed styles
 
 `python3 -m http.server` sends no cache headers and browsers hold `scripts.js`
 and `styles.css` hard. **Two separate "this is still wrong" reports in this
-project were a stale port, not a bug.** Bump the port every time, and confirm
-what the server is rooted at.
+project were a stale asset, not a bug.**
+
+The original remedy was to bump the port on every check. That worked, but it
+made the dev URL a moving target — open tabs, bookmarks and anything mid-typed
+pointed at a dead port, and Ahmed asked for it to stop. It was a symptom fix:
+the problem was never the port, it was the missing headers.
+
+`build/serve.py` sends `Cache-Control: no-store` and serves on **8000, fixed**.
+A plain refresh is then always current, verified by editing `styles.css` and
+reloading the same URL with no cache-buster. It also refuses to fall back to a
+different port on its own — silently moving is the behaviour it exists to end.
 
 Separately: `getComputedStyle` read from the top-level document **right after a
 viewport resize returned stale values** — a no-media `!important` rule appeared
@@ -467,9 +840,187 @@ focus, which makes row-level micro-interactions impossible. Don't "simplify" it.
 One consequence: `remove()` detaches the node in the same render, so exit
 animations should animate first and call `remove()` on completion.
 
+### A CSS comment block was silently eating the rule after it
+
+Found while adding the ghost styles. The scroll-reveal comment in `styles.css`
+closed with `*/`, then carried four more lines of prose, then closed *again*.
+Everything after the first `*/` parsed as a selector, and CSS error recovery
+swallows a bad qualified rule **up to and including the next `{ }` block** — so
+`.js-reveal [data-reveal] { opacity: 0 }`, the rule immediately following, was
+being discarded. The reveals were running as a no-op fade-in from full opacity.
+Fixed. Worth remembering that a broken comment does not fail loudly in CSS; it
+quietly deletes its neighbour.
+
+### A "selected" state must not be painted like a "hover" state
+
+**Reported four times, across two different components.** Now a hard rule in
+CLAUDE.md.
+
+*The mega-menu column.* It marks the chosen category, and pointing at a
+category is also what chooses it. With selection expressed as a **filled**
+background (`#EDEFEB`), the fill stayed behind after the pointer left — so the
+column permanently had one row that looked hovered, including the instant the
+panel opened and nothing had been touched. An earlier pass tried making hover
+and selected *different* fills, which did not help: the problem was never that
+they matched, it was that selection was painted in the one visual language a
+pointer owns. Now a wash means only "the pointer is here, right now", and
+selection is the leading brand bar, the ink colour and the arrow.
+
+*The primary nav underline.* Same bug, and it survived two rounds of me
+measuring the wrong thing. Both earlier investigations found every underline at
+`scaleX(0)` and concluded the navbar was fine — but they were run on the home
+page, where **no category is current**. On a category page one tab carries a
+solid `#DCC498` bar permanently, and it was drawn *pixel-identically* to the
+hover bar. Nothing was stuck; "you are here" was simply written in the
+pointer's handwriting.
+
+Current is now a solid full-width brand bar; hover is a **thinner, half-opacity
+white** bar. Neither can be mistaken for the other, and hovering the current
+tab keeps the current treatment.
+
+**Two lessons for whoever hits this next.** Reproduce a state-dependent bug on
+a page where the state actually exists — a nav "active" bug is invisible on a
+page with no active item. And when measuring hover states through the browser
+pane, **park the pointer somewhere neutral first**: an automation cursor left
+sitting over the nav reported a phantom stuck underline on a tab that was
+simply under the mouse.
+
+### Don't reach for `requestAnimationFrame` to kick off a transition
+
+The standard "next frame" trick for starting a CSS transition does not fire in
+a backgrounded tab, so the pick-up stage of the add-to-cart flight was skipped
+entirely there — and worse, the class could land *after* the throw had already
+removed it. `void el.offsetWidth` forces the style flush synchronously and has
+no such dependency. This is also why the browser pane is a poor place to verify
+mid-animation state: it reports `visibilityState: "hidden"`, so transitions are
+registered but never tick.
+
 ---
 
 ## 9. Resolved
+
+### Full-site UX pass, 2026-07-22
+
+A scenario sweep over all 130 pages and every interactive flow. What it found
+and what changed:
+
+- **The checkout summary was static and contradicted the cart.** Its line
+  items and totals were baked at build time, so a basket worth EGP 60 was
+  checked out against a printed **EGP 322.50** beside two products the shopper
+  had never added — while the cart drawer *on the same page* showed the right
+  figure. It now carries the cart page's own hooks (`data-cart-lines`,
+  `data-cart-subtotal`, `data-cart-total`, `data-cart-discount-row`), so
+  `renderCart` owns every figure on both pages. `syncPointsUI`'s parallel
+  `data-base-total` mechanism is gone with it — there was one renderer to keep
+  correct instead of two to keep agreeing. Verified: cart and checkout now
+  print the same subtotal and total for the same basket.
+
+  **Deviation this introduces, flagged rather than silently taken:** reusing
+  the cart's `cartLineHTML` means the checkout summary rows now carry a
+  `−/n/+` stepper and `حذف`, where the Figma summary is read-only. Editing
+  quantities at checkout is a common pattern and it is what makes a second
+  renderer unnecessary — but it *is* a design change, and the alternative
+  (a dedicated read-only checkout renderer) is exactly the duplicate-source
+  problem that produced the EGP 322.50 in the first place. Designer's call.
+- **Checkout let an empty basket through.** The cart page had disabled its CTA
+  on an empty or below-minimum basket since the minimum-order work; checkout
+  never got the same guard, so empty → checkout → thank-you was reachable. The
+  CTA now carries `data-cart-checkout` and is gated by the same code path.
+- **Site search did nothing at all.** The masthead magnifier opened a modal
+  whose input only took focus — no handler, no results, no empty state — and
+  whose five "الأكثر بحثاً" chips were all links to the same category page.
+  Now a real client-side search (see §3 for the two deviations it introduces).
+- **"أضف الجميع الى السلة" was a dead button.** The frequently-bought-together
+  block's rows carried no product data, so `productFrom()` found no
+  `[data-product]` host and the handler returned silently — the *same* defect
+  the upsell rail had already been fixed for. Rows are now `[data-product]`
+  hosts, the button has its own `data-bundle-add` handler (it adds several
+  products, so it could never have gone through the single-product one), and
+  the total answers the checkboxes instead of quoting a price for something
+  you just declined. Verified: what the total promises is exactly what lands.
+- **113 pages carried an empty `<h1></h1>`.** `page_header("")` is called by
+  product, blog, account and auth pages, which title themselves further down.
+  It emitted the heading anyway, so those pages had two h1s, the first silent.
+  Now emitted only when there is a heading.
+- **The home page had no `<h1>` at all** — its outline started at h2, because
+  the hero is banner artwork. Given an `sr-only` h1.
+- **Eleven pages skipped h1 → h3.** Account cards became h2 (they are the
+  page's top-level sections); the listing grids, blog list and branch panels
+  got `sr-only` h2s. The branch one doubles as the governorate name, which the
+  tab button alone was not exposing to heading navigation.
+- **No page had a skip link**, past a three-band header with a mega-menu.
+- **Carousel dots failed WCAG 2.2 AA (2.5.8).** 10×10 controls with 8px gaps —
+  centres 18px apart, so they failed both the 24px floor and the spacing
+  exception that would otherwise excuse them. They now carry a transparent
+  24×44 hit area (a `::before` overlay, not padding, which would have pushed
+  the dots down). The `gap-2` utility had to come *off the markup* — it ties
+  with `.carousel-dots` on specificity and won on emit order, the trap already
+  documented in `CLAUDE.md`.
+
+  **The gap and the dot size are one decision, not two.** What 2.5.8 actually
+  constrains is the *centre-to-centre* distance: `dot width + gap >= 24`. That
+  budget was first paid entirely out of the gap (10px dot, 14px gap) and read
+  far too airy — Ahmed pushed back on exactly that. It is now paid out of the
+  dot instead: **14px dot, 10px gap**, same 24px centres, same compliance, and
+  a gap back near the original 8px feel. Do not tighten the gap again without
+  widening the dot by the same amount. Verified by hit-testing rather than by
+  computed style: 11px off-centre still hits (the 24px band), 20px above and
+  below still hits (the 44px band), and 18px off-centre lands on the
+  neighbouring dot — adjacent, with neither a dead zone nor an overlap.
+- **Three controls had no focus indicator.** The global ring is on a
+  `:where(...)` selector — zero specificity by design — so Tailwind's
+  `outline-none` (0,1,0) beat it on the search box, the footer newsletter
+  input and the listing sort select. Re-armed on selectors that outrank a
+  single utility class. Any new `outline-none` needs the same treatment.
+- **The password reveal was a 20×20 target**; now 44×44 around the same glyph.
+- **No form field on the site had `autocomplete`.** A browser or password
+  manager could not fill one box of the ten-field checkout. Tokens are now
+  inferred from the field names in `components.py` (the names were already
+  semantic), so a field cannot be added later without one. Register passes
+  `new-password` so a manager offers to generate rather than fill.
+- **No page had Open Graph, theme-color or canonical.** Storefront links get
+  shared on WhatsApp constantly in Egypt and rendered as bare grey URLs.
+  og:/twitter:/theme-color now ship on all 130 pages.
+- **Three product names were damaged by the scrape** — see §1.
+- The cart order-note textarea had a placeholder and no label.
+
+**Empty cart, and a second ungated CTA (Ahmed, 2026-07-22).** The empty cart
+was a bare centred `<p>` reading `سلتك فارغة.` — a dead end with nothing to
+look at and nowhere to go. Rebuilt to the **same shape as the favourites
+empty state** (glyph tile, heading, one supporting line, one CTA) reusing its
+exact `تصفح المنتجات` label, so the build's two empty states read as one idea.
+It renders in three containers now — drawer, cart page, checkout aside — and
+is sized to survive a ~310px column; verified at 0 overflow in all three.
+
+Fixing it surfaced the same defect class as the checkout CTA, on the cart page
+itself: `أطلب الآن` (the big 332×54 primary) chose between a disabled
+`<button>` and a live `<a>` **at build time**, from the seeded catalogue
+subtotal, and then never changed. So it sat fully live over an empty basket
+while the drawer's own smaller CTA beside it was correctly greyed out. The
+shortfall warning had the same problem. Both are now always rendered and
+gated at runtime by `data-cart-checkout` / `data-cart-warning` +
+`data-cart-shortfall`. `MIN_ORDER` left `cart.py` with them — the minimum is a
+runtime rule, so `scripts.js` holds the only copy rather than two that can
+drift. Verified across all three states: empty → both CTAs blocked, warning
+hidden; EGP 72.50 → both blocked, warning shows EGP 77.50 remaining; EGP
+292.50 → both live, warning hidden.
+
+**Not** a regression, though it looked like one twice, and both are traps for
+whoever tests next:
+
+- The **cart badge froze at a stale number** and a `.fly-ghost` stranded in the
+  DOM — reproducible only while the automation pane reports `0×0` and
+  `visibilityState: "hidden"`. In a correctly-sized frame the badge stayed in
+  sync through rapid clicks, off-screen sources and a scroll mid-flight. With
+  `innerHeight === 0` the flight's destination clamp degenerates. Measure
+  interactions inside a **sized iframe**, never the top-level automation pane.
+- The **sweep reported 110 contrast failures** in the injected chrome. The
+  Play CDN does not generate utilities for scripts.js-injected markup inside
+  an offscreen iframe, so `text-white` never applied and every footer link
+  read as dark-on-dark. In the real document it is white on `#062B1C`. The old
+  "0 failures" baseline was 0 partly because the footer had not been injected
+  yet at 140ms. **The sweep can only speak for build-time markup** — scope it
+  to `main` and check the chrome in a real page.
 
 - **Arabic product names — solved.** The WooCommerce Store API only ever returns
   English names (`?lang=ar`, `Accept-Language: ar` and `X-WPML-Language: ar` all

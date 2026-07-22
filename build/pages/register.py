@@ -13,8 +13,8 @@ def build():
               </div>
 {field("البريد الالكتروني", "email", "email", required=True)}
 {field("رقم الهاتف", "phone", "tel", required=True)}
-{password_field()}
-{password_field("تأكيد كلمة السر", "password-confirm")}
+{password_field(autocomplete="new-password")}
+{password_field("تأكيد كلمة السر", "password-confirm", autocomplete="new-password")}
               <label class="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" required class="mt-1 accent-[#163300] w-4 h-4" />
                 <span class="text-neutral-secondary text-sm leading-6">

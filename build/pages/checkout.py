@@ -57,12 +57,17 @@ def build():
         )
     steps_html = "".join(step_parts)
 
+    # data-cart-static: server-rendered so the summary is never blank before
+    # scripts.js boots, and dropped by renderCart on the first paint — the
+    # same contract the cart page's line list uses. Before this, the summary
+    # was baked at build time and never read the store at all, so a basket
+    # worth EGP 60 was checked out against a printed EGP 322.50 and two
+    # products the shopper had never added.
     summary_lines = "".join(f"""
-                <div class="flex items-center gap-3">
+                <div data-cart-static class="flex items-center gap-3">
                   <img src="{e(p['image'])}" alt="" class="bg-interaction-base p-1.5 rounded-lg w-16 h-16 object-contain shrink-0" loading="lazy" />
                   <div class="flex flex-col flex-1 gap-0.5 min-w-0">
                     <span class="font-semibold text-[#062A1C] text-sm line-clamp-2">{e(p.get('nameAr') or p['name'])}</span>
-                    <span class="text-neutral-secondary text-xs">250 جم</span>
                   </div>
                   <span class="font-bold text-[#062A1C] text-sm latin shrink-0">EGP {money(p['price'])}</span>
                 </div>""" for p in items)
@@ -88,7 +93,9 @@ def build():
                 <legend class="mb-3 font-bold text-[#062A1C] text-lg">نوع الطلب</legend>
                 <div class="flex sm:flex-row flex-col gap-4">
 {radio_card("order-type", "normal", "طلب عادي", "", ICON_BAG, checked=True)}
-{radio_card("order-type", "gift", "إهداء الطلب", "", ICON_GIFT)}
+<!-- The subtitle restates the option itself rather than promising a
+     wrapping service nobody at Abu Auf has signed off on. -->
+{radio_card("order-type", "gift", "إهداء الطلب", "أرسل الطلب كهدية لشخص تحبه", ICON_GIFT, accent=True)}
                 </div>
               </fieldset>
 
@@ -151,7 +158,11 @@ def build():
                 </div>
               </fieldset>
 
-              <a href="thank-you.html" class="bg-cta hover:bg-cta-hover py-4 rounded-full w-full font-semibold text-white text-base text-center transition-colors">
+              <!-- data-cart-checkout: renderCart blocks this on an empty or
+                   below-minimum basket, exactly as it already blocked the cart
+                   page's own CTA. Without it checkout was the one place you
+                   could carry an empty basket through to the thank-you page. -->
+              <a href="thank-you.html" data-cart-checkout class="bg-cta hover:bg-cta-hover py-4 rounded-full w-full font-semibold text-white text-base text-center transition-colors">
                 أكمل إلى الدفع
               </a>
             </form>
@@ -163,7 +174,7 @@ def build():
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
               <a href="cart.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">تعديل</a>
             </div>
-            <div class="flex flex-col gap-4">{summary_lines}
+            <div class="flex flex-col gap-4" data-cart-lines>{summary_lines}
             </div>
 {points_banner(100, 100)}
             <button type="button" class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
@@ -176,12 +187,18 @@ def build():
               </div>
               <div class="flex justify-between">
                 <span class="text-neutral-secondary">الإجمالي</span>
-                <span class="font-semibold text-[#062A1C] latin">EGP {money(subtotal)}</span>
+                <span class="font-semibold text-[#062A1C] latin" data-cart-subtotal>EGP {money(subtotal)}</span>
+              </div>
+              <!-- Same hooks as the cart page, so one renderer owns both and
+                   the two pages cannot print different numbers. -->
+              <div class="flex justify-between items-center" data-cart-discount-row hidden>
+                <span class="text-neutral-secondary">خصم النقاط</span>
+                <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
               </div>
             </div>
             <div class="flex justify-between items-center pt-3 border-neutral-divider border-t">
               <span class="font-bold text-[#062A1C] text-base">الإجمالي</span>
-              <span class="font-bold text-[#062A1C] text-2xl latin">EGP {money(total)}</span>
+              <span class="font-bold text-[#062A1C] text-2xl latin" data-cart-total>EGP {money(total)}</span>
             </div>
           </aside>
         </div>

@@ -1,42 +1,119 @@
-"""Product detail — Figma 'Product' (383:33745)."""
-from catalog import PRODUCTS, e, in_category, money, rail_products, title
+"""Product detail — Figma 'Product' (383:33745).
+
+One layout, NINETY-NINE pages. `build()` still writes product.html (the worked
+example below), and `build_many()` writes product-<id>.html for every product
+in the catalogue — before that, every card on the site linked to the same
+single page, so clicking any product opened the coffee. The card links in
+components.py carry the id; the build fails loudly if a page goes missing.
+
+What differs per page is only what we genuinely have per product:
+
+  * name, prices, gallery, sizes, badge, social proof — catalog.json fields,
+    all fetched
+  * description — the client's own Arabic `short_description`
+    (`descAr`, fetched by build/fetch_descriptions.py); omitted when absent
+  * the "الفوائد" accordion — the client's own Arabic `description` HTML
+    (`descHtmlAr`, same scraper), sanitised down to lists and emphasis
+
+The hero keeps its hand-curated copy (translated from the client's English,
+flagged in DESIGN-NOTES); nothing else gets invented prose. A product the
+client never wrote copy for renders without a description rather than with
+ours — same rule as the branch phone numbers.
+"""
+import re
+
+from catalog import BRANCH_COUNT, PRODUCTS, e, in_category, money, rail_products, title
 from components import (
-    ICON, accordion, button, carousel, page, page_header, product_card,
-    product_gallery, qty_stepper, rating, recipe_card, variant_chips,
-    bundle_item, section_heading,
+    ICON, accordion, best_seller_badge, button, carousel, page, page_header,
+    product_card, product_gallery, qty_stepper, rating, recipe_card,
+    size_chips, sold_proof, trust_row, bundle_item, section_heading,
 )
 
 SLUG = "product.html"
 
-# Worked example: a real catalogue item, chosen to match the Figma's
-# chocolate-dates hero.
+
+def product_slug(p):
+    """The output filename for a product's own page — used by components.py
+    for card links, so the two can never drift apart."""
+    return f"product-{p.get('id', 0)}.html"
+
+
+# Worked example, chosen so that EVERY signal on this page is real:
+#
+#   * 3 real size SKUs — 50/100/200 جم at 69/82.5/220 EGP — so the size chips
+#     genuinely move the price instead of miming it. Only 10 of our 99
+#     products are sold in more than one size at all.
+#   * 3 real gallery photographs from the client's CDN.
+#   * Rank #12 of their 653-product store, so the best-seller badge and the
+#     social-proof line are earned rather than asserted.
+#
+# It is coffee rather than the Figma's chocolate dates. That is the trade:
+# the dates product has a richer gallery (9 shots) but is a single-size SKU,
+# so it cannot demonstrate the size-to-price behaviour at all. Ahmed asked for
+# the weight to drive the price, and the only honest way to show that is a
+# product that really is sold by weight. Reorder this list to change it back.
 def _hero():
-    for want in ("معمول بعجوه المجدول مغطى بالشيكولاته",
-                 "تمر مجدول محشو بالمكسرات"):
+    for want in ("قهوة بن برازيلى سادة فاتح",
+                 "تمر صحاري بالشيكولاته و اللوز",
+                 "معمول بعجوه المجدول مغطى بالشيكولاته"):
         for p in PRODUCTS:
             if want in (p.get("nameAr") or ""):
                 return p
     return in_category("Dates & Dried Fruits")[0]
 
 
+# All the descriptive copy below belongs to the hero product above. It used to
+# describe chocolate-stuffed dates, which stopped being true the moment the
+# hero became coffee — a page whose body copy contradicts its own title is
+# worse than one with thin copy.
+#
+# The wording is a translation of the client's OWN English `shortDesc` for this
+# SKU ("Enjoy the delicate, bright flavors of Abu Auf's light-roasted Brazilian
+# coffee... smooth, refreshing brew, perfect for those who appreciate a lighter
+# roast") plus what the product's real name states — light roast, Brazilian
+# beans. So it restates client copy rather than inventing claims.
+#
+# It is still OUR Arabic, and unsigned-off, exactly like every other
+# translated string in this build. Flagged in DESIGN-NOTES. Note what is
+# deliberately absent: no health or nutrition claim, and nothing like the
+# reference design's "third-party tested" / "100% vegan", which are auditable
+# statements about a supply chain that nobody at Abu Auf has made.
 DESCRIPTION = (
-    "تمر مجدول فاخر محشو بالمكسرات ومغطى بطبقة من الشيكولاتة الغنية — تحلية "
-    "طبيعية بدون سكر مضاف، مثالية للضيافة أو كهدية. كل قطعة متغلفة بعناية "
-    "للحفاظ على طزاجتها وقوامها الطري."
+    "استمتع بالنكهات الخفيفة والمشرقة من بن أبو عوف البرازيلي فاتح التحميص. "
+    "مذاق ناعم ومنعش، مثالي لمن يفضلون التحميص الفاتح في فنجانهم اليومي."
 )
+
+BENEFIT_ITEMS = [
+    ("leaf", "تحميص فاتح", "نكهة خفيفة ومشرقة"),
+    ("bolt", "بن برازيلي", "حبوب مختارة بعناية"),
+    ("shield", "مذاق ناعم", "مناسب للتحضير اليومي"),
+]
+
+# The reassurance strip every OTHER product page carries, so the layout is
+# uniform across all 99 (Ahmed, 2026-07-22 — a product opened after the hero
+# looked like a different template). Exactly what trust_row's contract asks
+# for: every claim restates something this site already says elsewhere —
+# the two-hour delivery row lower on this same page, the 14-day window on
+# return-policy.html, and the real branch count from branches.json. The
+# branch number is computed, not typed, so it moves with the data.
+SERVICE_ITEMS = [
+    ("truck", "توصيل خلال ساعتين", "في القاهرة الكبرى"),
+    ("return", "استرجاع خلال 14 يوم", "من تاريخ الاستلام"),
+    ("store", f"+{BRANCH_COUNT} فرعاً في مصر", "في 25 محافظة"),
+]
 
 BENEFITS = """
                       <ul class="flex flex-col gap-2 ps-5 list-disc">
-                        <li>مصدر طبيعي للطاقة والألياف الغذائية</li>
-                        <li>غني بالبوتاسيوم والمغنيسيوم</li>
-                        <li>بدون سكر مضاف أو ألوان صناعية</li>
+                        <li>نكهات خفيفة ومشرقة من التحميص الفاتح</li>
+                        <li>حبوب برازيلية مختارة بعناية</li>
+                        <li>مذاق ناعم ومنعش مناسب للتحضير اليومي</li>
                       </ul>"""
 
 STORAGE = """
                       <ul class="flex flex-col gap-2 ps-5 list-disc">
-                        <li>يحفظ في مكان جاف وبعيد عن أشعة الشمس المباشرة</li>
-                        <li>يفضل الحفظ في الثلاجة بعد الفتح</li>
-                        <li>يستهلك خلال 3 شهور من تاريخ الفتح</li>
+                        <li>يحفظ في عبوة محكمة الغلق بعيداً عن الرطوبة</li>
+                        <li>بعيداً عن أشعة الشمس المباشرة ومصادر الحرارة</li>
+                        <li>يفضل الطحن قبل التحضير مباشرة للحفاظ على النكهة</li>
                       </ul>"""
 
 RECIPES = [
@@ -47,22 +124,121 @@ RECIPES = [
 ]
 
 
-def build():
-    p = _hero()
+# The client's `description` HTML is WordPress output — strong/ul/li plus
+# whatever a content editor once pasted in. Keep only the structural tags the
+# accordion can style and drop every attribute; anything else is stripped to
+# its text. `.desc-rich` in styles.css restores the list treatment the hero's
+# hand-written markup carries inline.
+_ALLOWED_TAGS = {"strong", "b", "em", "ul", "ol", "li", "p", "br"}
+
+
+def _clean_client_html(html):
+    def keep(m):
+        tag = m.group(2).lower()
+        return f"<{m.group(1)}{tag}>" if tag in _ALLOWED_TAGS else ""
+    cleaned = re.sub(r"<(/?)([a-zA-Z0-9]+)[^>]*/?>", keep, html)
+    return f'<div class="desc-rich">{cleaned}</div>'
+
+
+def _render(p):
+    hero = p["id"] == _hero()["id"]
     on_sale = p.get("sale") and p["sale"] < p["regular"]
     old_price = (
         f'<span class="text-neutral-secondary text-xl line-through latin">EGP {money(p["regular"])}</span>'
         if on_sale else ""
     )
 
-    bundle = [x for x in in_category("Dates & Dried Fruits") if x["id"] != p["id"]][:3]
+    # Companions come from the product's OWN category now — the bundle was
+    # hardcoded to dates, which read absurdly under a bag of parmesan popcorn.
+    # Fewer than two companions and the block is dropped: "بضاعة تُشترى معاً"
+    # with one item is a claim the layout itself contradicts.
+    bundle = [x for x in in_category(p["category"]) if x["id"] != p["id"]][:3]
     bundle_total = sum(x["price"] for x in bundle) + p["price"]
 
     similar = [x for x in in_category(p["category"]) if x["id"] != p["id"]][:10]
     more = rail_products("Nuts | Seeds & Crackers", "Coffee & Beverages", limit=10)
 
+    # Description: the hero's curated paragraph, or the client's own Arabic
+    # short_description. No fallback prose — absence is honest, filler is not.
+    desc = DESCRIPTION if hero else (p.get("descAr") or "")
+    desc_html = (
+        f'<p class="text-neutral-800 text-base leading-8">{e(desc)}</p>' if desc else ""
+    )
+
+    # Accordion: hero keeps its two curated sections; everything else shows
+    # the client's own benefits HTML when they wrote one, nothing otherwise.
+    if hero:
+        acc_items = [("الفوائد", BENEFITS), ("طريقة الحفظ", STORAGE)]
+    elif p.get("descHtmlAr"):
+        acc_items = [("الفوائد", _clean_client_html(p["descHtmlAr"]))]
+    else:
+        acc_items = []
+    acc_html = accordion(acc_items) if acc_items else ""
+
+    # Every page carries the strip so the template reads as one template. The
+    # hero keeps its product benefits (client-derived copy); everyone else
+    # gets the site-service trio, whose claims are restatements — see
+    # SERVICE_ITEMS above.
+    trust_html = trust_row(BENEFIT_ITEMS if hero else SERVICE_ITEMS)
+
+    # Rating and social proof share a row, split by a hairline, so the two
+    # signals read as one block of evidence. The rating numbers are still
+    # placeholder (the client's review endpoint returns average_rating "0"
+    # for every product); the proof line beside it is real and renders only
+    # for genuinely top-ranked products. Both flagged in DESIGN-NOTES.
+    proof = sold_proof(p)
+    proof_row = (
+        f'<span aria-hidden="true" class="bg-neutral-divider w-px h-4"></span>\n                {proof}'
+        if proof else ""
+    )
+
+    bundle_section = f"""
+      <!-- ==================== FREQUENTLY BOUGHT TOGETHER ==================== -->
+      <section data-reveal class="py-8">
+        <div class="mx-auto px-4 max-w-[1536px]">
+          <!-- data-bundle-base is THIS product's price: the total covers the
+               product being viewed plus whichever companions are still
+               ticked, so unticking one has to take it back off. -->
+          <!-- data-product as well as data-bundle: productFrom() only reads
+               a [data-product] host, so without it the block described this
+               product but could not contribute it to its own bundle. -->
+          <div class="bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]"
+               data-bundle data-product data-bundle-base="{p['price']}"
+               data-id="{p.get('id', 0)}" data-name="{e(title(p))}"
+               data-price="{p['price']}" data-image="{e(p['image'])}">
+            <h2 class="mb-6 font-bold text-[#062A1C] text-xl xl:text-2xl">عادة ما يتم شراؤه معاً: أضف هذه العناصر</h2>
+            <div class="items-center gap-6 lg:gap-8 grid grid-cols-1 lg:grid-cols-[1fr_auto]">
+              <div class="flex flex-col min-w-0">{"".join(bundle_item(x) for x in bundle)}
+              </div>
+              <div class="flex flex-col items-center gap-3 bg-interaction-base p-6 rounded-xl">
+                <span class="text-neutral-secondary text-sm">الإجمالي</span>
+                <span class="font-bold text-[#062A1C] text-2xl latin" data-bundle-total>EGP {money(bundle_total)}</span>
+                <!-- data-bundle-add, NOT data-add-to-cart: this button adds
+                     several products, so it cannot go through the single
+                     product handler, which is exactly why it silently did
+                     nothing before. -->
+                <button type="button" data-bundle-add class="bg-cta hover:bg-cta-hover px-8 py-3 rounded-full font-semibold text-white text-sm whitespace-nowrap transition-colors">
+                  أضف الجميع الى السلة
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>""" if len(bundle) >= 2 else ""
+
+    similar_section = f"""
+      <!-- ========================= SIMILAR PRODUCTS ========================= -->
+      <section data-reveal class="py-12">
+        <div class="mx-auto px-4 max-w-[1536px]">
+          {section_heading("منتجات مشابهة", "عرض المزيد", "shop-category.html")}
+          {carousel("".join(product_card(x) for x in similar))}
+        </div>
+      </section>""" if similar else ""
+
+    # Breadcrumb category read off the product, not typed in — it said
+    # "التمور والفواكه المجففة" on a coffee page until this was made dynamic.
     body = f"""{page_header("", [("الرئيسية", "index.html"),
-                                 ("التمور والفواكه المجففة", "shop-category.html"),
+                                 (p.get("categoryAr") or "المنتجات", "shop-category.html"),
                                  (title(p), None)])}
 
       <!-- ============================ PRODUCT ============================ -->
@@ -75,16 +251,28 @@ def build():
                data-product data-id="{p.get('id', 0)}" data-name="{e(title(p))}"
                data-price="{p.get('sale') or p.get('price') or 0}" data-image="{e(p['image'])}">
             <div class="flex flex-col gap-3">
+              {best_seller_badge(p)}
               <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">{e(title(p))}</h1>
-              {rating("4.8", 126)}
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+                {rating("4.8", 126)}
+                {proof_row}
+              </div>
             </div>
-            <p class="text-neutral-800 text-base leading-8">{e(DESCRIPTION)}</p>
+            {desc_html}
 
-            {variant_chips([("500 جم", False), ("250 جم", True), ("100 جم", False)], "weight")}
+            {size_chips(p)}
 
-            <div class="flex items-center gap-3">
+            <!-- Price responds to both controls above it: the size chips
+                 repoint it at that SKU's real price, and the quantity stepper
+                 multiplies. data-unit-price is the current SIZE's price, kept
+                 separate from the displayed total so the multiply never
+                 compounds on itself. -->
+            <div class="flex flex-wrap items-center gap-3">
               {old_price}
-              <span class="bg-accent-yellow px-4 py-1.5 rounded-lg font-bold text-[#062A1C] text-2xl latin">EGP {money(p['price'])}</span>
+              <span data-price-display data-unit-price="{p.get('sale') or p.get('price') or 0}"
+                    class="bg-accent-yellow px-4 py-1.5 rounded-lg font-bold text-[#062A1C] text-2xl latin">EGP {money(p['price'])}</span>
+              <span data-price-breakdown hidden
+                    class="text-neutral-secondary text-sm latin"></span>
             </div>
 
             <div class="flex items-center gap-3">
@@ -97,6 +285,8 @@ def build():
               اشتري الان
             </a>
 
+            {trust_html}
+
             <div class="flex flex-wrap justify-between items-center gap-3 bg-interaction-base px-4 py-3 rounded-xl">
               <span class="flex items-center gap-2 font-semibold text-primary text-sm">
                 <span class="place-items-center grid bg-primary rounded-full text-white size-5 text-xs">✓</span>
@@ -105,33 +295,15 @@ def build():
               <button type="button" data-open="location" class="font-semibold text-cta text-sm underline">تغيير المنطقة</button>
             </div>
 
-            {accordion([("الفوائد", BENEFITS), ("طريقة الحفظ", STORAGE)])}
+            {acc_html}
           </div>
 
-          <!-- RTL end: gallery -->
-          {product_gallery(p["image"], [p["image"]], title(p))}
+          <!-- RTL end: gallery. Real photography from the client's CDN —
+               `images` is filled by build/fetch_galleries.py. -->
+          {product_gallery(p.get("images") or [p["image"]], title(p))}
         </div>
       </section>
-
-      <!-- ==================== FREQUENTLY BOUGHT TOGETHER ==================== -->
-      <section data-reveal class="py-8">
-        <div class="mx-auto px-4 max-w-[1536px]">
-          <div class="bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]">
-            <h2 class="mb-6 font-bold text-[#062A1C] text-xl xl:text-2xl">عادة ما يتم شراؤه معاً: أضف هذه العناصر</h2>
-            <div class="items-center gap-6 lg:gap-8 grid grid-cols-1 lg:grid-cols-[1fr_auto]">
-              <div class="flex flex-col min-w-0">{"".join(bundle_item(x) for x in bundle)}
-              </div>
-              <div class="flex flex-col items-center gap-3 bg-interaction-base p-6 rounded-xl">
-                <span class="text-neutral-secondary text-sm">الإجمالي</span>
-                <span class="font-bold text-[#062A1C] text-2xl latin">EGP {money(bundle_total)}</span>
-                <button type="button" data-add-to-cart class="bg-cta hover:bg-cta-hover px-8 py-3 rounded-full font-semibold text-white text-sm whitespace-nowrap transition-colors">
-                  أضف الجميع الى السلة
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+{bundle_section}
 
       <!-- ============================= RECIPES ============================= -->
       <section data-reveal class="bg-interaction-base py-12">
@@ -141,14 +313,7 @@ def build():
           </div>
         </div>
       </section>
-
-      <!-- ========================= SIMILAR PRODUCTS ========================= -->
-      <section data-reveal class="py-12">
-        <div class="mx-auto px-4 max-w-[1536px]">
-          {section_heading("منتجات مشابهة", "عرض المزيد", "shop-category.html")}
-          {carousel("".join(product_card(x) for x in similar))}
-        </div>
-      </section>
+{similar_section}
 
       <!-- =========================== MORE FROM US =========================== -->
       <section data-reveal class="pb-12">
@@ -161,5 +326,15 @@ def build():
     return page(
         f"{title(p)} | أبو عوف",
         f"اشتري {title(p)} من أبو عوف أونلاين — جودة عالية وتوصيل سريع لكل مصر.",
-        body, "product", "/product",
+        body, "product",
+        f"/products/{p['slug']}" if p.get("slug") else "/product",
     )
+
+
+def build():
+    return _render(_hero())
+
+
+def build_many():
+    """One page per catalogue product, product-<id>.html."""
+    return [(product_slug(p), _render(p)) for p in PRODUCTS]

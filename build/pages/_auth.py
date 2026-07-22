@@ -25,16 +25,24 @@ ICON_MAIL = ('<svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><rect x="2" y
              'stroke="currentColor" stroke-width="1.7"/><path d="m2 7 10 6 10-6" stroke="currentColor" stroke-width="1.7"/></svg>')
 
 
-def password_field(label="كلمة السر", name="password"):
-    """Password input with a reveal toggle (wired in scripts.js by data-reveal)."""
+def password_field(label="كلمة السر", name="password", autocomplete="current-password"):
+    """Password input with a reveal toggle (wired in scripts.js by data-reveal).
+
+    `autocomplete` matters here: a password manager offers to *fill* on
+    current-password and to *generate and save* on new-password, so sign-in
+    and sign-up need different tokens. Register passes new-password.
+
+    The reveal button was a 20x20 target — under the 24px WCAG 2.2 AA floor
+    and awkward on a phone. It keeps its 20px glyph inside a 44px button.
+    """
     return f"""
                 <div class="flex flex-col gap-1.5">
                   <label for="{e(name)}" class="font-medium text-neutral-secondary text-sm">{e(label)}</label>
                   <div class="relative">
-                    <input type="password" id="{e(name)}" name="{e(name)}" required
+                    <input type="password" id="{e(name)}" name="{e(name)}" required autocomplete="{e(autocomplete)}"
                            class="bg-white px-4 py-3 pe-12 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
                     <button type="button" data-reveal="{e(name)}" aria-label="إظهار كلمة السر"
-                            class="top-1/2 end-3 absolute text-neutral-secondary hover:text-cta -translate-y-1/2 transition-colors">
+                            class="top-1/2 end-1 absolute place-items-center grid w-11 h-11 text-neutral-secondary hover:text-cta -translate-y-1/2 transition-colors">
                       <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">
                         <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.7"/>
                         <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/>

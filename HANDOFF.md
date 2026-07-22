@@ -15,9 +15,13 @@ mobile pass and a working commerce layer.
 
 | | |
 |---|---|
-| Pages | 31 / 31 |
+| Pages | 31 core + 99 generated product pages (`product-<id>.html`, one per product) |
 | Koueider references | zero, verified across every file |
 | Products | 99, real names (Arabic + English), prices, images |
+| Product copy | client's own Arabic description + benefits on 97 / 99 (`fetch_descriptions.py`) |
+| Product photography | 296 real gallery shots; 73 / 99 have a multi-shot gallery |
+| Best-seller signal | real popularity rank for all 99, against the client's 653-product store |
+| Size options | real multi-size SKUs with real prices; 10 / 99 products have them |
 | Branches | 316 across 25 governorates, real |
 | Accessibility | WCAG 2.1 AA, 0 failures across all 31 pages; tap targets ≥44px |
 | Responsive | verified clean at 320 / 360 / 375 / 390 / 414 |
@@ -66,7 +70,7 @@ Each was an explicit answer from Ahmed, not an assumption.
 
 Three layers, deliberately. See `CLAUDE.md` for the file-by-file table.
 
-**Runtime** (`tw-config.js`, `styles.css`, `scripts.js`) — tokens, chrome,
+**Runtime** (`styles.css`, `scripts.js`) — chrome,
 behaviour. Change and refresh; no rebuild.
 
 **Build-time** (`python3 build/build.py`) — page content generated from shared
@@ -186,35 +190,63 @@ as 10 and 11 above:**
 ```bash
 cd /path/to/order-base-ecommerce
 
-python3 build/build.py            # must report 31 pages, no missing assets
+npm install                       # once; Tailwind CLI for the CSS build
+python3 build/build.py            # 31 page(s) + 99 fanned-out, no missing assets;
+                                  # also rebuilds static-export/tailwind.css
 node --check static-export/scripts.js
 grep -ril 'koueider\|kouider' static-export/    # must return nothing
 git status --porcelain            # a rebuild must produce no diff
 
-(cd static-export && python3 -m http.server 9200)   # USE A FRESH PORT
+python3 build/serve.py                              # http://localhost:8000
 ```
 
-> **Always bump the port.** `http.server` sends no cache headers and browsers
-> hold `scripts.js`/`styles.css` hard. Two "this is still wrong" reports in this
-> project were a stale port, not a bug. Confirm the root too:
-> `lsof -a -p $(lsof -ti tcp:9200) -d cwd -Fn`
+> **One port, 8000, and never `python3 -m http.server`.** That module sends no
+> cache headers, so browsers hold `scripts.js`/`styles.css` hard — two "this is
+> still wrong" reports in this project were a stale asset, not a bug. This used
+> to be worked around by bumping the port on every check, which meant the URL
+> moved constantly and every open tab went stale; Ahmed asked for that to stop.
+> `build/serve.py` sends `Cache-Control: no-store` instead, so a plain refresh
+> on a fixed URL is always current. It is rooted at `static-export/` wherever
+> you run it from, is a no-op if already running, and will not silently pick a
+> different port — if 8000 is taken by something else it says so and stops.
 
 Then open any page and paste the **sweep** below into the console. It loads all
 31 pages in a same-origin iframe at a given width and reports real horizontal
 overflow plus WCAG contrast.
 
-**Current baseline: `31/31` clean at 320 / 360 / 375 / 390 / 414, ~4500 text
+**Current baseline: `31/31` clean at 320 / 360 / 375 / 390 / 414, ~7600 text
 nodes checked, 0 contrast failures.**
+
+**Seed the cart with more than one item, and give some lines a two-digit
+quantity.** Product cards now swap their add button for a `−/n/+` stepper when
+the product is in the cart, so an empty cart means the sweep never measures
+that control at all — the same blind spot that let a 13px cart-line overflow
+through once already. A two-digit quantity is what pushes the stepper past its
+comfortable width; that is the case that actually overflowed during this work.
+Three digits will trip the *cart drawer's* fixed-width qty span, which is a
+known pre-existing clip (DESIGN-NOTES §7) and not a regression.
 
 ```js
 window.__sweep = async function (W) {
-  const pages = ["about","blog","blogs","branches","cart","checkout","contact-us","export","faqs","forget-password","index","login","my-account-addresses","my-account-favorites","my-account-order","my-account-orders","my-account-point","my-account-profile","my-account-wallet","my-account","privacy-policy","product","register","reset-password","return-policy","rewards","shop-category","shop","store-closed","terms-conditions","thank-you"];
+  // The last two are samples of the 99 generated product pages, which share
+  // one layout: product-1322 is the rich case (multi-shot gallery, client
+  // copy, best-seller strip), product-1631 the thin one (single image, no
+  // client copy at all). Sweeping all 99 buys nothing over these two.
+  const pages = ["about","blog","blogs","branches","cart","checkout","contact-us","export","faqs","forget-password","index","login","my-account-addresses","my-account-favorites","my-account-order","my-account-orders","my-account-point","my-account-profile","my-account-wallet","my-account","privacy-policy","product","register","reset-password","return-policy","rewards","shop-category","shop","store-closed","terms-conditions","thank-you","product-1322","product-1631"];
   const f = document.createElement("iframe");
   f.style.cssText = "position:fixed;left:-9999px;top:0;border:0;height:844px;width:" + W + "px";
   document.body.appendChild(f);
   let clean = 0, cFail = 0, cTotal = 0; const probs = [];
   for (const p of pages) {
     await new Promise(r => { f.onload = () => setTimeout(r, 140); f.src = "/" + p + ".html"; });
+    // MANDATORY since the reveal went site-wide: every <section> on every page
+    // starts at opacity 0 until the observer (or its 2.5s failsafe) fires, and
+    // IntersectionObserver does not fire in a hidden/offscreen document — so
+    // without this line most of the page measures as invisible and the sweep
+    // silently reports a clean run it never actually made.
+    f.contentDocument.querySelectorAll("[data-reveal]")
+      .forEach(el => el.setAttribute("data-reveal", "in"));
+    await new Promise(r => setTimeout(r, 100));
     const d = f.contentDocument, w = f.contentWindow, bad = [];
     d.querySelectorAll("body *").forEach(el => {
       const cs = w.getComputedStyle(el);
@@ -330,9 +362,19 @@ Real bilingual support means English copy for all 31 pages plus a URL strategy
    Figma's struck-through compare-at price is not rendered.
 4. **Sub-category taxonomy.** No field exists; four of the seven Figma
    sub-category labels match zero real products, so those chips don't filter.
-5. **Sales / publish-date data.** `الأكثر مبيعاً` restores catalogue order and
-   `وصل حديثاً` sorts by id as a proxy. Neither is a real ranking.
-6. **Sign-off on every in-house string**, Arabic and English.
+5. **Publish-date data.** `وصل حديثاً` sorts by id as a proxy. (`الأكثر مبيعاً`
+   is no longer a proxy — `popularityRank` from `fetch_popularity.py` is the
+   client's real sales ordering. The home rails could now be re-sorted on it;
+   they have not been, to keep that change reviewable on its own.)
+6. **Sign-off on every in-house string**, Arabic and English. Now includes the
+   product page's benefit strip and its Arabic description, both translations
+   of the client's own English product copy.
+6b. **An absolute sold-count**, if the "500+ sold this week" pattern is wanted
+   literally. No endpoint carries sales volume; the page states a real rank
+   instead. One function — `sold_proof()` — changes it.
+6c. **Photography for the 26 products that still have a single shot**, and a
+   decision on whether the rating glyph should be a star rather than the
+   brand's heart (`DESIGN-NOTES.md` §3).
 7. **Real product reviews.** `apis/v2/get-all` used to be listed below as ready
    to build. **It is not** — it returns 10 rows of QA test data, every one
    `John` / `"comment"` / 5★, all posted within 11 minutes on 2024-09-17.
@@ -357,6 +399,34 @@ Real bilingual support means English copy for all 31 pages plus a URL strategy
     (`playState: "running"` with `currentTime: 0` after 900ms), so the bar
     read as parked at `translateY(-48px)`. A `prefers-reduced-motion` guard is
     in place so it can never end up hidden. **Confirm in a real browser.**
+13. **The add-to-cart flight has never been watched at full speed.** Its
+    sequencing, geometry and end state are all verified numerically, and the
+    picked-up tile has been photographed — but the browser pane reports
+    `visibilityState: "hidden"`, so CSS transitions register without ticking
+    and the pane will not screenshot a scrolled page at all. **Watch it in a
+    real browser** before calling the motion work done.
+14. **Product-page interactions carry over to nothing else yet.** Size chips,
+    the live price and the gallery only exist on `product.html`, because it is
+    the only page that renders a single product. If listing cards ever need a
+    size selector, `size_chips()` is already data-driven and would work as-is.
+
+---
+
+### Picking this up in a new session
+
+Start here, in this order:
+
+1. `python3 build/serve.py` → `http://localhost:8000`. **One port, always** —
+   see §5. Do not use `python3 -m http.server`.
+2. Read `CLAUDE.md` (loads automatically) — rule 8 is new and was earned the
+   hard way, four separate reports of the same class of bug.
+3. `product.html` is the page with the most recent work on it and the most
+   moving parts: real size SKUs driving the price, a real photo gallery with
+   two fill modes, a fractional rating, and a real best-seller rank. If you
+   change the hero product, re-read `DESIGN-NOTES.md` §3 first — the page's
+   descriptive copy is tied to it.
+4. Re-run the sweep in §5 after any layout or colour change, **with a seeded
+   cart**. Last measured: 31/31 clean at 320 / 375 / 414, 0 contrast failures.
 
 **Not yet tested anywhere:** the site has **never been opened in Safari or on a
 physical device**. All verification has been Chromium at emulated viewports.

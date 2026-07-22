@@ -1,9 +1,25 @@
 /*
- * tw-config.js — Tailwind Play CDN configuration.
+ * tailwind.config.js — ABU AUF design system.
  *
- * ABU AUF design system. Values are taken directly from the Abu Auf Figma
- * variables (file tQiydoANmIdYWq0IfmTsMz), not hand-picked, so the tokens here
- * are the same ones the designs are bound to.
+ * This file replaced `static-export/tw-config.js` when the build moved off the
+ * Tailwind Play CDN. The theme below is that file's, ported verbatim — the
+ * values come from the Abu Auf Figma variables (tQiydoANmIdYWq0IfmTsMz), not
+ * hand-picked, so the tokens here are the ones the designs are bound to.
+ *
+ * Build it with `npm run css`, which writes static-export/tailwind.css.
+ * `python3 build/build.py` runs that for you as its last step.
+ *
+ * CONTENT SCANNING — read before editing `content` below.
+ * Tailwind only emits a class it can SEE as a literal string. Three sources
+ * matter here and all three must stay listed:
+ *   1. static-export/*.html   the generated pages
+ *   2. static-export/scripts.js  the header, footer, cart drawer, search and
+ *      every overlay are injected at runtime from template literals in this
+ *      file. Miss it and the entire site chrome renders unstyled.
+ *   3. build/**\/*.py         the source of that markup, so a class survives
+ *      even if the HTML has not been regenerated yet.
+ * Never build a class name by concatenation (`"bg-" + colour`) — the scanner
+ * cannot see it and the utility silently will not exist.
  *
  * The site is Arabic-first / RTL. `Baloo Bhaijaan 2` is the Arabic typeface and
  * carries the full display/heading/text scale; `Inter` is the Latin companion
@@ -14,7 +30,12 @@
  * end-*, text-start/end, rounded-s/e) plus the `rtl:`/`ltr:` variants, so no
  * plugin is required to keep those classes working.
  */
-tailwind.config = {
+module.exports = {
+  content: [
+    "./static-export/**/*.html",
+    "./static-export/scripts.js",
+    "./build/**/*.py",
+  ],
   theme: {
     screens: {
       xs: "414px",

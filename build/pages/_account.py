@@ -132,8 +132,11 @@ def card(heading, inner, cta=None, cta_href="#"):
     action = (f'<a href="{cta_href}" class="hover:bg-interaction-base px-5 py-2 border '
               f'border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs '
               f'transition-colors">{e(cta)}</a>') if cta else ""
+    # h2, not h3: these cards are the account page's top-level sections and
+    # the only heading above them is the page h1, so h3 skipped a level and
+    # broke heading-by-heading navigation on all seven account pages.
     head = (f'<div class="flex justify-between items-center gap-3">'
-            f'<h3 class="font-bold text-[#062A1C] text-base">{e(heading)}</h3>{action}</div>'
+            f'<h2 class="font-bold text-[#062A1C] text-base">{e(heading)}</h2>{action}</div>'
             ) if heading else ""
     return (f'<div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">'
             f'{head}{inner}</div>')

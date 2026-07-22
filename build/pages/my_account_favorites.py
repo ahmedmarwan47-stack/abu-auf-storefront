@@ -22,6 +22,9 @@ def build():
               <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">المفضلة</h1>
               <span class="text-neutral-secondary text-sm">(<span class="latin" data-favs-count>0</span> منتج)</span>
             </div>
+            <!-- Same reason as the listing pages: the cards' h3 followed the
+                 h1 directly with no level in between. -->
+            <h2 class="sr-only">المنتجات المحفوظة</h2>
             {product_grid(PRODUCTS, "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3", attrs="data-favs-grid")}
             <div data-favs-empty hidden class="flex flex-col items-center gap-3 py-16 text-center">
               <p class="font-bold text-[#062A1C] text-lg">لا توجد منتجات في المفضلة</p>

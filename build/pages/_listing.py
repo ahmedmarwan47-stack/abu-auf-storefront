@@ -50,6 +50,10 @@ def listing(title_text, description, heading, trail, chips, products,
       <!-- ============================== PRODUCTS ============================== -->
       <section class="py-8 xl:py-10">
         <div class="mx-auto px-4 max-w-[1536px]">
+          <!-- Names the grid for heading navigation and restores the level
+               the cards' h3 was skipping — the page h1 sat directly above
+               them. Not painted: the visible label is the result count. -->
+          <h2 class="sr-only">قائمة المنتجات</h2>
           <p class="mb-6 text-neutral-secondary text-sm">
             <span class="latin" data-result-count>{len(products)}</span> منتج
           </p>

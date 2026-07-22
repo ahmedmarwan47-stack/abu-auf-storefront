@@ -272,6 +272,16 @@
     location:
       '<svg viewBox="0 0 22 20" fill="none" class="w-full h-full"><path d="M16.75 11.75c-3 0-4 2-4 2h-3l-.14-.22c-.86-1.35-1.29-2.03-1.87-2.52-.51-.43-1.11-.76-1.75-.96-.72-.23-1.53-.23-3.13-.23H.75M16.75 11.75c3 0 4 2 4 2M16.75 11.75 15.23 3.38c-.17-.94-.26-1.4-.5-1.75a2 2 0 0 0-.84-.71c-.39-.17-.86-.17-1.81-.17h-.33M3.75 6.75h2M.75 3.75h4M15.75 5.75h1.42a1.5 1.5 0 0 0 .58-2.9c-.2-.09-.42-.1-.58-.1H15.25M6.75 15.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM18.75 16.75a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     menu: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M20 7H7M20 12H4M16 17H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    /* An actual globe. The asset named icon-globe.svg is a chevron-down (a
+       misnamed Figma export) — using it as a globe put a dropdown arrow
+       beside every language row in the locale popup. */
+    globe:
+      '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3c2.5 2.4 3.8 5.6 3.8 9S14.5 18.6 12 21c-2.5-2.4-3.8-5.6-3.8-9S9.5 5.4 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+    /* Stepper glyphs — same SVGs as components.py's ICON. Text −/+ sit on a
+       baseline and centre visibly low in their buttons; a viewBox-centred
+       path cannot drift. */
+    plus: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    minus: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
     close:
       '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     chevronDown:
@@ -331,6 +341,13 @@
     "المشروبات": "Beverages",
     "البهارات والزيوت": "Spices & Oils",
     "الهدايا": "Gifting",
+    // search
+    "اقتراحات البحث": "Search suggestions",
+    "ابحث عن قهوة، مكسرات، تمور…": "Search for coffee, nuts, dates…",
+    "نتيجة": "results",
+    "لا توجد نتائج لـ": "No results for",
+    "تعذر تحميل نتائج البحث. حاول مرة أخرى.": "Could not load search results. Please try again.",
+    "منتجات أُضيفت إلى السلة": "products added to cart",
     // masthead + utility
     "المنتجات": "Products",
     "الحساب": "Account",
@@ -365,9 +382,31 @@
     "قد يعجبك أيضا": "You may also like",
     "مصاريف التوصيل": "Delivery fee",
     "الإجمالي": "Total",
+    "خصم النقاط": "Points discount",
+    "خصم المبلغ": "Apply discount",
+    "إلغاء الخصم": "Remove discount",
+    // locale popup + addresses
+    "الدولة واللغة": "Country & language",
+    "الدولة و العملة": "Country & currency",
+    "تطبيق": "Apply",
+    "اضف عنوان": "Add address",
+    "تعديل العنوان": "Edit address",
+    "اسم العنوان": "Address name",
+    "العنوان": "Address",
+    "المنطقة والمدينة": "Area & city",
+    "اجعله العنوان الرئيسي": "Make it the main address",
+    "حفظ العنوان": "Save address",
+    "العنوان الرئيسي": "Main address",
+    "تعديل": "Edit",
+    "لا توجد عناوين محفوظة بعد.": "No saved addresses yet.",
+    "تم النسخ ✓": "Copied ✓",
     "عرض السلة": "View cart",
     "اتمام الشراء": "Checkout",
+    // Heading has no full stop; the older "سلتك فارغة." entry is kept because
+    // translateDocument() may still meet that exact string in stored copy.
     "سلتك فارغة.": "Your cart is empty.",
+    "سلتك فارغة": "Your cart is empty",
+    "المنتجات اللي تضيفها هتظهر هنا.": "Products you add will appear here.",
     "حذف": "Remove",
     "اضف": "Add",
     "القائمة": "Menu",
@@ -489,35 +528,51 @@
   }
 
   const LANGS = [
-    { code: "en", label: "English", dir: "ltr", flag: "images/abuauf/brand/flag-egypt.svg" },
-    { code: "ar", label: "العربية", dir: "rtl", flag: "images/abuauf/brand/flag-egypt.svg" },
+    { code: "en", label: "English", dir: "ltr" },
+    { code: "ar", label: "العربية", dir: "rtl" },
   ];
 
-  const CHECK_ICON =
-    '<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  /*
+   * Country + currency, mirroring the live site's switcher. Selecting a
+   * country is DEMO state beyond the header label: every price in this build
+   * is the client's real EGP figure and no AED price list exists to convert
+   * to honestly — flagged in DESIGN-NOTES. `short` is what fits in the
+   * masthead pill; `ar` is the full name the popup shows.
+   */
+  const COUNTRIES = [
+    { code: "EG", currency: "EGP", ar: "مصر", short: "مصر", en: "Egypt", flag: "images/abuauf/brand/flag-egypt.svg" },
+    { code: "AE", currency: "AED", ar: "الامارات العربية المتحدة", short: "الامارات", en: "UAE", flag: "images/abuauf/brand/flag-uae.svg" },
+  ];
+  const COUNTRY_KEY = "abuauf:country";
+  function currentCountry() {
+    let code = "EG";
+    try {
+      code = localStorage.getItem(COUNTRY_KEY) || "EG";
+    } catch (e) {
+      /* ignore */
+    }
+    return COUNTRIES.find((c) => c.code === code) || COUNTRIES[0];
+  }
 
+  /* The masthead pill. It used to own a dropdown of languages; both the
+     country and the language now live in the locale POPUP (see overlaysHTML),
+     because Ahmed wants to change the two together and apply once — the
+     dropdown applied each row the moment it was clicked. */
   function countryButton() {
-    const rows = LANGS.map(
-      (l) => `
-        <button type="button" data-lang="${l.code}" class="flex items-center gap-3 hover:bg-interaction-base px-4 rounded-lg w-full min-h-11 text-start transition-colors">
-          <img src="${l.flag}" alt="" class="rounded-full w-6 h-6 object-cover shrink-0" />
-          <span class="flex-1 min-w-0 text-[#062A1C] text-base">${l.label}</span>
-          <span class="text-cta shrink-0" data-lang-check="${l.code}" hidden>${CHECK_ICON}</span>
-        </button>`,
-    ).join("");
-
+    const c = currentCountry();
+    // Rendered FROM state, never hardcoded: repaintForLang rebuilds this
+    // markup after applyLang has already run, so a literal here would
+    // overwrite the freshly-applied label with a stale one.
+    const label = currentLang() === "ar" ? c.short + " (العربية)" : c.en + " (English)";
+    // No trailing chevron: despite its name, icon-globe.svg IS a
+    // chevron-down (a misnamed Figma export), and a down-chevron promises a
+    // dropdown. This opens a popup now, so the pill ends at its label
+    // (Ahmed, 2026-07-22).
     return `
-      <div class="relative shrink-0" data-lang-switcher>
-        <button type="button" data-lang-toggle aria-expanded="false" class="flex items-center gap-1.5 min-h-11 px-4 py-0.5 rounded-full hover:bg-black/5 transition-colors">
-          <img src="images/abuauf/brand/flag-egypt.svg" alt="" class="rounded-full w-4 h-4 object-cover" />
-          <span class="font-semibold text-[#163300] text-base leading-[26px] whitespace-nowrap" data-lang-label>مصر (العربية)</span>
-          <img src="images/abuauf/icons/icon-globe.svg" alt="" class="opacity-70 w-5 h-5" />
-        </button>
-        <div data-lang-panel hidden class="top-full inset-inline-start-0 z-50 absolute bg-white shadow-custom3 mt-2 p-2 rounded-2xl w-[288px]">
-          <h4 class="mb-1 px-4 py-3 border-neutral-divider border-b font-bold text-[#062A1C] text-base">${esc(t("اللغة"))}</h4>
-          ${rows}
-        </div>
-      </div>`;
+      <button type="button" data-open="locale" class="flex items-center gap-1.5 min-h-11 px-4 py-0.5 rounded-full hover:bg-black/5 transition-colors shrink-0">
+        <img src="${c.flag}" alt="" data-country-flag class="rounded-full w-4 h-4 object-cover" />
+        <span class="font-semibold text-[#163300] text-base leading-[26px] whitespace-nowrap" data-lang-label>${esc(label)}</span>
+      </button>`;
   }
 
   /* ---------------------------------------------------------------
@@ -525,8 +580,15 @@
      --------------------------------------------------------------- */
   /*
    * A nav tab. The 4px underline is the Figma "Highlight" element — it sits in
-   * the layout at all times and only changes opacity, so tabs never shift
+   * the layout at all times and only changes transform, so tabs never shift
    * vertically on hover or when the active page changes.
+   *
+   * The current page and a hovered tab are drawn DIFFERENTLY on purpose; see
+   * `.nav-underline` in styles.css. Ahmed reported the navbar as looking
+   * permanently hovered three times, and the cause was that the two states
+   * were pixel-identical: on a category page one tab carries a solid bar
+   * forever, and with nothing to distinguish it from the hover bar it simply
+   * reads as stuck. Same lesson as the mega-menu column.
    */
   function desktopNavItem(item) {
     const href = pageHref(item.url);
@@ -539,13 +601,21 @@
       ? `<img src="${item.icon}" alt="" class="shrink-0 w-6 h-6" />`
       : "";
 
+    /* This column must sum to EXACTLY the bar's 48px: pt-3 (12) + label h-6
+       (24) + gap-2 (8) + underline h-1 (4). It used to be pt-3.5 + gap-3 =
+       54px, and because the ul's overflow-x-auto forces overflow-y to
+       compute to auto as well, the last 6px were CLIPPED — the underline
+       (hover and current-page alike) was being painted 2px below the visible
+       bar on every page. Ahmed reported the hover states as simply not
+       working; they worked, invisibly. If the bar height or any of these
+       four numbers changes, re-do this sum. */
     const label = `
-      <a href="${href}" class="flex flex-col gap-3 pt-3.5 shrink-0 group">
+      <a href="${href}" class="flex flex-col gap-2 pt-3 shrink-0 group">
         <span class="flex items-center gap-1.5 h-6">
           ${markIcon}
           <span class="font-semibold text-white/90 group-hover:text-white text-base leading-6 whitespace-nowrap transition-colors duration-200">${esc(t(item.name))}</span>
         </span>
-        <span class="h-1 w-full bg-[#DCC498] rounded-full origin-center ${isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"} transition-transform duration-[250ms] ease-[cubic-bezier(0.42,0,0.58,1)]"></span>
+        <span class="nav-underline h-1 w-full rounded-full origin-center${isActive ? " is-current" : ""}"></span>
       </a>`;
 
     if (!item.children || !item.children.length) {
@@ -561,7 +631,8 @@
 
     return `<li class="group/mega relative flex items-center gap-2 shrink-0">
       ${label}
-      <div class="invisible group-hover/mega:visible top-full inset-inline-start-0 z-50 absolute opacity-0 group-hover/mega:opacity-100 pt-3 transition-all duration-200">
+      <!-- start-0, not inset-inline-start-0 — same non-existent-class bug. -->
+      <div class="invisible group-hover/mega:visible top-full start-0 z-50 absolute opacity-0 group-hover/mega:opacity-100 pt-3 transition-all duration-200">
         <div class="flex gap-6 bg-white shadow-custom3 p-6 rounded-2xl w-max min-w-[420px]">
           <div class="flex-1">
             <div class="mb-3 font-semibold text-primary text-lg">${esc(t(item.name))}</div>
@@ -588,11 +659,14 @@
    * sub-categories, then a product rail. Phones are untouched — the drawer is
    * still the right control there.
    */
+  /* `id` is each product's catalog.json id, so the tile can link to that
+     product's own generated page instead of the bare product.html every
+     product link on the site used to share. */
   const MEGA_FEATURED = [
-    { name: "عرض سناكس بروتين بزبدة الفول السودانى 35 جم", price: 51, img: "images/abuauf/products/PR000085.webp" },
-    { name: "بسكويت محشو تمر - 12 قطعة", price: 65, img: "images/abuauf/products/image-600x600-1.png" },
-    { name: "بن أبو عوف تركي ساده فاتح 200 جم", price: 308, img: "images/abuauf/products/6223004765353-2-1.webp" },
-    { name: "عرض معمول سادة وقرفة وشيكولاتة", price: 250, img: "images/abuauf/products/330-thumb.webp" },
+    { id: 10576, name: "عرض سناكس بروتين بزبدة الفول السودانى 35 جم", price: 51, img: "images/abuauf/products/PR000085.webp" },
+    { id: 46238, name: "بسكويت محشو تمر - 12 قطعة", price: 65, img: "images/abuauf/products/image-600x600-1.png" },
+    { id: 10502, name: "بن أبو عوف تركي ساده فاتح 200 جم", price: 308, img: "images/abuauf/products/6223004765353-2-1.webp" },
+    { id: 1571, name: "عرض معمول سادة وقرفة وشيكولاتة", price: 250, img: "images/abuauf/products/330-thumb.webp" },
   ];
 
   /* No onerror handler. This previously carried onerror="this.style.display
@@ -643,7 +717,7 @@
     }).join("");
 
     const featured = MEGA_FEATURED.map(
-      (p) => `<a href="product.html" class="flex items-center gap-3 bg-white hover:shadow-custom4 p-3 rounded-2xl transition-shadow">
+      (p) => `<a href="product-${p.id}.html" class="flex items-center gap-3 bg-white hover:shadow-custom4 p-3 rounded-2xl transition-shadow">
         <span class="flex-1 min-w-0">
           <span class="block font-medium text-[#062A1C] text-sm leading-5 line-clamp-2">${esc(p.name)}</span>
           <span class="inline-block bg-accent-yellow mt-1.5 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">EGP ${p.price}.00</span>
@@ -653,7 +727,13 @@
     ).join("");
 
     return `
-      <div id="mega-panel" data-megamenu hidden class="hidden lg:block top-full inset-inline-0 z-40 absolute bg-white shadow-custom3 rounded-b-2xl">
+      <!-- start-0 end-0, NOT inset-inline-0: the latter is not a Tailwind
+           class and never has been, so it compiled to nothing and the panel
+           sat at its static position — 1126px inside a 1425px container,
+           ~300px short of the full-width panel this is meant to be. It looked
+           close enough in RTL to go unnoticed because the static position
+           already pins it to the right edge. -->
+      <div id="mega-panel" data-megamenu hidden class="hidden lg:block top-full start-0 end-0 z-40 absolute bg-white shadow-custom3 rounded-b-2xl">
         <!-- 1536 to match the nav above it. The panel is now full-bleed (its
              positioning parent lost its padding), so a 1600 cap would have
              left the panel 64px wider than the nav it hangs off. -->
@@ -724,7 +804,14 @@
               ${
                 checkout
                   ? ""
-                  : `<button type="button" data-megamenu-toggle aria-expanded="false" aria-controls="mega-panel" class="hidden lg:flex items-center gap-3 bg-cta hover:bg-cta-hover shrink-0 px-4 py-2 rounded-full h-12 transition-colors">
+                  : `<!-- No colour utilities here on purpose: the pill's fill is
+                          state-driven and lives in styles.css (.mega-toggle).
+                          Rest is unfilled, hover is a faint wash, and the solid
+                          CTA fill now means exactly one thing - "the panel is
+                          open". With bg-cta baked into the markup the button
+                          sat permanently filled, which read as a stuck hover;
+                          Ahmed reported it. -->
+                     <button type="button" data-megamenu-toggle aria-expanded="false" aria-controls="mega-panel" class="mega-toggle hidden lg:flex items-center gap-3 shrink-0 px-4 py-2 rounded-full h-12">
                        <img src="images/abuauf/icons/icon-grid.svg" alt="" class="w-6 h-6" />
                        <span class="font-medium text-white text-[18px] leading-6 whitespace-nowrap">${esc(t("المنتجات"))}</span>
                        <span class="w-[18px] h-[18px] text-white shrink-0 chevron" data-megamenu-caret>${ICON.chevronDown}</span>
@@ -766,7 +853,10 @@
                 }
                 <button type="button" data-open="cart" aria-label="السلة" class="btn-elevate relative place-items-center grid bg-accent-yellow hover:bg-accent-500 rounded-full text-[#163300] size-12">
                   <span class="w-7 h-7" data-cart-glyph>${ICON.cart}</span>
-                  <span class="-top-2 -end-2 absolute place-items-center grid bg-white shadow-custom4 px-1.5 rounded-full min-w-[22px] h-[22px] font-semibold text-black text-xs" data-cart-count>2</span>
+                  <!-- Brand ink on a white ring rather than a bare white dot:
+                       the ring separates it from the yellow button underneath,
+                       and white-on-#163300 keeps AA with room to spare. -->
+                  <span class="-top-2 -end-2 absolute place-items-center grid bg-cta ring-2 ring-white px-1.5 rounded-full min-w-[22px] h-[22px] font-bold text-white text-xs latin" data-cart-count>2</span>
                 </button>
               </div>
             </div>
@@ -825,7 +915,7 @@
                    </button>
                    <button type="button" data-open="cart" class="relative place-items-center grid bg-accent-yellow shrink-0 rounded-full text-[#163300] size-11" aria-label="السلة">
                      <span class="w-7 h-7" data-cart-glyph>${ICON.cart}</span>
-                     <span class="-top-1 -end-1 absolute place-items-center grid bg-white rounded-full w-5 h-5 font-bold text-[10px] text-black" data-cart-count>2</span>
+                     <span class="-top-1 -end-1 absolute place-items-center grid bg-cta ring-2 ring-white rounded-full w-5 h-5 font-bold text-[10px] text-white latin" data-cart-count>2</span>
                    </button>
                  </div>`
           }
@@ -922,7 +1012,7 @@
               <h2 class="font-bold text-[#062A1C] text-2xl md:text-3xl xl:text-4xl leading-tight xl:leading-[48px]">اشترك لتعرف على أجدد العروض والخصومات</h2>
               <p class="font-semibold text-primary text-sm xl:text-xl leading-relaxed">كن أول من يعرف كل ما هو جديد في ابو عوف</p>
             </div>
-            <form data-newsletter class="flex flex-row-reverse items-center gap-2 bg-transparent py-2 xl:py-[9px] pe-5 ps-2.5 border-2 border-neutral-outline rounded-2xl w-full">
+            <form data-newsletter class="newsletter-row flex flex-row-reverse items-center gap-2 bg-transparent py-2 xl:py-[9px] pe-5 ps-2.5 border-2 border-neutral-outline rounded-2xl w-full">
               <span class="text-neutral-secondary shrink-0" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="m3 7 8.4 5.6a1 1 0 0 0 1.2 0L21 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
               <input type="email" required aria-label="البريد الالكتروني"
                      placeholder="أدخل عنوان البريد الالكتروني"
@@ -1027,6 +1117,13 @@
           <span class="text-neutral-secondary">${esc(t("مصاريف التوصيل"))}</span>
           <span class="font-semibold text-[#062A1C] latin">${egp(DELIVERY_FEE)}</span>
         </div>
+        <!-- Points discount, when applied on the cart or checkout page. The
+             drawer must show WHY its total is lower than items + delivery,
+             or the smaller number reads as a bug. -->
+        <div class="flex justify-between items-center text-sm" data-cart-discount-row hidden>
+          <span class="text-neutral-secondary">${esc(t("خصم النقاط"))}</span>
+          <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
+        </div>
         <div class="flex justify-between items-center">
           <span class="text-neutral-secondary text-sm">${esc(t("الإجمالي"))}</span>
           <span class="font-bold text-[#062A1C] text-lg latin" data-cart-total>${egp(0)}</span>
@@ -1083,22 +1180,120 @@
     <!-- Search modal -->
     <div data-modal="search" class="modal-shell">
       <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[640px] overflow-hidden" data-modal-box>
-        <div class="flex items-center gap-3 px-5 py-4 border-neutral-divider border-b">
-          <span class="w-5 h-5 text-neutral-secondary">${ICON.search}</span>
-          <input type="search" data-search-input placeholder="ابحث عن قهوة، مكسرات، تمور…" class="flex-1 outline-none text-[#062A1C] text-base" />
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+        <div class="flex items-center gap-3 px-5 py-4 border-neutral-divider border-b search-row">
+          <span class="w-5 h-5 text-neutral-secondary shrink-0">${ICON.search}</span>
+          <label class="sr-only" for="site-search">${esc(t("ابحث عن قهوة، مكسرات، تمور…"))}</label>
+          <input type="search" id="site-search" data-search-input autocomplete="off"
+                 placeholder="ابحث عن قهوة، مكسرات، تمور…"
+                 class="flex-1 bg-transparent outline-none min-w-0 text-[#062A1C] text-base" />
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-11 h-11 text-[#062A1C] shrink-0" aria-label="إغلاق">${ICON.close}</button>
         </div>
-        <div class="px-5 py-6">
-          <p class="mb-3 text-neutral-secondary text-xs">الأكثر بحثاً</p>
+
+        <!-- Idle state: the query is empty. These were five links that all
+             pointed at the same category page; they now seed the box.
+
+             The label is NOT "الأكثر بحثاً" any more and the terms are not
+             the old invented ones. There is no search analytics behind this,
+             so claiming these are the most-searched was inventing data — and
+             the terms themselves were phrases like "قهوة تركي" that match
+             nothing in the catalogue, so every chip was a guaranteed empty
+             result. These five are counted off the real product names
+             (5-7 products each), so a chip always lands on something. -->
+        <div class="px-5 py-6" data-search-idle>
+          <p class="mb-3 text-neutral-secondary text-xs">${esc(t("اقتراحات البحث"))}</p>
           <div class="flex flex-wrap gap-2">
-            ${["قهوة تركي", "مكسرات مشكلة", "تمر مجدول", "زبدة فول سوداني", "بوكس هدايا"]
+            ${["قهوة", "مكسرات", "تمر", "معمول", "بروتين"]
               .map(
                 (s) =>
-                  `<a href="shop-category.html" class="bg-interaction-base hover:bg-cta px-3 py-1.5 rounded-full text-[#062A1C] hover:text-white text-sm transition-colors">${s}</a>`,
+                  `<button type="button" data-search-seed="${esc(s)}" class="bg-interaction-base hover:bg-cta px-3 py-2 rounded-full min-h-11 text-[#062A1C] hover:text-white text-sm transition-colors">${esc(s)}</button>`,
               )
               .join("")}
           </div>
         </div>
+
+        <!-- Result count is a live region so a screen reader hears the list
+             change; the list itself is plain anchors, which stay operable if
+             the fetch or the JS ever fails. -->
+        <p class="px-5 text-neutral-secondary text-xs" data-search-status role="status" aria-live="polite" hidden></p>
+        <div class="max-h-[52vh] overflow-y-auto overscroll-contain" data-search-results hidden></div>
+      </div>
+    </div>
+
+    <!-- Locale popup: country/currency + language, applied TOGETHER.
+         A modal rather than the dropdown it replaced: the live site's
+         dropdown applies each row the moment it is clicked, which repaints
+         the page once per choice - Ahmed wants to pick both and pay the
+         repaint once, so the rows here only set radios and nothing happens
+         until تطبيق. -->
+    <div data-modal="locale" class="modal-shell">
+      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[400px] overflow-hidden" data-modal-box>
+        <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
+          <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("الدولة واللغة"))}</h2>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+        </div>
+        <div class="flex flex-col gap-5 p-5">
+          <fieldset class="flex flex-col gap-2">
+            <legend class="mb-2 font-bold text-[#062A1C] text-sm">${esc(t("الدولة و العملة"))}</legend>
+            ${COUNTRIES.map(
+              (c) => `
+            <label class="cursor-pointer">
+              <input type="radio" name="locale-country" value="${c.code}" class="peer sr-only"${c.code === currentCountry().code ? " checked" : ""} />
+              <span class="flex items-center gap-3 px-4 py-2.5 border-2 border-neutral-divider peer-checked:border-cta rounded-xl min-h-11 transition-colors">
+                <img src="${c.flag}" alt="" class="rounded-full w-6 h-6 object-cover shrink-0" />
+                <span class="flex-1 min-w-0 text-[#062A1C] text-sm">${esc(c.ar)} <span class="latin">(${c.currency})</span></span>
+                <span class="radio-dot shrink-0" aria-hidden="true"></span>
+              </span>
+            </label>`,
+            ).join("")}
+          </fieldset>
+          <fieldset class="flex flex-col gap-2">
+            <legend class="mb-2 font-bold text-[#062A1C] text-sm">${esc(t("اللغة"))}</legend>
+            ${LANGS.map(
+              (l) => `
+            <label class="cursor-pointer">
+              <input type="radio" name="locale-lang" value="${l.code}" class="peer sr-only"${l.code === currentLang() ? " checked" : ""} />
+              <span class="flex items-center gap-3 px-4 py-2.5 border-2 border-neutral-divider peer-checked:border-cta rounded-xl min-h-11 transition-colors">
+                <span class="w-5 h-5 text-neutral-secondary shrink-0" aria-hidden="true">${ICON.globe}</span>
+                <span class="flex-1 min-w-0 text-[#062A1C] text-sm">${l.label}</span>
+                <span class="radio-dot shrink-0" aria-hidden="true"></span>
+              </span>
+            </label>`,
+            ).join("")}
+          </fieldset>
+          <button type="button" data-locale-apply class="bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm transition-colors">${esc(t("تطبيق"))}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address form: add and edit share it; data-address-id says which. -->
+    <div data-modal="address" class="modal-shell">
+      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[440px] overflow-hidden" data-modal-box>
+        <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
+          <h2 class="font-bold text-[#062A1C] text-lg" data-address-form-title>${esc(t("اضف عنوان"))}</h2>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+        </div>
+        <form data-address-form data-address-id="" class="flex flex-col gap-3 p-5">
+          <label class="block">
+            <span class="label">${esc(t("اسم العنوان"))}</span>
+            <input type="text" name="label" required placeholder="المنزل، العمل…"
+                   class="mt-1 px-3 border border-neutral-divider focus:border-cta rounded-lg outline-none w-full h-12 text-[#062A1C] text-sm transition-colors" />
+          </label>
+          <label class="block">
+            <span class="label">${esc(t("العنوان"))}</span>
+            <input type="text" name="line1" required placeholder="رقم الشقة والمبنى واسم الشارع"
+                   class="mt-1 px-3 border border-neutral-divider focus:border-cta rounded-lg outline-none w-full h-12 text-[#062A1C] text-sm transition-colors" />
+          </label>
+          <label class="block">
+            <span class="label">${esc(t("المنطقة والمدينة"))}</span>
+            <input type="text" name="line2" required placeholder="المنطقة، المدينة"
+                   class="mt-1 px-3 border border-neutral-divider focus:border-cta rounded-lg outline-none w-full h-12 text-[#062A1C] text-sm transition-colors" />
+          </label>
+          <label class="flex items-center gap-2 py-1 cursor-pointer">
+            <input type="checkbox" name="main" class="accent-[#163300] size-4" />
+            <span class="text-[#062A1C] text-sm">${esc(t("اجعله العنوان الرئيسي"))}</span>
+          </label>
+          <button type="submit" class="bg-cta hover:bg-cta-hover mt-1 py-3 rounded-full font-semibold text-white text-sm transition-colors">${esc(t("حفظ العنوان"))}</button>
+        </form>
       </div>
     </div>
 
@@ -1116,7 +1311,7 @@
       <form data-location-form class="flex flex-col gap-3">
         <label class="block">
           <span class="label">المدينة</span>
-          <select class="mt-1 px-3 border border-neutral-divider rounded-lg w-full h-12 text-[#062A1C] placeholder-select">
+          <select class="select-control mt-1 px-3 border border-neutral-divider rounded-lg w-full h-12 text-[#062A1C] placeholder-select">
             ${["القاهرة", "الجيزه", "الاسكندريه", "القليوبيه", "الشرقيه", "الدقهليه", "المنوفيه", "الغربيه"]
               .map((c) => `<option>${c}</option>`)
               .join("")}
@@ -1124,7 +1319,7 @@
         </label>
         <label class="block">
           <span class="label">المنطقة</span>
-          <select class="mt-1 px-3 border border-neutral-divider rounded-lg w-full h-12 text-[#062A1C] placeholder-select">
+          <select class="select-control mt-1 px-3 border border-neutral-divider rounded-lg w-full h-12 text-[#062A1C] placeholder-select">
             ${["التجمع الخامس", "مدينه نصر", "المعادي", "الزمالك", "هليوبوليس", "الشروق", "الرحاب", "المقطم"]
               .map((a) => `<option>${a}</option>`)
               .join("")}
@@ -1144,6 +1339,8 @@
     cart: '[data-drawer="cart"]',
     menu: '[data-drawer="menu"]',
     search: '[data-modal="search"]',
+    locale: '[data-modal="locale"]',
+    address: '[data-modal="address"]',
     location: '[data-sheet="location"]',
     accountMenu: '[data-sheet="account-menu"]',
   };
@@ -1160,7 +1357,12 @@
     if (backdrop) backdrop.classList.add("is-open");
     document.body.classList.add("no-scroll");
     const input = el.querySelector("[data-search-input]");
-    if (input) setTimeout(() => input.focus(), 80);
+    if (input) {
+      // Warm the catalogue while the shopper is still reaching for the
+      // keyboard, so the first keystroke renders instead of waiting on I/O.
+      loadCatalog();
+      setTimeout(() => input.focus(), 80);
+    }
   }
 
   function closeOverlay() {
@@ -1171,6 +1373,163 @@
     if (backdrop) backdrop.classList.remove("is-open");
     document.body.classList.remove("no-scroll");
     openEl = null;
+  }
+
+  /* ---------------------------------------------------------------
+     Site search
+
+     The magnifier was in the masthead of all 130 pages and did nothing:
+     the modal took focus and had no handler, no results and no empty
+     state, so every query was a dead end.
+
+     This is the one place scripts.js reads catalog.json at runtime.
+     Everywhere else the catalogue is baked in at build time on purpose,
+     but search cannot be — it has to reach products that are not on the
+     current page. Fetched once, lazily, on first open, and cached; a
+     failed fetch degrades to a message rather than a spinner that never
+     resolves.
+     --------------------------------------------------------------- */
+  let catalogPromise = null;
+
+  function loadCatalog() {
+    if (!catalogPromise) {
+      catalogPromise = fetch("data/catalog.json")
+        .then((r) => {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        })
+        .then((d) => d.products || [])
+        .catch(() => null);
+    }
+    return catalogPromise;
+  }
+
+  /*
+   * Arabic needs folding before it can be matched the way a shopper types.
+   * The catalogue writes قهوة with a ة and shoppers type ه; ى and ي, أ إ آ
+   * and ا are used interchangeably; and the tashkeel that appears in a few
+   * product names is never typed at all. Without this, searching "قهوه"
+   * returns nothing while "قهوة" returns twelve products, which reads as a
+   * broken search rather than a spelling difference.
+   */
+  function fold(s) {
+    return String(s || "")
+      .toLowerCase()
+      .replace(/[ً-ْـ]/g, "")
+      .replace(/[أإآٱ]/g, "ا")
+      .replace(/ى/g, "ي")
+      .replace(/ة/g, "ه")
+      .replace(/[ؤئ]/g, "ء")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function searchProducts(products, q) {
+    const needle = fold(q);
+    if (!needle) return [];
+    const terms = needle.split(" ");
+    const scored = [];
+    products.forEach((p) => {
+      const ar = fold(p.nameAr);
+      const en = fold(p.name);
+      // Every term must appear somewhere, so "قهوه تركي" narrows rather
+      // than widening the way an OR match would.
+      if (!terms.every((t2) => ar.includes(t2) || en.includes(t2))) return;
+      // A prefix match is what the shopper is most likely reaching for, so
+      // it outranks a match buried mid-name; popularityRank breaks ties
+      // with the client's real sales order rather than catalogue order.
+      const starts = ar.startsWith(terms[0]) || en.startsWith(terms[0]);
+      scored.push({ p: p, score: (starts ? 0 : 1000) + (p.popularityRank || 999) });
+    });
+    scored.sort((a, b) => a.score - b.score);
+    return scored.slice(0, 24).map((x) => x.p);
+  }
+
+  function searchResultHTML(p) {
+    const name = currentLang() === "en" ? p.name || p.nameAr : p.nameAr || p.name;
+    const img = (p.images && p.images[0]) || p.image || "";
+    return `
+      <a href="product-${esc(String(p.id))}.html"
+         class="flex items-center gap-3 hover:bg-interaction-base px-5 py-3 border-neutral-divider border-b last:border-b-0 transition-colors">
+        <img src="${esc(img)}" alt="" loading="lazy"
+             class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" />
+        <span class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm line-clamp-2">${esc(name)}</span>
+        <span class="bg-accent-yellow shrink-0 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">EGP ${esc(
+          String(p.price),
+        )}</span>
+      </a>`;
+  }
+
+  function initSearch() {
+    const modal = document.querySelector('[data-modal="search"]');
+    if (!modal) return;
+    const input = modal.querySelector("[data-search-input]");
+    const results = modal.querySelector("[data-search-results]");
+    const status = modal.querySelector("[data-search-status]");
+    const idle = modal.querySelector("[data-search-idle]");
+    if (!input || !results || !status || !idle) return;
+
+    let timer = null;
+    let token = 0;
+
+    function render(q) {
+      const mine = ++token;
+      if (!fold(q)) {
+        results.hidden = true;
+        status.hidden = true;
+        results.innerHTML = "";
+        idle.hidden = false;
+        return;
+      }
+      idle.hidden = true;
+      loadCatalog().then((products) => {
+        // A slow response for an abandoned query must not overwrite the
+        // results of the one the shopper is actually looking at.
+        if (mine !== token) return;
+        status.hidden = false;
+        if (!products) {
+          results.hidden = true;
+          results.innerHTML = "";
+          status.textContent = t("تعذر تحميل نتائج البحث. حاول مرة أخرى.");
+          return;
+        }
+        const hits = searchProducts(products, q);
+        if (!hits.length) {
+          results.hidden = true;
+          results.innerHTML = "";
+          status.textContent = t("لا توجد نتائج لـ") + ' "' + q.trim() + '"';
+          return;
+        }
+        status.textContent = hits.length + " " + t("نتيجة");
+        results.innerHTML = hits.map(searchResultHTML).join("");
+        results.hidden = false;
+        results.scrollTop = 0;
+      });
+    }
+
+    input.addEventListener("input", () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => render(input.value), 140);
+    });
+
+    // Enter with a single hit is unambiguous — go there rather than making
+    // the shopper reach for the mouse to click the only row on screen.
+    input.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      const first = results.querySelector("a");
+      if (first) {
+        e.preventDefault();
+        window.location.href = first.getAttribute("href");
+      }
+    });
+
+    modal.addEventListener("click", (e) => {
+      const seed = e.target.closest("[data-search-seed]");
+      if (!seed) return;
+      input.value = seed.dataset.searchSeed;
+      input.focus();
+      render(input.value);
+    });
   }
 
   /* ---------------------------------------------------------------
@@ -1334,6 +1693,129 @@
     });
   }
 
+  /* ---------------------------------------------------------------
+     Product gallery
+
+     Thumbnails swap the main image. Selection is `aria-pressed` and nothing
+     else — styles.css draws the ring off that selector — so the accessible
+     state and the painted state are the same attribute and cannot drift. The
+     same contract the favourites heart uses.
+
+     The swap cross-fades: the main image is faded out, the src is changed
+     while it is invisible, and it fades back in once the new file has
+     decoded. Waiting on decode matters — swapping src on a visible <img>
+     paints a blank frame while the next photo loads, and these are real
+     900px photographs, not sprites.
+     --------------------------------------------------------------- */
+  function initGallery(scope) {
+    scope.querySelectorAll("[data-gallery]").forEach((gallery) => {
+      const main = gallery.querySelector("[data-gallery-main]");
+      const thumbs = [...gallery.querySelectorAll("[data-gallery-thumb]")];
+      if (!main || !thumbs.length) return;
+
+      const plate = gallery.querySelector("[data-gallery-plate]");
+
+      const show = (btn) => {
+        const img = btn.querySelector("img");
+        const src = img && img.getAttribute("src");
+        if (!src || src === main.getAttribute("src")) return;
+
+        thumbs.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+        /* Carry the fill mode across with the image. The main shot is a
+           background-isolated cut-out and has to sit inside the plate's
+           padding; the gallery shots are photographs with their own
+           backgrounds and fill the frame. Painting a photograph "contain"
+           leaves it marooned in a border of plate colour. */
+        if (plate) plate.dataset.fill = btn.dataset.fill || "contain";
+
+        const swap = () => {
+          main.setAttribute("src", src);
+          // Only reveal once the bitmap is ready. decode() is unsupported on
+          // older Safari, hence the fallback to the load event.
+          const reveal = () => main.removeAttribute("data-swapping");
+          if (main.decode) main.decode().then(reveal, reveal);
+          else main.addEventListener("load", reveal, { once: true });
+        };
+
+        if (reduceMotion()) {
+          swap();
+          return;
+        }
+        main.dataset.swapping = "true";
+        // One frame of fade-out before the src changes, so the old photo is
+        // gone rather than cut. The timeout matches the CSS transition.
+        setTimeout(swap, 180);
+      };
+
+      thumbs.forEach((btn) => btn.addEventListener("click", () => show(btn)));
+    });
+  }
+
+  /* ---------------------------------------------------------------
+     Size + quantity -> price
+
+     The size chips are real SKUs (see build/fetch_sizes.py), each carrying its
+     own live price and product id. Choosing one has to do three things, and
+     missing any of them leaves the page lying to the shopper:
+
+       1. repoint the displayed price at that size's price,
+       2. repoint `data-price` AND `data-id` on the [data-product] host, so the
+          cart adds the SKU that was actually chosen rather than whichever one
+          the page happened to render with,
+       3. survive the quantity multiplier without compounding.
+
+     (3) is why the unit price lives in its own attribute. Multiplying the
+     DISPLAYED number would square it on the second press.
+     --------------------------------------------------------------- */
+  function initSizeAndPrice(scope) {
+    (scope || document).querySelectorAll("[data-product]").forEach((host) => {
+      const display = host.querySelector("[data-price-display]");
+      if (!display) return;
+      const breakdown = host.querySelector("[data-price-breakdown]");
+      const qtyEl = host.querySelector("[data-stepper] [data-qty]");
+      const chips = [...host.querySelectorAll("[data-size-option]")];
+
+      const paint = () => {
+        const unit = Number(display.dataset.unitPrice) || 0;
+        const qty = Math.max(1, parseInt(qtyEl && qtyEl.textContent, 10) || 1);
+        display.textContent = egp(unit * qty);
+        // The per-unit line only earns its space once it differs from the
+        // total, i.e. from the second unit onward.
+        if (breakdown) {
+          breakdown.hidden = qty < 2;
+          breakdown.textContent = qty < 2 ? "" : egp(unit) + " × " + qty;
+        }
+      };
+
+      chips.forEach((chip) => {
+        chip.addEventListener("change", () => {
+          if (!chip.checked) return;
+          const price = Number(chip.dataset.sizePrice) || 0;
+          display.dataset.unitPrice = price;
+          // Point the cart at the chosen SKU, not the rendered one.
+          host.dataset.price = price;
+          if (chip.dataset.sizeId) host.dataset.id = chip.dataset.sizeId;
+          paint();
+          if (!reduceMotion() && display.animate) {
+            display.animate(
+              [{ transform: "scale(1)" }, { transform: "scale(1.06)" }, { transform: "scale(1)" }],
+              { duration: 240, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" },
+            );
+          }
+        });
+      });
+
+      // The stepper owns the number; this just recomputes after it changes.
+      // Listening on the host rather than the buttons keeps it working if the
+      // stepper is ever re-rendered.
+      host.addEventListener("click", (e) => {
+        if (e.target.closest("[data-stepper] [data-step]")) setTimeout(paint, 0);
+      });
+
+      paint();
+    });
+  }
+
   function initSteppers(scope) {
     scope.querySelectorAll("[data-stepper]").forEach((st) => {
       const qtyEl = st.querySelector("[data-qty]");
@@ -1394,13 +1876,45 @@
       },
       { rootMargin: "0px 0px -8% 0px", threshold: 0.06 },
     );
+    const pending = [];
     els.forEach((el) => {
       if (el.getBoundingClientRect().top < window.innerHeight) {
         el.setAttribute("data-reveal", "in"); // above the fold: no animation
       } else {
+        pending.push(el);
         io.observe(el);
       }
     });
+
+    /*
+     * Failsafe. The reveal now applies to every <section> on all 130 pages,
+     * so the cost of the observer not firing went from "one home page rail
+     * stays faded" to "most of the site does" — and IntersectionObserver
+     * does NOT fire in every context (it is inert in a hidden/background
+     * document, which is exactly where this was being tested; a
+     * default-config control observer did not fire either).
+     *
+     * The guiding rule for this system has always been that a failure
+     * degrades to UNANIMATED, never to INVISIBLE. The .js-reveal gate gives
+     * that when JS is off entirely; this gives it when JS runs but the
+     * observer never reports. Worst case the shopper gets no animation on
+     * content they had not reached yet — which they cannot tell apart from
+     * having already scrolled past it.
+     *
+     * Deliberately not rAF- or scroll-driven: a backgrounded tab throttles
+     * both, and this has to survive precisely the case where the observer
+     * has already failed.
+     */
+    if (pending.length) {
+      setTimeout(() => {
+        pending.forEach((el) => {
+          if (el.getAttribute("data-reveal") !== "in") {
+            el.setAttribute("data-reveal", "in");
+            io.unobserve(el);
+          }
+        });
+      }, 2500);
+    }
   }
 
   function initDemoForms(scope) {
@@ -1872,13 +2386,14 @@
 
   function applyLang(code) {
     const l = LANGS.find((x) => x.code === code) || LANGS[1];
+    const c = currentCountry();
     document.documentElement.setAttribute("lang", l.code);
     document.documentElement.setAttribute("dir", l.dir);
     document.querySelectorAll("[data-lang-label]").forEach((el) => {
-      el.textContent = l.code === "ar" ? "مصر (العربية)" : "Egypt (English)";
+      el.textContent = l.code === "ar" ? c.short + " (العربية)" : c.en + " (English)";
     });
-    document.querySelectorAll("[data-lang-check]").forEach((el) => {
-      el.hidden = el.dataset.langCheck !== l.code;
+    document.querySelectorAll("[data-country-flag]").forEach((el) => {
+      el.src = c.flag;
     });
     try {
       localStorage.setItem(LANG_KEY, l.code);
@@ -1945,31 +2460,35 @@
       applyLang(stored);
     }
 
-    document.querySelectorAll("[data-lang-switcher]").forEach((wrap) => {
-      const toggle = wrap.querySelector("[data-lang-toggle]");
-      const panel = wrap.querySelector("[data-lang-panel]");
-      if (!toggle || !panel) return;
-      toggle.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const open = panel.hidden;
-        panel.hidden = !open;
-        toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      });
-      panel.querySelectorAll("[data-lang]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const changed = btn.dataset.lang !== currentLang();
-          applyLang(btn.dataset.lang);
-          panel.hidden = true;
-          toggle.setAttribute("aria-expanded", "false");
-          if (changed) repaintForLang();
-        });
-      });
-      document.addEventListener("click", (e) => {
-        if (!panel.hidden && !wrap.contains(e.target)) {
-          panel.hidden = true;
-          toggle.setAttribute("aria-expanded", "false");
+    /* The choices live in the locale modal now and commit on تطبيق alone —
+       one repaint however much changed. Delegated on document (bound once,
+       via the guard below) so it survives the chrome re-render that apply
+       itself triggers. */
+    if (initLangSwitcher._bound) return;
+    initLangSwitcher._bound = true;
+    document.addEventListener("click", (e) => {
+      const apply = e.target.closest("[data-locale-apply]");
+      if (!apply) return;
+      const modal = apply.closest('[data-modal="locale"]');
+      const country = modal.querySelector('input[name="locale-country"]:checked');
+      const lang = modal.querySelector('input[name="locale-lang"]:checked');
+      const langChanged = lang && lang.value !== currentLang();
+      const countryChanged = country && country.value !== currentCountry().code;
+      if (country) {
+        try {
+          localStorage.setItem(COUNTRY_KEY, country.value);
+        } catch (err) {
+          /* ignore */
         }
-      });
+      }
+      closeOverlay();
+      if (!langChanged && !countryChanged) return;
+      // One repaint covers both: applyLang re-reads the country for the
+      // masthead label, and repaintForLang rebuilds the chrome (including
+      // this modal, whose checked states are written at render time).
+      applyLang(lang ? lang.value : currentLang());
+      repaintForLang();
+      toast("تم تطبيق التفضيلات");
     });
   }
 
@@ -1998,11 +2517,53 @@
 
   let badgeHold = 0;
 
+  /*
+   * Directional roll for a counter. The new value slides in from below on an
+   * increment and from above on a decrement, so the motion itself says which
+   * way the number went — a swap-and-pulse only says "something changed".
+   * The write happens unconditionally; only the motion is optional, so
+   * reduced-motion users get the same truth without the ride.
+   */
+  function rollTo(el, value, dir) {
+    const next = String(value);
+    if (el.textContent === next) return;
+    el.textContent = next;
+    if (reduceMotion() || !el.animate) return;
+    el.animate(
+      [
+        { transform: "translateY(" + (dir < 0 ? "-0.55em" : "0.55em") + ")", opacity: 0 },
+        { transform: "translateY(0)", opacity: 1 },
+      ],
+      { duration: 240, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" },
+    );
+  }
+
   function syncCartBadges() {
+    const n = Cart.count();
     document.querySelectorAll("[data-cart-count]").forEach((el) => {
-      el.textContent = Cart.count();
-      el.hidden = Cart.count() === 0;
+      const old = parseInt(el.textContent, 10) || 0;
+      // Only a badge the shopper can currently see earns the roll — animating
+      // inside a hidden badge, or on first paint, is motion with no witness.
+      if (el.hidden || !el.offsetParent || old === n) el.textContent = n;
+      else rollTo(el, n, n > old ? 1 : -1);
+      el.hidden = n === 0;
     });
+  }
+
+  /* The catch: the destination dips under the landing's weight and springs
+     back. Deliberately smaller travel than pulse() — it plays on the whole
+     48px cart button, where a 1.28 spike reads as a glitch, not a catch. */
+  function squash(el) {
+    if (!el || reduceMotion() || !el.animate) return;
+    el.animate(
+      [
+        { transform: "scale(1)" },
+        { transform: "scale(0.9)", offset: 0.3 },
+        { transform: "scale(1.06)", offset: 0.65 },
+        { transform: "scale(1)" },
+      ],
+      { duration: 360, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" },
+    );
   }
 
   /* A short scale pulse on the destination, so the landing is felt. */
@@ -2024,8 +2585,26 @@
    * Resolves as soon as the ghost lands (or immediately when motion is
    * reduced / the geometry is unusable), so callers can chain the landing
    * beat without caring which happened.
+   *
+   * The flight is two staged movements, not one:
+   *
+   *   1. PICK UP — the ghost stays exactly where the source is and condenses
+   *      into a small rounded, shadowed white tile. The product visibly
+   *      gathers into something pocket-sized before anything is thrown.
+   *   2. THROW — the tile arcs to the target and shrinks the rest of the way
+   *      into the cart, carrying its gathered scale the whole distance.
+   *
+   * Splitting them is the whole reason this reads as smooth. One keyframe
+   * list that both gathers and travels has to compromise its easing across the
+   * two, and the throw ends up starting before the eye has found the thing
+   * being thrown — which is exactly what the single-stage version did.
+   *
+   * opts.card   — draw the tile chrome. Hearts fly bare (opts omitted).
+   * opts.quick  — tighter and faster, for repeat taps on a card stepper.
+   * opts.tag    — small text chip riding along with the tile, e.g. "+1".
    */
-  function flyTo(sourceEl, targetEl, ghostHTML) {
+  function flyTo(sourceEl, targetEl, ghostHTML, opts) {
+    opts = opts || {};
     if (!sourceEl || !targetEl || reduceMotion() || !document.body.animate) {
       return Promise.resolve(false);
     }
@@ -2034,43 +2613,68 @@
     if (!s.width || !s.height || !t.width) return Promise.resolve(false);
 
     const ghost = document.createElement("div");
-    ghost.className = "fly-ghost";
+    ghost.className = "fly-ghost" + (opts.card ? " fly-ghost--card" : "");
     ghost.style.cssText =
       "position:fixed;z-index:200;pointer-events:none;left:" +
       s.left + "px;top:" + s.top + "px;width:" + s.width + "px;height:" + s.height + "px;";
-    if (ghostHTML) ghost.innerHTML = ghostHTML;
+
+    /* The plate is a separate node from the ghost so the two stages never
+       fight over one transform: the plate owns the pick-up scale (a CSS
+       transition), the ghost owns the travel (a WAAPI animation). */
+    const plate = document.createElement("div");
+    plate.className = "fly-ghost__plate";
+    if (ghostHTML) plate.innerHTML = ghostHTML;
     else {
       const clone = sourceEl.cloneNode(true);
       clone.removeAttribute("id");
       clone.style.width = "100%";
       clone.style.height = "100%";
-      ghost.appendChild(clone);
+      plate.appendChild(clone);
+    }
+    ghost.appendChild(plate);
+    if (opts.tag) {
+      const tag = document.createElement("span");
+      tag.className = "fly-ghost__tag latin";
+      tag.textContent = opts.tag;
+      ghost.appendChild(tag);
     }
     document.body.appendChild(ghost);
 
-    const dx = t.left + t.width / 2 - (s.left + s.width / 2);
-    const dy = t.top + t.height / 2 - (s.top + s.height / 2);
+    /*
+     * Clamp the destination into the viewport.
+     *
+     * Normally the cart button is on screen wherever you are on the page:
+     * [data-sticky-actions] goes position:fixed once you scroll and parks it
+     * at top 68. But that only happens on a scroll *handler*, so there is a
+     * window — a click landing in the same tick as a programmatic scroll, or
+     * any page without that bar — where the only cart button is the masthead
+     * one, sitting a thousand-odd pixels above the viewport. Measured at -1514
+     * from the home page's first rail. Unclamped, the item is thrown off the
+     * top of the screen and the shopper sees nothing but the badge tick.
+     * Clamping keeps the heading and stops the item at the edge instead; when
+     * the target is already visible this is inert.
+     */
+    const edge = 24;
+    const tx = t.left + t.width / 2;
+    const ty = Math.min(Math.max(t.top + t.height / 2, edge), window.innerHeight - edge);
+
+    const dx = tx - (s.left + s.width / 2);
+    const dy = ty - (s.top + s.height / 2);
     // Arc height scales with distance but is capped, so a short hop does not
     // loop absurdly and a long one still reads as a throw rather than a slide.
     const lift = Math.min(160, Math.hypot(dx, dy) * 0.32) + 40;
 
-    const anim = ghost.animate(
-      [
-        { transform: "translate(0,0) scale(1)", opacity: 1, offset: 0 },
-        {
-          transform:
-            "translate(" + dx * 0.5 + "px," + (dy * 0.5 - lift) + "px) scale(0.66) rotate(-6deg)",
-          opacity: 0.95,
-          offset: 0.55,
-        },
-        {
-          transform: "translate(" + dx + "px," + dy + "px) scale(0.16) rotate(4deg)",
-          opacity: 0.25,
-          offset: 1,
-        },
-      ],
-      { duration: 720, easing: "cubic-bezier(0.35, 0.05, 0.25, 1)", fill: "forwards" },
-    );
+    const pickupMs = opts.card ? (opts.quick ? 150 : 230) : 0;
+    const flightMs = opts.quick ? 560 : 700;
+
+    /* Force a style flush so the transition has a resolved start value to
+       move away from. Deliberately NOT requestAnimationFrame: rAF does not
+       fire in a backgrounded tab, so the pick-up would be skipped there and
+       could then land *after* the throw had already removed the class. */
+    if (pickupMs) {
+      void ghost.offsetWidth;
+      ghost.classList.add("is-picked");
+    }
 
     return new Promise((resolve) => {
       let done = false;
@@ -2080,10 +2684,56 @@
         ghost.remove();
         resolve(true);
       };
-      anim.onfinish = finish;
+
+      const throwIt = () => {
+        // `is-picked` deliberately STAYS on for the whole flight. It is what
+        // holds the plate at its gathered-up scale, and dropping it here would
+        // ease the tile back to full size just as it starts travelling — the
+        // ghost would visibly swell in mid-air. The ghost's own scale keyframes
+        // multiply with the plate's, so the tile keeps shrinking all the way
+        // into the cart.
+        //
+        // The path is SAMPLED, not three-point. WAAPI interpolates keyframes
+        // linearly in transform space, so with only start/apex/end the "arc"
+        // was two straight lines with a corner at the apex — visible on every
+        // long throw. Sixteen samples along a real parabola cost nothing and
+        // the corner disappears. Time-easing rides on the sample spacing
+        // (easeInOut on p), so the overall easing stays: gathers speed,
+        // crests, decelerates into the cart.
+        const N = 16;
+        const frames = [];
+        for (let i = 0; i <= N; i++) {
+          const t = i / N;
+          const p = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+          const x = dx * p;
+          // sin(pi*p) peaks at exactly `lift` mid-flight and lands at 0 — the
+          // same arc height the old apex keyframe had, without its corner.
+          const y = dy * p - lift * Math.sin(Math.PI * p);
+          const scale = 1 - 0.84 * p;
+          // A held tilt against the direction of travel, righting itself on
+          // approach — reads as carried momentum rather than a spin.
+          const rot = -7 * Math.sin(Math.PI * p) + 4 * p;
+          frames.push({
+            transform:
+              "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px) " +
+              "scale(" + scale.toFixed(3) + ") rotate(" + rot.toFixed(2) + "deg)",
+            // Stay fully present for most of the flight; only melt into the
+            // cart over the last fifth so the landing is crisp, not a fade-out
+            // that starts mid-air.
+            opacity: p < 0.8 ? 1 : 1 - ((p - 0.8) / 0.2) * 0.85,
+            offset: t,
+          });
+        }
+        const anim = ghost.animate(frames, {
+          duration: flightMs, easing: "linear", fill: "forwards",
+        });
+        anim.onfinish = finish;
+      };
+
+      setTimeout(throwIt, pickupMs);
       // Belt and braces: if the tab is backgrounded the animation may never
       // fire onfinish, and a stranded ghost would sit over the page forever.
-      setTimeout(finish, 1400);
+      setTimeout(finish, pickupMs + flightMs + 700);
     });
   }
 
@@ -2105,6 +2755,34 @@
     );
   }
 
+  /*
+   * Empty cart.
+   *
+   * Was a bare centred <p> reading "سلتك فارغة." — a dead end with nothing to
+   * look at and nowhere to go, in a container otherwise sized for a list.
+   * Built to the SAME shape as the favourites empty state (glyph, heading,
+   * one supporting line, one CTA) and reusing its exact CTA label, so the two
+   * empty states in this build read as one idea rather than two designs.
+   *
+   * It renders in three places — the drawer, the cart page and (since the
+   * checkout summary started reading the store) the checkout aside — so it is
+   * built to survive a ~340px column: nothing here has a fixed width.
+   */
+  function cartEmptyHTML() {
+    return (
+      '<div class="cart-empty flex flex-col items-center gap-2 px-4 py-12 text-center">' +
+      '<span class="cart-empty__badge place-items-center grid bg-interaction-base mb-1 rounded-full text-cta size-16">' +
+      '<span class="w-8 h-8">' + ICON.cart + "</span>" +
+      "</span>" +
+      '<p class="font-bold text-[#062A1C] text-lg">' + esc(t("سلتك فارغة")) + "</p>" +
+      '<p class="max-w-[30ch] text-neutral-secondary text-sm leading-6">' +
+      esc(t("المنتجات اللي تضيفها هتظهر هنا.")) + "</p>" +
+      '<a href="shop.html" class="btn-elevate flex justify-center items-center bg-cta hover:bg-cta-hover mt-3 px-6 rounded-full min-h-11 font-semibold text-white text-sm transition-colors">' +
+      esc(t("تصفح المنتجات")) + "</a>" +
+      "</div>"
+    );
+  }
+
   function cartLineHTML(it) {
     return `
       <div class="flex gap-3 py-4 border-neutral-divider border-b" data-cart-line data-id="${esc(String(it.id))}">
@@ -2121,15 +2799,80 @@
                this because it happened to run against an emptied cart, so no
                line ever rendered. -->
           <div class="flex justify-between items-center gap-2 mt-2">
-            <div class="inline-flex items-center gap-1 sm:gap-3 px-2 py-1 border border-neutral-divider rounded-full">
-              <button type="button" data-cart-step="-1" class="place-items-center grid shrink-0 w-8 h-8 text-[#062A1C]" aria-label="إنقاص">−</button>
+            <!-- p-1, matching the product page counter's uniform 4px inset
+                 between container and buttons - the px-2 py-1 it had gave
+                 8px sides against 4px verticals and read as a different
+                 control. Also 2px narrower, which the 320px budget likes. -->
+            <div class="inline-flex items-center gap-1 sm:gap-3 p-1 border border-neutral-divider rounded-full">
+              <button type="button" data-cart-step="-1" class="place-items-center grid shrink-0 w-8 h-8 text-[#062A1C]" aria-label="إنقاص"><span class="w-3.5 h-3.5">${ICON.minus}</span></button>
               <span class="w-4 text-sm text-center latin" data-line-qty-num>${it.qty}</span>
-              <button type="button" data-cart-step="1" class="place-items-center grid shrink-0 w-8 h-8 text-[#062A1C]" aria-label="زيادة">+</button>
+              <button type="button" data-cart-step="1" class="place-items-center grid shrink-0 bg-cta hover:bg-cta-hover rounded-full w-8 h-8 text-white transition-colors" aria-label="زيادة"><span class="w-3.5 h-3.5">${ICON.plus}</span></button>
             </div>
             <button type="button" data-cart-remove class="shrink-0 min-h-11 text-accent-error text-xs underline">حذف</button>
           </div>
         </div>
       </div>`;
+  }
+
+  /* ---------------------------------------------------------------
+     Per-card quantity stepper
+
+     Once a product is in the cart, its card swaps the add button for a
+     −/n/+ control, so the second unit is one tap away instead of a re-add
+     that gives no feedback. State comes from the same place as everything
+     else — the card's `data-id` against the store — so every card for the
+     same product on the page (rail + grid + upsell) stays in step, and the
+     control survives a reload with no extra persistence.
+
+     Driven off `cart:change`, so a change made in the drawer repaints the
+     cards and vice versa.
+     --------------------------------------------------------------- */
+  function syncCardSteppers(scope) {
+    (scope || document).querySelectorAll("[data-card-stepper]").forEach((stepper) => {
+      const card = stepper.closest("[data-product]");
+      if (!card) return;
+      // Sibling lookup, not a card-wide query: on the product page the
+      // outer [data-product] host also contains the related-products rail,
+      // whose cards have add buttons of their own.
+      const addBtn = stepper.parentElement.querySelector("[data-add-to-cart]");
+      const it = Cart.find(card.dataset.id);
+      stepper.hidden = !it;
+      if (addBtn) addBtn.hidden = !!it;
+      const num = stepper.querySelector("[data-card-qty]");
+      if (it && num && num.textContent !== String(it.qty)) {
+        // Rolls in the direction the quantity moved — see rollTo above.
+        rollTo(num, it.qty, it.qty > (parseInt(num.textContent, 10) || 0) ? 1 : -1);
+      }
+    });
+  }
+
+  /* ---------------------------------------------------------------
+     Points discount (the "خصم المبلغ" banner on cart and checkout)
+
+     Stored, not held in a variable: the shopper applies it on the cart page
+     and expects checkout to remember. The amount comes off the banner's own
+     data attribute at click time; nothing here knows what a point is worth.
+     Demo state like the points balance itself — see DESIGN-NOTES.
+     --------------------------------------------------------------- */
+  const POINTS_KEY = "abuauf:pointsDiscount";
+  const pointsDiscount = () => Number(localStorage.getItem(POINTS_KEY)) || 0;
+
+  function syncPointsUI() {
+    const d = pointsDiscount();
+    document.querySelectorAll("[data-points-apply]").forEach((b) => {
+      b.textContent = d ? t("إلغاء الخصم") : t("خصم المبلغ");
+      b.setAttribute("aria-pressed", d ? "true" : "false");
+    });
+    // The banner's message follows the state: spent points must not keep
+    // being offered as available.
+    document.querySelectorAll("[data-points-idle]").forEach((el) => (el.hidden = !!d));
+    document.querySelectorAll("[data-points-used]").forEach((el) => (el.hidden = !d));
+    /* Deliberately no totals work here. The checkout summary used to be
+       static build-time markup with its own data-base-total, so this function
+       carried a second, parallel set of totals hooks. It now carries the cart
+       page's hooks instead: renderCart owns every figure on both pages, and
+       every caller of this function already calls it. One renderer to keep
+       correct rather than two to keep agreeing. */
   }
 
   function renderCart() {
@@ -2138,12 +2881,19 @@
     const shortfall = Math.max(0, MIN_ORDER - sub);
     const belowMin = shortfall > 0;
     const empty = items.length === 0;
+    // Capped at the order's own worth — a 100 EGP wallet against a 60 EGP
+    // basket discounts 60, it does not owe the shopper money.
+    const discount = empty ? 0 : Math.min(pointsDiscount(), sub + DELIVERY_FEE);
 
     /* Badge — every cart button on the page.
        While a ghost is mid-flight the badge is held at its old value, so the
        number ticks up at the moment the item lands rather than before it has
        left. State is still the truth; only the display waits. */
     if (!badgeHold) syncCartBadges();
+
+    // The card stepper is the thing being pressed, so it is NOT held back
+    // with the badge — its number has to answer the tap immediately.
+    syncCardSteppers();
 
     /*
      * Keyed reconcile rather than innerHTML replacement. Blowing the list away
@@ -2157,10 +2907,9 @@
       host.querySelectorAll("[data-cart-static]").forEach((el) => el.remove());
       let emptyMsg = host.querySelector("[data-cart-empty]");
       if (empty && !emptyMsg) {
-        emptyMsg = document.createElement("p");
+        emptyMsg = document.createElement("div");
         emptyMsg.setAttribute("data-cart-empty", "");
-        emptyMsg.className = "py-10 text-neutral-secondary text-sm text-center";
-        emptyMsg.textContent = "سلتك فارغة.";
+        emptyMsg.innerHTML = cartEmptyHTML();
         host.appendChild(emptyMsg);
       } else if (!empty && emptyMsg) {
         emptyMsg.remove();
@@ -2182,7 +2931,9 @@
           const qtyNum = row.querySelector("[data-line-qty-num]");
           if (price) price.textContent = egp(it.price * it.qty);
           if (qtyTxt) qtyTxt.textContent = it.qty;
-          if (qtyNum) qtyNum.textContent = it.qty;
+          if (qtyNum) {
+            rollTo(qtyNum, it.qty, it.qty > (parseInt(qtyNum.textContent, 10) || 0) ? 1 : -1);
+          }
         }
         // Keep DOM order in step with state order.
         if (host.children[i] !== row) host.insertBefore(row, host.children[i] || null);
@@ -2195,7 +2946,9 @@
 
     /* Totals + checkout gating, drawer and cart page alike. */
     document.querySelectorAll("[data-cart-subtotal]").forEach((el) => (el.textContent = egp(sub)));
-    document.querySelectorAll("[data-cart-total]").forEach((el) => (el.textContent = egp(empty ? 0 : sub + DELIVERY_FEE)));
+    document.querySelectorAll("[data-cart-total]").forEach((el) => (el.textContent = egp(empty ? 0 : sub + DELIVERY_FEE - discount)));
+    document.querySelectorAll("[data-cart-discount-row]").forEach((el) => (el.hidden = !discount));
+    document.querySelectorAll("[data-cart-discount]").forEach((el) => (el.textContent = "− " + egp(discount)));
     document.querySelectorAll("[data-cart-shortfall]").forEach((el) => (el.textContent = egp(shortfall)));
     document.querySelectorAll("[data-cart-warning]").forEach((el) => (el.hidden = !belowMin || empty));
     document.querySelectorAll("[data-cart-checkout]").forEach((el) => {
@@ -2206,12 +2959,81 @@
     });
   }
 
+  /*
+   * Throw a product's image into the cart button and tick the badge when it
+   * lands. Returns whether a flight actually started, because the caller has
+   * to know: the badge is held from BEFORE the mutation until the landing, so
+   * a hold with no flight to release it would freeze the number forever.
+   */
+  function throwToCart(sourceEl, opts) {
+    const target = visibleCartButton();
+    if (!sourceEl || !target || reduceMotion()) return false;
+    badgeHold++;
+    flyTo(sourceEl, target, null, opts).then(() => {
+      badgeHold = Math.max(0, badgeHold - 1);
+      if (badgeHold) return;
+      // syncCartBadges rolls the badge to its new number, so the badge is not
+      // ALSO pulsed — a pulse started a frame later would take over the
+      // transform and cut the roll off mid-slide. The button itself takes the
+      // catch instead: a small squash, plus the glyph's pulse.
+      syncCartBadges();
+      squash(target);
+      const glyph = target.querySelector("[data-cart-glyph]");
+      if (glyph) pulse(glyph);
+    });
+    return true;
+  }
+
+  /* The bundle total has to answer the checkboxes. It was baked at build
+     time, so unticking a companion left the figure claiming a price for
+     something you had just declined to buy. */
+  function syncBundleTotal() {
+    document.querySelectorAll("[data-bundle]").forEach((box) => {
+      const out = box.querySelector("[data-bundle-total]");
+      if (!out) return;
+      let sum = Number(box.dataset.bundleBase) || 0;
+      box.querySelectorAll("[data-bundle-item]").forEach((row) => {
+        const check = row.querySelector("[data-bundle-check]");
+        if (check && !check.checked) return;
+        sum += Number(row.dataset.price) || 0;
+      });
+      out.textContent = egp(sum);
+    });
+  }
+
   function initCartUI() {
     Cart.init();
     document.addEventListener("cart:change", renderCart);
     renderCart();
+    syncBundleTotal();
+    document.addEventListener("change", (e) => {
+      if (e.target.closest("[data-bundle-check]")) syncBundleTotal();
+    });
+    // A discount applied on a previous page (cart -> checkout) must paint on
+    // arrival, not wait for the first click.
+    syncPointsUI();
 
     document.addEventListener("click", (e) => {
+      /* خصم المبلغ — apply the wallet-points discount, or press again to
+         take it back. The mutation is a stored number plus a repaint; the
+         same handler serves the cart page and checkout. */
+      const applyPoints = e.target.closest("[data-points-apply]");
+      if (applyPoints) {
+        const banner = applyPoints.closest("[data-points-banner]");
+        const amount = Number(banner && banner.dataset.pointsDiscount) || 0;
+        if (pointsDiscount()) {
+          localStorage.removeItem(POINTS_KEY);
+          toast("تم إلغاء خصم النقاط");
+        } else if (amount > 0) {
+          localStorage.setItem(POINTS_KEY, String(amount));
+          toast("تم خصم " + egp(amount) + " من الإجمالي");
+        }
+        syncPointsUI();
+        renderCart();
+        pulse(applyPoints);
+        return;
+      }
+
       const add = e.target.closest("[data-add-to-cart]");
       if (add) {
         const product = productFrom(add);
@@ -2222,28 +3044,73 @@
 
         /* Send the product image to the cart, and hold the badge at its old
            number until it lands. The mutation itself is not delayed — the
-           store updates now, only the badge waits, so nothing can desync. */
+           store updates now, only the badge waits, so nothing can desync.
+           The hold has to start BEFORE the mutation, or Cart.add's
+           `cart:change` repaints the badge on the way past. */
         const img = scope.querySelector && scope.querySelector("img");
-        const target = visibleCartButton();
-        const willFly = img && target && !reduceMotion();
-        if (willFly) badgeHold++;
+        const qty = qtyEl ? parseInt(qtyEl.textContent, 10) : 1;
+        throwToCart(img, { card: true, tag: "+" + qty });
 
-        Cart.add(product, qtyEl ? parseInt(qtyEl.textContent, 10) : 1);
+        Cart.add(product, qty);
         toast("تمت الإضافة إلى السلة");
-
-        if (willFly) {
-          flyTo(img, target).then(() => {
-            badgeHold = Math.max(0, badgeHold - 1);
-            if (!badgeHold) {
-              syncCartBadges();
-              pulse(target.querySelector("[data-cart-count]") || target);
-              const glyph = target.querySelector("[data-cart-glyph]");
-              if (glyph) pulse(glyph);
-            }
-          });
-        }
         return;
       }
+
+      /* "أضف الجميع الى السلة" — the frequently-bought-together block.
+         Adds this product plus every companion still ticked, in one go and
+         with one flight, rather than three separate ghosts racing each
+         other. Nothing ticked still adds the product being viewed, which is
+         what the total says it will do. */
+      const bundleAdd = e.target.closest("[data-bundle-add]");
+      if (bundleAdd) {
+        const box = bundleAdd.closest("[data-bundle]");
+        if (!box) return;
+        const picks = [];
+        const base = productFrom(box);
+        if (base) picks.push(base);
+        box.querySelectorAll("[data-bundle-item]").forEach((row) => {
+          const check = row.querySelector("[data-bundle-check]");
+          if (check && !check.checked) return;
+          const prod = productFrom(row);
+          if (prod) picks.push(prod);
+        });
+        if (!picks.length) return;
+        const img = box.querySelector("[data-bundle-item] img") || box.querySelector("img");
+        throwToCart(img, { card: true, tag: "+" + picks.length });
+        picks.forEach((prod) => Cart.add(prod, 1));
+        toast(picks.length + " " + t("منتجات أُضيفت إلى السلة"));
+        return;
+      }
+
+      /* Card stepper. Every increment throws another one across the page —
+         the reward for pressing + is the same little flight, not a number
+         that quietly changes. Stepping below 1 drops the line, which puts
+         the add button back. */
+      const cardStep = e.target.closest("[data-card-step]");
+      if (cardStep) {
+        const product = productFrom(cardStep);
+        if (!product) return;
+        const card = cardStep.closest("[data-product]");
+        const delta = parseInt(cardStep.dataset.cardStep, 10);
+        const it = Cart.find(product.id);
+        const next = (it ? it.qty : 0) + delta;
+
+        if (next < 1) {
+          Cart.remove(product.id);
+          toast("تمت الإزالة من السلة");
+          return;
+        }
+        if (delta > 0) throwToCart(card && card.querySelector("img"), { card: true, quick: true, tag: "+1" });
+        if (it) Cart.setQty(product.id, next);
+        else Cart.add(product, 1);
+
+        pulse(cardStep);
+        // The quantity itself is NOT pulsed here any more: syncCardSteppers
+        // rolls it directionally on the same tick, and a pulse started after
+        // the roll would win the transform and cancel it mid-slide.
+        return;
+      }
+
       const step = e.target.closest("[data-cart-step]");
       if (step) {
         const line = step.closest("[data-cart-line]");
@@ -2550,12 +3417,246 @@
     apply(current, select ? select.value : "popular");
   }
 
+  /* ---------------------------------------------------------------
+     Order notes, referral copy, addresses
+
+     Three controls that shipped as dead markup and now do what they say
+     (Ahmed pressed all three, 2026-07-22). Same store discipline as the
+     cart: localStorage state, render as a pure function of it.
+     --------------------------------------------------------------- */
+  const NOTE_KEY = "abuauf:orderNote";
+
+  function initOrderNotes() {
+    document.querySelectorAll("[data-order-note]").forEach((ta) => {
+      try {
+        ta.value = localStorage.getItem(NOTE_KEY) || "";
+      } catch (e) {
+        /* ignore */
+      }
+    });
+    document.addEventListener("click", (e) => {
+      const save = e.target.closest("[data-order-note-save]");
+      if (!save) return;
+      const ta = (save.closest("div") || document).querySelector("[data-order-note]");
+      if (!ta) return;
+      const note = ta.value.trim();
+      try {
+        if (note) localStorage.setItem(NOTE_KEY, note);
+        else localStorage.removeItem(NOTE_KEY);
+      } catch (err) {
+        /* ignore */
+      }
+      toast(note ? "تمت إضافة ملاحظتك على الطلب" : "تمت إزالة الملاحظات");
+      pulse(save);
+    });
+  }
+
+  function initReferralCopy() {
+    /* navigator.clipboard.writeText rejects in more places than you would
+       think (unfocused document, older WebViews), so a hidden-textarea
+       execCommand copy backs it up — and the copied state must only ever
+       paint when one of the two actually took. */
+    function copyText(text) {
+      const legacy = () => {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.cssText = "position:fixed;top:-9999px;opacity:0";
+        document.body.appendChild(ta);
+        ta.select();
+        let ok = false;
+        try {
+          ok = document.execCommand("copy");
+        } catch (err) {
+          ok = false;
+        }
+        ta.remove();
+        return ok;
+      };
+      /* writeText does not merely reject in awkward contexts — with a
+         pending permission decision it can simply never settle, which left
+         the button frozen on neither branch. So it races a short timer:
+         whoever finishes first wins, and the timer path still sits inside
+         the click's transient user activation, which execCommand needs. */
+      return new Promise((resolve, reject) => {
+        let settled = false;
+        const win = () => {
+          if (!settled) {
+            settled = true;
+            resolve();
+          }
+        };
+        const viaLegacy = () => {
+          if (settled) return;
+          if (legacy()) win();
+          else {
+            settled = true;
+            reject(new Error("copy failed"));
+          }
+        };
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text).then(win, viaLegacy);
+          setTimeout(viaLegacy, 350);
+        } else {
+          viaLegacy();
+        }
+      });
+    }
+
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-copy-ref]");
+      if (!btn || btn.dataset.copied) return;
+      const link = (btn.closest("div") || document).querySelector("[data-ref-link]");
+      const text = link ? link.textContent.trim() : "";
+      if (!text) return;
+      copyText(text).then(
+        () => {
+          /* The copied state lives on the button itself — a toast alone is
+             off in the corner, and the question being answered is "did THIS
+             button work". Reverts after a beat so it can be used again. */
+          btn.dataset.copied = "true";
+          const old = btn.textContent;
+          btn.textContent = t("تم النسخ ✓");
+          btn.classList.add("pointer-events-none");
+          setTimeout(() => {
+            btn.textContent = old;
+            btn.classList.remove("pointer-events-none");
+            delete btn.dataset.copied;
+          }, 2600);
+        },
+        () => toast("تعذر النسخ — انسخ الرابط يدوياً", "error"),
+      );
+    });
+  }
+
+  /*
+   * Addresses — the same contract as the cart and favourites stores: seeded
+   * from the page's two demo addresses, persisted under abuauf:addresses,
+   * and the grid re-rendered from state on every change. Exactly one address
+   * is main at all times: setting a new main clears the old one, deleting
+   * the main promotes the first survivor.
+   */
+  const ADDR_KEY = "abuauf:addresses";
+  const ADDR_SEED = [
+    { id: "a-home", label: "المنزل", line1: "شقة 3 - 220 شارع الحرية - الدور الأول", line2: "مصر الجديدة، القاهرة", main: true },
+    { id: "a-work", label: "العمل", line1: "مبنى 12 - شارع التسعين الشمالي", line2: "التجمع الخامس، القاهرة", main: false },
+  ];
+
+  function addrAll() {
+    try {
+      const v = JSON.parse(localStorage.getItem(ADDR_KEY));
+      if (Array.isArray(v)) return v;
+    } catch (e) {
+      /* fall through to seed */
+    }
+    return ADDR_SEED.map((a) => Object.assign({}, a));
+  }
+
+  function addrWrite(list) {
+    if (list.length && !list.some((a) => a.main)) list[0].main = true;
+    try {
+      localStorage.setItem(ADDR_KEY, JSON.stringify(list));
+    } catch (e) {
+      /* ignore */
+    }
+    renderAddresses();
+  }
+
+  function addressCardHTML(a) {
+    return `
+      <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]" data-address-card data-id="${esc(a.id)}">
+        <div class="flex justify-between items-center gap-3">
+          <h3 class="font-bold text-[#062A1C] text-base">${esc(a.label)}</h3>
+        </div>
+        <div class="flex flex-col gap-1 text-neutral-secondary text-sm">
+          <span>${esc(a.line1)}</span><span>${esc(a.line2)}</span>
+        </div>
+        ${a.main ? `<span class="bg-interaction-base px-3 py-1 rounded-full font-semibold text-primary text-xs self-start">${esc(t("العنوان الرئيسي"))}</span>` : ""}
+        <div class="flex gap-2">
+          <button type="button" data-address-edit class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">${esc(t("تعديل"))}</button>
+          <button type="button" data-address-remove class="px-4 py-1.5 font-semibold text-accent-error text-xs">${esc(t("حذف"))}</button>
+        </div>
+      </div>`;
+  }
+
+  function renderAddresses() {
+    const grid = document.querySelector("[data-addresses-grid]");
+    if (!grid) return;
+    const list = addrAll();
+    grid.innerHTML = list.length
+      ? list.map(addressCardHTML).join("")
+      : `<p class="col-span-full py-8 text-neutral-secondary text-sm">${esc(t("لا توجد عناوين محفوظة بعد."))}</p>`;
+  }
+
+  function openAddressForm(addr) {
+    const form = document.querySelector("[data-address-form]");
+    if (!form) return;
+    form.dataset.addressId = addr ? addr.id : "";
+    form.elements.label.value = addr ? addr.label : "";
+    form.elements.line1.value = addr ? addr.line1 : "";
+    form.elements.line2.value = addr ? addr.line2 : "";
+    form.elements.main.checked = addr ? !!addr.main : false;
+    // The main address cannot demote itself — there would be no main left.
+    form.elements.main.disabled = !!(addr && addr.main);
+    const title = document.querySelector("[data-address-form-title]");
+    if (title) title.textContent = addr ? t("تعديل العنوان") : t("اضف عنوان");
+    openOverlay("address");
+    setTimeout(() => form.elements.label.focus(), 80);
+  }
+
+  function initAddresses() {
+    if (!document.querySelector("[data-addresses-grid]")) return;
+    renderAddresses();
+
+    document.addEventListener("click", (e) => {
+      if (e.target.closest("[data-address-add]")) {
+        openAddressForm(null);
+        return;
+      }
+      const card = e.target.closest("[data-address-card]");
+      if (!card) return;
+      const list = addrAll();
+      const addr = list.find((a) => a.id === card.dataset.id);
+      if (!addr) return;
+      if (e.target.closest("[data-address-edit]")) {
+        openAddressForm(addr);
+      } else if (e.target.closest("[data-address-remove]")) {
+        addrWrite(list.filter((a) => a.id !== addr.id));
+        toast("تم حذف العنوان");
+      }
+    });
+
+    document.addEventListener("submit", (e) => {
+      const form = e.target.closest("[data-address-form]");
+      if (!form) return;
+      e.preventDefault();
+      const list = addrAll();
+      const id = form.dataset.addressId;
+      const entry = {
+        id: id || "a-" + Date.now(),
+        label: form.elements.label.value.trim(),
+        line1: form.elements.line1.value.trim(),
+        line2: form.elements.line2.value.trim(),
+        main: form.elements.main.checked,
+      };
+      if (!entry.label || !entry.line1 || !entry.line2) return;
+      if (entry.main) list.forEach((a) => (a.main = false));
+      const at = list.findIndex((a) => a.id === id);
+      if (at >= 0) list[at] = Object.assign({}, list[at], entry);
+      else list.push(entry);
+      addrWrite(list);
+      closeOverlay();
+      toast(id ? "تم تعديل العنوان" : "تمت إضافة العنوان");
+    });
+  }
+
   window.kInit = function (scope) {
     scope = scope || document;
     scope.querySelectorAll(".carousel").forEach(initCarousel);
     initAccordions(scope);
     initTabs(scope);
+    initGallery(scope);
     initSteppers(scope);
+    initSizeAndPrice(scope);
     initDemoForms(scope);
     initPasswordReveals(scope);
     initListing(scope);
@@ -2579,10 +3680,14 @@
     initDelegation();
     initStickyNav();
     initMegaMenu();
+    initSearch();
     initLangSwitcher();
     initCartUI();
     initAuthUI();
     initFavsUI();
+    initOrderNotes();
+    initReferralCopy();
+    initAddresses();
     // Must run after the chrome is in the DOM and after initFavsUI, so the
     // dictionary pass sees every string on the page. Without this call a
     // stored English preference only styled the chrome.

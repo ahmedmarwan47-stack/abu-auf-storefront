@@ -5,26 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>فروع أبو عوف | أبو عوف</title>
     <meta name="description" content="أكثر من 316 فرع لأبو عوف في مصر — اعثر على أقرب فرع إليك." />
-    <!-- Tailwind (Play CDN) + Abu Auf design system -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="tw-config.js"></script>
+    <meta name="theme-color" content="#163300" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta property="og:title" content="فروع أبو عوف | أبو عوف" />
+    <meta property="og:description" content="أكثر من 316 فرع لأبو عوف في مصر — اعثر على أقرب فرع إليك." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="أبو عوف" />
+    <meta property="og:locale" content="ar_EG" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Abu Auf design system. Tailwind is COMPILED AT BUILD TIME by
+         `npm run css` (config: tailwind.config.js) into tailwind.css. It used
+         to be the Play CDN, which Tailwind itself warns against in production:
+         that shipped ~120KB of JavaScript which then had to scan the DOM and
+         generate the stylesheet on every visit, so nothing was styled until it
+         finished — a flash of unstyled content on exactly the slow mobile
+         connections this storefront is for. Now it is one 30KB cacheable file.
+
+         ORDER IS LOAD-BEARING: tailwind.css first, styles.css second.
+         styles.css contains rules whose whole purpose is to beat a utility
+         ([hidden] !important, the focus ring re-armed over `outline-none`,
+         the sticky-nav selector). Reverse these two and they stop working. -->
+    <link rel="stylesheet" href="tailwind.css" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.webp" />
     <script defer src="scripts.js"></script>
   </head>
   <body data-page="branches" data-path="/branches" class="antialiased bg-white">
+    <!-- First focusable thing on the page. The header is three bands and a
+         mega-menu, so a keyboard shopper otherwise tabbed through the whole
+         of it on every page before reaching any content. Visually hidden
+         until focused. -->
+    <a href="#main" class="skip-link">تخطي إلى المحتوى</a>
+
     <!-- Shared header is injected here by scripts.js -->
     <div id="site-header"></div>
 
-    <main class="overflow-x-hidden">
-      <section class="pt-6">
+    <main id="main" tabindex="-1" class="overflow-x-hidden">
+      <section data-reveal class="pt-6">
         <div class="flex flex-col gap-4 mx-auto px-4 max-w-[1536px]">
           <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">الفروع</span></nav>
           <h1 class="font-bold text-[#062A1C] text-3xl xl:text-5xl">فروع أبو عوف</h1>
         </div>
       </section>
 
-      <section class="py-6">
+      <section data-reveal class="py-6">
         <div class="mx-auto px-4 max-w-[1536px]">
           <p class="mb-8 max-w-[720px] text-neutral-secondary text-base xl:text-lg leading-8">
             يوجد أكثر من <span class="latin">316</span> فرع لأبو عوف في
@@ -36,7 +60,7 @@
                  `.tab-btn` is shared with the product page, whose Figma keeps
                  the underlined treatment at every width. -->
             <div class="tabs-chips flex gap-6 mb-8 pb-1 border-neutral-divider border-b overflow-x-auto no-scrollbar"><button type="button" class="tab-btn is-active pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g0">القاهرة <span class="latin">(146)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g1">الجيزة <span class="latin">(58)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g2">الإسكندرية <span class="latin">(37)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g3">البحر الأحمر <span class="latin">(10)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g4">القليوبية <span class="latin">(10)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g5">الدقهلية <span class="latin">(9)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g6">الغربية <span class="latin">(6)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g7">بورسعيد <span class="latin">(5)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g8">السويس <span class="latin">(5)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g9">دمياط <span class="latin">(4)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g10">الشرقية <span class="latin">(4)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g11">المنيا <span class="latin">(3)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g12">أسيوط <span class="latin">(3)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g13">أسوان <span class="latin">(2)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g14">البحيرة <span class="latin">(2)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g15">دبي <span class="latin">(2)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g16">جنوب سيناء <span class="latin">(2)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g17">الفيوم <span class="latin">(1)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g18">كفر الشيخ <span class="latin">(1)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g19">الغردقة <span class="latin">(1)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g20">طنطا <span class="latin">(1)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g21">الشارقة <span class="latin">(1)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g22">الأقصر <span class="latin">(1)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g23">ديرا <span class="latin">(1)</span></button><button type="button" class="tab-btn pb-2 font-semibold text-sm whitespace-nowrap" data-tab="g24">المنوفية <span class="latin">(1)</span></button></div>
-            <div class="tab-panel" data-panel="g0"><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+            <div class="tab-panel" data-panel="g0"><h2 class="sr-only">القاهرة</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -1058,7 +1082,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Merghany</h3>
                   <p class="text-neutral-secondary text-sm leading-6">١٠٥ شارع السيد المرغني، مصر الجديدة بجوار تورتينا الحلوانى</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g1" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g1" hidden><h2 class="sr-only">الجيزة</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -1464,7 +1488,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Dokki</h3>
                   <p class="text-neutral-secondary text-sm leading-6">٦٢ شارع مصدق الدقي بجوار شاورما ابو رامز</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g2" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g2" hidden><h2 class="sr-only">الإسكندرية</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -1723,7 +1747,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Smouha</h3>
                   <p class="text-neutral-secondary text-sm leading-6">شارع ألبرت الاول - امام مستشفى بيت النعمه</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g3" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g3" hidden><h2 class="sr-only">البحر الأحمر</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -1793,7 +1817,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Sheraton Hurghada</h3>
                   <p class="text-neutral-secondary text-sm leading-6">مفارق أبو عشره شارع شيراتون امام بنك CIB - شيراتون الغردقة</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g4" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g4" hidden><h2 class="sr-only">القليوبية</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -1863,7 +1887,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Carrefour-Golf City&quot;Obour&quot;</h3>
                   <p class="text-neutral-secondary text-sm leading-6">طريق مصر اسماعيلية الصحراوى - جولف سيتى, مدينة العبور</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g5" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g5" hidden><h2 class="sr-only">الدقهلية</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -1926,7 +1950,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Mansoura Al-Mashya</h3>
                   <p class="text-neutral-secondary text-sm leading-6">شارع الجامعه المشايه السفليه امام نادى النيل</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g6" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g6" hidden><h2 class="sr-only">الغربية</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -1968,7 +1992,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Mall Of Tanta</h3>
                   <p class="text-neutral-secondary text-sm leading-6">مول طنطا بالمنطقة اللوجيستيه بسبرباي الدور التانى</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g7" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g7" hidden><h2 class="sr-only">بورسعيد</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -2003,7 +2027,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Albatros Mall</h3>
                   <p class="text-neutral-secondary text-sm leading-6">مول الباتروس من جهة الباركينج - شارع طرح البحر</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g8" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g8" hidden><h2 class="sr-only">السويس</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -2038,7 +2062,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Suez-Sporting City</h3>
                   <p class="text-neutral-secondary text-sm leading-6">برج مهاود شارع المدينة الرياضية, بجانب دوكلاند ,الملاحة الجديدة , محافظة السويس.</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g9" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g9" hidden><h2 class="sr-only">دمياط</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -2066,7 +2090,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Domiatt-El Bahr Street</h3>
                   <p class="text-neutral-secondary text-sm leading-6">عمارة رقم 141 -كورنيش النيل-زقاق النعماني-قسم رابع بندر دمياط</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g10" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g10" hidden><h2 class="sr-only">الشرقية</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -2094,7 +2118,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Hyper 10th Of Ramadan</h3>
                   <p class="text-neutral-secondary text-sm leading-6">طريق مصر-الإسماعيليه الصحراوي كيلو 52 , مدينة العاشر من رمضان , الشرقية</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g11" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g11" hidden><h2 class="sr-only">المنيا</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -2115,7 +2139,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Minya</h3>
                   <p class="text-neutral-secondary text-sm leading-6">شارع البحر بداخل فندق جراند اتون.المنيا</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g12" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g12" hidden><h2 class="sr-only">أسيوط</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -2136,7 +2160,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Asyut 1</h3>
                   <p class="text-neutral-secondary text-sm leading-6">تقسيم الحقوقيين - شارع الجامعه الازهريه (شارع الازهر - اسيوط ثان)</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g13" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g13" hidden><h2 class="sr-only">أسوان</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -2150,7 +2174,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Aswan</h3>
                   <p class="text-neutral-secondary text-sm leading-6">97 كورنيش النيل</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g14" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g14" hidden><h2 class="sr-only">البحيرة</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -2164,7 +2188,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Damanhour</h3>
                   <p class="text-neutral-secondary text-sm leading-6">١ ش الرويني من عبد السلام الشاذلي أمام بنك الإسكان و التعمير</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g15" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g15" hidden><h2 class="sr-only">دبي</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -2178,7 +2202,7 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Dubai Hills Mall</h3>
                   <p class="text-neutral-secondary text-sm leading-6">دبي هيلز مول -بجانب محل العربية للعود</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g16" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g16" hidden><h2 class="sr-only">جنوب سيناء</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
@@ -2192,56 +2216,56 @@
                   <h3 class="font-bold text-[#062A1C] text-base">Go Bus Mall-Sharm El Sheikh</h3>
                   <p class="text-neutral-secondary text-sm leading-6">حي النور بجوار مستشفي شرم الشيخ الدولي</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g17" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g17" hidden><h2 class="sr-only">الفيوم</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
                   <h3 class="font-bold text-[#062A1C] text-base">Fayom</h3>
                   <p class="text-neutral-secondary text-sm leading-6">مول دله أو The Get شارع جمال عبدالناصر بجوار RGS Tower للملابس و بجوار مطعم مصر</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g18" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g18" hidden><h2 class="sr-only">كفر الشيخ</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
                   <h3 class="font-bold text-[#062A1C] text-base">Kafr El-Sheikh</h3>
                   <p class="text-neutral-secondary text-sm leading-6">كفر الشيخ - شارع الجامعه امام كليه تربيه</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g19" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g19" hidden><h2 class="sr-only">الغردقة</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
                   <h3 class="font-bold text-[#062A1C] text-base">Go Bus Hurghada</h3>
                   <p class="text-neutral-secondary text-sm leading-6">شارع النصر - أمام ممشي النصر جو باص</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g20" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g20" hidden><h2 class="sr-only">طنطا</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
                   <h3 class="font-bold text-[#062A1C] text-base">Wadi Degla Tanta</h3>
                   <p class="text-neutral-secondary text-sm leading-6">طنطا الجلاء بجوار مساكن السلام نادى وادى دجلة بداخل النادى</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g21" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g21" hidden><h2 class="sr-only">الشارقة</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
                   <h3 class="font-bold text-[#062A1C] text-base">AlZahia Uptown Mall</h3>
                   <p class="text-neutral-secondary text-sm leading-6">الزاهية الشارقة - كومباوند اب تاون الزاهية أمام صيدلية ابن سينا - خلف مول سيتى سنتر الزاهية</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g22" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g22" hidden><h2 class="sr-only">الأقصر</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
                   <h3 class="font-bold text-[#062A1C] text-base">Luxor</h3>
                   <p class="text-neutral-secondary text-sm leading-6">2 شارع التلفزيون و المدينه المنوره بجوار فرع فودافون و محل منزلك</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g23" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g23" hidden><h2 class="sr-only">ديرا</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">
                   <h3 class="font-bold text-[#062A1C] text-base">City Centre Deira</h3>
                   <p class="text-neutral-secondary text-sm leading-6">وحده BR008 - بجانب الانصاري للصرافه - ديرا سيتي سنتر</p>
                 </div>
-              </article></div></div><div class="tab-panel" data-panel="g24" hidden><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
+              </article></div></div><div class="tab-panel" data-panel="g24" hidden><h2 class="sr-only">المنوفية</h2><div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">
               <article class="flex gap-3 bg-white shadow-custom4 p-5 rounded-2xl">
                 <span class="mt-0.5 text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
                 <div class="flex flex-col gap-1 min-w-0">

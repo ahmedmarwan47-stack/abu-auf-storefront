@@ -15,10 +15,54 @@ CATALOG_PATH = os.path.join(EXPORT, "data", "catalog.json")
 
 _data = json.load(open(CATALOG_PATH, encoding="utf-8"))
 
+
+def _clean_name(s):
+    """
+    Repair the two ways the scrape damages a product name.
+
+    The Store API returns English names with their entities still encoded
+    (`Gift Basket &#8220;Small&#8221;`). Those reach the page as attribute
+    values, so the language toggle painted the literal `&#8220;` on screen.
+
+    The Arabic names come out of the storefront's flight payload, where the
+    same quoted suffix is a JSON string escape — and for three products the
+    quoted part was lost and only its backslashes survived
+    (`سلة هدايا \\`). A trailing backslash is never part of a real name, so
+    strip it rather than print it.
+
+    Deliberately NOT rewritten into catalog.json: the scrapers own that file
+    and would undo it. Cleaning on load means a re-scrape stays fixed.
+    """
+    s = html.unescape(str(s or ""))
+    s = s.replace("\\", " ")
+    return " ".join(s.split())
+
+
+for _p in _data["products"]:
+    for _k in ("name", "nameAr"):
+        if _p.get(_k):
+            _p[_k] = _clean_name(_p[_k])
+    for _sz in _p.get("sizes") or []:
+        for _k in ("name", "nameAr", "label"):
+            if _sz.get(_k):
+                _sz[_k] = _clean_name(_sz[_k])
+
 PRODUCTS = _data["products"]
 CATEGORIES = _data["categories"]
 BY_API_NAME = {c["name"]: c for c in CATEGORIES}
 BY_SLUG = {c["slug"]: c for c in CATEGORIES if c.get("slug")}
+
+# Real branch count, read from the branches file rather than typed in, so the
+# product page's "N فرع" can never drift from branches.html.
+# The file is a list of GOVERNORATES, each holding its own branches — summing
+# the inner lists gives 316; taking len() of the outer one gives 25, which is
+# the governorate count and the easy mistake to make here.
+_BRANCHES_PATH = os.path.join(EXPORT, "data", "branches.json")
+try:
+    _govs = json.load(open(_BRANCHES_PATH, encoding="utf-8"))
+    BRANCH_COUNT = sum(len(g.get("branches") or []) for g in _govs)
+except (OSError, AttributeError, TypeError, ValueError):
+    BRANCH_COUNT = 0
 
 
 def e(s):

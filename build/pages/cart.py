@@ -8,38 +8,52 @@ from components import (
 SLUG = "cart.html"
 
 DELIVERY_FEE = 30.0
-MIN_ORDER = 150.0
+# No MIN_ORDER here any more. The minimum is a runtime rule now that the
+# below-minimum state is painted from the live basket rather than the
+# build-time one, so scripts.js owns the single copy of it (MIN_ORDER = 150).
+# Keeping a second constant here would only be a number to drift.
 
 
 def build():
     items = [(p, 1) for p in in_category("Dates & Dried Fruits", 3)]
     subtotal = sum(p["price"] * q for p, q in items)
     total = subtotal + DELIVERY_FEE
-    short = max(0, MIN_ORDER - subtotal)
 
     lines = "".join(cart_line(p, q) for p, q in items)
     more = rail_products("Nuts | Seeds & Crackers", "Snacks", limit=10)
 
+    # Live control: scripts.js persists the note under abuauf:orderNote and
+    # prefills it on the way back — the button used to do nothing at all.
     note_panel = """
                       <div class="flex flex-col gap-3">
-                        <textarea rows="3" placeholder="أضف ملاحظة"
+                        <!-- aria-label, not placeholder alone: a placeholder
+                             disappears the moment you type, so it cannot be
+                             the field's accessible name. -->
+                        <textarea rows="3" placeholder="أضف ملاحظة" aria-label="ملاحظات على الطلب" data-order-note
                                   class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-sm transition-colors"></textarea>
-                        <button type="button" class="bg-cta hover:bg-cta-hover px-6 py-2 rounded-full font-semibold text-white text-sm transition-colors self-end">أضف</button>
+                        <button type="button" data-order-note-save class="bg-cta hover:bg-cta-hover px-6 py-2 rounded-full font-semibold text-white text-sm transition-colors self-end">أضف</button>
                       </div>"""
 
-    below_min = short > 0
+    # The basket is client state, so whether this button is usable cannot be
+    # decided here. It used to pick between a disabled <button> and a live <a>
+    # from the build-time subtotal and then never change — which shipped a
+    # fully live "أطلب الآن" that carried an EMPTY basket through to checkout,
+    # while the drawer's own smaller CTA beside it was correctly greyed out.
+    #
+    # Always the anchor now, tagged data-cart-checkout, and renderCart gates
+    # it on every cart:change exactly as it already gated the drawer's.
     order_btn = (
-        f'<button type="button" disabled class="bg-neutral-disabled py-4 rounded-full w-full '
-        f'font-semibold text-white text-base cursor-not-allowed">أطلب الآن</button>'
-        if below_min else
-        '<a href="checkout.html" class="block bg-cta hover:bg-cta-hover py-4 rounded-full '
-        'w-full font-semibold text-white text-base text-center transition-colors">أطلب الآن</a>'
+        '<a href="checkout.html" data-cart-checkout class="block bg-cta hover:bg-cta-hover '
+        'py-4 rounded-full w-full font-semibold text-white text-base text-center '
+        'transition-colors">أطلب الآن</a>'
     )
+    # Same reasoning: always rendered, hidden by default, and shown with the
+    # live shortfall by renderCart via data-cart-warning/data-cart-shortfall.
     warning = (
-        f'<p class="flex items-start gap-2 text-accent-error text-xs leading-5">'
-        f'<span aria-hidden="true">⚠</span>'
-        f'متبقي <span class="latin">EGP {money(short)}</span> لاستكمال الحد الأدنى للطلب</p>'
-        if below_min else ""
+        '<p data-cart-warning hidden class="flex items-start gap-2 text-accent-error '
+        'text-xs leading-5"><span aria-hidden="true">⚠</span>'
+        'متبقي <span class="latin" data-cart-shortfall></span> '
+        'لاستكمال الحد الأدنى للطلب</p>'
     )
 
     body = f"""{page_header("سلة التسوق", [("الرئيسية", "index.html"), ("سلة التسوق", None)])}
@@ -63,6 +77,14 @@ def build():
                 <div class="flex justify-between">
                   <span class="text-neutral-secondary">الإجمالي</span>
                   <span class="font-semibold text-[#062A1C] latin" data-cart-subtotal>EGP {money(subtotal)}</span>
+                </div>
+                <!-- Points discount — hidden until the banner below applies
+                     it; renderCart owns both the visibility and the figure. -->
+                <div class="flex justify-between items-center" data-cart-discount-row hidden>
+                  <span class="text-neutral-secondary">خصم النقاط</span>
+                  <!-- The green counterpart of the yellow price chip: a saving
+                       is good news and should read as one at a glance. -->
+                  <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
                 </div>
               </div>
               <button type="button" class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">

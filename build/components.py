@@ -15,6 +15,8 @@ Split of responsibilities:
   * Everything else (page content) is composed from the functions below and
     baked into static HTML so pages stay standalone and work from file://.
 """
+import re
+
 from catalog import e, money, title
 
 # --------------------------------------------------------------------------
@@ -43,6 +45,58 @@ ICON = {
     "chevron": '<svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">'
                '<path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" '
                'stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    # --- Product-page trust row and social proof -------------------------
+    # Wrapper-driven like everything else in here: no size class on the svg,
+    # `currentColor` throughout, so the caller owns colour and scale.
+    "star": '<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full">'
+            '<path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 '
+            '6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg>',
+    "flame": '<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full">'
+             '<path d="M12.9 2.3c.26 2.2-.53 3.63-1.86 4.9-1.3 1.24-2.9 2.4-3.7 4.6a6.9 6.9 0 0 0 '
+             '2.03 7.7c-.5-1.5-.3-3.1.86-4.2.9-.86 1.5-1.7 1.8-2.8.9 1 1.5 2 1.7 3.2.2 1.2 0 2.4-.5 3.6a6.9 '
+             '6.9 0 0 0 3.6-6.2c-.05-3.6-2.3-5.9-3.94-10.8Z"/></svg>',
+    "truck": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+             '<path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h8A1.5 1.5 0 0 1 14 7.5V16H3V7.5Z" '
+             'stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
+             '<path d="M14 10h3.2c.4 0 .8.18 1.1.5l2.2 2.4c.3.3.5.7.5 1.1V16h-7v-6Z" '
+             'stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
+             '<circle cx="7" cy="17.5" r="1.9" stroke="currentColor" stroke-width="1.6"/>'
+             '<circle cx="17" cy="17.5" r="1.9" stroke="currentColor" stroke-width="1.6"/></svg>',
+    "return": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+              '<path d="M4 5v5h5" stroke="currentColor" stroke-width="1.7" '
+              'stroke-linecap="round" stroke-linejoin="round"/>'
+              '<path d="M4.6 10a8 8 0 1 1-.4 5" stroke="currentColor" stroke-width="1.7" '
+              'stroke-linecap="round"/></svg>',
+    "leaf": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+            '<path d="M20 4c0 9-5.2 13-11 13a5.6 5.6 0 0 1-5-2.6C6.5 7.6 12.3 4.6 20 4Z" '
+            'stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
+            '<path d="M4 20c1.6-4.6 4.6-7.7 9-9.6" stroke="currentColor" stroke-width="1.6" '
+            'stroke-linecap="round"/></svg>',
+    "bolt": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+            '<path d="M13.2 2.5 5 13.4h5.6L9.8 21.5 18 10.6h-5.6l.8-8.1Z" stroke="currentColor" '
+            'stroke-width="1.6" stroke-linejoin="round"/></svg>',
+    # Stepper glyphs. SVG, not the ASCII −/+ they replace: a text glyph sits
+    # on a baseline inside a line box, so grid-centring the box still leaves
+    # the mark itself optically off-centre (Ahmed flagged it on the product
+    # stepper). A viewBox-centred path has no baseline to drift on.
+    "plus": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+            '<path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" '
+            'stroke-linecap="round"/></svg>',
+    "minus": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+             '<path d="M5 12h14" stroke="currentColor" stroke-width="2.2" '
+             'stroke-linecap="round"/></svg>',
+    "shield": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+              '<path d="M12 3.2 5 5.8v5.4c0 4.2 2.9 7.6 7 9.6 4.1-2 7-5.4 7-9.6V5.8L12 3.2Z" '
+              'stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
+              '<path d="m9.2 11.8 2 2 3.6-3.8" stroke="currentColor" stroke-width="1.6" '
+              'stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    "store": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+             '<path d="M4 9.5V19a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9.5" stroke="currentColor" '
+             'stroke-width="1.6" stroke-linejoin="round"/>'
+             '<path d="M3.2 6.2 4.6 4h14.8l1.4 2.2a3 3 0 0 1-5.4 2.6 3 3 0 0 1-5.4 0 3 3 0 0 1-5.4 0 '
+             '3 3 0 0 1-1.4-2.6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
+             '<path d="M10 20v-4.5h4V20" stroke="currentColor" stroke-width="1.6" '
+             'stroke-linejoin="round"/></svg>',
 }
 
 
@@ -90,7 +144,7 @@ def carousel(slides_html, gap=24, arrows_top="130px", autoplay=False, dots=False
             <button type="button" class="hidden xl:grid top-[{arrows_top}] -end-5 absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-next" aria-label="التالي">
               <span class="ltr:scale-flip">{ICON['arrow']}</span>
             </button>
-            {'<div class="flex justify-center gap-2 mt-4 carousel-dots"></div>' if dots else ''}
+            {'<div class="flex justify-center mt-4 carousel-dots"></div>' if dots else ''}
           </div>"""
 
 
@@ -148,18 +202,29 @@ def sort_select(options, label="ترتيب حسب"):
             <label class="inline-flex items-center gap-2 xl:bg-white px-0 xl:px-4 py-2 border border-transparent xl:border-neutral-divider rounded-full shrink-0">
               <span class="xl:hidden text-cta">{_SORT_ICON}</span>
               <span class="hidden xl:inline text-neutral-secondary text-sm">{e(label)}</span>
-              <select class="bg-transparent font-semibold text-[#062A1C] text-sm outline-none cursor-pointer appearance-none xl:appearance-auto border-0 xl:border xl:border-neutral-divider">{opts}</select>
+              <select class="select-sort bg-transparent font-semibold text-[#062A1C] text-sm outline-none cursor-pointer appearance-none xl:appearance-auto border-0 xl:border xl:border-neutral-divider">{opts}</select>
             </label>"""
 
 
 def page_header(heading, trail=None):
-    """Breadcrumb + page title block used by every inner page."""
+    """
+    Breadcrumb + page title block used by every inner page.
+
+    `heading` is empty on the pages that carry their own title further down
+    (product, blog post, account, auth). Those must emit NO h1 here: an empty
+    one is announced as a blank level-1 heading and left every one of those
+    113 pages with two h1s, the first of them silent.
+    """
     crumbs = f"{breadcrumb(trail)}" if trail else ""
+    head = (
+        f'\n          <h1 class="font-bold text-[#062A1C] text-3xl xl:text-5xl">{e(heading)}</h1>'
+        if heading
+        else ""
+    )
     return f"""
       <section class="pt-6">
         <div class="flex flex-col gap-4 mx-auto px-4 max-w-[1536px]">
-          {crumbs}
-          <h1 class="font-bold text-[#062A1C] text-3xl xl:text-5xl">{e(heading)}</h1>
+          {crumbs}{head}
         </div>
       </section>"""
 
@@ -173,16 +238,52 @@ def product_grid(products, cols="grid-cols-2 md:grid-cols-3 xl:grid-cols-4", att
 
 
 def rating(score="4.8", count=None):
-    hearts = "".join(f'<span class="text-accent-yellow">{ICON["heart_full"]}</span>' for _ in range(5))
+    """
+    Five marks that actually show the score. 4.8 draws four full and the fifth
+    filled 80% of the way across — a row of five identical full marks beside
+    the text "4.8" contradicts itself, which is what this used to do.
+
+    The partial mark is one glyph layered over another and clipped by width,
+    not a second half-glyph asset: the empty and full states stay the same
+    shape, so nothing can drift if the icon is ever redrawn. The clip is on the
+    INLINE axis via a logical inset, so in RTL it fills from the right like the
+    row does.
+
+    Marks are STARS by Ahmed's direction (2026-07-22). They started as the
+    brand heart; on the product page a row of hearts read as favourites, not
+    reviews — the same glyph the card's save button uses, one gesture away.
+    The heart stays for favourites only.
+    """
+    try:
+        value = float(score)
+    except (TypeError, ValueError):
+        value = 0.0
+
+    marks = []
+    for i in range(5):
+        # How much of THIS mark is filled: 1 for a whole one, the remainder on
+        # the boundary mark, 0 after it.
+        fill = max(0.0, min(1.0, value - i))
+        if fill >= 0.999:
+            marks.append(f'<span class="rating-mark is-full">{ICON["star"]}</span>')
+        elif fill <= 0.001:
+            marks.append(f'<span class="rating-mark">{ICON["star"]}</span>')
+        else:
+            pct = round(fill * 100)
+            marks.append(
+                f'<span class="rating-mark">{ICON["star"]}'
+                f'<span class="rating-mark__fill" style="width:{pct}%">{ICON["star"]}</span>'
+                f'</span>')
     tail = (f'<span class="text-neutral-secondary text-sm">(<span class="latin">{count}</span> تقييم)</span>'
             if count else "")
-    return (f'<div class="flex items-center gap-2">'
-            f'<span class="flex items-center gap-0.5">{hearts}</span>'
+    return (f'<div class="flex items-center gap-1.5">'
+            f'<span class="rating-marks flex items-center" role="img" '
+            f'aria-label="{e(score)} من 5">{"".join(marks)}</span>'
             f'<span class="font-semibold text-[#062A1C] text-sm latin">{e(score)}</span>{tail}</div>')
 
 
 def variant_chips(options, name="variant"):
-    """Size / weight selector. options: [(label, active)]"""
+    """Generic chip selector. options: [(label, active)] — no pricing."""
     items = "".join(
         f'<label class="cursor-pointer">'
         f'<input type="radio" name="{e(name)}" class="peer sr-only"{" checked" if active else ""} />'
@@ -194,12 +295,63 @@ def variant_chips(options, name="variant"):
     return f'<div class="flex flex-wrap gap-2">{items}</div>'
 
 
+def size_chips(p):
+    """
+    Real size options with real prices, from `sizes` in catalog.json
+    (written by `fetch_sizes.py` — each one is a separate live SKU).
+
+    Renders nothing at all unless the product genuinely has more than one size.
+    The three chips this replaces — 500/250/100 جم — were invented, inert, and
+    contradicted the 300 جم product they sat beneath.
+
+    Each chip carries the size's own price and product id, so scripts.js can
+    repoint the price AND the cart at the SKU actually chosen. Selecting 200 جم
+    must not add the 100 جم SKU to the basket.
+    """
+    sizes = p.get("sizes") or []
+    if len(sizes) < 2:
+        return ""
+
+    # Pre-select the size this page's product IS, not simply the first chip.
+    current = p.get("id")
+    if not any(str(s.get("id")) == str(current) for s in sizes):
+        current = sizes[0].get("id")
+
+    chips = "".join(
+        f'<label class="cursor-pointer">'
+        f'<input type="radio" name="size" class="peer sr-only"'
+        f'{" checked" if str(s.get("id")) == str(current) else ""} '
+        f'data-size-option data-size-id="{e(str(s.get("id")))}" '
+        f'data-size-price="{s.get("price", 0)}" data-size-label="{e(s.get("label", ""))}" />'
+        f'<span class="inline-flex items-center px-5 py-2 border border-neutral-divider rounded-full '
+        f'font-semibold text-[#062A1C] text-sm transition-colors peer-checked:bg-cta '
+        f'peer-checked:border-cta peer-checked:text-white latin">{e(s.get("label", ""))}</span>'
+        f'</label>'
+        for s in sizes
+    )
+    return f"""
+            <div class="flex flex-col gap-2">
+              <span class="font-semibold text-neutral-secondary text-xs">اختر الحجم</span>
+              <div class="flex flex-wrap gap-2" data-size-chips>{chips}
+              </div>
+            </div>"""
+
+
 def qty_stepper():
-    return """
-              <div data-stepper class="inline-flex items-center gap-1 border border-neutral-divider rounded-full overflow-hidden">
-                <button type="button" data-step="-1" class="place-items-center grid hover:bg-interaction-base size-11 font-bold text-[#062A1C] text-xl transition-colors" aria-label="إنقاص">−</button>
-                <span data-qty class="min-w-[2ch] font-semibold text-[#062A1C] text-base text-center latin">1</span>
-                <button type="button" data-step="1" class="place-items-center grid hover:bg-interaction-base size-11 font-bold text-[#062A1C] text-xl transition-colors" aria-label="زيادة">+</button>
+    """
+    The reference Ahmed supplied draws the stepper as a padded container with
+    the buttons as their own bordered shapes floating inside it — the padding
+    between container and buttons is the point. Ours keeps that construction
+    in this design system: circles rather than squares, the + carries the CTA
+    fill (it is the "more" affordance, the louder of the two), the − stays
+    quiet on a hairline. Buttons stay size-11: the reference's ~32px buttons
+    would regress the audited 44px tap-target floor.
+    """
+    return f"""
+              <div data-stepper class="inline-flex items-center gap-1 bg-white p-1 border border-neutral-divider rounded-full">
+                <button type="button" data-step="-1" class="place-items-center grid border border-neutral-divider hover:bg-interaction-base rounded-full size-11 text-[#062A1C] transition-colors" aria-label="إنقاص"><span class="w-5 h-5">{ICON['minus']}</span></button>
+                <span data-qty class="min-w-[2.5ch] font-bold text-[#062A1C] text-base text-center latin">1</span>
+                <button type="button" data-step="1" class="place-items-center grid bg-cta hover:bg-cta-hover rounded-full size-11 text-white transition-colors" aria-label="زيادة"><span class="w-5 h-5">{ICON['plus']}</span></button>
               </div>"""
 
 
@@ -218,35 +370,222 @@ def accordion(items, multi=False):
     return f'<div data-accordion{" data-accordion-multi" if multi else ""}>{rows}\n              </div>'
 
 
-def product_gallery(main_img, thumbs, alt):
-    """Main image with a thumbnail strip — RTL puts thumbs on the far side."""
-    thumb_html = "".join(f"""
-              <button type="button" class="bg-interaction-base p-2 border-2 {'border-cta' if i == 0 else 'border-transparent hover:border-neutral-divider'} rounded-xl w-20 h-20 shrink-0 transition-colors">
-                <img src="{e(t)}" alt="" class="w-full h-full object-contain" loading="lazy" />
-              </button>""" for i, t in enumerate(thumbs))
+def product_gallery(images, alt):
+    """
+    Main image with a selectable thumbnail strip — RTL puts thumbs on the far
+    side. `images` is the product's real `images` list from catalog.json, main
+    shot first; `fetch_galleries.py` fills it from the client's own CDN.
+
+    The strip is suppressed entirely at one image, because a lone thumbnail
+    under a photo reads as a broken carousel rather than a choice. 26 of the 99
+    products are in that state today (see DESIGN-NOTES) — they degrade to
+    exactly the single-image layout this page had before.
+
+    Selection state is `aria-pressed` on the button and nothing else, the same
+    contract the favourites heart uses, so the accessible state and the painted
+    state cannot drift; styles.css draws the ring off that selector.
+    """
+    images = [i for i in (images or []) if i]
+    if not images:
+        return ""
+    main_img = images[0]
+
+    # The main shot is a background-isolated cutout and has to sit INSIDE the
+    # plate with padding, contained. Every other shot is a real photograph with
+    # its own background, and containing those leaves the photo floating in a
+    # letterboxed island of #EDEFEB — the "weird appearance". Those fill the
+    # frame edge to edge instead. `fetch_galleries.py` puts gallery shots in
+    # their own directory, which is exactly the signal for which is which.
+    def _is_photo(path):
+        return "/gallery/" in path
+
+    if len(images) == 1:
+        strip = ""
+    else:
+        thumb_html = "".join(f"""
+                <button type="button" data-gallery-thumb aria-pressed="{'true' if i == 0 else 'false'}"
+                        aria-label="عرض الصورة {i + 1} من {len(images)}"
+                        data-fill="{'cover' if _is_photo(t) else 'contain'}"
+                        class="gallery-thumb bg-interaction-base rounded-xl w-20 h-20 shrink-0 overflow-hidden{'' if _is_photo(t) else ' p-2'}">
+                  <img src="{e(t)}" alt=""
+                       class="w-full h-full {'object-cover' if _is_photo(t) else 'object-contain'}" loading="lazy" />
+                </button>""" for i, t in enumerate(images))
+        # The vertical strip is capped to the height of the plate beside it and
+        # scrolls past that. Without the cap, nine 80px thumbnails stack 720px
+        # tall, make themselves the tallest thing in the row and drag the whole
+        # product header down with them — the richest galleries, which are the
+        # ones worth having, broke the layout worst. The cap is the plate's own
+        # box: p-6 + 300 at md, p-10 + 440 at xl.
+        strip = f"""
+            <div class="flex md:flex-col gap-3 md:max-h-[348px] xl:max-h-[520px]
+                        overflow-x-auto md:overflow-x-hidden md:overflow-y-auto no-scrollbar shrink-0">{thumb_html}
+            </div>"""
+
     return f"""
           <!-- DOM order puts the info column first so RTL lands it in the right
                column at lg. The Figma mobile product frame (918:34326) leads
                with the media, so pull it above the info below lg — visually
                only, leaving the desktop column order untouched. -->
-          <div class="flex md:flex-row flex-col-reverse gap-4 order-first lg:order-none min-w-0">
-            <div class="flex md:flex-col gap-3 overflow-x-auto no-scrollbar">{thumb_html}
-            </div>
-            <div class="flex-1 bg-interaction-base p-6 xl:p-10 rounded-[20px]">
-              <img src="{e(main_img)}" alt="{e(alt)}" class="mx-auto w-full max-w-[520px] h-[300px] xl:h-[440px] object-contain" />
+          <div data-gallery class="flex md:flex-row flex-col-reverse gap-4 order-first lg:order-none min-w-0">{strip}
+            <!-- The plate keeps its own padding for the cut-out main shot;
+                 scripts.js swaps data-fill to "cover" for the photographs,
+                 which drops the padding and lets them bleed to the rounded
+                 corners. Both states are the same box, so switching between
+                 them never resizes the column. -->
+            <!-- Fixed height on the PLATE, not the image, with border-box
+                 padding. The two fill modes then swap the padding without the
+                 outer box moving a pixel — otherwise switching to a photograph
+                 would shrink the column by the padding it just dropped, and
+                 the whole page would jump on every thumbnail click. The height
+                 is also what the thumbnail strip is capped to. -->
+            <div data-gallery-plate data-fill="{'cover' if '/gallery/' in main_img else 'contain'}"
+                 class="gallery-plate flex-1 bg-interaction-base rounded-[20px] min-w-0 overflow-hidden
+                        h-[348px] xl:h-[520px]">
+              <img data-gallery-main src="{e(main_img)}" alt="{e(alt)}"
+                   class="mx-auto w-full h-full" />
             </div>
           </div>"""
 
 
 # --------------------------------------------------------------------------
+# Social proof and reassurance
+# --------------------------------------------------------------------------
+# Below this rank a product stops being called a best seller. 20 of a real
+# 653-product store is the top ~3%, which keeps the badge meaning something —
+# a badge every product carries is decoration, not proof.
+BEST_SELLER_RANK = 20
+
+
+def best_seller_badge(p):
+    """
+    Renders only for products the client's own store actually ranks that high.
+    `popularityRank` comes from `fetch_popularity.py`, which walks the Store
+    API's `orderby=popularity` — WooCommerce's real total-sales ordering. A
+    product silently loses the badge when the client's sales say it should.
+    """
+    rank = p.get("popularityRank")
+    if not rank or rank > BEST_SELLER_RANK:
+        return ""
+    # self-start, or the badge stretches to the full column width: it is a
+    # child of a flex-col, where the default align-items is stretch and
+    # inline-flex does nothing to stop it.
+    #
+    # The glyph wrapper is `grid place-items-center` and the label gets
+    # `leading-none`, the same treatment the header icons needed. Without it
+    # the star sits on the text baseline rather than on the text's optical
+    # centre, and rides visibly low in the pill — Arabic ascenders make the
+    # line box taller than the glyph, so "align to the line" and "align to the
+    # letters" are not the same thing here.
+    #
+    # top-[2px]: Baloo Bhaijaan 2 carries a very deep descent (8px per 12px
+    # em against an ink descent of ~3px for this label), so a vertically
+    # centred line box paints the letters ~2px above the pill's optical
+    # centre — Ahmed read the text as hugging the top. Measured with canvas
+    # actualBoundingBox metrics, not eyeballed; the ink centre sits 1.9px
+    # above the box centre at text-xs. `relative`, because transforms do not
+    # apply to inline boxes.
+    return ('<span class="inline-flex self-start items-center gap-1.5 bg-accent-yellow px-3 py-1.5 '
+            'rounded-full font-bold text-[#062A1C] text-xs">'
+            f'<span class="place-items-center grid w-3.5 h-3.5 shrink-0">{ICON["star"]}</span>'
+            '<span class="relative top-[2px] leading-none">الأكثر مبيعاً</span></span>')
+
+
+def sold_proof(p):
+    """
+    The encouragement line beside the rating.
+
+    Deliberately a RANK, not a unit count. The live-site pattern this mirrors
+    reads "500+ sold this week", but no public endpoint carries absolute sales
+    volume, and inventing one would be exactly the kind of fabricated metric
+    this project keeps out. A rank is real, checkable, and carries the same
+    "other people are buying this" push. Swap it for a true count the moment
+    the client exposes one — see DESIGN-NOTES.
+    """
+    rank = p.get("popularityRank")
+    if not rank or rank > BEST_SELLER_RANK:
+        return ""
+    # Round up to a friendly bucket so the line reads as a claim, not a lookup.
+    bucket = 10 if rank <= 10 else BEST_SELLER_RANK
+    return ('<span class="inline-flex items-center gap-1.5 font-semibold text-accent-error text-sm">'
+            f'<span class="w-4 h-4 shrink-0">{ICON["flame"]}</span>'
+            f'ضمن أفضل <span class="latin">{bucket}</span> مبيعاً في أبو عوف</span>')
+
+
+def trust_row(items):
+    """
+    The icon/title/subtitle reassurance strip that sits under the CTA.
+
+    items: [(icon_key, title, subtitle)]. Every claim here must already be made
+    somewhere else on this site — these restate the delivery and returns policy
+    and the real branch count, rather than asserting new product claims like
+    "third-party tested" that nobody has signed off.
+    """
+    cells = "".join(f"""
+              <div class="flex flex-col items-center gap-2 text-center">
+                <span class="place-items-center grid bg-interaction-base rounded-full text-cta size-11 shrink-0">
+                  <span class="w-5 h-5">{ICON[icon]}</span>
+                </span>
+                <span class="font-semibold text-[#062A1C] text-sm leading-5">{e(title_)}</span>
+                <span class="text-neutral-secondary text-xs leading-4">{e(sub)}</span>
+              </div>""" for icon, title_, sub in items)
+    return f"""
+            <div class="gap-4 grid grid-cols-3 pt-1">{cells}
+            </div>"""
+
+
+# --------------------------------------------------------------------------
 # Forms — Figma 'Input Field' section (150:4622)
 # --------------------------------------------------------------------------
-def field(label, name, type_="text", required=False, value="", placeholder="", wrap=""):
+# Autofill tokens, inferred from the field name rather than passed at every
+# call site — the names are already semantic, and doing it here means no
+# checkout or auth field can be added later without one.
+#
+# Not cosmetic: with no autocomplete attribute anywhere, a browser or
+# password manager could not fill a single field on the 10-field checkout,
+# which on a phone is most of the work of ordering.
+_AUTOCOMPLETE = {
+    "first-name": "given-name",
+    "last-name": "family-name",
+    "name": "name",
+    "email": "email",
+    "phone": "tel",
+    "city": "address-level2",
+    "district": "address-level3",
+    "area": "address-level3",
+    "street": "address-line1",
+    "floor": "address-line2",
+    "apartment": "address-line2",
+    "line1": "address-line1",
+    "line2": "address-line2",
+    "postcode": "postal-code",
+}
+
+# type=tel already summons a numeric keypad; these are the free-text fields
+# that hold digits and would otherwise open a full QWERTY on a phone.
+_INPUTMODE = {"floor": "numeric", "apartment": "numeric", "postcode": "numeric"}
+
+
+def _field_hints(name, type_, autocomplete=None):
+    ac = autocomplete or _AUTOCOMPLETE.get(name)
+    if ac is None and type_ == "password":
+        ac = "current-password"
+    im = _INPUTMODE.get(name)
+    out = ""
+    if ac:
+        out += f' autocomplete="{e(ac)}"'
+    if im:
+        out += f' inputmode="{e(im)}"'
+    return out
+
+
+def field(label, name, type_="text", required=False, value="", placeholder="",
+          wrap="", autocomplete=None):
     star = '<span class="text-accent-error">*</span>' if required else ""
+    hints = _field_hints(name, type_, autocomplete)
     return f"""
                 <div class="flex flex-col gap-1.5 {wrap}">
                   <label for="{e(name)}" class="font-medium text-neutral-secondary text-sm">{e(label)}{star}</label>
-                  <input type="{e(type_)}" id="{e(name)}" name="{e(name)}"{' required' if required else ''}
+                  <input type="{e(type_)}" id="{e(name)}" name="{e(name)}"{' required' if required else ''}{hints}
                          value="{e(value)}" placeholder="{e(placeholder)}"
                          class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
                 </div>"""
@@ -255,31 +594,47 @@ def field(label, name, type_="text", required=False, value="", placeholder="", w
 def select_field(label, name, options, required=False, wrap=""):
     star = '<span class="text-accent-error">*</span>' if required else ""
     opts = "".join(f'<option value="{e(o)}">{e(o)}</option>' for o in options)
+    hints = _field_hints(name, "select")
     return f"""
                 <div class="flex flex-col gap-1.5 {wrap}">
                   <label for="{e(name)}" class="font-medium text-neutral-secondary text-sm">{e(label)}{star}</label>
-                  <select id="{e(name)}" name="{e(name)}"{' required' if required else ''}
-                          class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors">
+                  <select id="{e(name)}" name="{e(name)}"{' required' if required else ''}{hints}
+                          class="select-control bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors">
                     <option value="">اختر</option>{opts}
                   </select>
                 </div>"""
 
 
-def radio_card(name, value, heading, sub="", icon="", checked=False):
-    """Big selectable card — order type, delivery time, delivery method."""
+def radio_card(name, value, heading, sub="", icon="", checked=False, accent=False):
+    """Big selectable card — order type, delivery time, delivery method.
+
+    The trailing glyph is a real radio indicator (`.radio-dot`, styles.css),
+    not the chevron this used to end with — a chevron promises navigation,
+    but choosing here only selects (Ahmed asked for styled radio buttons,
+    2026-07-22). `h-full` on the face: paired cards share a flex row, so the
+    one without a subtitle used to stand shorter than its neighbour.
+
+    accent=True is the gift treatment — the icon sits on an accent-yellow
+    chip and the checked card takes a warm wash (`.radio-card-accent`), so
+    إهداء reads as an occasion while the default order stays logistics.
+    """
     sub_html = f'<span class="text-neutral-secondary text-xs">{e(sub)}</span>' if sub else ""
+    icon_html = (
+        f'<span class="place-items-center grid bg-accent-yellow rounded-full size-10 text-[#062A1C] shrink-0">{icon}</span>'
+        if accent else f'<span class="text-cta">{icon}</span>'
+    )
     return f"""
                 <label class="flex-1 cursor-pointer">
                   <input type="radio" name="{e(name)}" value="{e(value)}" class="peer sr-only"{' checked' if checked else ''} />
-                  <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors">
+                  <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full{' radio-card-accent' if accent else ''}">
                     <span class="flex items-center gap-3">
-                      <span class="text-cta">{icon}</span>
+                      {icon_html}
                       <span class="flex flex-col">
                         <span class="font-semibold text-[#062A1C] text-base">{e(heading)}</span>
                         {sub_html}
                       </span>
                     </span>
-                    <span class="text-neutral-outline rtl:scale-flip">{ICON['arrow']}</span>
+                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
                   </span>
                 </label>"""
 
@@ -305,31 +660,60 @@ def cart_line(p, qty=1, weight="250 جم"):
                   <span class="text-neutral-secondary text-xs">{e(weight)}</span>
                   <button type="button" class="mt-1 text-accent-error text-xs underline self-start">حذف</button>
                 </div>
-                <div data-stepper class="inline-flex items-center gap-1 border border-neutral-divider rounded-full shrink-0">
-                  <button type="button" data-step="-1" class="place-items-center grid size-9 font-bold text-[#062A1C] transition-colors hover:bg-interaction-base rounded-full" aria-label="إنقاص">−</button>
+                <div data-stepper class="inline-flex items-center gap-1 p-1 border border-neutral-divider rounded-full shrink-0">
+                  <button type="button" data-step="-1" class="place-items-center grid size-9 text-[#062A1C] transition-colors hover:bg-interaction-base rounded-full" aria-label="إنقاص"><span class="w-4 h-4">{ICON['minus']}</span></button>
                   <span data-qty class="min-w-[2ch] font-semibold text-[#062A1C] text-sm text-center latin">{qty}</span>
-                  <button type="button" data-step="1" class="place-items-center grid size-9 font-bold text-[#062A1C] transition-colors hover:bg-interaction-base rounded-full" aria-label="زيادة">+</button>
+                  <button type="button" data-step="1" class="place-items-center grid size-9 bg-cta hover:bg-cta-hover text-white transition-colors rounded-full" aria-label="زيادة"><span class="w-4 h-4">{ICON['plus']}</span></button>
                 </div>
                 <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin shrink-0">EGP {money(p['price'])}</span>
               </article>"""
 
 
-def points_banner(points=120, discount=12):
+def points_banner(points=100, discount=100):
+    """
+    Live control, not decoration: scripts.js applies `discount` to the cart
+    totals when the button is pressed and stores it under abuauf:pointsDiscount,
+    so it survives the trip from cart to checkout. Pressing again cancels it.
+    Defaults are 100/100 so the cart and checkout describe the SAME wallet —
+    they used to say 120 points on one page and 100 on the other.
+
+    The points themselves are demo state (no wallet endpoint exists) — see
+    DESIGN-NOTES. The button had no handler at all until Ahmed pressed it.
+    """
     return f"""
-            <div class="flex justify-between items-center gap-3 bg-accent-yellow p-4 rounded-xl">
-              <span class="font-semibold text-[#062A1C] text-sm leading-6">
+            <div data-points-banner data-points-discount="{discount}" class="flex justify-between items-center gap-3 bg-accent-yellow p-4 rounded-xl">
+              <!-- Two copies of the message, one per state, toggled by
+                   syncPointsUI. With one copy the banner kept promising
+                   "لديك 100 نقطة" AFTER the points were spent — the state
+                   changed under it and the words did not (Ahmed,
+                   2026-07-22). -->
+              <span class="font-semibold text-[#062A1C] text-sm leading-6" data-points-idle>
                 لديك <span class="latin">{points}</span> نقطة في محفظتك<br />ويمكنك خصم <span class="latin">EGP {discount}</span>
               </span>
-              <button type="button" class="bg-cta hover:bg-cta-hover px-4 py-2 rounded-full font-semibold text-white text-xs whitespace-nowrap transition-colors">خصم المبلغ</button>
+              <span class="font-semibold text-[#062A1C] text-sm leading-6" data-points-used hidden>
+                استخدمت <span class="latin">{points}</span> نقطة من محفظتك<br />وتم خصم <span class="latin">EGP {discount}</span> من الإجمالي
+              </span>
+              <button type="button" data-points-apply class="bg-cta hover:bg-cta-hover px-4 py-2 rounded-full font-semibold text-white text-xs whitespace-nowrap transition-colors">خصم المبلغ</button>
             </div>"""
 
 
 def bundle_item(p, checked=True):
-    """One row of the 'frequently bought together' checklist."""
+    """
+    One row of the 'frequently bought together' checklist.
+
+    Carries the full `data-product` payload. It used to be presentation only,
+    so the section's "أضف الجميع الى السلة" button had nothing to add:
+    productFrom() walks up to the nearest [data-product] and bails without
+    one, so the handler returned silently and the button did nothing — the
+    same defect already fixed once on the upsell rail in scripts.js.
+    """
     from catalog import money, title as _title
     return f"""
-                <label class="flex items-center gap-3 py-2 cursor-pointer">
-                  <input type="checkbox"{' checked' if checked else ''} class="accent-[#163300] shrink-0 rounded w-5 h-5" />
+                <label data-product data-bundle-item
+                       data-id="{e(p.get('id', 0))}" data-name="{e(_title(p))}"
+                       data-price="{e(p['price'])}" data-image="{e(p['image'])}"
+                       class="flex items-center gap-3 py-2 cursor-pointer">
+                  <input type="checkbox" data-bundle-check{' checked' if checked else ''} class="accent-[#163300] shrink-0 rounded w-5 h-5" />
                   <img src="{e(p['image'])}" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
                   <span class="flex-1 min-w-0 text-[#062A1C] text-sm leading-5 line-clamp-2">{e(_title(p))}</span>
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP {money(p['price'])}</span>
@@ -366,7 +750,7 @@ def product_card(p, slide=True):
     return f"""
           <article class="product-card {wrapper}" {keys}>
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-{p.get('id', 0)}.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="{e(p['image'])}" alt="{e(title(p))}"
                      class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
                 <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
@@ -374,13 +758,31 @@ def product_card(p, slide=True):
               </a>
               <div class="flex flex-col flex-1 gap-1.5 p-4">
                 <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product.html" data-product-title class="hover:text-primary transition-colors">{e(title(p))}</a>
+                  <a href="product-{p.get('id', 0)}.html" data-product-title class="hover:text-primary transition-colors">{e(title(p))}</a>
                 </h3>
                 <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
                   {old}
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP {money(p['price'])}</span>
                 </div>
-                <div class="flex items-center gap-2 pt-2">
+                <!-- flex-wrap + the SAME flex-basis on both controls.
+                     In the 2-column listing grid the card is 128.5px wide at
+                     320, so 96.5px of content — which fits neither the add
+                     button on one readable line nor the stepper beside the
+                     heart. An equal basis makes both wrap to their own line at
+                     the same width, so swapping one for the other never
+                     changes the card's height.
+
+                     basis, NOT min-width: basis drives the line break AND
+                     still lets the control shrink once it is alone on its
+                     line. min-width did one or the other, never both — at 104
+                     it overflowed the 96.5px card at 320, and at 88 it stayed
+                     wedged beside the heart at 414 and squeezed the taps to
+                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
+
+                     `grow shrink basis-*` rather than `flex-1 basis-*`:
+                     Tailwind emits the `flex` shorthand after `basis`, so
+                     flex-1 would quietly reset the basis to 0. -->
+                <div class="flex flex-wrap items-center gap-2 pt-2">
                   <!-- Saved state is carried by aria-pressed alone, so the
                        accessible state and the painted state cannot drift;
                        styles.css swaps the icon off that selector. -->
@@ -388,7 +790,38 @@ def product_card(p, slide=True):
                           class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
                           >{ICON['heart']}{ICON['heart_full']}</button>
                   <button type="button" data-add-to-cart
-                          class="btn-elevate flex-1 bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                  <!-- Shown by scripts.js once the product is in the cart, in
+                       place of the add button. `hidden` is safe to toggle on a
+                       flex container here only because styles.css forces
+                       display:none on [hidden] with !important. -->
+                  <!-- The number is flex-1 with NO min-w-0, so its own text is
+                       its floor and it can never be crushed narrower than the
+                       digits — the sweep caught exactly that at 414, a 5px
+                       overflow inside the span. The buttons are the ones that
+                       give, down to a 36px floor, which only ever happens at a
+                       three-digit quantity on a 320px screen. -->
+                  <!-- Colour lives in styles.css, not here: this is the light
+                       counterpart of the solid CTA button it replaces — the
+                       brand's light surface with the CTA green as the ink, so
+                       an item already in the cart reads as settled rather than
+                       shouting as loudly as the button that put it there. -->
+                  <div data-card-stepper hidden
+                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                    <!-- The visible circle is the inner .stepper-face, NOT the
+                         button. The face is 36px, inset 4px like the product
+                         page's padded counter, while the button stays the
+                         full 44px of the control's height — the padding is
+                         painted, the tap target is not reduced. Shrinking the
+                         button itself would regress the audited 44px floor,
+                         and growing the control would resize the card on the
+                         add-button swap. -->
+                    <button type="button" data-card-step="-1" aria-label="إنقاص"
+                            class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4">{ICON['minus']}</span></span></button>
+                    <span data-card-qty class="flex-1 font-bold text-base text-center latin">1</span>
+                    <button type="button" data-card-step="1" aria-label="زيادة"
+                            class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4">{ICON['plus']}</span></span></button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -415,14 +848,18 @@ def category_tile(cat, label=None, href="shop-category.html"):
 
 
 def review_card(name, city, text, score="4.8"):
-    """Rating uses hearts, per the Figma 'Icon/ Heart' rating component."""
-    hearts = "".join(f'<span class="text-accent-yellow">{ICON["heart_full"]}</span>' for _ in range(5))
+    """
+    The score row is the shared rating() — stars per Ahmed's 2026-07-22
+    direction, superseding the Figma's heart component (the heart now means
+    favourites and nothing else). It also fixes what the old hand-rolled row
+    got wrong: five identical FULL marks beside the text "4.8", the exact
+    self-contradiction rating() was built to eliminate. One component, so
+    reviews and the product page can never disagree on what a rating looks
+    like.
+    """
     return f"""
           <article class="flex flex-col gap-4">
-            <div class="flex items-center gap-2">
-              <span class="font-semibold text-[#062A1C] text-base latin">{e(score)}</span>
-              <span class="flex items-center gap-0.5">{hearts}</span>
-            </div>
+            {rating(score)}
             <p class="text-neutral-800 text-base xl:text-lg leading-7">{e(text)}</p>
             <p class="font-semibold text-neutral-secondary text-sm">{e(name)} — {e(city)}</p>
           </article>"""
@@ -482,11 +919,93 @@ def info_card(img, heading, body, cta_label, cta_href, img_class="w-[100px] h-[1
 # --------------------------------------------------------------------------
 # Page shell
 # --------------------------------------------------------------------------
+# Production origin, for canonical and og:url/og:image, which social
+# scrapers need as absolute URLs.
+#
+# Deliberately EMPTY. The build is not deployed yet and abuauf.com is the
+# client's existing live site, not this one — pointing canonical at it would
+# tell search engines these pages are duplicates of somebody else's. While
+# it is empty the shell emits the tags that work without a domain and skips
+# the three that do not. Set it once the real host is known; DESIGN-NOTES
+# tracks it as a pre-launch item.
+SITE_ORIGIN = ""
+
+OG_IMAGE = "images/abuauf/brand/logo-abuauf-white.webp"
+
+# Keep this build out of search results.
+#
+# It is a pixel-close rebuild of a storefront that is live and trading at
+# abuauf.com, and it still carries placeholder legal pages and invented
+# reviews. Indexed, it would compete with the client's real site for their own
+# brand terms and could land a customer on a demo they believe is real.
+#
+# NOTE this is a `noindex` META TAG, not a robots.txt `Disallow`. Those are not
+# interchangeable and the difference is the usual mistake: `Disallow` stops
+# Google *fetching* the page, which means it never reads the noindex — and it
+# will still list a URL it has never fetched if something links to it. To be
+# reliably absent you have to let the crawler IN and tell it no. robots.txt
+# here therefore allows crawling on purpose.
+#
+# One line to flip when this becomes the real production site.
+ALLOW_INDEXING = False
+
+
+def _social_meta(title_text, description, path):
+    """og:/twitter: block. Egypt shares storefront links on WhatsApp far more
+    than anywhere else, and a link with no card is a bare grey URL."""
+    tags = [
+        '<meta name="theme-color" content="#163300" />',
+    ]
+    if not ALLOW_INDEXING:
+        tags.append('<meta name="robots" content="noindex, nofollow" />')
+    tags += [
+        f'<meta property="og:title" content="{e(title_text)}" />',
+        f'<meta property="og:description" content="{e(description)}" />',
+        '<meta property="og:type" content="website" />',
+        '<meta property="og:site_name" content="أبو عوف" />',
+        '<meta property="og:locale" content="ar_EG" />',
+        '<meta name="twitter:card" content="summary_large_image" />',
+    ]
+    if SITE_ORIGIN:
+        url = SITE_ORIGIN.rstrip("/") + path
+        tags.append(f'<link rel="canonical" href="{e(url)}" />')
+        tags.append(f'<meta property="og:url" content="{e(url)}" />')
+        tags.append(
+            f'<meta property="og:image" content="{e(SITE_ORIGIN.rstrip("/") + "/" + OG_IMAGE)}" />'
+        )
+    return "\n    ".join(tags)
+
+
+_SECTION_OPEN = re.compile(r"<section(?![^>]*\bdata-reveal\b)(\s|>)")
+
+
+def _with_reveal(body):
+    """
+    Tag every top-level `<section>` for the scroll reveal.
+
+    Done here rather than in 37 page files so the entrance is one decision and
+    genuinely site-wide — it was previously hand-applied to home, product and
+    the auth layout only, so most of the site scrolled dead.
+
+    Sections that already carry `data-reveal` are skipped, so the few places
+    that opted in by hand keep exactly the behaviour they had.
+
+    Safe by construction: the hidden state lives behind `.js-reveal`, which JS
+    puts on <html> at runtime, and the observer reveals anything already in
+    the viewport without animating it. So a page still paints fully with JS
+    off, and nothing fades in underneath the shopper on first load — only
+    sections they scroll to.
+    """
+    return _SECTION_OPEN.sub(r"<section data-reveal\1", body)
+
+
 def page(title_text, description, body, page_id, path, main_class="overflow-x-hidden"):
     """
     Standard document shell. Header, footer and overlays are mount points
     filled at runtime by scripts.js, so chrome changes need no rebuild.
     """
+    body = _with_reveal(body)
+    social = _social_meta(title_text, description, path)
     return f"""<!doctype html>
 <html lang="ar" dir="rtl">
   <head>
@@ -494,18 +1013,35 @@ def page(title_text, description, body, page_id, path, main_class="overflow-x-hi
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{e(title_text)}</title>
     <meta name="description" content="{e(description)}" />
-    <!-- Tailwind (Play CDN) + Abu Auf design system -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="tw-config.js"></script>
+    {social}
+    <!-- Abu Auf design system. Tailwind is COMPILED AT BUILD TIME by
+         `npm run css` (config: tailwind.config.js) into tailwind.css. It used
+         to be the Play CDN, which Tailwind itself warns against in production:
+         that shipped ~120KB of JavaScript which then had to scan the DOM and
+         generate the stylesheet on every visit, so nothing was styled until it
+         finished — a flash of unstyled content on exactly the slow mobile
+         connections this storefront is for. Now it is one 30KB cacheable file.
+
+         ORDER IS LOAD-BEARING: tailwind.css first, styles.css second.
+         styles.css contains rules whose whole purpose is to beat a utility
+         ([hidden] !important, the focus ring re-armed over `outline-none`,
+         the sticky-nav selector). Reverse these two and they stop working. -->
+    <link rel="stylesheet" href="tailwind.css" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.webp" />
     <script defer src="scripts.js"></script>
   </head>
   <body data-page="{e(page_id)}" data-path="{e(path)}" class="antialiased bg-white">
+    <!-- First focusable thing on the page. The header is three bands and a
+         mega-menu, so a keyboard shopper otherwise tabbed through the whole
+         of it on every page before reaching any content. Visually hidden
+         until focused. -->
+    <a href="#main" class="skip-link">تخطي إلى المحتوى</a>
+
     <!-- Shared header is injected here by scripts.js -->
     <div id="site-header"></div>
 
-    <main class="{main_class}">{body}
+    <main id="main" tabindex="-1" class="{main_class}">{body}
     </main>
 
     <!-- Shared footer is injected here by scripts.js -->

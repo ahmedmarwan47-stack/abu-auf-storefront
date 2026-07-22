@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- UAE flag for the country switcher. National flag geometry, drawn by
+       hand because the export has no UAE asset; rendered inside a
+       rounded-full <img> like flag-egypt.svg, so no clipping here. -->
+  <rect width="24" height="8" y="0" fill="#00843d"/>
+  <rect width="24" height="8" y="8" fill="#ffffff"/>
+  <rect width="24" height="8" y="16" fill="#000000"/>
+  <rect width="7" height="24" fill="#ef3340"/>
+</svg>

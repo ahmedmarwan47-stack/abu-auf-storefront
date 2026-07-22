@@ -5,19 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>المتجر مغلق | أبو عوف</title>
     <meta name="description" content="مواعيد عمل متجر أبو عوف الإلكتروني." />
-    <!-- Tailwind (Play CDN) + Abu Auf design system -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="tw-config.js"></script>
+    <meta name="theme-color" content="#163300" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta property="og:title" content="المتجر مغلق | أبو عوف" />
+    <meta property="og:description" content="مواعيد عمل متجر أبو عوف الإلكتروني." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="أبو عوف" />
+    <meta property="og:locale" content="ar_EG" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Abu Auf design system. Tailwind is COMPILED AT BUILD TIME by
+         `npm run css` (config: tailwind.config.js) into tailwind.css. It used
+         to be the Play CDN, which Tailwind itself warns against in production:
+         that shipped ~120KB of JavaScript which then had to scan the DOM and
+         generate the stylesheet on every visit, so nothing was styled until it
+         finished — a flash of unstyled content on exactly the slow mobile
+         connections this storefront is for. Now it is one 30KB cacheable file.
+
+         ORDER IS LOAD-BEARING: tailwind.css first, styles.css second.
+         styles.css contains rules whose whole purpose is to beat a utility
+         ([hidden] !important, the focus ring re-armed over `outline-none`,
+         the sticky-nav selector). Reverse these two and they stop working. -->
+    <link rel="stylesheet" href="tailwind.css" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.webp" />
     <script defer src="scripts.js"></script>
   </head>
   <body data-page="store-closed" data-path="/store-closed" class="antialiased bg-white">
+    <!-- First focusable thing on the page. The header is three bands and a
+         mega-menu, so a keyboard shopper otherwise tabbed through the whole
+         of it on every page before reaching any content. Visually hidden
+         until focused. -->
+    <a href="#main" class="skip-link">تخطي إلى المحتوى</a>
+
     <!-- Shared header is injected here by scripts.js -->
     <div id="site-header"></div>
 
-    <main class="overflow-x-hidden">
-      <section class="py-20">
+    <main id="main" tabindex="-1" class="overflow-x-hidden">
+      <section data-reveal class="py-20">
         <div class="flex flex-col items-center gap-5 mx-auto px-4 max-w-[560px] text-center">
           <span class="place-items-center grid bg-interaction-base rounded-full size-24">
             <svg viewBox="0 0 24 24" fill="none" class="w-12 h-12 text-cta">

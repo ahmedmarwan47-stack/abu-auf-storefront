@@ -10,6 +10,11 @@ ADDRESSES = [
 
 
 def build():
+    # These cards are the no-JS fallback ONLY. At runtime scripts.js owns the
+    # grid (data-addresses-grid): it seeds a persistent store from these same
+    # two addresses, re-renders the cards, and wires اضف عنوان / تعديل / حذف
+    # for real — they were dead buttons until Ahmed pressed them (2026-07-22).
+    # Change the seed in scripts.js (ADDR_SEED) if these two ever change.
     cards = "".join(card(
         label,
         f'''<div class="flex flex-col gap-1 text-neutral-secondary text-sm">
@@ -25,9 +30,9 @@ def build():
     content = f"""
             <div class="flex flex-wrap justify-between items-center gap-3">
               <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">عناويني</h1>
-              <button type="button" class="bg-cta hover:bg-cta-hover px-6 py-2.5 rounded-full font-semibold text-white text-sm transition-colors">اضف عنوان</button>
+              <button type="button" data-address-add class="bg-cta hover:bg-cta-hover px-6 py-2.5 rounded-full font-semibold text-white text-sm transition-colors">اضف عنوان</button>
             </div>
-            <div class="gap-6 grid md:grid-cols-2">{cards}</div>"""
+            <div class="gap-6 grid md:grid-cols-2" data-addresses-grid>{cards}</div>"""
 
     return account_page("عناويني | أبو عوف", "إدارة عناوين التوصيل الخاصة بك.",
                         content, "my-account-addresses", "/my-account/addresses",

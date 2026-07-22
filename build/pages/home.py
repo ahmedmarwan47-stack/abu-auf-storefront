@@ -8,6 +8,14 @@ from components import (
 SLUG = "index.html"
 
 # 1440x440 desktop / 505x680 mobile pairs — the real Arabic storefront banners.
+#
+# The slide box is deliberately a little TALLER than the artwork (470 and 728
+# against 440 and 680), which is the only way to give the hero more height
+# without letterboxing: object-cover then crops the sides. How much taller is
+# capped by the tightest banner, UAE-Abuauf-desktop-Ar, whose ® sits ~96% of
+# the way across — at 1440/470 the crop is 46px a side and clears it; much
+# beyond that and the logo loses its mark. Re-check this if a banner is
+# swapped.
 HERO = [
     ("coffee-web-A1.webp", "coffee.-A.webp", "قهوة تركي بالتوت — جديد من أبو عوف"),
     ("Madjool-web-AR.webp", "Madjool-mob-AR.webp", "تمور المجدول الفاخرة"),
@@ -74,7 +82,7 @@ def build():
                   <picture>
                     <source media="(min-width: 768px)" srcset="images/abuauf/site/{d}" />
                     <img src="images/abuauf/site/{m}" alt="{e(alt)}"
-                         class="w-full md:aspect-[1440/440] aspect-[505/680] object-cover"{' loading="lazy"' if i else ''} />
+                         class="w-full md:aspect-[1440/470] aspect-[505/728] object-cover"{' loading="lazy"' if i else ''} />
                   </picture>
                 </a>
               </div>"""
@@ -101,17 +109,24 @@ def build():
     body = f"""
       <!-- ============================== HERO ============================== -->
       <section class="bg-white pt-4 md:pt-6 w-full">
+        <!-- The hero is banner artwork, so the home page had no h1 at all and
+             its outline started at h2. Screen readers and search engines both
+             read the h1 as the page's name, so it is given here rather than
+             painted — the visible identity is the masthead logo. -->
+        <h1 class="sr-only">أبو عوف — قهوة ومكسرات وتمور وسناكس صحية</h1>
         <div class="mx-auto px-4 max-w-[1536px]">
           <div class="relative carousel hero-banners" data-autoplay style="--carousel-gap:16px">
             <div class="carousel-track">{hero_slides}
             </div>
-            <button type="button" class="hidden md:grid top-1/2 start-6 absolute place-items-center bg-white/90 hover:bg-white shadow-custom3 -translate-y-1/2 rounded-full text-cta transition size-16 carousel-prev" aria-label="السابق">
+            <!-- start/end-3, was -6: Ahmed asked for the pair to sit further
+                 apart, so each arrow moved 12px toward its own edge. -->
+            <button type="button" class="hidden md:grid top-1/2 start-3 absolute place-items-center bg-white/90 hover:bg-white shadow-custom3 -translate-y-1/2 rounded-full text-cta transition size-16 carousel-prev" aria-label="السابق">
               <span class="rtl:scale-flip">{ICON['arrow']}</span>
             </button>
-            <button type="button" class="hidden md:grid top-1/2 end-6 absolute place-items-center bg-white/90 hover:bg-white shadow-custom3 -translate-y-1/2 rounded-full text-cta transition size-16 carousel-next" aria-label="التالي">
+            <button type="button" class="hidden md:grid top-1/2 end-3 absolute place-items-center bg-white/90 hover:bg-white shadow-custom3 -translate-y-1/2 rounded-full text-cta transition size-16 carousel-next" aria-label="التالي">
               <span class="ltr:scale-flip">{ICON['arrow']}</span>
             </button>
-            <div class="flex justify-center gap-2 mt-4 carousel-dots"></div>
+            <div class="flex justify-center mt-4 carousel-dots"></div>
           </div>
         </div>
       </section>

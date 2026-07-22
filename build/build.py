@@ -14,6 +14,7 @@ static-export/scripts.js and tw-config.js and need no rebuild at all.
 import importlib
 import os
 import re
+import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -57,6 +58,53 @@ def check_assets(name, html):
     return len(missing)
 
 
+def build_tailwind(partial=False):
+    """
+    Compile static-export/tailwind.css from the markup we just wrote.
+
+    Runs LAST on purpose: Tailwind only emits classes it can see, and the
+    pages it scans are the ones this script has just generated. Run it first
+    and a class added this build would be missing from the stylesheet until
+    someone happened to build twice.
+
+    Returns truthy on failure, and the caller makes that a non-zero exit. A
+    silent skip is the one outcome to avoid — the CSS would simply be stale,
+    every newly-added utility would do nothing, and the page would look
+    subtly wrong with no error anywhere. That is the same class of silent
+    failure as the missing-asset check this build already guards against.
+    """
+    if partial:
+        # A single-page rebuild scans the whole site anyway, so this is safe
+        # to skip; say so rather than implying the CSS is current.
+        print("\n  tailwind: skipped (partial build) — run `npm run css`")
+        return 0
+
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if not os.path.isdir(os.path.join(root, "node_modules", "tailwindcss")):
+        print("\n  ! tailwind: node_modules/tailwindcss missing — run `npm install`")
+        return 1
+    try:
+        res = subprocess.run(
+            ["npm", "run", "--silent", "css"],
+            cwd=root, capture_output=True, text=True, timeout=180,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        print(f"\n  ! tailwind: could not run npm ({exc})")
+        return 1
+    if res.returncode != 0:
+        print("\n  ! tailwind build FAILED:")
+        for line in (res.stderr or res.stdout).strip().splitlines()[-8:]:
+            print("      " + line)
+        return 1
+    css_path = os.path.join(root, "static-export", "tailwind.css")
+    size = os.path.getsize(css_path) if os.path.exists(css_path) else 0
+    if size < 5000:
+        print(f"\n  ! tailwind: output implausibly small ({size} bytes)")
+        return 1
+    print(f"\n  tailwind.css {size:>28,} bytes   ok")
+    return 0
+
+
 def check_runtime_js():
     """
     Catch backticks inside the HTML comments in scripts.js.
@@ -94,6 +142,7 @@ def main(only=None):
             return 1
 
     total_missing = 0
+    extra_pages = 0
     for name in targets:
         mod = importlib.import_module(name)
         html = mod.build()
@@ -105,12 +154,31 @@ def main(only=None):
         status = "ok" if not missing else f"{missing} missing asset(s)"
         print(f"  {mod.SLUG:<28} {len(html):>8,} bytes   {status}")
 
+        # A module may fan out into one page per data record (product.py:
+        # product-<id>.html for each catalogue product). Same asset check per
+        # page, one summary line — 99 rows of ok teach nothing.
+        if hasattr(mod, "build_many"):
+            fan_bytes = fan_missing = fanned = 0
+            for slug, page_html in mod.build_many():
+                with open(os.path.join(EXPORT, slug), "w", encoding="utf-8") as f:
+                    f.write(page_html)
+                fan_missing += check_assets(slug, page_html)
+                fan_bytes += len(page_html)
+                fanned += 1
+            total_missing += fan_missing
+            extra_pages += fanned
+            status = "ok" if not fan_missing else f"{fan_missing} missing asset(s)"
+            print(f"  {name} x {fanned:<22} {fan_bytes:>8,} bytes   {status}")
+
     bad_js = check_runtime_js()
+    css_failed = build_tailwind(partial=bool(only))
 
     print(f"\nbuilt {len(targets)} page(s)"
+          + (f" + {extra_pages} fanned-out page(s)" if extra_pages else "")
           + (f"; {total_missing} broken asset reference(s)" if total_missing else "")
-          + (f"; {bad_js} template-literal hazard(s) in scripts.js" if bad_js else ""))
-    return 1 if (total_missing or bad_js) else 0
+          + (f"; {bad_js} template-literal hazard(s) in scripts.js" if bad_js else "")
+          + ("; TAILWIND CSS NOT REBUILT" if css_failed else ""))
+    return 1 if (total_missing or bad_js or css_failed) else 0
 
 
 if __name__ == "__main__":

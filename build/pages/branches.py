@@ -29,7 +29,12 @@ def build():
                   <p class="text-neutral-secondary text-sm leading-6">{e(b['address']) or '—'}</p>
                 </div>
               </article>""" for b in g["branches"])
+        # The governorate is only carried by the tab button, which is not a
+        # heading — so the branch cards' h3 followed the page h1 directly and
+        # a screen reader moving by heading could not tell which governorate
+        # it had landed in. Naming each panel fixes both at once.
         panels += (f'<div class="tab-panel" data-panel="g{i}"{"" if i == 0 else " hidden"}>'
+                   f'<h2 class="sr-only">{e(g["gov"])}</h2>'
                    f'<div class="gap-4 grid md:grid-cols-2 xl:grid-cols-3">{cards}</div></div>')
 
     body = f"""{page_header("فروع أبو عوف", [("الرئيسية", "index.html"), ("الفروع", None)])}

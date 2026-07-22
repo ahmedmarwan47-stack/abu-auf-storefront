@@ -52,8 +52,8 @@ def build():
             {card("شارك الموقع مع الأصحاب والعائلة", '''
               <p class="text-neutral-secondary text-sm">أنسخ الرابط أدناه وشاركه مع عائلتك وأصدقائك واحصل على خصومات حصرية</p>
               <div class="flex items-center gap-2 bg-interaction-base px-4 py-2 rounded-xl">
-                <span class="flex-1 min-w-0 text-neutral-secondary text-xs truncate latin">WWW.ABUAUF.COM/REF/1-0200,20409</span>
-                <button type="button" class="bg-cta hover:bg-cta-hover px-4 py-1.5 rounded-full font-semibold text-white text-xs transition-colors">نسخ</button>
+                <span data-ref-link class="flex-1 min-w-0 text-neutral-secondary text-xs truncate latin">WWW.ABUAUF.COM/REF/1-0200,20409</span>
+                <button type="button" data-copy-ref class="bg-cta hover:bg-cta-hover px-4 py-1.5 rounded-full font-semibold text-white text-xs transition-colors">نسخ</button>
               </div>''')}
 
             {card("طلباتي الحالية", orders_table, "كل الطلبات", "my-account-orders.html")}

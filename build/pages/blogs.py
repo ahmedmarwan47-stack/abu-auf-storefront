@@ -16,6 +16,9 @@ def build():
           <p class="mb-10 max-w-[720px] text-neutral-secondary text-base xl:text-lg leading-8">
             نصائح ووصفات ومعلومات عن القهوة والمكسرات والتمور والأكل الصحي — من فريق أبو عوف.
           </p>
+          <!-- Restores the level the post cards' h3 skipped; blog_card is
+               shared with the home page, where it sits under a real h2. -->
+          <h2 class="sr-only">أحدث المقالات</h2>
           <div class="gap-6 xl:gap-8 grid md:grid-cols-2 lg:grid-cols-3">{cards}
           </div>
         </div>

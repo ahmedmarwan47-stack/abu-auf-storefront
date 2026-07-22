@@ -1,0 +1,76 @@
+# Build the storefront and publish it to GitHub Pages.
+#
+# The build is what makes this worth a workflow rather than committing the
+# output: Tailwind is compiled from the markup by build/build.py, so the
+# stylesheet is only correct if it is generated from the same commit as the
+# pages. Building here means it always is — nobody can push a markup change
+# and forget to rebuild the CSS.
+#
+# build/build.py exits non-zero on a missing asset, a template-literal hazard
+# in scripts.js, or a failed Tailwind run, so any of those fails the deploy
+# instead of shipping a broken site.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; queue instead, and don't cancel a run that is
+# already publishing.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Tailwind
+        run: npm ci
+
+      - name: Build pages + stylesheet
+        run: python3 build/build.py
+
+      - name: Verify scripts.js parses
+        run: node --check static-export/scripts.js
+
+      # The rebrand is only complete while this returns nothing.
+      - name: Check for stale brand references
+        run: |
+          if grep -ril 'koueider\|kouider' static-export/; then
+            echo "::error::stale brand references found in static-export/"
+            exit 1
+          fi
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: static-export
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
