@@ -38,9 +38,13 @@ jobs:
           node-version: "20"
           cache: npm
 
+      # Pinned to 3.9 to MATCH the local toolchain, not to be current. 3.9
+      # rejects backslashes inside f-string expressions and this build has
+      # been bitten by that; a newer CI Python would accept code that then
+      # fails on the machine it is authored on, which is the wrong way round.
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.9"
 
       - name: Install Tailwind
         run: npm ci
