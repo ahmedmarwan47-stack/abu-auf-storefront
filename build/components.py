@@ -457,15 +457,59 @@ def product_gallery(images, alt):
 BEST_SELLER_RANK = 20
 
 
+# How high a product must place inside its own category to be called a best
+# seller there. Deliberately small, and paired with the CATEGORY_MIN below.
+BEST_SELLER_CATEGORY_RANK = 3
+
+# A category has to be big enough for "best seller in it" to mean anything.
+# Top-3 of a four-product category is not a distinction, it is a rounding
+# error — three quarters of the shelf would wear the badge.
+BEST_SELLER_CATEGORY_MIN = 6
+
+
+def _best_seller_label(p):
+    """
+    The badge text for a product, or "" if it has not earned one.
+
+    Two tiers, both derived from the SAME real `popularityRank`
+    (`fetch_popularity.py`, walking the Store API's `orderby=popularity` —
+    WooCommerce's own total-sales ordering across the client's 653-product
+    store). Nothing here is invented; the second tier just reads that ranking
+    at a narrower scope.
+
+      1. Top 20 store-wide      -> "الأكثر مبيعاً"
+      2. Top 3 of its category  -> "الأكثر مبيعاً في <category>"
+
+    Why the second tier exists: the store-wide top 20 is dominated by snacks
+    and offers, so most categories had no badged product at all and a shopper
+    browsing spices never saw the signal. A spice that outsells the other
+    spices genuinely is the best selling spice.
+
+    The store-wide label wins where both apply — it is the stronger claim, and
+    two badges on one card would compete.
+    """
+    rank = p.get("popularityRank")
+    if not rank:
+        return ""
+    if rank <= BEST_SELLER_RANK:
+        return "الأكثر مبيعاً"
+    if (
+        p.get("categoryRank", 99) <= BEST_SELLER_CATEGORY_RANK
+        and p.get("categorySize", 0) >= BEST_SELLER_CATEGORY_MIN
+        and p.get("categoryAr")
+    ):
+        return f"الأكثر مبيعاً في {p['categoryAr']}"
+    return ""
+
+
 def best_seller_badge(p):
     """
     Renders only for products the client's own store actually ranks that high.
-    `popularityRank` comes from `fetch_popularity.py`, which walks the Store
-    API's `orderby=popularity` — WooCommerce's real total-sales ordering. A
-    product silently loses the badge when the client's sales say it should.
+    A product silently loses the badge when the client's sales say it should.
+    See `_best_seller_label` for the two tiers.
     """
-    rank = p.get("popularityRank")
-    if not rank or rank > BEST_SELLER_RANK:
+    label = _best_seller_label(p)
+    if not label:
         return ""
     # self-start, or the badge stretches to the full column width: it is a
     # child of a flex-col, where the default align-items is stretch and
@@ -488,7 +532,7 @@ def best_seller_badge(p):
     return ('<span class="inline-flex self-start items-center gap-1.5 bg-accent-yellow px-3 py-1.5 '
             'rounded-full font-bold text-[#062A1C] text-xs">'
             f'<span class="place-items-center grid w-3.5 h-3.5 shrink-0">{ICON["star"]}</span>'
-            '<span class="relative top-[2px] leading-none">الأكثر مبيعاً</span></span>')
+            f'<span class="relative top-[2px] leading-none">{e(label)}</span></span>')
 
 
 def sold_proof(p):
@@ -503,13 +547,35 @@ def sold_proof(p):
     the client exposes one — see DESIGN-NOTES.
     """
     rank = p.get("popularityRank")
-    if not rank or rank > BEST_SELLER_RANK:
+    if not rank:
         return ""
-    # Round up to a friendly bucket so the line reads as a claim, not a lookup.
-    bucket = 10 if rank <= 10 else BEST_SELLER_RANK
-    return ('<span class="inline-flex items-center gap-1.5 font-semibold text-accent-error text-sm">'
-            f'<span class="w-4 h-4 shrink-0">{ICON["flame"]}</span>'
-            f'ضمن أفضل <span class="latin">{bucket}</span> مبيعاً في أبو عوف</span>')
+    if rank <= BEST_SELLER_RANK:
+        # Round up to a friendly bucket so the line reads as a claim, not a
+        # lookup.
+        bucket = 10 if rank <= 10 else BEST_SELLER_RANK
+        scope = "في أبو عوف"
+    elif (
+        p.get("categoryRank", 99) <= BEST_SELLER_CATEGORY_RANK
+        and p.get("categorySize", 0) >= BEST_SELLER_CATEGORY_MIN
+        and p.get("categoryAr")
+    ):
+        # Tracks the badge exactly, on purpose. A product wearing "best seller
+        # in spices" with no proof line beside it, or the reverse, is the same
+        # split-signal problem the badge tiers were added to remove.
+        bucket = BEST_SELLER_CATEGORY_RANK
+        scope = f"في {p['categoryAr']}"
+    else:
+        return ""
+    # The copy is ONE flex child, not loose text nodes beside the glyph.
+    # Bare text and the <span class="latin"> around the number were each their
+    # own flex item, so they wrapped independently — with a long category name
+    # the line broke as "ضمن / أفضل" with the numeral stranded between the two
+    # lines. Wrapping the sentence makes it flow as a sentence. `items-start`
+    # so the flame stays on the first line rather than centring against a
+    # two-line block.
+    return ('<span class="inline-flex items-start gap-1.5 font-semibold text-accent-error text-sm">'
+            f'<span class="mt-0.5 w-4 h-4 shrink-0">{ICON["flame"]}</span>'
+            f'<span>ضمن أفضل <span class="latin">{bucket}</span> مبيعاً {e(scope)}</span></span>')
 
 
 def trust_row(items):

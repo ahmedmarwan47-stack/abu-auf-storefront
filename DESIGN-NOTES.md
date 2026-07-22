@@ -330,6 +330,44 @@ standing accessibility deviation.
 
 ## 3. Deliberate deviations from the Figma
 
+### The best-seller badge has a second, category-relative tier
+
+Ahmed asked (2026-07-22) for more products to carry a best-seller badge. The
+store-wide top 20 is dominated by snacks and offers, so most categories had
+no badged product at all and a shopper browsing spices never saw the signal.
+
+Two tiers now, **both from the same real `popularityRank`** — this reads the
+existing WooCommerce sales ranking at a narrower scope, it does not invent a
+second metric:
+
+| Tier | Condition | Label |
+|---|---|---|
+| Store-wide | rank ≤ 20 of 653 | `الأكثر مبيعاً` |
+| Category | top 3 of its category | `الأكثر مبيعاً في <category>` |
+
+Coverage went **20 → 33 of 99**, and from 6 categories to 9. The store-wide
+label wins where both apply; two badges on one card would compete.
+
+`BEST_SELLER_CATEGORY_MIN = 6` guards the obvious abuse: top-3 of a
+four-product category is not a distinction, it is three quarters of the shelf.
+
+`sold_proof` follows the badge exactly — a product wearing "best seller in
+spices" with no proof line beside it is the same split signal the tiers were
+added to remove.
+
+**What was NOT done, and why.** Ahmed's first request was a badge on *every*
+product. That cannot be honest: on a product ranked #500 the badge asserts a
+sale that did not happen, and `ضمن أفضل 20 مبيعاً` is simply false. The
+category tier is how far the real data stretches. 66 products still carry no
+badge, and should not.
+
+Fixing this also exposed a latent bug in `sold_proof`: its glyph, its bare
+text and the `<span class="latin">` around the number were each separate flex
+items, so they wrapped independently. With the short `في أبو عوف` it never
+wrapped and nobody saw it; with a long category name the line broke as
+`ضمن / أفضل` with the numeral stranded between the two lines. The sentence is
+now a single flex child.
+
 ### Product benefit tiles now come from the client's own copy
 
 Ahmed reported (2026-07-22) that only the coffee product showed benefit

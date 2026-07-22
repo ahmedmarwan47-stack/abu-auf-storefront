@@ -48,6 +48,29 @@ for _p in _data["products"]:
                 _sz[_k] = _clean_name(_sz[_k])
 
 PRODUCTS = _data["products"]
+
+# Rank within the product's OWN category, derived from the same real
+# `popularityRank` (WooCommerce total-sales order across the client's whole
+# 653-product store). Nothing is invented here — it is the existing ranking,
+# read at a narrower scope.
+#
+# Why it exists: the store-wide top 20 is dominated by snacks and offers, so
+# most categories had no badged product at all and a shopper browsing spices
+# saw the signal nowhere. "Best seller in spices" is a true statement about a
+# spice that outsells the other spices, and it is the claim a category page
+# can actually support.
+#
+# Products with no popularityRank are left unranked rather than sorted last:
+# absent data is not a low ranking.
+_by_category = {}
+for _p in PRODUCTS:
+    if _p.get("popularityRank"):
+        _by_category.setdefault(_p.get("category"), []).append(_p)
+for _cat, _members in _by_category.items():
+    _members.sort(key=lambda x: x["popularityRank"])
+    for _i, _m in enumerate(_members, start=1):
+        _m["categoryRank"] = _i
+        _m["categorySize"] = len(_members)
 CATEGORIES = _data["categories"]
 BY_API_NAME = {c["name"]: c for c in CATEGORIES}
 BY_SLUG = {c["slug"]: c for c in CATEGORIES if c.get("slug")}
