@@ -26,7 +26,7 @@ from catalog import BRANCH_COUNT, PRODUCTS, e, in_category, money, rail_products
 from components import (
     ICON, accordion, best_seller_badge, button, carousel, page, page_header,
     product_card, product_gallery, qty_stepper, rating, recipe_card,
-    size_chips, sold_proof, trust_row, bundle_item, section_heading,
+    size_chips, sold_proof, trust_row, product_benefits, bundle_item, section_heading,
 )
 
 SLUG = "product.html"
@@ -175,11 +175,16 @@ def _render(p):
         acc_items = []
     acc_html = accordion(acc_items) if acc_items else ""
 
-    # Every page carries the strip so the template reads as one template. The
-    # hero keeps its product benefits (client-derived copy); everyone else
-    # gets the site-service trio, whose claims are restatements — see
-    # SERVICE_ITEMS above.
-    trust_html = trust_row(BENEFIT_ITEMS if hero else SERVICE_ITEMS)
+    # Every page carries the strip, and every page that CAN now shows the
+    # product's own benefits rather than delivery notes.
+    #
+    # The hero keeps its hand-written tiles: its own benefits list in
+    # catalog.json is a single line reading "100جرام", which is the pack
+    # weight the size chips already show, so deriving from it would be a
+    # downgrade. Everything else derives from the client's `descHtmlAr`, and
+    # falls back to the service trio only where the client wrote no benefits
+    # at all (35 of 99).
+    trust_html = trust_row(BENEFIT_ITEMS) if hero else product_benefits(p, SERVICE_ITEMS)
 
     # Rating and social proof share a row, split by a hairline, so the two
     # signals read as one block of evidence. The rating numbers are still

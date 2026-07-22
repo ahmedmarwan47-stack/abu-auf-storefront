@@ -330,6 +330,40 @@ standing accessibility deviation.
 
 ## 3. Deliberate deviations from the Figma
 
+### Product benefit tiles now come from the client's own copy
+
+Ahmed reported (2026-07-22) that only the coffee product showed benefit
+tiles and everything else showed delivery notes. Correct: `trust_row` was
+called with `BENEFIT_ITEMS if hero else SERVICE_ITEMS`, so the hand-written
+tiles belonged to the single hero product and the other 98 got the
+delivery / returns / branch-count strip. A shopper moving from the hero to
+any other product saw the page change template.
+
+`product_benefits()` now derives the tiles from the client's own
+`descHtmlAr` benefit list. Coverage after the change:
+
+| | pages |
+|---|---|
+| 3 benefit tiles from client copy | 59 |
+| 2 benefit tiles from client copy | 6 |
+| service strip (client wrote no benefits) | 34 |
+
+**The 34 are the honest limit, not an oversight.** Those products have no
+benefits list in the scrape at all, and the alternative is writing product
+claims on the client's behalf — the same line the branch phone numbers and
+the compare-at prices were held to.
+
+Two details worth keeping:
+
+- Lines that are only a pack weight (`"100جرام"`) are filtered out. They are
+  spec, not benefit, the size chips already show them, and they read as
+  filler in a tile.
+- The hero keeps its hand-written tiles **because its own benefits list is a
+  single line reading `100جرام`** — deriving from it would be a downgrade.
+- `trust_row` now drops the subtitle line when there isn't one and picks its
+  column count from the item count, so a two-benefit product gets two columns
+  rather than a hole.
+
 ### The scroll reveal is site-wide, and carries a failsafe
 
 Ahmed asked for an entrance animation across the whole site (2026-07-22). The

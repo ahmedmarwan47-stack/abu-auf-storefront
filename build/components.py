@@ -15,6 +15,7 @@ Split of responsibilities:
   * Everything else (page content) is composed from the functions below and
     baked into static HTML so pages stay standalone and work from file://.
 """
+import html as html_mod
 import re
 
 from catalog import e, money, title
@@ -515,22 +516,85 @@ def trust_row(items):
     """
     The icon/title/subtitle reassurance strip that sits under the CTA.
 
-    items: [(icon_key, title, subtitle)]. Every claim here must already be made
-    somewhere else on this site — these restate the delivery and returns policy
-    and the real branch count, rather than asserting new product claims like
-    "third-party tested" that nobody has signed off.
+    items: [(icon_key, title, subtitle)]. `subtitle` may be empty, in which
+    case its line is not rendered at all — a benefit taken from the client's
+    own copy is one sentence, not a title with a caption under it, and an
+    empty span still costs its line-height and made those tiles sit unevenly
+    against three-line neighbours.
+
+    The column count follows the item count so a product with two benefits
+    gets two columns rather than a hole where a third should be.
+
+    Every claim here must already be made somewhere else on this site — these
+    restate the delivery and returns policy and the real branch count, or they
+    are the client's own product copy. Nothing asserts a new product claim
+    like "third-party tested" that nobody has signed off.
     """
-    cells = "".join(f"""
+    if not items:
+        return ""
+    cols = {1: "grid-cols-1", 2: "grid-cols-2"}.get(len(items), "grid-cols-3")
+    cells = ""
+    for icon, title_, sub in items:
+        sub_html = (
+            f'\n                <span class="text-neutral-secondary text-xs leading-4">{e(sub)}</span>'
+            if sub else ""
+        )
+        cells += f"""
               <div class="flex flex-col items-center gap-2 text-center">
                 <span class="place-items-center grid bg-interaction-base rounded-full text-cta size-11 shrink-0">
                   <span class="w-5 h-5">{ICON[icon]}</span>
                 </span>
-                <span class="font-semibold text-[#062A1C] text-sm leading-5">{e(title_)}</span>
-                <span class="text-neutral-secondary text-xs leading-4">{e(sub)}</span>
-              </div>""" for icon, title_, sub in items)
+                <span class="font-semibold text-[#062A1C] text-sm text-balance leading-5 line-clamp-3">{e(title_)}</span>{sub_html}
+              </div>"""
     return f"""
-            <div class="gap-4 grid grid-cols-3 pt-1">{cells}
+            <div class="gap-4 grid {cols} pt-1">{cells}
             </div>"""
+
+
+# Lines that are a spec, not a benefit. The client's benefit lists sometimes
+# open or close with the pack weight ("100جرام"), which is already printed on
+# the size chips and reads as filler in a benefit tile.
+_SPEC_ONLY = re.compile(r"^[\d\s.,]*(جرام|جم|كجم|مل|لتر|g|gm|kg|ml)?[\d\s.,]*$", re.I)
+
+
+def benefit_bullets(p, limit=3):
+    """The client's own benefit lines for this product, cleaned to plain text."""
+    raw = p.get("descHtmlAr") or ""
+    out = []
+    for frag in re.findall(r"<li[^>]*>(.*?)</li>", raw, re.S):
+        text = re.sub(r"<[^>]+>", "", frag)
+        text = " ".join(html_mod.unescape(text).split())
+        if text and not _SPEC_ONLY.match(text):
+            out.append(text)
+    return out[:limit]
+
+
+# Generic quality glyphs. Deliberately not claim-bearing — they decorate the
+# client's sentence, they do not add a meaning of their own the way a "vegan"
+# or "tested" mark would.
+_BENEFIT_ICONS = ("leaf", "bolt", "shield")
+
+
+def product_benefits(p, fallback):
+    """
+    The strip under the CTA, built from the client's OWN benefit copy.
+
+    Only the single hero product used to get product benefits here; the other
+    98 got the site-service trio (delivery / returns / branch count), so a
+    shopper moving from the hero to any other product saw the product tiles
+    replaced by delivery notes and the page read as a different template.
+    That was the complaint.
+
+    Coverage is the honest limit of the data: 64 of 99 products have at least
+    two usable benefit lines in `descHtmlAr`. The remaining 35 have none — the
+    client never wrote them — so those keep the service strip rather than
+    getting invented copy. Absence over invention, same rule as the branch
+    phone numbers.
+    """
+    bullets = benefit_bullets(p)
+    if len(bullets) < 2:
+        return trust_row(fallback)
+    return trust_row([(_BENEFIT_ICONS[i], b, "") for i, b in enumerate(bullets)])
 
 
 # --------------------------------------------------------------------------
