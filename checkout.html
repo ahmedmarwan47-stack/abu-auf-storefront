@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>إتمام عملية الشراء | أبو عوف</title>
+    <meta name="description" content="أكمل بيانات التوصيل وأتمم طلبك من أبو عوف بأمان." />
+    <meta name="theme-color" content="#163300" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta property="og:title" content="إتمام عملية الشراء | أبو عوف" />
+    <meta property="og:description" content="أكمل بيانات التوصيل وأتمم طلبك من أبو عوف بأمان." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="أبو عوف" />
+    <meta property="og:locale" content="ar_EG" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Abu Auf design system. Tailwind is COMPILED AT BUILD TIME by
+         `npm run css` (config: tailwind.config.js) into tailwind.css. It used
+         to be the Play CDN, which Tailwind itself warns against in production:
+         that shipped ~120KB of JavaScript which then had to scan the DOM and
+         generate the stylesheet on every visit, so nothing was styled until it
+         finished — a flash of unstyled content on exactly the slow mobile
+         connections this storefront is for. Now it is one 30KB cacheable file.
+
+         ORDER IS LOAD-BEARING: tailwind.css first, styles.css second.
+         styles.css contains rules whose whole purpose is to beat a utility
+         ([hidden] !important, the focus ring re-armed over `outline-none`,
+         the sticky-nav selector). Reverse these two and they stop working. -->
+    <link rel="stylesheet" href="tailwind.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.webp" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="checkout" data-path="/checkout" class="antialiased bg-white">
+    <!-- First focusable thing on the page. The header is three bands and a
+         mega-menu, so a keyboard shopper otherwise tabbed through the whole
+         of it on every page before reaching any content. Visually hidden
+         until focused. -->
+    <a href="#main" class="skip-link">تخطي إلى المحتوى</a>
+
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main id="main" tabindex="-1" class="overflow-x-hidden">
+      <section data-reveal class="py-8">
+        <div class="items-start gap-10 grid grid-cols-1 lg:grid-cols-[1fr_380px] mx-auto px-4 max-w-[1536px]">
+
+          <!-- Header is its own grid item spanning both columns, because the
+               Figma mobile checkout (753:36339) puts the order summary directly
+               beneath it, ahead of the form body — which is impossible while
+               the header lives inside the form column. At lg every order resets
+               and this spans row 1, leaving the desktop columns as they were. -->
+          <div class="flex flex-col gap-3 order-1 lg:order-none lg:col-span-2 min-w-0">
+            <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">إتمام عملية الشراء بأمان</h1>
+            <nav aria-label="خطوات الشراء" class="flex flex-wrap items-center gap-2"><span class="flex items-center gap-2"><span class="place-items-center grid rounded-full size-5 text-xs latin bg-interaction-base text-neutral-secondary">1</span><span class="text-neutral-secondary text-sm">سلة التسوق</span><span aria-hidden="true" class="text-neutral-outline">/</span></span><span class="flex items-center gap-2"><span class="place-items-center grid rounded-full size-5 text-xs latin bg-cta text-white">2</span><span class="font-semibold text-[#062A1C] text-sm">بيانات العميل</span><span aria-hidden="true" class="text-neutral-outline">/</span></span><span class="flex items-center gap-2"><span class="place-items-center grid rounded-full size-5 text-xs latin bg-interaction-base text-neutral-secondary">3</span><span class="text-neutral-secondary text-sm">طريقة الدفع</span><span aria-hidden="true" class="text-neutral-outline">/</span></span><span class="flex items-center gap-2"><span class="place-items-center grid rounded-full size-5 text-xs latin bg-interaction-base text-neutral-secondary">4</span><span class="text-neutral-secondary text-sm">تأكيد عملية الشراء</span></span></nav>
+          </div>
+
+          <!-- RTL start: form -->
+          <div class="flex flex-col gap-8 order-3 lg:order-none min-w-0">
+            <form class="flex flex-col gap-8">
+              <fieldset class="flex flex-col gap-4">
+                <legend class="mb-3 font-bold text-[#062A1C] text-lg">نوع الطلب</legend>
+                <div class="flex sm:flex-row flex-col gap-4">
+
+                <label class="flex-1 cursor-pointer">
+                  <input type="radio" name="order-type" value="normal" class="peer sr-only" checked />
+                  <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full">
+                    <span class="flex items-center gap-3">
+                      <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6ZM3 6h18M16 10a4 4 0 0 1-8 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                      <span class="flex flex-col">
+                        <span class="font-semibold text-[#062A1C] text-base">طلب عادي</span>
+                        
+                      </span>
+                    </span>
+                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                  </span>
+                </label>
+<!-- The subtitle restates the option itself rather than promising a
+     wrapping service nobody at Abu Auf has signed off on. -->
+
+                <label class="flex-1 cursor-pointer">
+                  <input type="radio" name="order-type" value="gift" class="peer sr-only" />
+                  <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full radio-card-accent">
+                    <span class="flex items-center gap-3">
+                      <span class="place-items-center grid bg-accent-yellow rounded-full size-10 text-[#062A1C] shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M20 12v9H4v-9M22 7H2v5h20V7ZM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                      <span class="flex flex-col">
+                        <span class="font-semibold text-[#062A1C] text-base">إهداء الطلب</span>
+                        <span class="text-neutral-secondary text-xs">أرسل الطلب كهدية لشخص تحبه</span>
+                      </span>
+                    </span>
+                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                  </span>
+                </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="flex flex-col gap-4">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-1">
+                  <legend class="font-bold text-[#062A1C] text-lg">بيانات العميل</legend>
+                  <p class="text-neutral-secondary text-sm">
+                    هل لديك حساب بالفعل؟
+                    <a href="login.html" class="font-semibold text-cta underline">تسجيل الدخول</a>
+                  </p>
+                </div>
+                <div class="gap-4 grid sm:grid-cols-2">
+
+                <div class="flex flex-col gap-1.5 ">
+                  <label for="first-name" class="font-medium text-neutral-secondary text-sm">الاسم الأول<span class="text-accent-error">*</span></label>
+                  <input type="text" id="first-name" name="first-name" required autocomplete="given-name"
+                         value="" placeholder=""
+                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
+                </div>
+
+                <div class="flex flex-col gap-1.5 ">
+                  <label for="last-name" class="font-medium text-neutral-secondary text-sm">الاسم الاخير<span class="text-accent-error">*</span></label>
+                  <input type="text" id="last-name" name="last-name" required autocomplete="family-name"
+                         value="" placeholder=""
+                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
+                </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5 ">
+                  <label for="email" class="font-medium text-neutral-secondary text-sm">البريد الالكتروني<span class="text-accent-error">*</span></label>
+                  <input type="email" id="email" name="email" required autocomplete="email"
+                         value="" placeholder=""
+                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
+                </div>
+
+                <div class="flex flex-col gap-1.5 ">
+                  <label for="phone" class="font-medium text-neutral-secondary text-sm">رقم الهاتف<span class="text-accent-error">*</span></label>
+                  <input type="tel" id="phone" name="phone" required autocomplete="tel"
+                         value="" placeholder=""
+                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
+                </div>
+              </fieldset>
+
+              <fieldset class="flex flex-col gap-4">
+                <legend class="mb-3 font-bold text-[#062A1C] text-lg">وقت التوصيل</legend>
+                <div class="flex sm:flex-row flex-col gap-4">
+
+                <label class="flex-1 cursor-pointer">
+                  <input type="radio" name="delivery-time" value="now" class="peer sr-only" checked />
+                  <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full">
+                    <span class="flex items-center gap-3">
+                      <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+                      <span class="flex flex-col">
+                        <span class="font-semibold text-[#062A1C] text-base">اليوم</span>
+                        <span class="text-neutral-secondary text-xs">في غضون 60 دقيقة</span>
+                      </span>
+                    </span>
+                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                  </span>
+                </label>
+
+                <label class="flex-1 cursor-pointer">
+                  <input type="radio" name="delivery-time" value="later" class="peer sr-only" />
+                  <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full">
+                    <span class="flex items-center gap-3">
+                      <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+                      <span class="flex flex-col">
+                        <span class="font-semibold text-[#062A1C] text-base">أختار تاريخ</span>
+                        <span class="text-neutral-secondary text-xs">حدد اليوم والوقت المناسب</span>
+                      </span>
+                    </span>
+                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                  </span>
+                </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="flex flex-col gap-4">
+                <legend class="mb-3 font-bold text-[#062A1C] text-lg">طريقة التوصيل</legend>
+                <div class="flex sm:flex-row flex-col gap-4">
+
+                <label class="flex-1 cursor-pointer">
+                  <input type="radio" name="delivery-method" value="delivery" class="peer sr-only" checked />
+                  <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full">
+                    <span class="flex items-center gap-3">
+                      <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M1 3h13v13H1zM14 8h4l3 3v5h-7V8ZM7.5 19a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM19.5 19a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                      <span class="flex flex-col">
+                        <span class="font-semibold text-[#062A1C] text-base">توصيل</span>
+                        <span class="text-neutral-secondary text-xs">بإضافة مصاريف اضافية</span>
+                      </span>
+                    </span>
+                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                  </span>
+                </label>
+
+                <label class="flex-1 cursor-pointer">
+                  <input type="radio" name="delivery-method" value="pickup" class="peer sr-only" />
+                  <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full">
+                    <span class="flex items-center gap-3">
+                      <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M3 9 4.5 4h15L21 9M3 9h18M3 9v11h18V9M9 20v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                      <span class="flex flex-col">
+                        <span class="font-semibold text-[#062A1C] text-base">الاستلام من المتجر</span>
+                        
+                      </span>
+                    </span>
+                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                  </span>
+                </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="flex flex-col gap-4">
+                <legend class="mb-3 font-bold text-[#062A1C] text-lg">عنوان التوصيل</legend>
+
+                <div class="flex flex-col gap-1.5 ">
+                  <label for="city" class="font-medium text-neutral-secondary text-sm">المدينة<span class="text-accent-error">*</span></label>
+                  <select id="city" name="city" required autocomplete="address-level2"
+                          class="select-control bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors">
+                    <option value="">اختر</option><option value="القاهرة">القاهرة</option><option value="الجيزه">الجيزه</option><option value="الاسكندريه">الاسكندريه</option><option value="القليوبيه">القليوبيه</option><option value="الشرقيه">الشرقيه</option><option value="الدقهليه">الدقهليه</option><option value="المنوفيه">المنوفيه</option><option value="الغربيه">الغربيه</option><option value="البحيره">البحيره</option><option value="كفر الشيخ">كفر الشيخ</option><option value="دمياط">دمياط</option><option value="بورسعيد">بورسعيد</option><option value="الاسماعليه">الاسماعليه</option><option value="السويس">السويس</option><option value="شمال سيناء">شمال سيناء</option><option value="جنوب سيناء">جنوب سيناء</option><option value="البحر الاحمر">البحر الاحمر</option><option value="الفيوم">الفيوم</option><option value="بني سويف">بني سويف</option><option value="المنيا">المنيا</option><option value="اسيوط">اسيوط</option><option value="سوهاج">سوهاج</option><option value="قنا">قنا</option><option value="الاقصر">الاقصر</option><option value="اسوان">اسوان</option><option value="الوادي الجديد">الوادي الجديد</option><option value="مرسي مطروح">مرسي مطروح</option>
+                  </select>
+                </div>
+                <div class="gap-4 grid sm:grid-cols-2">
+
+                <div class="flex flex-col gap-1.5 ">
+                  <label for="district" class="font-medium text-neutral-secondary text-sm">الحي<span class="text-accent-error">*</span></label>
+                  <select id="district" name="district" required autocomplete="address-level3"
+                          class="select-control bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors">
+                    <option value="">اختر</option><option value="15 من مايو">15 من مايو</option><option value="العباسيه">العباسيه</option><option value="عين شمس الشرقيه">عين شمس الشرقيه</option><option value="عين شمس الغربيه">عين شمس الغربيه</option><option value="الظاهر">الظاهر</option><option value="المطريه">المطريه</option><option value="الرحاب">الرحاب</option><option value="الحلميه الجديده">الحلميه الجديده</option><option value="وسط البلد">وسط البلد</option><option value="الشروق">الشروق</option><option value="النزهه الجديده">النزهه الجديده</option><option value="جاردن سيتي">جاردن سيتي</option><option value="حدائق القبه">حدائق القبه</option><option value="هليوبوليس">هليوبوليس</option><option value="حلوان">حلوان</option><option value="القطاميه">القطاميه</option><option value="المعادي">المعادي</option><option value="المعادي الجديده">المعادي الجديده</option><option value="مدينتي">مدينتي</option><option value="المنيل">المنيل</option><option value="المقطم">المقطم</option><option value="مدينه نصر">مدينه نصر</option><option value="شيراتون">شيراتون</option><option value="شبرا">شبرا</option><option value="التجمع الاول">التجمع الاول</option><option value="التجمع الثالث">التجمع الثالث</option><option value="التجمع الخامس">التجمع الخامس</option><option value="زهراء المعادي">زهراء المعادي</option><option value="زهراء مدينه نصر">زهراء مدينه نصر</option><option value="الزمالك">الزمالك</option><option value="الزيتون">الزيتون</option>
+                  </select>
+                </div>
+
+                <div class="flex flex-col gap-1.5 ">
+                  <label for="area" class="font-medium text-neutral-secondary text-sm">المنطقة<span class="text-accent-error">*</span></label>
+                  <select id="area" name="area" required autocomplete="address-level3"
+                          class="select-control bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors">
+                    <option value="">اختر</option><option value="15 من مايو">15 من مايو</option><option value="العباسيه">العباسيه</option><option value="عين شمس الشرقيه">عين شمس الشرقيه</option><option value="عين شمس الغربيه">عين شمس الغربيه</option><option value="الظاهر">الظاهر</option><option value="المطريه">المطريه</option><option value="الرحاب">الرحاب</option><option value="الحلميه الجديده">الحلميه الجديده</option><option value="وسط البلد">وسط البلد</option><option value="الشروق">الشروق</option><option value="النزهه الجديده">النزهه الجديده</option><option value="جاردن سيتي">جاردن سيتي</option><option value="حدائق القبه">حدائق القبه</option><option value="هليوبوليس">هليوبوليس</option><option value="حلوان">حلوان</option><option value="القطاميه">القطاميه</option><option value="المعادي">المعادي</option><option value="المعادي الجديده">المعادي الجديده</option><option value="مدينتي">مدينتي</option><option value="المنيل">المنيل</option><option value="المقطم">المقطم</option><option value="مدينه نصر">مدينه نصر</option><option value="شيراتون">شيراتون</option><option value="شبرا">شبرا</option><option value="التجمع الاول">التجمع الاول</option><option value="التجمع الثالث">التجمع الثالث</option><option value="التجمع الخامس">التجمع الخامس</option><option value="زهراء المعادي">زهراء المعادي</option><option value="زهراء مدينه نصر">زهراء مدينه نصر</option><option value="الزمالك">الزمالك</option><option value="الزيتون">الزيتون</option>
+                  </select>
+                </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5 ">
+                  <label for="street" class="font-medium text-neutral-secondary text-sm">رقم العقار و الشارع<span class="text-accent-error">*</span></label>
+                  <input type="text" id="street" name="street" required autocomplete="address-line1"
+                         value="" placeholder=""
+                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <span class="font-medium text-neutral-secondary text-sm">نوع العقار<span class="text-accent-error">*</span></span>
+                  <div class="flex items-center gap-6">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" name="property-type" value="apartment" checked class="accent-[#163300] w-4 h-4" />
+                      <span class="text-[#062A1C] text-sm">شقة</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" name="property-type" value="villa" class="accent-[#163300] w-4 h-4" />
+                      <span class="text-[#062A1C] text-sm">فيلا</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="gap-4 grid grid-cols-2 max-w-[320px]">
+
+                <div class="flex flex-col gap-1.5 ">
+                  <label for="floor" class="font-medium text-neutral-secondary text-sm">الطابق</label>
+                  <input type="text" id="floor" name="floor" autocomplete="address-line2" inputmode="numeric"
+                         value="" placeholder=""
+                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
+                </div>
+
+                <div class="flex flex-col gap-1.5 ">
+                  <label for="apartment" class="font-medium text-neutral-secondary text-sm">رقم الشقة<span class="text-accent-error">*</span></label>
+                  <input type="text" id="apartment" name="apartment" required autocomplete="address-line2" inputmode="numeric"
+                         value="" placeholder=""
+                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
+                </div>
+                </div>
+              </fieldset>
+
+              <!-- data-cart-checkout: renderCart blocks this on an empty or
+                   below-minimum basket, exactly as it already blocked the cart
+                   page's own CTA. Without it checkout was the one place you
+                   could carry an empty basket through to the thank-you page. -->
+              <a href="thank-you.html" data-cart-checkout class="bg-cta hover:bg-cta-hover py-4 rounded-full w-full font-semibold text-white text-base text-center transition-colors">
+                أكمل إلى الدفع
+              </a>
+            </form>
+          </div>
+
+          <!-- RTL end: summary -->
+          <aside class="lg:top-4 lg:sticky flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px] order-2 lg:order-none min-w-0">
+            <div class="flex justify-between items-center">
+              <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
+              <a href="cart.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">تعديل</a>
+            </div>
+            <div class="flex flex-col gap-4" data-cart-lines>
+                <div data-cart-static class="flex items-center gap-3">
+                  <img src="images/abuauf/products/6223006310759.webp" alt="" class="bg-interaction-base p-1.5 rounded-lg w-16 h-16 object-contain shrink-0" loading="lazy" />
+                  <div class="flex flex-col flex-1 gap-0.5 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-sm line-clamp-2">تمر صحاري بالشيكولاته و اللوز - 300 جم</span>
+                  </div>
+                  <span class="font-bold text-[#062A1C] text-sm latin shrink-0">EGP 220</span>
+                </div>
+                <div data-cart-static class="flex items-center gap-3">
+                  <img src="images/abuauf/products/2000102000000.webp" alt="" class="bg-interaction-base p-1.5 rounded-lg w-16 h-16 object-contain shrink-0" loading="lazy" />
+                  <div class="flex flex-col flex-1 gap-0.5 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-sm line-clamp-2">قراصيا بدون نواه - 100 جم</span>
+                  </div>
+                  <span class="font-bold text-[#062A1C] text-sm latin shrink-0">EGP 72.5</span>
+                </div>
+            </div>
+
+            <div data-points-banner data-points-discount="100" class="flex justify-between items-center gap-3 bg-accent-yellow p-4 rounded-xl">
+              <!-- Two copies of the message, one per state, toggled by
+                   syncPointsUI. With one copy the banner kept promising
+                   "لديك 100 نقطة" AFTER the points were spent — the state
+                   changed under it and the words did not (Ahmed,
+                   2026-07-22). -->
+              <span class="font-semibold text-[#062A1C] text-sm leading-6" data-points-idle>
+                لديك <span class="latin">100</span> نقطة في محفظتك<br />ويمكنك خصم <span class="latin">EGP 100</span>
+              </span>
+              <span class="font-semibold text-[#062A1C] text-sm leading-6" data-points-used hidden>
+                استخدمت <span class="latin">100</span> نقطة من محفظتك<br />وتم خصم <span class="latin">EGP 100</span> من الإجمالي
+              </span>
+              <button type="button" data-points-apply class="bg-cta hover:bg-cta-hover px-4 py-2 rounded-full font-semibold text-white text-xs whitespace-nowrap transition-colors">خصم المبلغ</button>
+            </div>
+            <button type="button" class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
+              هل لديك برومو كود؟
+            </button>
+            <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
+              <div class="flex justify-between">
+                <span class="text-neutral-secondary">مصاريف التوصيل</span>
+                <span class="font-semibold text-[#062A1C] latin">EGP 30</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-neutral-secondary">الإجمالي</span>
+                <span class="font-semibold text-[#062A1C] latin" data-cart-subtotal>EGP 292.5</span>
+              </div>
+              <!-- Same hooks as the cart page, so one renderer owns both and
+                   the two pages cannot print different numbers. -->
+              <div class="flex justify-between items-center" data-cart-discount-row hidden>
+                <span class="text-neutral-secondary">خصم النقاط</span>
+                <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center pt-3 border-neutral-divider border-t">
+              <span class="font-bold text-[#062A1C] text-base">الإجمالي</span>
+              <span class="font-bold text-[#062A1C] text-2xl latin" data-cart-total>EGP 322.5</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+  </body>
+</html>

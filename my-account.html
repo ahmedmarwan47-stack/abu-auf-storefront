@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>حسابي | أبو عوف</title>
+    <meta name="description" content="إدارة طلباتك وعناوينك ومحفظتك في أبو عوف." />
+    <meta name="theme-color" content="#163300" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta property="og:title" content="حسابي | أبو عوف" />
+    <meta property="og:description" content="إدارة طلباتك وعناوينك ومحفظتك في أبو عوف." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="أبو عوف" />
+    <meta property="og:locale" content="ar_EG" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Abu Auf design system. Tailwind is COMPILED AT BUILD TIME by
+         `npm run css` (config: tailwind.config.js) into tailwind.css. It used
+         to be the Play CDN, which Tailwind itself warns against in production:
+         that shipped ~120KB of JavaScript which then had to scan the DOM and
+         generate the stylesheet on every visit, so nothing was styled until it
+         finished — a flash of unstyled content on exactly the slow mobile
+         connections this storefront is for. Now it is one 30KB cacheable file.
+
+         ORDER IS LOAD-BEARING: tailwind.css first, styles.css second.
+         styles.css contains rules whose whole purpose is to beat a utility
+         ([hidden] !important, the focus ring re-armed over `outline-none`,
+         the sticky-nav selector). Reverse these two and they stop working. -->
+    <link rel="stylesheet" href="tailwind.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.webp" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="my-account" data-path="/my-account" class="antialiased bg-white">
+    <!-- First focusable thing on the page. The header is three bands and a
+         mega-menu, so a keyboard shopper otherwise tabbed through the whole
+         of it on every page before reaching any content. Visually hidden
+         until focused. -->
+    <a href="#main" class="skip-link">تخطي إلى المحتوى</a>
+
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main id="main" tabindex="-1" class="overflow-x-hidden">
+      <section data-reveal class="pt-6">
+        <div class="flex flex-col gap-4 mx-auto px-4 max-w-[1536px]">
+          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><a href="my-account.html" class="text-neutral-secondary hover:text-primary transition-colors">حسابي</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">حسابي</span></nav>
+        </div>
+      </section>
+
+      <section data-reveal class="py-6 xl:py-8">
+        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 lg:grid-cols-[300px_1fr] mx-auto px-4 max-w-[1536px]">
+
+          <div class="lg:hidden flex flex-col gap-3 min-w-0">
+            <span class="bg-accent-yellow px-3 py-1 rounded-full font-semibold text-[#062A1C] text-xs self-start">عضوية ذهبية</span>
+            <h2 class="font-bold text-[#062A1C] text-xl">مرحبا محمد</h2>
+            <button type="button" data-open="accountMenu" class="flex justify-between items-center gap-3 bg-white px-5 py-3.5 border border-neutral-divider rounded-full w-full font-semibold text-[#062A1C] text-base">
+              <span class="flex items-center gap-3 min-w-0">
+                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+                <span class="truncate">الرئيسية</span>
+              </span>
+              <span class="-rotate-90 text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+          </div>
+
+          <div data-sheet="account-menu" class="lg:hidden bottom-sheet">
+            <div class="bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+            <div class="flex justify-between items-center mb-2">
+              <h2 class="font-bold text-[#062A1C] text-lg">القائمة</h2>
+              <button type="button" data-close class="place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+            </div>
+            <nav class="flex flex-col">
+              <a href="my-account.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-cta">
+                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                <span class="flex-1 min-w-0 truncate">الرئيسية</span>
+                <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <a href="my-account-orders.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
+                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6ZM3 6h18M16 10a4 4 0 0 1-8 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span class="flex-1 min-w-0 truncate">طلباتي</span>
+                <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <a href="my-account-favorites.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
+                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                <span class="flex-1 min-w-0 truncate">المفضلة</span>
+                <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <a href="my-account-addresses.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
+                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
+                <span class="flex-1 min-w-0 truncate">عناويني</span>
+                <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <a href="my-account-wallet.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
+                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7"/><path d="M16 12h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+                <span class="flex-1 min-w-0 truncate">محفظتي</span>
+                <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <a href="my-account-point.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
+                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+                <span class="flex-1 min-w-0 truncate">نقاطي</span>
+                <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <a href="my-account-profile.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
+                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4 21a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+                <span class="flex-1 min-w-0 truncate">بيانات الحساب</span>
+                <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+            </nav>
+            <button type="button" data-close class="bg-cta hover:bg-cta-hover mt-4 py-3 rounded-full w-full font-semibold text-white transition-colors">تأكيد</button>
+          </div>
+
+          <aside class="hidden lg:flex flex-col gap-1 bg-white shadow-custom4 p-5 rounded-[20px] lg:sticky lg:top-4 min-w-0 h-max">
+            <span class="bg-accent-yellow px-3 py-1 rounded-full font-semibold text-[#062A1C] text-xs self-start">عضوية ذهبية</span>
+            <h2 class="mt-2 mb-3 font-bold text-[#062A1C] text-xl">مرحبا محمد</h2>
+            
+              <a href="my-account.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors bg-interaction-base text-[#062A1C]">
+                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>الرئيسية
+              </a>
+              <a href="my-account-orders.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
+                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6ZM3 6h18M16 10a4 4 0 0 1-8 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>طلباتي
+              </a>
+              <a href="my-account-favorites.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
+                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>المفضلة
+              </a>
+              <a href="my-account-addresses.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
+                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>عناويني
+              </a>
+              <a href="my-account-wallet.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
+                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7"/><path d="M16 12h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>محفظتي
+              </a>
+              <a href="my-account-point.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
+                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>نقاطي
+              </a>
+              <a href="my-account-profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
+                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4 21a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>بيانات الحساب
+              </a>
+            <div class="flex flex-col gap-2 mt-4 pt-4 border-neutral-divider border-t">
+              <span class="font-semibold text-neutral-secondary text-sm">تحتاج مساعدة؟</span>
+              <a href="faqs.html" class="link-sweep self-start font-semibold text-cta text-sm">الأسئلة المتداولة</a>
+              <a href="contact-us.html" class="link-sweep self-start font-semibold text-cta text-sm">تواصل معنا</a>
+              <!-- Only meaningful while the demo session is active, so it is
+                   hidden for signed-out visitors by [data-authed-only]. -->
+              <button type="button" data-logout data-authed-only hidden
+                      class="flex items-center gap-2 mt-2 font-semibold text-accent-error text-sm text-start min-h-11">تسجيل الخروج</button>
+            </div>
+            <a href="index.html" class="flex justify-center items-center gap-2 mt-4 py-3 border border-neutral-divider hover:border-cta rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
+              <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M15 17l5-5-5-5M20 12H9M12 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg> تسجيل الخروج
+            </a>
+          </aside>
+          <div class="flex flex-col gap-6 min-w-0">
+            <div class="flex items-center gap-3 bg-interaction-base px-5 py-4 rounded-xl">
+              <span class="place-items-center grid bg-primary rounded-full text-white size-7 text-sm">✓</span>
+              <span class="font-semibold text-[#062A1C] text-sm">شكرا لتسجيلك حساب معنا !</span>
+            </div>
+
+            <div class="flex flex-wrap justify-between items-start gap-4">
+              <div class="flex flex-col gap-1">
+                <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">صفحة حسابي الرئيسية</h1>
+                <p class="text-neutral-secondary text-sm">يمكنك إدارة الطلبات والمحفظة ومعلومات الحساب الخاصة بك هنا.</p>
+              </div>
+              <div class="flex flex-col items-center gap-1 bg-white shadow-custom4 px-6 py-4 border-2 border-primary rounded-xl">
+                <span class="font-bold text-[#062A1C] text-xl latin">EGP 1200</span>
+                <span class="text-neutral-secondary text-xs">رصيد محفظتي</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]"><div class="flex justify-between items-center gap-3"><h2 class="font-bold text-[#062A1C] text-base">شارك الموقع مع الأصحاب والعائلة</h2></div>
+              <p class="text-neutral-secondary text-sm">أنسخ الرابط أدناه وشاركه مع عائلتك وأصدقائك واحصل على خصومات حصرية</p>
+              <div class="flex items-center gap-2 bg-interaction-base px-4 py-2 rounded-xl">
+                <span data-ref-link class="flex-1 min-w-0 text-neutral-secondary text-xs truncate latin">WWW.ABUAUF.COM/REF/1-0200,20409</span>
+                <button type="button" data-copy-ref class="bg-cta hover:bg-cta-hover px-4 py-1.5 rounded-full font-semibold text-white text-xs transition-colors">نسخ</button>
+              </div></div>
+
+            <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]"><div class="flex justify-between items-center gap-3"><h2 class="font-bold text-[#062A1C] text-base">طلباتي الحالية</h2><a href="my-account-orders.html" class="hover:bg-interaction-base px-5 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">كل الطلبات</a></div>
+              <div class="overflow-x-auto">
+                <table class="w-full min-w-[560px] text-start">
+                  <thead>
+                    <tr class="border-neutral-divider border-b text-neutral-secondary text-xs">
+                      <th class="py-3 font-medium text-start">رقم الطلب</th>
+                      <th class="py-3 font-medium text-start">التاريخ</th>
+                      <th class="py-3 font-medium text-start">حالة الطلب</th>
+                      <th class="py-3 font-medium text-start">المجموع</th>
+                      <th class="py-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <tr class="border-neutral-divider border-b last:border-0">
+                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">#30941</td>
+                    <td class="py-4 text-neutral-secondary text-sm">28 مارس 2026</td>
+                    <td class="py-4"><span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-accent-yellow text-[#062A1C]">تحت التحضير</span></td>
+                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">EGP 490</td>
+                    <td class="py-4 text-end"><a href="my-account-order.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">عرض</a></td>
+                  </tr>
+                  <tr class="border-neutral-divider border-b last:border-0">
+                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">#30942</td>
+                    <td class="py-4 text-neutral-secondary text-sm">21 مارس 2026</td>
+                    <td class="py-4"><span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-accent-error text-white">ملغي</span></td>
+                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">EGP 490</td>
+                    <td class="py-4 text-end"><a href="my-account-order.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">عرض</a></td>
+                  </tr>
+                  <tr class="border-neutral-divider border-b last:border-0">
+                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">#30943</td>
+                    <td class="py-4 text-neutral-secondary text-sm">14 مارس 2026</td>
+                    <td class="py-4"><span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-primary text-white">مكتمل</span></td>
+                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">EGP 490</td>
+                    <td class="py-4 text-end"><a href="my-account-order.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">عرض</a></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div></div>
+
+            <h2 class="font-bold text-[#062A1C] text-lg">بياناتي</h2>
+            <div class="gap-6 grid md:grid-cols-2">
+              <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]"><div class="flex justify-between items-center gap-3"><h2 class="font-bold text-[#062A1C] text-base">بيانات الحساب</h2><a href="my-account-profile.html" class="hover:bg-interaction-base px-5 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">تعديل</a></div>
+                <div class="flex flex-col gap-1 text-sm">
+                  <span class="text-[#062A1C]">محمد عادل</span>
+                  <span class="text-neutral-secondary latin">mosawabi15@gmail.com</span>
+                  <span class="text-neutral-secondary latin">0109809839</span>
+                </div></div>
+              <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]"><div class="flex justify-between items-center gap-3"><h2 class="font-bold text-[#062A1C] text-base">عنواني الرئيسي</h2><a href="my-account-addresses.html" class="hover:bg-interaction-base px-5 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">تعديل</a></div>
+                <div class="flex flex-col gap-1 text-neutral-secondary text-sm">
+                  <span>شقة 3 - 220 شارع الحرية - الدور الأول</span>
+                  <span>مصر الجديدة</span>
+                  <span>القاهرة، مصر</span>
+                </div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+  </body>
+</html>

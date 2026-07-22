@@ -1,0 +1,17 @@
+# Abu Auf storefront — staging/demo build.
+#
+# Crawling is deliberately ALLOWED here while every page carries
+# <meta name="robots" content="noindex, nofollow">.
+#
+# That combination is intentional and the two are not interchangeable:
+# a "Disallow" would stop crawlers fetching the pages, which means they
+# would never see the noindex — and Google will still list a URL it has
+# never fetched if it finds a link to it elsewhere. Letting the crawler
+# in and telling it "noindex" is what actually keeps this build out of
+# search results.
+#
+# When this becomes the real production site, flip ALLOW_INDEXING in
+# build/components.py and rebuild; this file can stay as-is.
+
+User-agent: *
+Allow: /

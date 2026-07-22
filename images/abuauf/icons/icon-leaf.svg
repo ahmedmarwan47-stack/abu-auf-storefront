@@ -1,0 +1,9 @@
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+  <!-- Leaf bullet for the products mega-panel. Derived from the leaf in the
+       client's own brand mark (images/abuauf/brand/logo-abuauf-white.webp);
+       the green is sampled from it: #4AA948. The Figma shows this bullet but
+       the icon was never exported, and the previous reference pointed at a
+       file that did not exist. Flagged in DESIGN-NOTES as in-house artwork. -->
+  <path fill="#4AA948"
+        d="M20.5 3.2c-6.2-.5-10.6.9-13.2 3.4a8.2 8.2 0 0 0-1.2 10.2c.3.5.7.9 1.1 1.3 3.5-4.2 7.4-7 11.8-8.6-3.9 2.2-7.1 5.3-9.7 9.4a8.2 8.2 0 0 0 8.6-2.1c3-3.1 3.9-8 2.6-13.6Z"/>
+</svg>

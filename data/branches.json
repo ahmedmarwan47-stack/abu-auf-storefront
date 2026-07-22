@@ -1,0 +1,2048 @@
+[
+ {
+  "gov": "القاهرة",
+  "gov_en": "Cairo",
+  "branches": [
+   {
+    "title": "Al-Zohour Sports Club",
+    "slug": "al-zohour-sports-club",
+    "address": "شارع يوسف عباس، الأستاد،نادى الزهور الرياضى",
+    "phone": ""
+   },
+   {
+    "title": "ChillOut AlRehab 3 Towers \"to go\"",
+    "slug": "chillout-alrehab-3-towers-to-go",
+    "address": "بنزينه شيل اوت الرحاب امام بوابه ٢٠ الرحاب مبني العباسي جروب",
+    "phone": ""
+   },
+   {
+    "title": "Degla Maadi",
+    "slug": "degla-maadi",
+    "address": "22 شارع 233 - دجلة المعادي",
+    "phone": ""
+   },
+   {
+    "title": "Nozha Hospital",
+    "slug": "nozha-hospital",
+    "address": "9 شارع الرشيدي شيراتون - مستشفى النزهة الدولى",
+    "phone": ""
+   },
+   {
+    "title": "Auto Samir Rayan",
+    "slug": "auto-samir-rayan",
+    "address": "Auto Samir Rayan - Nasr City Branch، النصر، السريات الشرقية، ثان مدينة نصر، محافظة القاهرة‬ 4435013",
+    "phone": ""
+   },
+   {
+    "title": "Strip Way 6 October",
+    "slug": "strip-way-6-october",
+    "address": "6 اكتوبر المتميز ستريب واي بجانب بلبن",
+    "phone": ""
+   },
+   {
+    "title": "Al Ahly SC Nasr City",
+    "slug": "al-ahly-sc-nasr-city",
+    "address": "شارع حسن المأمون - امام البوابة الرئيسية - داخل النادي الاهلي مدينة نصر 3/4",
+    "phone": ""
+   },
+   {
+    "title": "Shams Club",
+    "slug": "shams-club",
+    "address": "نادى الشمس بوابه ١",
+    "phone": ""
+   },
+   {
+    "title": "Obour Golf City",
+    "slug": "obour-golf-city-2",
+    "address": "مدينه  العبور - مول  جولف سيتي بجوار ايجي بنك",
+    "phone": ""
+   },
+   {
+    "title": "Aljazeera Academy",
+    "slug": "aljazeera-academy",
+    "address": "اكاديمية الجزيرة شارع الصفا من شارع ٩ المقطم",
+    "phone": ""
+   },
+   {
+    "title": "Al Rehab Club",
+    "slug": "al-rehab-club",
+    "address": "بوابة 8 - نادي الرحاب - بجوار الكيدز اريا",
+    "phone": ""
+   },
+   {
+    "title": "Abbasiya to go",
+    "slug": "abbasiya-to-go",
+    "address": "ميدان العباسية - بجوار ايتوال",
+    "phone": ""
+   },
+   {
+    "title": "Shoubra-Al-Khalafawi",
+    "slug": "shoubra-al-khalafawi",
+    "address": "ميدان الخلفاوي - شبرا - بجوار حواوشي الرفاعي",
+    "phone": ""
+   },
+   {
+    "title": "Al Matareya To Go",
+    "slug": "al-matareya-to-go",
+    "address": "18 شارع الحرية من ميدان المطرية بجوار كشري الخديوي",
+    "phone": ""
+   },
+   {
+    "title": "Tahrir Square",
+    "slug": "tahrir-square",
+    "address": "15 ميدان التحرير - بجوار KFC",
+    "phone": ""
+   },
+   {
+    "title": "Sherif St.",
+    "slug": "sherif-st",
+    "address": "١٣ شارع شريف وسط البلد بجانب وزاره الأوقاف",
+    "phone": ""
+   },
+   {
+    "title": "Al Husseini to go",
+    "slug": "al-husseini-to-go",
+    "address": "الحسيني مول التجمع بجانب كمبوند النخيل الاول القاهرة الجديدة محافظه القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "Mostafa El Nahas",
+    "slug": "mostafa-el-nahas",
+    "address": "16مصطفي النحاس، المنطقة السادسة، مدينة نصر بجوار بيتزا بريموس",
+    "phone": ""
+   },
+   {
+    "title": "Al Qasr Al Ainy",
+    "slug": "al-qasr-al-ainy",
+    "address": "93 شارع القصر العيني محل رقم 13/9 بجانب روزا اليوسف",
+    "phone": ""
+   },
+   {
+    "title": "Hadayek Al Kobba",
+    "slug": "hadayek-al-kobba",
+    "address": "156 شارع مصر والسودان بجوار مطعم أسماك اليوم",
+    "phone": ""
+   },
+   {
+    "title": "Al-Ahly Club Al-Jazira",
+    "slug": "al-ahly-club-al-jazira",
+    "address": "استاد التتش امام بوابة الصالات",
+    "phone": ""
+   },
+   {
+    "title": "Sixty Walk Mall",
+    "slug": "sixty-walk-mall",
+    "address": "العاصمه الاداريه الحي الحكومي بجوار وزارة المالية مول سيكستي",
+    "phone": ""
+   },
+   {
+    "title": "Up Town-Moktam",
+    "slug": "up-town-moktam",
+    "address": "البلازا الجديده امام سيلستا جاردنز",
+    "phone": ""
+   },
+   {
+    "title": "Shoubra 2",
+    "slug": "shoubra-2",
+    "address": "٤١ أ شارع شبرا",
+    "phone": ""
+   },
+   {
+    "title": "Qasr El-Nil",
+    "slug": "qasr-el-nil",
+    "address": "56 قصر النيل امام بنك وفا و اسكندرية",
+    "phone": ""
+   },
+   {
+    "title": "Panda ElMaadi",
+    "slug": "panda-elmaadi",
+    "address": "7 أ كورنيش النيل، برج دلة، قسم المعادي، القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "Morshedy Degla View",
+    "slug": "morshedy-degla-view",
+    "address": "الهضبه الوسطى شارع صلاح الدين بوابه B31 امام كارفور و فرع اديداس",
+    "phone": ""
+   },
+   {
+    "title": "Morshedy One Kattameya",
+    "slug": "morshedy-one-kattameya",
+    "address": "وان قطامية - مجمع المرشدى - ميدان محمد زكى - مبنى 214",
+    "phone": ""
+   },
+   {
+    "title": "Bavaria Town El-Maadi",
+    "slug": "bavaria-town-el-maadi",
+    "address": "عماره 12 بافاريا تاون بجوار EG-Bank-امام البارون",
+    "phone": ""
+   },
+   {
+    "title": "City Center Maadi 2",
+    "slug": "city-center-maadi-2",
+    "address": "الطريق الدائري - بساتين الشرقية - البساتين - القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "Tseppas - Genena Mall",
+    "slug": "tseppas-genena-mall",
+    "address": "9 شارع البطراوي، جنينة مول، مدينة نصر",
+    "phone": ""
+   },
+   {
+    "title": "Girls College",
+    "slug": "girls-college",
+    "address": "كلية البنات- الميرغنى- داخل الكلية",
+    "phone": ""
+   },
+   {
+    "title": "College of Education",
+    "slug": "college-of-education",
+    "address": "كلية تربية أمام بنزينة شيل أوت روكسى داخل الكلية",
+    "phone": ""
+   },
+   {
+    "title": "Ain Shams University 3",
+    "slug": "ain-shams-university-3",
+    "address": "جامعة عين شمس - كلية الأداب",
+    "phone": ""
+   },
+   {
+    "title": "Ain Shams Law",
+    "slug": "ain-shams-law",
+    "address": "جامعة عين شمس - كلية الحقوق",
+    "phone": ""
+   },
+   {
+    "title": "AirPort T2-G",
+    "slug": "airport-t2-g",
+    "address": "مطار سفر٢ -امام الجراج المتعدد",
+    "phone": ""
+   },
+   {
+    "title": "Metro Heliopolis",
+    "slug": "metro-heliopolis",
+    "address": "18شارع الخليفة المأمون، منشية البكري ‬",
+    "phone": ""
+   },
+   {
+    "title": "Metro Ahly Club",
+    "slug": "metro-ahly-club",
+    "address": "17 شارع الأهرام، أمام سينما نورماندى , الكوربة",
+    "phone": ""
+   },
+   {
+    "title": "Madinaty Food Hall",
+    "slug": "madinaty-food-hall",
+    "address": "مول اوبن اير-مبني F",
+    "phone": ""
+   },
+   {
+    "title": "East Hub Madinaty",
+    "slug": "east-hub-madinaty",
+    "address": "مول ايست هب مدينتي امام الكرفت زون",
+    "phone": ""
+   },
+   {
+    "title": "Residence Hotel",
+    "slug": "residence-hotel",
+    "address": "فندق ريزيدانس - التجمع الأول- داخل الفندق",
+    "phone": ""
+   },
+   {
+    "title": "Petrojet Booth",
+    "slug": "petrojet-booth",
+    "address": "فرع بتروجيت بداخل الشركة مواعيد العمل من الأحد للخميس من الساعة ٨ صباحاً حتى الساعة ٣ مساءا",
+    "phone": ""
+   },
+   {
+    "title": "Pearl Mall",
+    "slug": "pearl-mall",
+    "address": "بيرل مول تقاطع شارع التسعين على المحور الرئيسي",
+    "phone": ""
+   },
+   {
+    "title": "Heliopolis star",
+    "slug": "heliopolis-star",
+    "address": "Star of Heliopolis (Gamal Salama) Mohamed Naguib Axis",
+    "phone": ""
+   },
+   {
+    "title": "Spinneys Maxim Mall",
+    "slug": "spinneys-maxim-mall",
+    "address": "شارع التسعين الشمالي, ماكسيم مول, التجمع الخامس",
+    "phone": ""
+   },
+   {
+    "title": "Wadi Degla - Settlement",
+    "slug": "wadi-degla-settlement",
+    "address": "كومبوند النخيل - التجمع الاول - نادى وادى دجلة - منطقة التنس",
+    "phone": ""
+   },
+   {
+    "title": "South Gate New cairo",
+    "slug": "south-gate-new-cairo",
+    "address": "شارع ال ٩٠ مول ساوس جيت بجوار بنك مصر الجهه الاماميه الموازيه لمول كونكورد بلازا",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market-Panorama Mall",
+    "slug": "metro-market-panorama-mall",
+    "address": "بداخل بانوراما الشروق مول مدينة الشروق ، القاهرة الجديدة",
+    "phone": ""
+   },
+   {
+    "title": "Spinneys Al-Shorouk",
+    "slug": "spinneys-al-shorouk",
+    "address": "سيتي بلازا مول-طريق الشهدا - بجوار الجامعة البريطانية وأكاديمية الشروق - الشروق",
+    "phone": ""
+   },
+   {
+    "title": "Royal House Al Shorouk",
+    "slug": "royal-house-al-shorouk",
+    "address": "طريق السادات بجوار مول Terrace , الشروق",
+    "phone": ""
+   },
+   {
+    "title": "Shorouk Sky Plaza",
+    "slug": "shorouk-sky-plaza",
+    "address": "مدينة الشروق، بوابة 1 طريق مصر الإسماعيلية",
+    "phone": ""
+   },
+   {
+    "title": "Shoubra",
+    "slug": "shoubra",
+    "address": "70 شارع شبرا , بين مسرة و روض الفرج.",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Helwan",
+    "slug": "carrefour-helwan",
+    "address": "شارع مصطفى فهمي، حلوان، القاهرة‬",
+    "phone": ""
+   },
+   {
+    "title": "Helwan University",
+    "slug": "helwan-university",
+    "address": "جامعة حلوان - بجوار السنتر التجاري - و مدرج 4",
+    "phone": ""
+   },
+   {
+    "title": "Helwan",
+    "slug": "helwan",
+    "address": "40 شارع راغب تقاطع شارع محمد سيد احمد امام كنتاكي و مطعم جاد",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market-Al Mokattam",
+    "slug": "metro-market-al-mokattam",
+    "address": "المقطم 16 ش 9 ميدان النافورة المقطم, القاهرة امام البنك الاهلى المصرى",
+    "phone": ""
+   },
+   {
+    "title": "Mokattam",
+    "slug": "mokattam",
+    "address": "23 شارع 9 , المقطم.",
+    "phone": ""
+   },
+   {
+    "title": "Open Air 2 - Madinty",
+    "slug": "open-air-2-madinty",
+    "address": "اوبن اير مول -بجوار كريستال عصفور",
+    "phone": ""
+   },
+   {
+    "title": "Open Air 3 - Madinty",
+    "slug": "open-air-3-madinty",
+    "address": "اوبن اير مول-Kids Area-قطعة C",
+    "phone": ""
+   },
+   {
+    "title": "Madinaty-Craft Zone",
+    "slug": "madinaty-craft-zone",
+    "address": "الكرافت زون , مدينتي - القاهرة الجديدة",
+    "phone": ""
+   },
+   {
+    "title": "Madinaty",
+    "slug": "madinaty",
+    "address": "طريق مدينتي امام كارفور",
+    "phone": ""
+   },
+   {
+    "title": "Egypt Station 2",
+    "slug": "egypt-station-2",
+    "address": "محطة مصر ,ميدان رمسيس، الفجالة، الأزبكية، محافظة القاهرة‬ أمام المحطة",
+    "phone": ""
+   },
+   {
+    "title": "Egypt Station 1",
+    "slug": "egypt-station-1",
+    "address": "محطة مصر ,ميدان رمسيس، الفجالة، الأزبكية، محافظة القاهرة‬",
+    "phone": ""
+   },
+   {
+    "title": "Civilization Museum",
+    "slug": "civilization-museum",
+    "address": "متحف الحضارة - الفسطاط",
+    "phone": ""
+   },
+   {
+    "title": "El Manial",
+    "slug": "el-manial",
+    "address": "٨١شارع المنيل الرئيسي.",
+    "phone": ""
+   },
+   {
+    "title": "Zamalek Taha Husein",
+    "slug": "zamalek-taha-husein",
+    "address": "٢ طه حسين أمام اليمامة سنتر بجوار بنك الكويت الوطني.",
+    "phone": ""
+   },
+   {
+    "title": "Zamalek Brazil",
+    "slug": "zamalek-brazil",
+    "address": "5 شارع البرازيل، الزمالك امام اورانج",
+    "phone": ""
+   },
+   {
+    "title": "Adly Mansour Metro Station",
+    "slug": "adly-mansour-metro-station",
+    "address": "محطه عدلي منصور المركزيه موقف العاشر داخل المحطة",
+    "phone": ""
+   },
+   {
+    "title": "Seoudi Market-City Stars",
+    "slug": "seoudi-market-city-stars",
+    "address": "شارع عمر ابن الخطاب، سيتي ستارز مول ، مدينة نصر",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour Golf Salah Salem",
+    "slug": "carrefour-golf-salah-salem-road",
+    "address": "طريق صلاح سالم بجوار دار القوات الجوية - م.نصر -القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "Global Medical City",
+    "slug": "global-medical-city",
+    "address": "المنطقة السادسة . مدينة نصر .القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour- City Center Almaza",
+    "slug": "carrefour-city-center-almaza",
+    "address": "طريق السويس، شيراتون المطار، مدينة نصر‬.",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Tiba Mall",
+    "slug": "carrefour-tiba-mall",
+    "address": "4 شارع انور المفتى من طريق النصر, مدينة نصر",
+    "phone": ""
+   },
+   {
+    "title": "Panda Market",
+    "slug": "panda-market",
+    "address": "7 طريق النصر، المنطقة السادسة، مدينة نصر",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market-Al Ahly Club",
+    "slug": "metro-market-al-ahly-club",
+    "address": "84 حسن مأمون، المنطقة السادسة،شارع النادي الاهلي, مدينة نصر",
+    "phone": ""
+   },
+   {
+    "title": "Metro Genena Mall",
+    "slug": "metro-market-gnena-mall",
+    "address": "6 شارع البطراوي خلف جنينة مول، مدينة نصر",
+    "phone": ""
+   },
+   {
+    "title": "Go Bus",
+    "slug": "go-bus",
+    "address": "الحي السادس، بجوار شركة زانوسى , مدينة نصر، القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "City Stars 3",
+    "slug": "city-stars-3",
+    "address": "شارع عمر ابن الخطاب، سيتي ستارز مول , الدور الرابع، مدينة نصر",
+    "phone": ""
+   },
+   {
+    "title": "City Stars 1",
+    "slug": "city-stars-1",
+    "address": "شارع عمر ابن الخطاب، سيتي ستارز مول , الدور الاول، مدينة نصر",
+    "phone": ""
+   },
+   {
+    "title": "Makram Ebeid",
+    "slug": "makram-ebeid",
+    "address": "90 شارع مكرم عبيد، مدينة نصر بجوار كافيه بينوس",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Tora Al Asmnt",
+    "slug": "carrefour-tora-al-asmnt",
+    "address": "٥٥ كورنيش النيل، طرة الأسمنت، المعادي",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market-Maadi",
+    "slug": "metro-market-maadi",
+    "address": "53 طريق مصر حلوان الزراعي، المعادي.",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-New Maadi",
+    "slug": "carrefour-new-maadi",
+    "address": "كارفور نيو معادي",
+    "phone": ""
+   },
+   {
+    "title": "Spinneys-Zahraa Al-Maadi",
+    "slug": "spinneys-zahraa-al-maadi",
+    "address": "مول 50 , زهراء المعادي - القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "Oscar Grand Stores - Maadi",
+    "slug": "oscar-grand-stores-maadi",
+    "address": "شارع الزهراء الرئيسي ف زهراء المعادي برج ريحانه بلازا بجوار فودافون",
+    "phone": ""
+   },
+   {
+    "title": "Spinneys-Maadi",
+    "slug": "spinneys-maadi",
+    "address": "شارع 250 , السرايات الغربيه - امام جراند مول المعادى .",
+    "phone": ""
+   },
+   {
+    "title": "Watanya El-Maadi",
+    "slug": "watanya-el-maadi",
+    "address": "طريق صقر قريش امام بنك مصر متفرع من شارع النصر بجوار المعونة الأمريكية و ماكدونالدز",
+    "phone": ""
+   },
+   {
+    "title": "Wadi Degla Maadi",
+    "slug": "wadi-degla-maadi",
+    "address": "الشطر الرابع زهراء المعادي قريب من المسجد الكويتي داخل النادي بوابة 4",
+    "phone": ""
+   },
+   {
+    "title": "Maadi Laselki St.",
+    "slug": "maadi-laselki-st",
+    "address": "شارع 216 . عزبة فهمي. من شارع اللاسلكي",
+    "phone": ""
+   },
+   {
+    "title": "El Maadi",
+    "slug": "9-maadi-street",
+    "address": "62 شارع 9 بجوار محطة ثكنات المعادى بجوار دنكن دونتس",
+    "phone": ""
+   },
+   {
+    "title": "Maadi 50",
+    "slug": "maadi-50",
+    "address": "شارع الخمسين زهراء المعادى بجوار كنتاكى و بنك QNB",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market-Al Rehab",
+    "slug": "metro-market-al-rehab",
+    "address": "مول الرحاب -الدور الارضي-شارع طلعت مصطفي",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour - Al Rehab",
+    "slug": "carrefour-al-rehab",
+    "address": "افينيو مول - مجموعة 130 الرحاب 2, مدينة الرحاب",
+    "phone": ""
+   },
+   {
+    "title": "Fathalla Market-Al Rehab",
+    "slug": "fathalla-market-al-rehab",
+    "address": "محور السادات، اول القاهرة الجديدة، محافظة القاهرة‬",
+    "phone": ""
+   },
+   {
+    "title": "Watania-Al Rehab",
+    "slug": "watania-al-rehab",
+    "address": "أمام بوابة 1 الرحاب - محور تحرير القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "Gateway Mall - Al Rehab",
+    "slug": "gateway-mall-al-rehab",
+    "address": "مول جيت واى بجانب الفا ماركت بوابه 13 .الرحاب",
+    "phone": ""
+   },
+   {
+    "title": "Avenue Mall -Al Rehab",
+    "slug": "avenue-mall-al-rehab",
+    "address": "مول افينيو بجوار السجل المدني الدور الثاني , القاهرة الجديدة ، الرحاب ، القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "Al Rehab - Eastern Market",
+    "slug": "al-rehab-eastern-market",
+    "address": "منطقة المطاعم ، الرحاب السوق الشرقي ، مدينة الرحاب ، محافظة القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "ChillOut AlRehab",
+    "slug": "chillout-alrehab",
+    "address": "بنزينه شيل أوت - الرحاب - القاهره الجديده.",
+    "phone": ""
+   },
+   {
+    "title": "Spinneys-Arena Mall",
+    "slug": "spinneys-arena-mall",
+    "address": "مجمع البنوك ، شارع التسعين , اول القاهرة الجديدة .",
+    "phone": ""
+   },
+   {
+    "title": "Al Far Market",
+    "slug": "al-far-market",
+    "address": "شارع التسعين الجنوبي ، التجمع الخامس, امام كونكورد بلازا مول",
+    "phone": ""
+   },
+   {
+    "title": "Oscar Grand Stores-Tagamoa",
+    "slug": "oscar-grand-stores-tagamoa",
+    "address": "القطعة 425 - ش التسعين قطاع 3 - التجمع الخامس, القاهرة الجديدة.",
+    "phone": ""
+   },
+   {
+    "title": "Petrojet",
+    "slug": "petrojet",
+    "address": "فرع بتروجيت بداخل الشركة مواعيد العمل من الأحد للخميس من الساعة ٨ صباحاً حتى الساعة ٣ مساءا",
+    "phone": ""
+   },
+   {
+    "title": "El Far Market Arabella",
+    "slug": "el-far-market-arabella",
+    "address": "ماركت محمود الفار - ارابيلا بلازا - التجمع الثالث",
+    "phone": ""
+   },
+   {
+    "title": "Seoudi Market-Water Way",
+    "slug": "seoudi-market-water-way",
+    "address": "22 أ - ذا ووتر واى كومبوند المستثمرين الشمالية, القاهرة الجديدة, داخل دبليو مول - الدور الارضى.",
+    "phone": ""
+   },
+   {
+    "title": "Fresh Food Market-Point 90",
+    "slug": "fresh-food-market-point-90",
+    "address": "امام الجامعه الامريكية بوابة 5- بوينت 90 مول",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Mega Mall",
+    "slug": "carrefour-mega-mall",
+    "address": "كارفور میجا مول – التجمع الخامس",
+    "phone": ""
+   },
+   {
+    "title": "Al-Manara 2",
+    "slug": "al-manara-2",
+    "address": "المركز الدولى للمؤتمرات محور المشير طنطاوى- بجوار قاعه 4",
+    "phone": ""
+   },
+   {
+    "title": "Al-Manara 1",
+    "slug": "al-manara-1",
+    "address": "المركز الدولى للمؤتمرات محور المشير طنطاوى- بجوار قاعه 1",
+    "phone": ""
+   },
+   {
+    "title": "Spinneys-Pearl Des Rois",
+    "slug": "spinneys-pearl-des-rois",
+    "address": "اخر شارع الجامعه الامريكيه بجانب بنك مصر - منفذ بيع اسبينس بيرل دي روا- التجمع الثالث",
+    "phone": ""
+   },
+   {
+    "title": "Géant Supermarket",
+    "slug": "geant-supermarket",
+    "address": "محطة شيل اوت الشويفات, بجانب فندق تريومف - التجمع الخامس , القاهرة الجديدة",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour - Mirage Mall",
+    "slug": "carrefour-mirage-mall",
+    "address": "كارفور ماركت - ميراج مول - التجمع الاول",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour - Mivida",
+    "slug": "carrefour-mivida",
+    "address": "شارع التسعين , كمبوند ميفيدا-التجمع الخامس",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Al Hamad Mall",
+    "slug": "carrefour-al-hamad-mall",
+    "address": "79 Axis, اول القاهرة الجديدة،بجانب سیتى فیستفیال مول",
+    "phone": ""
+   },
+   {
+    "title": "District 5 Mall",
+    "slug": "district-5-mall",
+    "address": "مول district 5 طريق العين السخنة-المنطقة الصناعية",
+    "phone": ""
+   },
+   {
+    "title": "Mivida",
+    "slug": "mivida",
+    "address": "التجمع الخامس بعد الجامعه الامريكيه , صينيه النادي داخل كومبوند ميفيدا",
+    "phone": ""
+   },
+   {
+    "title": "Lulu Market-New Cairo",
+    "slug": "lulu-market-new-cairo",
+    "address": "التجمع الاول مول لولو ماركت بجوار اكاديميه الشركه الدور الاول",
+    "phone": ""
+   },
+   {
+    "title": "Agora Mall",
+    "slug": "agora-mall",
+    "address": "مول أجورا-الدور الارضي- التجمع الخامس",
+    "phone": ""
+   },
+   {
+    "title": "The Park Mall",
+    "slug": "park-mall",
+    "address": "بارك مول التجمع الخامس امام هايبر لولو ماركت بجانب فندق بورتو كايرو أمام الجامعه الامريكيه",
+    "phone": ""
+   },
+   {
+    "title": "Lake House",
+    "slug": "lake-house",
+    "address": "ليك هاوس شارع التسعين بجوار فندق دوسيد داخل نادى ليك هاوس",
+    "phone": ""
+   },
+   {
+    "title": "Arabella",
+    "slug": "arabella",
+    "address": "أرابيلا مول الجديد ، التجمع الثالث، بجوار صيدلية عز الدين القاهرة الجديدة.",
+    "phone": ""
+   },
+   {
+    "title": "Concord Plaza",
+    "slug": "concord-plaza",
+    "address": "شارع التسعين، التجمع الخامس كونكورد بلازا مول",
+    "phone": ""
+   },
+   {
+    "title": "Down Town Mall",
+    "slug": "down-town-mall",
+    "address": "شارع التسعين مول الداون تاون، التجمع الخامس",
+    "phone": ""
+   },
+   {
+    "title": "Lake View",
+    "slug": "lake-view",
+    "address": "شارع التسعين، خلف مستشفى القوات الجويه التجمع الخامس",
+    "phone": ""
+   },
+   {
+    "title": "ChillOut AlShouyfat",
+    "slug": "chillout-alshouyfat",
+    "address": "مدخل الشويفات - أول مدخل كومبوند الجولف القطاميه - بنزينه شيل أوت.",
+    "phone": ""
+   },
+   {
+    "title": "CFC 2",
+    "slug": "cfc-2",
+    "address": "تقاطع الدائري مع شارع التسعين، امام النافوره بجوار اكاديمية الشرطة",
+    "phone": ""
+   },
+   {
+    "title": "Cairo Festival City 1",
+    "slug": "cairo-festival-city-1",
+    "address": "تقاطع الدائري مع شارع التسعين، امام النافوره بجوار اكاديمية الشرطة",
+    "phone": ""
+   },
+   {
+    "title": "Ain Shams University",
+    "slug": "ain-shams-university",
+    "address": "جامعة عين شمس - كلية التجارة",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market - Roxi",
+    "slug": "metro-market-roxi",
+    "address": "18شارع الخليفة المأمون، منشية البكري",
+    "phone": ""
+   },
+   {
+    "title": "Negmet Heliopolisa-Gamee Square",
+    "slug": "negmet-heliopolis-gamee-square",
+    "address": "5 شارع الرمله، البستان، قسم مصر الجديدة، محافظة القاهرة‬",
+    "phone": ""
+   },
+   {
+    "title": "AirPort T1",
+    "slug": "airport-t1",
+    "address": "مطار 1 القديم",
+    "phone": ""
+   },
+   {
+    "title": "AirPort T3-F",
+    "slug": "airport-t3-f",
+    "address": "المطار الجديد 3 - ممر F",
+    "phone": ""
+   },
+   {
+    "title": "AirPort T3-G",
+    "slug": "airport-t3-g",
+    "address": "مطار 3 الجديد - ممر G",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market - El Korba",
+    "slug": "metro-market-el-korba",
+    "address": "17 شارع الأهرام، أمام سينما نورماندى , الكوربة",
+    "phone": ""
+   },
+   {
+    "title": "Royal House Market-Merryland",
+    "slug": "royal-house-market-merryland",
+    "address": "6 شارع روكسى امام حديقه الميريلاند خلف عمارات عثمان احمد عثمان-رويال هاوس ماركت",
+    "phone": ""
+   },
+   {
+    "title": "Negmet Heliopolis - Sheraton",
+    "slug": "negmet-heliopolis-sheraton",
+    "address": "ماركت جمال سلامه بجانب مرور النزهه - شيراتون",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour - Al Zaytoun",
+    "slug": "carrefour-al-zaytoun",
+    "address": "العزيز بالله، الزيتون الشرقية، الزيتون",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour - Saraya Mall",
+    "slug": "carrefour-saraya-mall",
+    "address": "إمتداد شارع ولي العهد، حدائق القبة",
+    "phone": ""
+   },
+   {
+    "title": "Oscar Grand Stores - Heliopolis",
+    "slug": "oscar-grand-stores-heliopolis",
+    "address": "105 عمر بن الخطاب، الماظة، مصر الجديدة‬",
+    "phone": ""
+   },
+   {
+    "title": "AirPort T2",
+    "slug": "airport-t2",
+    "address": "المطار الجديد صالة 2",
+    "phone": ""
+   },
+   {
+    "title": "lulu Heliopolis",
+    "slug": "lulu-market-heliopolis",
+    "address": "مول لولو ديستريكت-وادي دجلة بعد بنزينة وطنية",
+    "phone": ""
+   },
+   {
+    "title": "Sheraton Heliopolis",
+    "slug": "sheraton-heliopolis",
+    "address": "24 شارع سيد زكريا شيراتون امام سلينترو",
+    "phone": ""
+   },
+   {
+    "title": "City Center Almaza",
+    "slug": "city-center-almaza",
+    "address": "مطار الماظة، شيراتون المطار ، القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "Almaza Avenue",
+    "slug": "almaza-avenue",
+    "address": "مول ألماظة أفينيو الجديد بجوار مستشفى مصر الطيران - هليوبوليس",
+    "phone": ""
+   },
+   {
+    "title": "El Korba",
+    "slug": "el-korba-branch",
+    "address": "١٨ CIB شارع نزيه خليفة مصر الجديدة امام مستشفى الثورة بجوار بنك",
+    "phone": ""
+   },
+   {
+    "title": "Merghany",
+    "slug": "merghany",
+    "address": "١٠٥ شارع السيد المرغني، مصر الجديدة بجوار تورتينا الحلوانى",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "الفيوم",
+  "gov_en": "El Fayom",
+  "branches": [
+   {
+    "title": "Fayom",
+    "slug": "fayom",
+    "address": "مول دله أو The Get شارع جمال عبدالناصر بجوار RGS Tower للملابس و بجوار مطعم مصر",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "الجيزة",
+  "gov_en": "Giza",
+  "branches": [
+   {
+    "title": "Sodic",
+    "slug": "sodic",
+    "address": "اب ويست داون سوديك بافرلي هيلز",
+    "phone": ""
+   },
+   {
+    "title": "G Yard Octobar",
+    "slug": "g-yard-octobar",
+    "address": "حدائق اكتوبر شارع زويل بجوار مول الحسن",
+    "phone": ""
+   },
+   {
+    "title": "Mariouteya",
+    "slug": "mariouteya",
+    "address": "103ش فيصل - محطة المريوطيه بجوار ڤودافون",
+    "phone": ""
+   },
+   {
+    "title": "Zamalek sc - to go",
+    "slug": "zamalek-sc-to-go",
+    "address": "نادي الزمالك بوابة 2 داخل النادي",
+    "phone": ""
+   },
+   {
+    "title": "Al Batal Ahmed Abdel Aziz Street",
+    "slug": "al-batal-ahmed-abdel-aziz-street",
+    "address": "29 شارع البطل احمد عبد العزيز - المهندسين",
+    "phone": ""
+   },
+   {
+    "title": "Hadayek Al-Ahram 2",
+    "slug": "hadayek-al-ahram-2",
+    "address": "حدائق الاهرام البوابه الأولى - 291أ شارع الثروة المعدنية",
+    "phone": ""
+   },
+   {
+    "title": "Cairo University 3",
+    "slug": "cairo-university-3",
+    "address": "الباب الرئيسي بجوار القبة امام مبني الساعة-جامعة القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "Hadayek Al-Ahram",
+    "slug": "hadayek-al-ahram",
+    "address": "حدائق الأهرام - البوابه الرابعه بوابه مينا شارع الجيش بجوار قويدر للحلويات",
+    "phone": ""
+   },
+   {
+    "title": "Rofayda Hospital",
+    "slug": "rofayda-hospital",
+    "address": "داخل مستشفي رفيدة- 27محور كريزي واتر مدخل2",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour Mall of Egypt",
+    "slug": "carrefour-mall-of-egypt",
+    "address": "مول مصر، مدينة السادس من أكتوبر - الجيزة",
+    "phone": ""
+   },
+   {
+    "title": "Cairo University - October",
+    "slug": "cairo-university-october",
+    "address": "جامعه القاهره بجوار كلية طب اسنان - مدخل زايد 1 بجوار هايبر وان - اكتوبر",
+    "phone": ""
+   },
+   {
+    "title": "Wadi Degla October 2",
+    "slug": "wadi-degla-october-2",
+    "address": "6اكتوبر الحي الاول- نادي وادي دجله 2 - بجوار محطه اتوبيس مصر",
+    "phone": ""
+   },
+   {
+    "title": "Wadi Degla October",
+    "slug": "wadi-degla-october",
+    "address": "وادي دجلة اكتوبر ع طريق الواحات بجوار مول مصر - وعلي دخلة جهينة",
+    "phone": ""
+   },
+   {
+    "title": "Hadaba Al Ahram",
+    "slug": "hadaba-al-ahram",
+    "address": "عماره ٤١٣ ن شارع الجيش البوابه الرابعة حدائق الأهرام بجوار فرع فودافون",
+    "phone": ""
+   },
+   {
+    "title": "Faisal",
+    "slug": "faisal",
+    "address": "عمارة 282 - مطبعة فيصل - بجوار الرفاعي",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour - Beverly Hills",
+    "slug": "carrefour-beverly-hills",
+    "address": "داخل ويست سكوير مول - سوديك ويست، بفرلى هيلز - الشيخ زايد",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market - Sheikh Zayed",
+    "slug": "metro-market-sheikh-zayed",
+    "address": "الشيخ زايد - مدخل بالم هيلز",
+    "phone": ""
+   },
+   {
+    "title": "Spinneys Mall of Arabia",
+    "slug": "spinneys-mall-of-arabia",
+    "address": "ميدان جهينة - السادس من أكتوبر",
+    "phone": ""
+   },
+   {
+    "title": "Fresh Food Market-Palm Hills",
+    "slug": "fresh-food-market-palm-hills",
+    "address": "طريق الشباب، الشيخ زايد، أكتوبر",
+    "phone": ""
+   },
+   {
+    "title": "Hyper 10 Booth 3",
+    "slug": "hyper-one-october-3",
+    "address": "مدخل زايد ، داخل هايبر وان، السادس من أكتوبر، الجيزة",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Dandy Mall",
+    "slug": "carrefour-dandy-mall",
+    "address": "طريق القاهرة - الإسكندرية الصحراوي، الجيزة.",
+    "phone": ""
+   },
+   {
+    "title": "Best Way-October",
+    "slug": "best-way-october",
+    "address": "إدن مول , الجزيرة , الشيخ زايد",
+    "phone": ""
+   },
+   {
+    "title": "Seoudi Market-Beverly Hills",
+    "slug": "seoudi-market-beverly-hills",
+    "address": "ستريب مول - بيفرلي هيلز، 6 أكتوبر",
+    "phone": ""
+   },
+   {
+    "title": "Seoudi Market-Dream Land",
+    "slug": "seoudi-market-dream-land",
+    "address": "طريق الواحات، قسم أول 6 أكتوبر،الجيزة",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market-El Yasmeen",
+    "slug": "metro-market-el-yasmeen",
+    "address": "مشروع لا سيتى - الحى الثامن، قسم أول 6 أكتوبر",
+    "phone": ""
+   },
+   {
+    "title": "Panda Mall-October",
+    "slug": "panda-mall-october",
+    "address": "المحورالمركزي - ميدان الحرية ,أكتوبر",
+    "phone": ""
+   },
+   {
+    "title": "Seoudi Market-Zayed 2000",
+    "slug": "seoudi-market-zayed-2000",
+    "address": "كومباوند زايد 2000، مدخل 9 الشيخ زايد,أكتوبر",
+    "phone": ""
+   },
+   {
+    "title": "Hyper Salmaniyah Booth",
+    "slug": "hyper-one-salmaniyah-2",
+    "address": "هايبر 1 السلمانية، طريق الصحراوي",
+    "phone": ""
+   },
+   {
+    "title": "Hyper Selmaneyah",
+    "slug": "hyper-one-salmaniya-1",
+    "address": "هايبر 1 السلمانية، طريق الصحراوي",
+    "phone": ""
+   },
+   {
+    "title": "Americana Plaza",
+    "slug": "americana-plaza",
+    "address": "أمريكانا بلازا , مدينة الشيخ زايد , أكتوبر.",
+    "phone": ""
+   },
+   {
+    "title": "Twin Tower - Shiekh Zayed",
+    "slug": "twin-tower-shiekh-zayed",
+    "address": "الشيخ زايد- مبنى c",
+    "phone": ""
+   },
+   {
+    "title": "Hyper One-October (2)",
+    "slug": "hyper-one-october-2",
+    "address": "مدخل زايد 1، بجانب موقف السيارات الصغير, هايبر وان، السادس من أكتوبر، الجيزة",
+    "phone": ""
+   },
+   {
+    "title": "Hyper One-October (1)",
+    "slug": "hyper-one-october-1",
+    "address": "مدخل زايد 1 بجوار موقف السيارات الكبير، هايبر وان، السادس من أكتوبر، الجيزة",
+    "phone": ""
+   },
+   {
+    "title": "Walk of Cairo - Sheikh Zayed",
+    "slug": "walk-of-cairo-sheikh-zayed",
+    "address": "الكيلو 38 مصر إسكندرية الصحرواي بجوار بوابة سوديك - مول Walk Of Cairo",
+    "phone": ""
+   },
+   {
+    "title": "Mall of Arabia ( Food Court )",
+    "slug": "mall-of-arabia-food-court",
+    "address": "بداخل مول العرب في منطقة الفود كورت، ميدان جهينه، 6 أكتوبر، بوابه 2",
+    "phone": ""
+   },
+   {
+    "title": "Mall of Arabia",
+    "slug": "mall-of-arabia",
+    "address": "ميدان جهينه - 6 أكتوبر – بوابه 2",
+    "phone": ""
+   },
+   {
+    "title": "New Giza Club",
+    "slug": "new-giza",
+    "address": "نادى نيو جيزة الجديد - طريق مصر أسكندرية الصحراوى - خلف حازم حسن - 6 أكتوبر",
+    "phone": ""
+   },
+   {
+    "title": "Mall of Egypt",
+    "slug": "mall-of-egypt",
+    "address": "مول مصر، بجوار مجمع المطاعم , مدينة السادس من أكتوبر",
+    "phone": ""
+   },
+   {
+    "title": "ChillOut Oct",
+    "slug": "chillout-oct",
+    "address": "بنزينه شيل أوت - الخمايل - محور 26 يوليو - 6 أكتوبر",
+    "phone": ""
+   },
+   {
+    "title": "Palm Hills",
+    "slug": "palm-hills",
+    "address": "شارع ٨٨، نادي بالم هيلز، ٦ أكتوبر بجوار اكاديمية برشلونه",
+    "phone": ""
+   },
+   {
+    "title": "Arkan",
+    "slug": "2059",
+    "address": "الشيخ زايد مول اركان امام زايد 2000 الدور الارضى المكتب الرئيسى",
+    "phone": ""
+   },
+   {
+    "title": "Fresco Mart",
+    "slug": "fresco-mart",
+    "address": "36 شارع النخيل من سليمان اباظه , المهندسيين",
+    "phone": ""
+   },
+   {
+    "title": "Metro-Gamaet El Dewal",
+    "slug": "metro-gamaet-el-dewal",
+    "address": "28 شارع جامعه الدول أمام كوستا كافيه -المهندسين",
+    "phone": ""
+   },
+   {
+    "title": "Lebanon Square",
+    "slug": "lebanon-square",
+    "address": "53 شارع لبنان بجوار لابوار و H&M و أمام بنك الأستثمار العربى",
+    "phone": ""
+   },
+   {
+    "title": "Syria",
+    "slug": "syria",
+    "address": "43 شارع سوريا متفرع من شارع جامعة الدول العربيه امام مترو ماركت",
+    "phone": ""
+   },
+   {
+    "title": "Mohandeseen Aswan",
+    "slug": "mohandeseen-aswan",
+    "address": "11 شارع الجزائر ، ميدان أسوان",
+    "phone": ""
+   },
+   {
+    "title": "Spinneys Al-Haram",
+    "slug": "spinneys-al-haram",
+    "address": "46 شارع الهرم - داخل جالاكسي مول - بجوار كريستال مول",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Zezenia",
+    "slug": "carrefour-zezenia",
+    "address": "230 شارع الاهرام - العمرانية - الهرم، الجيزة",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market-Haram",
+    "slug": "metro-market-haram",
+    "address": "١١٢ أ شارع العريش، الهرم,الجيزة",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Al Haram",
+    "slug": "carrefour-al-haram",
+    "address": "٢٢ شارع الهرم، الجيزة",
+    "phone": ""
+   },
+   {
+    "title": "Al Haram",
+    "slug": "al-haram",
+    "address": "اخر شارع الهرم بجوار مطعم جاد ومحل ضجه - مشعل",
+    "phone": ""
+   },
+   {
+    "title": "Cairo University 2",
+    "slug": "cairo-university-2",
+    "address": "جامعة القاهرة 2 -عند مكتبة ثقه بين كلية تجارة و كلية حقوق و كلية علوم",
+    "phone": ""
+   },
+   {
+    "title": "Cairo University",
+    "slug": "cairo-university",
+    "address": "كلية دار العلوم - بجوار المكتبة المركزية - جامعة القاهرة",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market-Cairo University",
+    "slug": "metro-market-cairo-university",
+    "address": "مترو ماركت، جامعة القاهرة، الجيزة",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-El Mohafza",
+    "slug": "carrefour-el-mohafza",
+    "address": "كارفور المحافظة, الجيزة",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market-Dokki",
+    "slug": "metro-market-dokki",
+    "address": "5 شارع المساحة، متفرع من ميدان المساحة، قريب من المدرسة الالمانية الانجيلية الثانوية بالقاهرة الدقي ، الجيزة",
+    "phone": ""
+   },
+   {
+    "title": "Shooting Club",
+    "slug": "shooting-club",
+    "address": "20 نادي الصيد بجوار بنك اسكندرية - وبعد حلوانى الدمياطى",
+    "phone": ""
+   },
+   {
+    "title": "Dokki",
+    "slug": "dokki",
+    "address": "٦٢ شارع مصدق الدقي بجوار شاورما ابو رامز",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "الإسكندرية",
+  "gov_en": "Alexandria",
+  "branches": [
+   {
+    "title": "Porto Marina",
+    "slug": "porto-marina-2",
+    "address": "مارينا 3 _بجوار مدخل بوابة مارينا 3",
+    "phone": ""
+   },
+   {
+    "title": "Seashell Playa",
+    "slug": "seashell-playa",
+    "address": "داخل قريه سي شيل بالا امام مسجد القريه",
+    "phone": ""
+   },
+   {
+    "title": "Daniel St. Alex",
+    "slug": "daniel-st-alex",
+    "address": "عقار 5،7 طريق الحرية مع 36 النبي دانيال امام برجر وهمي - العطارين - اسكندرية",
+    "phone": ""
+   },
+   {
+    "title": "Mandara Alex",
+    "slug": "mandara-alex",
+    "address": "15 شارع وردة اليازجي مع جمال عبد الناصر المندرة بحري",
+    "phone": ""
+   },
+   {
+    "title": "Louran",
+    "slug": "louran",
+    "address": "212 عبدالسلام عارف بين ترام لوران وثروت",
+    "phone": ""
+   },
+   {
+    "title": "Zahran Badr",
+    "slug": "zahran-badr",
+    "address": "قرية بدر -امام زهران ماركت– كيلو 82.5 طريق اسكندريه مطروح الساحلى الدولى",
+    "phone": ""
+   },
+   {
+    "title": "Al Balah",
+    "slug": "al-balah",
+    "address": "قرية البلاح بجانب مدخل القرية- الكيلو 65",
+    "phone": ""
+   },
+   {
+    "title": "Seashell",
+    "slug": "seashell",
+    "address": "قرية سى شيل امام منطقة ملاعب التنس",
+    "phone": ""
+   },
+   {
+    "title": "North coast Hacienda",
+    "slug": "hacienda-bay",
+    "address": "هاسيندا باي بجانب مترو ماركت - بجوار مكتب كهرباء هاسيندا باي",
+    "phone": ""
+   },
+   {
+    "title": "Imperium Marassi",
+    "slug": "marassi-m-porium",
+    "address": "مول  M Porium - امام منطقة سيدي عبدالرحمن",
+    "phone": ""
+   },
+   {
+    "title": "North coast Almaza Bay",
+    "slug": "almaza-bay",
+    "address": "منطقه مطاعم ترافكو - بجوار مطعم طبالي",
+    "phone": ""
+   },
+   {
+    "title": "North coast Amwaj",
+    "slug": "amwaj",
+    "address": "قريه امواج مول ريفت - بجوار سبينس ماركت",
+    "phone": ""
+   },
+   {
+    "title": "Zahran Pharaohs",
+    "slug": "zahran-pharaohs",
+    "address": "ش الفراعنه متفرع من ش فؤاد امام عماره مصر للتأمين عمارة رقم 6 -ماركت زهران",
+    "phone": ""
+   },
+   {
+    "title": "Wadi Degla",
+    "slug": "wadi-degla",
+    "address": "طريق القبارى السريع غيط العنب شرق نادي وادي دجلة",
+    "phone": ""
+   },
+   {
+    "title": "Metro Louran",
+    "slug": "metro-louran",
+    "address": "25 الفريق إسماعيل سرهنك، سان ستفانو، قسم ثان الرمل، محافظة الإسكندرية",
+    "phone": ""
+   },
+   {
+    "title": "Metro Zezenia",
+    "slug": "metro-zezenia",
+    "address": "طريق الحرية 601 - شارع ابو قير - بجوار شركة الاسكندرية لتوزيع الكهرباء - بجوار صيدلية العزبى",
+    "phone": ""
+   },
+   {
+    "title": "El Bitash Alexandria",
+    "slug": "el-bitash-alexandria",
+    "address": "البيطاش - البيطاش غرب, الدخيلة, محافظة الاسكندرية امام كازيون",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Kafr Abdo",
+    "slug": "carrefour-kafr-abdo",
+    "address": "أبو النواطير - سيدي جابر، الأسكندرية",
+    "phone": ""
+   },
+   {
+    "title": "Fresh Food Market-Alexandria",
+    "slug": "fresh-food-market-alexandria",
+    "address": "8-10 شارع الكازينو، سان ستفانو، قسم الرمل.",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Green Plaza",
+    "slug": "carrefour-green-plaza",
+    "address": "طريق 14 مايو، سموحة، سيدي جابر",
+    "phone": ""
+   },
+   {
+    "title": "Raml Station Alex",
+    "slug": "al-raml-station",
+    "address": "شارع القائد ابراهيم - منطقة جراج الخالدين - المنطقه المركزيه - محطة الرمل",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-El-Agamy",
+    "slug": "carrefour-el-agamy",
+    "address": "طريق الإسكندرية - مرسى مطروح، العجمي البحري",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market-Smouha",
+    "slug": "metro-market-smouha",
+    "address": "شارع ألبرت الاول - داخل مترو ماركت - امام مستشفى بيت النعمه.",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-City Light",
+    "slug": "carrefour-city-light",
+    "address": "أمين حسونة، السيوف قبلي ، قسم ثان المنتزة.",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Multaqa",
+    "slug": "carrefour-multaqa",
+    "address": "الشهيد طيار محمود شاكر عبد المنعم، عزبة سعد، سيدي جابر.",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Al Arouba Mall",
+    "slug": "carrefour-al-arouba-mall",
+    "address": "طريق مطار برج العرب - الساحل الشمالى، الذراع البحري، قسم برج العرب",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Royal Plaza",
+    "slug": "carrefour-royal-plaza",
+    "address": "العمراوي ، قسم المنتزه .",
+    "phone": ""
+   },
+   {
+    "title": "Romanian Camp",
+    "slug": "romanian-camp",
+    "address": "رشدى- شارع المعسكر الرومانى بجوار حلوانى فلوكيجر",
+    "phone": ""
+   },
+   {
+    "title": "Ganakles",
+    "slug": "ganakles",
+    "address": "٦٣٧ طريق الحرية جناكليس بجوار صيدليه اسامة الطيبى",
+    "phone": ""
+   },
+   {
+    "title": "Smouha Club",
+    "slug": "smouha-club",
+    "address": "17-19 فيكتور ايمانويل الثالث ، امام البوابة الرئيسية لنادي سموحه",
+    "phone": ""
+   },
+   {
+    "title": "Alaqbal Alex",
+    "slug": "al-eqbal",
+    "address": "25 شارع الاقبال بجانب ماكدونالدز , لوران , الاسكندرية",
+    "phone": ""
+   },
+   {
+    "title": "Miami Alex",
+    "slug": "miami",
+    "address": "برج نفرتيتى - تقاطع جمال عبد الناصر مع اسكندر ابراهيم - ميامي الحديقة الاولى برج نفرتيتى - تقاطع جمال عبد الناصر مع اسكندر ابراهيم - امام الاكاديميه العربيه و ماكدونالدز",
+    "phone": ""
+   },
+   {
+    "title": "City Center Alex 2",
+    "slug": "city-center-alex",
+    "address": "سيتى سنتر مول الداون تاون قطاع الطريق الصحراوي",
+    "phone": ""
+   },
+   {
+    "title": "Abrahimia",
+    "slug": "abrahimia",
+    "address": "58 طريق الجيش، الإبراهيمية بحري وسيدي جا، قسم باب شرقي.",
+    "phone": ""
+   },
+   {
+    "title": "Shalalat Alex",
+    "slug": "shalalat",
+    "address": "116 طريق الحريه اول شارع السلطان حسين.عمارة البنك الاهلي المصري",
+    "phone": ""
+   },
+   {
+    "title": "Kafr Abdo",
+    "slug": "kafr-abdo",
+    "address": "23 شارع سانت جيني ، كفر عبده ، أبو النواتير ، سيدي جابر",
+    "phone": ""
+   },
+   {
+    "title": "Smouha",
+    "slug": "smouha",
+    "address": "شارع ألبرت الاول - امام مستشفى بيت النعمه",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "الغربية",
+  "gov_en": "Gharbia",
+  "branches": [
+   {
+    "title": "Al-Mahala",
+    "slug": "al-mahala",
+    "address": "المحله الكبري ميدان المشحمه امام مسجد قادوس الكبير",
+    "phone": ""
+   },
+   {
+    "title": "Tanta Stadium",
+    "slug": "tanta-stadium",
+    "address": "طنطا شارع الاستاد بجوار براند بلبن",
+    "phone": ""
+   },
+   {
+    "title": "Spinneys-Mall Of Tanta",
+    "slug": "spinneys-mall-of-tanta",
+    "address": "مول طنطا بالمنطقة اللوجيستيه بسبرباي",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Tanta",
+    "slug": "carrefour-tanta",
+    "address": "طريق طنطا - المحلة الكبري، طنطا,الغربية",
+    "phone": ""
+   },
+   {
+    "title": "Tanta El Bahr St.",
+    "slug": "tanta-el-bahr-st",
+    "address": "شارع البحر-بجوار صيدناوي-قسم اول طنطا-الغربية",
+    "phone": ""
+   },
+   {
+    "title": "Mall Of Tanta",
+    "slug": "mall-of-tanta",
+    "address": "مول طنطا بالمنطقة اللوجيستيه بسبرباي الدور التانى",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "البحر الأحمر",
+  "gov_en": "Red Sea",
+  "branches": [
+   {
+    "title": "Sharm El Sheikh",
+    "slug": "sharm-el-sheikh",
+    "address": "كيلوباترا مول شرم الشيخ",
+    "phone": ""
+   },
+   {
+    "title": "Bestway El Gouna",
+    "slug": "bestway-el-gouna",
+    "address": "المنجروفى - داخل ماركت بست واى",
+    "phone": ""
+   },
+   {
+    "title": "Bestway-El Ahyaa",
+    "slug": "bestway-el-ahyaa",
+    "address": "الأحياء -بجوار حى شمال",
+    "phone": ""
+   },
+   {
+    "title": "Spinneys-Senzo Mall",
+    "slug": "spinneys-senzo-mall",
+    "address": "طريق القري سينزو مول",
+    "phone": ""
+   },
+   {
+    "title": "Spinneys-El-Dahar",
+    "slug": "spinneys-el-dahar",
+    "address": "شارع النصر عمارة ريتاج بجانب سوبر ماركت سبينس ، سفن ستارز مول ، الدهار ، الغردقة",
+    "phone": ""
+   },
+   {
+    "title": "Best Way-Super Market",
+    "slug": "best-way-super-market",
+    "address": "شارع حي البنوك ، الكوثر ، مقابل بنك HSBC",
+    "phone": ""
+   },
+   {
+    "title": "Metro Market-Sheraton Hurghada",
+    "slug": "metro-market-sheraton-hurghada",
+    "address": "ِِِش شيراتون، سقالة، الغردقة، البحر الأحمر",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Hurghada 2",
+    "slug": "carrefour-hurghada-2",
+    "address": "طريق النصر، الغردقة، البحر الأحمر",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Hurghada 1",
+    "slug": "carrefour-hurghada-1",
+    "address": "طريق النصر، الغردقة، البحر الأحمر",
+    "phone": ""
+   },
+   {
+    "title": "Sheraton Hurghada",
+    "slug": "sheraton-hurghada",
+    "address": "مفارق أبو عشره شارع شيراتون امام بنك CIB - شيراتون الغردقة",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "كفر الشيخ",
+  "gov_en": "Kafr El sheikh",
+  "branches": [
+   {
+    "title": "Kafr El-Sheikh",
+    "slug": "kafr-el-sheikh",
+    "address": "كفر الشيخ - شارع الجامعه امام كليه تربيه",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "الغردقة",
+  "gov_en": "Hurghada",
+  "branches": [
+   {
+    "title": "Go Bus Hurghada",
+    "slug": "go-bus-hurghada",
+    "address": "شارع النصر - أمام ممشي النصر جو باص",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "القليوبية",
+  "gov_en": "Qaliubiya",
+  "branches": [
+   {
+    "title": "Obour O-Court",
+    "slug": "obour-o-court",
+    "address": "الحي التاسع مول أو كورت العبور بجوار ماركت الفتح",
+    "phone": ""
+   },
+   {
+    "title": "Obour Golf City",
+    "slug": "obour-golf-city",
+    "address": "مدينه  العبور مول  جولف سيتي بجوار ايجي بنك",
+    "phone": ""
+   },
+   {
+    "title": "Banha Kornish Nile",
+    "slug": "banha-kornish-nile",
+    "address": "شارع بنها كورنيش النيل بجوار صيدلية العزبي",
+    "phone": ""
+   },
+   {
+    "title": "Shoubra El Kheima",
+    "slug": "shoubra-el-kheima",
+    "address": "الشارع الجديد بجوار بالبن بعد كوبرى مسطرد",
+    "phone": ""
+   },
+   {
+    "title": "Obour Town Stars Mall",
+    "slug": "obour-town-stars-mall",
+    "address": "العبور تاون ستارز مول بجوار بنك مصر الحى السابع",
+    "phone": ""
+   },
+   {
+    "title": "Abu Auf-Tseppas Obour",
+    "slug": "abu-auf-tseppas-obour",
+    "address": "العبور بجوار سيتى تسيباس نادى العبور",
+    "phone": ""
+   },
+   {
+    "title": "Banha",
+    "slug": "banha",
+    "address": "امام نادى الرى و بجوار البنك الاهلى كورنيش النيل بداخل مول نايل فيو امام كارفور و بجوار L.C Wikiki",
+    "phone": ""
+   },
+   {
+    "title": "Panda-Hyper Market",
+    "slug": "panda-hyper-market",
+    "address": "طريق الأسكندريه الزراعي، مدينة قها، مركز طوخ، القليوبية",
+    "phone": ""
+   },
+   {
+    "title": "Panda Market-Obour",
+    "slug": "panda-market-obour",
+    "address": "شارع سلمان الفارسى - الحى الاول, مدينة العبور",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Golf City\"Obour\"",
+    "slug": "carrefour-golf-cityobour",
+    "address": "طريق مصر اسماعيلية الصحراوى - جولف سيتى, مدينة العبور",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "طنطا",
+  "gov_en": "Tanta",
+  "branches": [
+   {
+    "title": "Wadi Degla Tanta",
+    "slug": "wadi-degla-tanta",
+    "address": "طنطا الجلاء بجوار مساكن السلام نادى وادى دجلة بداخل النادى",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "الشارقة",
+  "gov_en": "Sharjah",
+  "branches": [
+   {
+    "title": "AlZahia Uptown Mall",
+    "slug": "alzahia-uptown-mall",
+    "address": "الزاهية الشارقة - كومباوند اب تاون الزاهية أمام صيدلية ابن سينا - خلف مول سيتى سنتر الزاهية",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "أسوان",
+  "gov_en": "Aswan",
+  "branches": [
+   {
+    "title": "Aswan Mall",
+    "slug": "aswan-mall",
+    "address": "شارع سعد زغلول بجوار محطه قطار أسوان في سكاي مول",
+    "phone": ""
+   },
+   {
+    "title": "Aswan",
+    "slug": "aswan",
+    "address": "97 كورنيش النيل",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "بورسعيد",
+  "gov_en": "Port Said",
+  "branches": [
+   {
+    "title": "PortSaid Marhaba",
+    "slug": "portsaid-marhaba",
+    "address": "شارع طرح البحر بجوار بوابه قريه مرحبا",
+    "phone": ""
+   },
+   {
+    "title": "Port Fouad",
+    "slug": "port-fouad",
+    "address": "شارع العروبه ملك فهمي سرحان عقار رقم 20 بورفؤاد - بورسعيد",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour Port Fouad",
+    "slug": "carrefour-port-fouad",
+    "address": "ميدان اسوق حمام - بجوار كنتاكى - بور فؤاد",
+    "phone": ""
+   },
+   {
+    "title": "PortSaid AlGomhoria",
+    "slug": "july-23-st",
+    "address": "شارع ٢٣ يوليو بجوار بيتزا بينو.",
+    "phone": ""
+   },
+   {
+    "title": "Albatros Mall",
+    "slug": "albatros-mall",
+    "address": "مول الباتروس من جهة الباركينج - شارع طرح البحر",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "دمياط",
+  "gov_en": "Domietta",
+  "branches": [
+   {
+    "title": "Ras El Bar",
+    "slug": "ras-el-bar",
+    "address": "راس البر منطقه اللسان شارع 44 خلف فندق السلام بجوار ماركت بهنس",
+    "phone": ""
+   },
+   {
+    "title": "Wadi Degla New Damietta",
+    "slug": "wadi-degla-new-damietta",
+    "address": "دمياط الجديده _ المجاوره 27 نادي وادي دجله - امام كيدز اريا و ‎La Doreeحلواني‎",
+    "phone": ""
+   },
+   {
+    "title": "New Damietta",
+    "slug": "domiatt-2",
+    "address": "دمياط الجديده - المركزية - شارع الاستاد - بجوار مطعم سحارة ودويدار للأجهزة الكهربائية",
+    "phone": ""
+   },
+   {
+    "title": "Domiatt-El Bahr Street",
+    "slug": "domiatt-el-bahr-street",
+    "address": "عمارة رقم 141 -كورنيش النيل-زقاق النعماني-قسم رابع بندر دمياط",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "البحيرة",
+  "gov_en": "behira",
+  "branches": [
+   {
+    "title": "Damanhour 2 to go",
+    "slug": "damanhour-2-to-go",
+    "address": "٣ شارع عبد السلام الشاذلي بجوار مطعم كنتاكي - دمنهور - البحيره",
+    "phone": ""
+   },
+   {
+    "title": "Damanhour",
+    "slug": "damanhour-2",
+    "address": "١ ش الرويني من عبد السلام الشاذلي أمام بنك الإسكان و التعمير",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "الأقصر",
+  "gov_en": "Luxor",
+  "branches": [
+   {
+    "title": "Luxor",
+    "slug": "luxor",
+    "address": "2 شارع التلفزيون و المدينه المنوره بجوار فرع فودافون و محل منزلك",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "الدقهلية",
+  "gov_en": "Dakahlia",
+  "branches": [
+   {
+    "title": "Mansoura Canal Street",
+    "slug": "mansoura-canal-street",
+    "address": "العنوان اول شارع الترعه من ناحيه القريه الاولمبيه بجوار عصير الكتب",
+    "phone": ""
+   },
+   {
+    "title": "Prime Mart | Sun Mall",
+    "slug": "prime-mart-sun-mall",
+    "address": "ميدان الساعه - عبد السلام عارف، المنصورة (قسم 2)، اول المنصورة، محافظة الدقهلية",
+    "phone": ""
+   },
+   {
+    "title": "Wekalet ElMansoura-AlTeraa Street",
+    "slug": "wekalet-elmansoura-alteraa-street",
+    "address": "شارع الترعة بجوار ميدان الشيماء ,المنصورة",
+    "phone": ""
+   },
+   {
+    "title": "Wekalet ElMansoura -Suez Street",
+    "slug": "wekalet-elmansoura-suez-street",
+    "address": "شارع قناة السويس , برج الميريلاند ,المنصورة",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Mansoura 2",
+    "slug": "carrefour-mansoura-2",
+    "address": "خلف استاد المنصورة، الدقهلية",
+    "phone": ""
+   },
+   {
+    "title": "Carrefour-Mansoura 1",
+    "slug": "carrefour-mansoura-1",
+    "address": "بنيان حي الجامعه بجوار بوابه توشكى -كارفور المنصورة",
+    "phone": ""
+   },
+   {
+    "title": "Mansoura Wekala Store",
+    "slug": "mansoura-2",
+    "address": "شارع عبد السلام عارف - بجوار حى غرب المنصورة وحده رقم 1 الدور الارضى",
+    "phone": ""
+   },
+   {
+    "title": "Mansoura Suez Canal Street",
+    "slug": "mansoura-suez-canal-st",
+    "address": "شارع الترعة بجوار ميدان الشيماء ,المنصورة",
+    "phone": ""
+   },
+   {
+    "title": "Mansoura Al-Mashya",
+    "slug": "mansoura",
+    "address": "شارع الجامعه المشايه السفليه امام نادى النيل",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "المنيا",
+  "gov_en": "Minya",
+  "branches": [
+   {
+    "title": "Wadi Degla Minya Club",
+    "slug": "wadi-degla-minya-club",
+    "address": "المنيا الجديدة نادي وادي دجلة",
+    "phone": ""
+   },
+   {
+    "title": "Spinneys El Minya",
+    "slug": "spinneys-el-minya",
+    "address": "سبينيس سيتي سكيب مول - المنيا الجديدة - القطعة الثامنة, امتداد طريق الاوسط, المنيا الجديدة, المنيا",
+    "phone": ""
+   },
+   {
+    "title": "Minya",
+    "slug": "menya",
+    "address": "شارع البحر بداخل فندق جراند اتون.المنيا",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "أسيوط",
+  "gov_en": "Asyut",
+  "branches": [
+   {
+    "title": "Wadi Degla Asyut",
+    "slug": "wadi-degla-asyut",
+    "address": "نادي وادي دجلة الطريق الصحراوى الشرقي اول اسيوط الجديدة",
+    "phone": ""
+   },
+   {
+    "title": "Asyut 2",
+    "slug": "asyut-2",
+    "address": "13- ابراج عثمان بن عفان - شارع الجمهوريه - امام بنك القاهره",
+    "phone": ""
+   },
+   {
+    "title": "Asyut 1",
+    "slug": "asyut-1",
+    "address": "تقسيم الحقوقيين - شارع الجامعه الازهريه (شارع الازهر - اسيوط ثان)",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "دبي",
+  "gov_en": "Dubai",
+  "branches": [
+   {
+    "title": "Dubai Mall",
+    "slug": "dubai-mall",
+    "address": "دبي مول -الدور الثالث بجانب دانكن دونتس وهواوي",
+    "phone": ""
+   },
+   {
+    "title": "Dubai Hills Mall",
+    "slug": "dubai-hills-mall",
+    "address": "دبي هيلز مول -بجانب محل العربية للعود",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "ديرا",
+  "gov_en": "Deira",
+  "branches": [
+   {
+    "title": "City Centre Deira",
+    "slug": "city-centre-deira",
+    "address": "وحده BR008 - بجانب الانصاري للصرافه - ديرا سيتي سنتر",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "السويس",
+  "gov_en": "Suez",
+  "branches": [
+   {
+    "title": "Dreams Market-Telal",
+    "slug": "dreams-market-telal",
+    "address": "تلال دريمز ماركت بجانب قريه تلال السخنه",
+    "phone": ""
+   },
+   {
+    "title": "Dreams Market- La Vista",
+    "slug": "dreams-market-la-vista",
+    "address": "لافيستا دريمز ماركت. بجانب قريه بورتو ساوث بيتش",
+    "phone": ""
+   },
+   {
+    "title": "Porto Sokhna",
+    "slug": "best-way-ain-sokhna",
+    "address": "زهران ماركت داخل بورتو السخنة",
+    "phone": ""
+   },
+   {
+    "title": "Suez Al-Shohadaa",
+    "slug": "suez-al-shohadaa",
+    "address": "السويس شارع الشهداء امام اردوور برج الصفوه",
+    "phone": ""
+   },
+   {
+    "title": "Suez-Sporting City",
+    "slug": "suez-sporting-city",
+    "address": "برج مهاود شارع المدينة الرياضية, بجانب دوكلاند ,الملاحة الجديدة , محافظة السويس.",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "جنوب سيناء",
+  "gov_en": "South Sinai",
+  "branches": [
+   {
+    "title": "SOHO Square-Sharm El Sheikh",
+    "slug": "soho-square-sharm-el-sheikh",
+    "address": "سوهو مول داخل سوهو سكوار أمام فندق ساڤو",
+    "phone": ""
+   },
+   {
+    "title": "Go Bus Mall-Sharm El Sheikh",
+    "slug": "go-bus-mall-sharm-el-sheikh",
+    "address": "حي النور بجوار مستشفي شرم الشيخ الدولي",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "المنوفية",
+  "gov_en": "Menoufia",
+  "branches": [
+   {
+    "title": "Spinneys Sadat",
+    "slug": "spinneys-sadat",
+    "address": "سفن ستارز مول- المنطقة الخامسة المحور المركزي - امام منطقة البنوك",
+    "phone": ""
+   }
+  ]
+ },
+ {
+  "gov": "الشرقية",
+  "gov_en": "Sharqia",
+  "branches": [
+   {
+    "title": "Carrefour-Al Zagazig",
+    "slug": "carrefour-al-zagazig",
+    "address": "طريق القنايات - الزقازيق، شيبة النكارية، الزقازيق، الشرقية.",
+    "phone": ""
+   },
+   {
+    "title": "Zagazig",
+    "slug": "zagazig",
+    "address": "شارع الدكتور طلبة عويضه (برج المصطفي) بجوار مستشفي صلاح سالم-القوميه-الشرقية",
+    "phone": ""
+   },
+   {
+    "title": "Cross 10 Mall",
+    "slug": "cross-10-mall",
+    "address": "كروس تن مول بجوار هايبر وان",
+    "phone": ""
+   },
+   {
+    "title": "Hyper 10th Of Ramadan",
+    "slug": "hyper-10th-of-ramadan",
+    "address": "طريق مصر-الإسماعيليه الصحراوي كيلو 52 , مدينة العاشر من رمضان , الشرقية",
+    "phone": ""
+   }
+  ]
+ }
+]
