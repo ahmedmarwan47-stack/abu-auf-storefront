@@ -5,11 +5,16 @@ All eight my-account pages are this sidebar plus a content column, so the
 sidebar, membership badge and help links are defined once here.
 """
 from catalog import e
-from components import page, page_header
+from components import WALLET_BALANCE, page, page_header
 
+# `wallet` comes from components.WALLET_BALANCE rather than a second literal:
+# the cart/checkout wallet toggle offers to spend this exact balance, so if the
+# two drifted the shopper would be offered money this page says they do not
+# have. Same failure the old points banner shipped with — 100 on one page, 120
+# on the other.
 CUSTOMER = {"name": "محمد", "full": "محمد عادل",
             "email": "mosawabi15@gmail.com", "phone": "0109809839",
-            "tier": "عضوية ذهبية", "wallet": 1200, "points": 120}
+            "tier": "عضوية ذهبية", "wallet": WALLET_BALANCE, "points": 120}
 
 I = {
     "home": '<path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',

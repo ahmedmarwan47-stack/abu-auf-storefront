@@ -1,7 +1,7 @@
 """Shopping cart — Figma 'Cart' (4231:22875)."""
 from catalog import in_category, money, rail_products
 from components import (
-    accordion, cart_line, carousel, page, page_header, points_banner,
+    accordion, cart_line, carousel, page, page_header, promo_field, wallet_toggle,
     product_card, section_heading,
 )
 
@@ -69,6 +69,7 @@ def build():
           <aside class="flex flex-col gap-4 lg:sticky lg:top-4 order-last lg:order-none min-w-0">
             <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
+{wallet_toggle()}
               <div class="flex flex-col gap-2 text-sm">
                 <div class="flex justify-between">
                   <span class="text-neutral-secondary">مصاريف التوصيل</span>
@@ -81,20 +82,17 @@ def build():
                 <!-- Points discount — hidden until the banner below applies
                      it; renderCart owns both the visibility and the figure. -->
                 <div class="flex justify-between items-center" data-cart-discount-row hidden>
-                  <span class="text-neutral-secondary">خصم النقاط</span>
+                  <span class="text-neutral-secondary">خصم المحفظة</span>
                   <!-- The green counterpart of the yellow price chip: a saving
                        is good news and should read as one at a glance. -->
                   <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
                 </div>
               </div>
-              <button type="button" class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
-                هل لديك برومو كود؟
-              </button>
+{promo_field()}
               <div class="flex justify-between items-center pt-3 border-neutral-divider border-t">
                 <span class="font-bold text-[#062A1C] text-base">الإجمالي</span>
                 <span class="font-bold text-[#062A1C] text-2xl latin" data-cart-total>EGP {money(total)}</span>
               </div>
-{points_banner()}
               {order_btn}
               {warning}
             </div>

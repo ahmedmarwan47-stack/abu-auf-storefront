@@ -131,17 +131,70 @@ proof: every product returns `average_rating: "0"` and `review_count: 0`. The
 `4.8 (126 تقييم)` on `product.html` is therefore still invented placeholder —
 it is the one number in that header block that is not real.
 
-### The points discount works, but the points are still fiction
+### The wallet discount works, but the balance is still fiction
 
-The "خصم المبلغ" banner on cart and checkout now genuinely applies its
-EGP 100 to the totals (Ahmed pressed it and nothing happened, 2026-07-22).
-scripts.js stores it under `abuauf:pointsDiscount`, renders a "خصم النقاط"
-row in the cart summary, the drawer, and checkout, caps it at the order's own
-worth, and a second press cancels it. What remains demo: the 100-point
-balance itself — no wallet endpoint exists — and the discount is applied
-client-side only. Both need the client's loyalty system to become real.
+**Replaced the points banner entirely (Ahmed, 2026-07-26): a toggle, and the
+WALLET balance rather than points.** The banner spoke in two currencies at once
+— "you have 100 points, so you can take EGP 100 off" — which made the shopper
+hold a conversion rate in their head to understand the offer, and the rate was
+invented anyway. The wallet is already denominated in the same unit as the
+bill, so the control can simply say what it will do.
 
-**Needs:** a wallet/loyalty endpoint, and the real points-to-EGP rate.
+`wallet_toggle()` in components.py renders a `<label>` + checkbox (never a
+button — on checkout it sits inside the place-order form, where an untyped
+button submits it). scripts.js stores the amount under `abuauf:walletApplied`,
+renders a **"خصم المحفظة"** row in the cart summary, the drawer and checkout,
+and **caps it at the order's own worth**, so a EGP 1,200 balance against a
+EGP 322.50 order discounts 322.50 and the total floors at zero rather than
+going negative. Toggling on fires a short particle burst (`celebrate()`),
+skipped under `prefers-reduced-motion`.
+
+**`WALLET_BALANCE` in components.py is the single source**, and
+`pages/_account.py` reads `CUSTOMER["wallet"]` from it. That constant exists
+because its predecessor did not: the points banner defaulted to 100 in one
+place and was called with 120 in another, so the cart and the account page
+quoted different balances for months.
+
+What remains demo: the balance itself — no wallet endpoint exists — and the
+discount is applied client-side only.
+
+**Needs:** a wallet endpoint, and confirmation of the real balance.
+
+### Checkout pickers — branches are real, delivery slots are not
+
+Both were built to the `orderbase-checkout` blueprint (2026-07-26).
+
+**Store picker — real.** Governorate → branch over all **316** of the client's
+branches, baked into `checkout.html` at build time as JSON so it works from
+`file://` like everything except search. It is two levels, not the blueprint's
+City → Area → branch: `branches.json` carries **no area field**, so a third
+level could only be invented. Branch addresses are shown because four branches
+in one governorate are otherwise indistinguishable; `phone` is omitted, since
+all 316 are empty.
+
+**Schedule picker — days real, slots invented.** The seven days are computed
+from the device clock at open time (never baked — a build-time date list is
+wrong the next morning and would offer a slot in the past). The six two-hour
+windows are **in-house placeholder**: the client publishes no delivery windows
+anywhere. `SCHED_SLOTS` in `scripts.js` is the single place to change them.
+
+**Needs:** the client's real delivery windows, and confirmation that pickup
+branches should be filterable by area (which needs the CMS field first).
+
+### Promo code — real, and it is the one the site already advertises
+
+`هل لديك برومو كود؟` was a `<button>` with no handler on both cart and
+checkout — live-looking and inert, the same class as the four dead controls in
+`HANDOFF.md` §4. It now opens a field and applies a real discount.
+
+The only code is **`DISCOUNT10` (10%)**, because that is what the site's own
+announcement bar advertises on every page. Adding a second would be inventing
+an offer. **Keep the bar and `PROMO_CODES` in sync** — a bar advertising a code
+checkout rejects is worse than no bar.
+
+The discount is computed from the live subtotal on every render rather than
+banked as an amount: a percentage stored in EGP goes stale the moment the
+basket changes and keeps discounting a line already removed.
 
 ### Social proof — the rank is real, an absolute sold-count is not
 
@@ -688,6 +741,41 @@ data — and the old terms (`قهوة تركي`, `بوكس هدايا`) matched 
 catalogue products, so every chip was a guaranteed empty result. They are now
 `اقتراحات البحث`, counted off the real product names at 5–7 hits each.
 
+### The product page's buy block is now the stepper (Ahmed, 2026-07-26)
+
+Two passes on the same complaint: *"3 actions I should do to continue."* The
+block was `[− 1 +] [اضف الى السلة]` plus an `اشتري الان` link — set a quantity,
+commit it, then leave the page to find out what was in the basket.
+
+The first pass kept the add button and made it open the summary drawer on
+landing. Ahmed's follow-up was the sharper version: **if the counter is bound
+to the cart, the commit step has nothing left to do.** So:
+
+- The stepper **is** the add control. `+` on a product that is not in the
+  basket is what puts it there; every press after that moves the same line;
+  `−` at 1 removes it.
+- It therefore reads the CART's quantity and **shows 0 when the product is not
+  in it.** A counter that "syncs directly" cannot sit at 1 while the basket
+  holds none, and `−` is disabled at 0.
+- The button beside it is **`اشتري الان`**: it opens the summary drawer to
+  carry on, adding one first if the basket is empty of this product, so "buy
+  now" always buys something.
+- Every `+` throws a ghost to the cart. With no add button left, that flight is
+  the only motion confirming a press reached the basket.
+
+`qty_stepper(cart_bound=True)` marks these with `data-cart-bound`, and
+`initSteppers` skips them deliberately — they are driven by the delegated cart
+handler instead, so there is exactly one writer. `syncBuyBlock()` repaints them
+from the store on every `cart:change`, the same contract `syncCardSteppers()`
+uses, so the drawer, the cards and this block can never disagree.
+
+**The gallery moved to the RTL-right column and is sticky** (`lg:sticky
+lg:top-[60px]`, matching where `[data-sticky-actions]` parks). This required
+changing `<main>` from `overflow-x-hidden` to **`overflow-x-clip`** site-wide:
+`hidden` on one axis forces the other to `auto`, which makes `<main>` a scroll
+container, and a scroll container is what `sticky` resolves against — the
+element silently did nothing. `clip` clips identically without creating one.
+
 ### Checkout's CTA is still a link, so its `required` fields never fire
 
 The checkout form has `required` on 12 fields and native validation enabled,
@@ -1003,17 +1091,30 @@ exempts, but several are discrete controls that are not exempt:
 | Control | Size | Where |
 |---|---|---|
 | Stepper `−` / `+` | **32×32** | every cart line, drawer and cart page |
-| `حذف` remove | **24 wide** (44 tall) | every cart line |
-| `خصم المبلغ` apply promo | 89×**34** | cart page |
+| ~~`حذف` remove~~ | ~~**24 wide** (44 tall)~~ | **GONE — see below** |
+| ~~`خصم المبلغ` apply promo~~ | ~~89×**34**~~ | **GONE — replaced by the wallet switch, §1** |
 | `أضف` | 76×**36** | cart page |
 | Card stepper `−` / `+` | 44×44, except **40.7×44** | `shop.html` at 320 only, and only at a 2-digit quantity |
 
-Left as-is deliberately: enlarging the stepper to 44px pushes the row back over
-its 320px budget (44+16+44+8+16+2 = 130, plus `حذف` and the gap = 162 against
-141 available), so it needs a layout decision — wrap the row, or move `حذف` —
-not a size tweak. **Flagged rather than silently redesigned.** Re-audit the
-whole site's tap targets before trusting the "≥44px, audited and passing"
-claim elsewhere.
+**The `حذف` link is gone (Ahmed, 2026-07-26)** — at quantity 1 the `−` becomes
+a trash can and removing is what it does. The behaviour was already that:
+`Cart.setQty` removes below 1, so that press always emptied the row and only
+the glyph lied about it. Two consequences worth recording:
+
+- It **frees the budget that was blocking the stepper resize.** The arithmetic
+  above (162 against 141 available) counted `حذف` and its gap; with both gone
+  the row has room, so growing the stepper to 44×44 is now a size tweak rather
+  than the layout decision it used to be. **Not done in this pass** — it is a
+  separate change and deserves its own measurement.
+- One control now carries two meanings, so the accessible name follows the
+  glyph: `syncLineDecrement()` swaps `aria-label` between `إنقاص` and `حذف`. A
+  screen-reader user hearing "decrease" would otherwise get no warning that the
+  next press removes the line entirely.
+
+The same swap is on the product page's stepper, which is now cart-bound (§3).
+
+Re-audit the whole site's tap targets before trusting the "≥44px, audited and
+passing" claim elsewhere.
 
 The product-card stepper is the one case that was sized deliberately against
 this budget rather than inheriting it. It holds a full 44×44 everywhere except

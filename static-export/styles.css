@@ -1344,30 +1344,212 @@ input:checked + .radio-card-accent {
   background: #fdf7e6;
 }
 
-/* --- Points discount button, two tiers ------------------------------------
-   Primary while it offers the discount, tertiary once it only takes it back
-   (Ahmed, 2026-07-22). Undoing a discount is not the primary thing on a
-   checkout page, and in full CTA green it competed with اتمام الشراء for the
-   same eye.
+/* --- Wallet toggle ---------------------------------------------------------
+   Replaced the two-tier points button (Ahmed, 2026-07-26: make it a toggle,
+   show the wallet balance, celebrate when it goes on).
 
-   Driven off `aria-pressed`, which syncPointsUI already writes — the same
-   contract the favourites buttons use, so the accessible state and the
-   painted state cannot drift apart. The selector is (0,2,0), which is what it
-   takes to beat the `bg-cta` / `text-white` utilities on the element (see the
-   emit-order trap in CLAUDE.md).
+   FIXED HEIGHT, not min-height. The card carries two captions stacked in one
+   grid cell and only one is visible at a time; without a reserved height the
+   block resized on toggle and shunted the order summary up under the cursor,
+   which is the exact bug the banner before it was fixed for. A fixed height
+   works here where a min-height did not on the banner, because these two
+   captions are one line each at every width the card is used at — verified at
+   320 and at 1440, in both languages.
 
-   #163300 on the banner's #EDC843 measures 8.58:1, so dropping the fill costs
-   no contrast — it gains some. The hover wash is the same ink at 10%, which
-   keeps the tertiary state's hover transient rather than making it look like
-   a second filled tier. */
-.points-apply[aria-pressed="true"] {
-  background: transparent;
+   The switch is painted on a span; the real control is a visually-hidden
+   checkbox beside it. Everything keys off :checked, so the accessible state
+   and the painted state cannot drift — the same contract the favourites heart
+   uses with aria-pressed.
+
+   The card is #E9F3E6 (see wallet_toggle). The off-state track is the brand
+   ink at 22% on that tint, which reads as a recess rather than a second
+   colour; the on-state is solid #163300, the same "active" ink the rest of the
+   site uses, and NOT a green — next to a green card and a green balance, a
+   green switch would stop reading as state and start reading as decoration. */
+.wallet-toggle {
+  height: 72px;
+}
+
+/* --- The switch, shared -----------------------------------------------------
+   ONE switch for the whole site, keyed off `[data-switch]`. The wallet toggle
+   and the checkout gift toggle both use it; anything else that needs an on/off
+   should too, rather than growing a third painted switch that drifts from
+   these two by a pixel and a transition curve. Callers add their own
+   `data-*-switch` hook for behaviour and leave the paint to this. */
+.switch {
+  position: relative;
+  display: block;
+  width: 46px;
+  height: 26px;
+  border-radius: 9999px;
+  background: rgba(22, 51, 0, 0.22);
+  transition: background 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.switch__knob {
+  position: absolute;
+  top: 3px;
+  inset-inline-start: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(6, 42, 28, 0.35);
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+/* Two shapes are supported, because the two callers genuinely need different
+   ones: the wallet card wraps its input in the <label> (so the switch is a
+   direct sibling), while the gift card keeps the input OUTSIDE the label so a
+   revealed panel can be a sibling too (so the switch is a grandchild). The
+   `~ * .switch` half covers the second — without it the gift switch stays
+   painted "off" while the checkbox is genuinely on, which is the accessible
+   state and the painted state drifting apart, exactly what this pattern is
+   meant to prevent. */
+[data-switch]:checked ~ .switch,
+[data-switch]:checked ~ * .switch {
+  background: #163300;
+}
+/* The knob is positioned with `inset-inline-start`, so it starts on the
+   correct edge in both directions; only the travel needs mirroring. */
+[data-switch]:checked ~ .switch .switch__knob,
+[data-switch]:checked ~ * .switch .switch__knob {
+  transform: translateX(20px);
+}
+[dir="rtl"] [data-switch]:checked ~ .switch .switch__knob,
+[dir="rtl"] [data-switch]:checked ~ * .switch .switch__knob {
+  transform: translateX(-20px);
+}
+/* The input is sr-only, so the global focus ring has nothing visible to land
+   on. Re-arm it on the painted switch instead, or the control is unusable by
+   keyboard for anyone who cannot see where focus is. */
+[data-switch]:focus-visible ~ .switch,
+[data-switch]:focus-visible ~ * .switch {
+  outline: 2px solid #163300;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .switch,
+  .switch__knob {
+    transition: none;
+  }
+}
+
+/* --- Gift order (checkout) ------------------------------------------------
+   The panel is revealed by the toggle, not by a page change, so it animates
+   open rather than appearing — a block of fields materialising under the
+   cursor with no transition reads as a layout bug.
+
+   `grid-template-rows: 0fr -> 1fr` is the only way to transition to a height
+   the content decides for itself; `height: auto` is not animatable, and a
+   fixed max-height either clips the panel or leaves dead space below it. The
+   inner element needs `min-height: 0` and `overflow: hidden` or the 0fr row
+   refuses to collapse — a grid item's implicit minimum is its content. */
+.gift-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.gift-panel > * {
+  min-height: 0;
+  overflow: hidden;
+}
+[data-gift-switch]:checked ~ .gift-panel {
+  grid-template-rows: 1fr;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gift-panel {
+    transition: none;
+  }
+}
+
+/* A choice the current state has ruled out. Non-interactive, but still IN the
+   layout and still readable: removing it would leave the shopper wondering
+   where pickup went, which is the question the note answers.
+
+   The opacity is on the option's OWN content only — never on the whole card,
+   and never on the note. Opacity composites against the backdrop, so a note at
+   #5F5F5F under a 0.55 ancestor renders as roughly #A7A7A7 on white, which
+   measures about 2.4:1 and fails AA outright. Dimming the thing you are asking
+   someone to read is the wrong half of the card to dim: the option is what has
+   been ruled out, the reason is what they now need most. At full strength the
+   note keeps #5F5F5F's own 6.39:1. */
+.option-blocked {
+  pointer-events: none;
+}
+.option-blocked .radio-card__body {
+  opacity: 0.5;
+}
+/* The dot and the reason occupy the same slot and swap — the indicator is
+   meaningless while the option cannot be chosen, so the space it was using is
+   exactly where the explanation belongs. Driven purely off `.option-blocked`,
+   so nothing in JS can leave both showing. */
+.blocked-note {
+  display: none;
+  max-width: 11ch;
+}
+
+/* --- Option-row status text ------------------------------------------------
+   Two states carrying different meanings, so they are painted differently.
+
+   `.is-prompt` is an unfinished choice — "اختر الفرع" — and reads as a call to
+   action in the CTA green. `.is-resolved` is the answer and drops to ordinary
+   ink, because once it says "فرع الزهور" it is information, not an invitation.
+   Painting both the same is how a picked branch ends up still looking like a
+   button nobody pressed. */
+.opt-meta {
+  max-width: 14ch;
+}
+.opt-meta.is-prompt {
   color: #163300;
+  font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.points-apply[aria-pressed="true"]:hover {
-  background: rgba(22, 51, 0, 0.1);
+.opt-meta.is-resolved {
+  color: #062a1c;
+  font-weight: 600;
+}
+/* A blocked row's prompt is no longer an invitation — it is the reason, and
+   the reason is the note, so the meta gets out of the way entirely. */
+.option-blocked .opt-meta {
+  display: none;
+}
+
+/* --- Picker chips (store list, schedule days + slots) ---------------------
+   Selected = green border + tinted plate, matching the radio cards rather than
+   inventing a third selected look. Ahmed kept Abu Auf's green while the
+   site-wide selection style is still open, so these follow it and will move
+   with it when that decision lands. */
+.store-option:hover,
+.sched-chip:hover {
+  border-color: #163300;
+}
+.store-option.is-active,
+.sched-chip.is-active {
+  border-color: #163300;
+  background: #e9f3e6;
+}
+.sched-chip {
+  border-color: #d9d9d9;
+  color: #062a1c;
+}
+
+/* Day-strip arrows. Greyed rather than hidden at the ends: an arrow that
+   disappears makes the strip jump sideways as the row re-flows, and the
+   shopper loses the target they were aiming at. `pointer-events: none` on top
+   of `disabled` so a press cannot sneak through the icon child. */
+.sched-arrow:hover:not(.is-disabled) {
+  border-color: #163300;
+  background: #e9f3e6;
+}
+.sched-arrow.is-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+.option-blocked .radio-dot {
+  display: none;
+}
+.option-blocked .blocked-note {
+  display: block;
 }
 @media (prefers-reduced-motion: reduce) {
   .radio-dot,
@@ -1393,6 +1575,37 @@ input:checked + .radio-card-accent {
   background: #ffffff;
   border: 1px solid #d5dad1;
   color: #163300;
+}
+
+/* --- Quantity steppers always read − … + , left to right ------------------
+   Ahmed, 2026-07-26: + on the right, − on the left, everywhere.
+
+   Every stepper's DOM order is already `− , qty , +`, which lays out correctly
+   in LTR and MIRRORS in RTL — so Arabic, the default, was drawing + on the
+   left. The fix is to stop this one control mirroring, not to reorder four
+   sets of markup: a stepper is not bidirectional text. It is a numeric control
+   whose axis means "less ← → more", and that axis is conventional, not
+   linguistic — the same reason phone numbers and prices are not mirrored.
+
+   `direction: ltr` on the container flips only the flex main axis, so the
+   markup, the JS hooks and the aria-labels are all untouched, and English mode
+   — which was already correct — does not move a pixel. Reordering the DOM
+   instead would have fixed Arabic by breaking English.
+
+   Four containers, because these are four genuinely different components, not
+   four copies: the product page counter and the static cart line (both
+   [data-stepper], build/components.py), the product card's swap-in stepper
+   ([data-card-stepper], same file), and the runtime cart line
+   ([data-cart-stepper], cartLineHTML in scripts.js) which renders into every
+   [data-cart-lines] host — the drawer, the cart page and the checkout summary.
+   Listing them here keeps it one decision rather than four.
+
+   Only the container is turned; nothing inside inherits a layout change,
+   because no stepper child uses a logical inline property. */
+[data-stepper],
+[data-card-stepper],
+[data-cart-stepper] {
+  direction: ltr;
 }
 /* All paint goes on the inner .stepper-face, never the button: the face is
    the 36px circle that shows the 4px inset the other counters get from real
@@ -1621,10 +1834,6 @@ input:checked + .radio-card-accent {
    so all that is needed here is a transform origin that keeps the pulse
    centred on the badge rather than the corner it is pinned to. */
 [data-cart-count],
-[data-fav-count] {
-  transform-origin: center;
-}
-
 /* --- Empty cart --------------------------------------------------------
    The glyph tile settles in and the copy rises behind it. Short and small:
    an empty state is a dead end being softened, not an event — anything
@@ -1704,10 +1913,35 @@ input:checked + .radio-card-accent {
    are re-armed below on selectors that outrank a single utility class. Any
    new `outline-none` needs the same treatment or it is invisible to a
    keyboard. */
+/* The ring is the brand's own ink (#163300), not the #4aa948 it used to be —
+   a bright mid-green that appears NOWHERE in the Abu Auf palette (not in
+   tailwind.config.js, not in ABUAUF-BRAND-STYLES.md) and was left over from
+   the OrderBase template. Ahmed: too bright, make it darker.
+
+   The white halo is not decoration, it is what makes the dark ring legal.
+   Focus indicators need 3:1 against what they sit on (WCAG 2.2, 1.4.11), and
+   this ring lands on wildly different surfaces:
+
+       on white          #163300 alone   15.9:1   fine
+       on brand green    #163300 alone    1.63:1  INVISIBLE
+       on the yellow cart button          8.6:1   fine
+
+   So a flat dark ring would have traded a garish ring for an unusable one on
+   the green chrome, which is exactly where the header's buttons live. The
+   box-shadow paints white into the 2px offset gap, so the dark ring is always
+   separated from whatever is behind it by a light band: on white the halo is
+   invisible and the ring does the work, on green and yellow the halo does.
+   One rule, correct on every surface, instead of per-background overrides
+   that someone has to remember to extend.
+
+   The outline is kept as the outline (not folded into the box-shadow) because
+   an `overflow: hidden` ancestor clips box-shadows but never outlines — worst
+   case the halo is lost and a legible dark ring survives. */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid #4aa948;
+  outline: 2px solid #163300;
   outline-offset: 2px;
   border-radius: 6px;
+  box-shadow: 0 0 0 2px #ffffff;
 }
 
 /* Re-arm the three controls whose `outline-none` silently removed the ring.
@@ -1716,16 +1950,18 @@ input:checked + .radio-card-accent {
    and the inner input keeps its own outline suppressed. */
 .search-row:focus-within,
 .newsletter-row:focus-within {
-  outline: 2px solid #4aa948;
+  outline: 2px solid #163300;
   outline-offset: 2px;
   border-radius: 6px;
+  box-shadow: 0 0 0 2px #ffffff;
 }
 
 select.select-sort:focus-visible,
 input.search-row__input:focus-visible {
-  outline: 2px solid #4aa948;
+  outline: 2px solid #163300;
   outline-offset: 2px;
   border-radius: 6px;
+  box-shadow: 0 0 0 2px #ffffff;
 }
 
 @media (prefers-reduced-motion: reduce) {

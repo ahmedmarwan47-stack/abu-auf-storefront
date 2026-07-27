@@ -301,6 +301,11 @@
       '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     phone:
       '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    // Stroked to match minus/plus, which it swaps places with on a cart line
+    // at quantity 1 — a filled glyph there would read as a different control
+    // arriving rather than the same one changing meaning.
+    trash:
+      '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M4 7h16M10 4h4M9 7v11m6-11v11M6 7l.8 12.1A2 2 0 0 0 8.8 21h6.4a2 2 0 0 0 2-1.9L18 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   };
 
   const isCheckout = () => document.body.getAttribute("data-page") === "checkout";
@@ -382,9 +387,9 @@
     "قد يعجبك أيضا": "You may also like",
     "مصاريف التوصيل": "Delivery fee",
     "الإجمالي": "Total",
-    "خصم النقاط": "Points discount",
-    "خصم المبلغ": "Apply discount",
-    "إلغاء الخصم": "Remove discount",
+    "خصم المحفظة": "Wallet discount",
+    "الدفع من المحفظة": "Pay from wallet",
+    "تم الخصم من رصيدك": "Deducted from your balance",
     // locale popup + addresses
     "الدولة واللغة": "Country & language",
     "الدولة و العملة": "Country & currency",
@@ -1023,11 +1028,13 @@
             <div class="flex items-center gap-6 shrink-0">
               <a href="login.html" data-account-link class="hidden lg:flex items-center gap-3 hover:text-white/80 py-2 h-12 transition-colors">
                 <!-- Also the landing pad for the favourites flight, hence
-                     data-fav-target on the icon rather than the whole link. -->
+                     data-fav-target on the icon rather than the whole link.
+                     It carried a saved-count badge until Ahmed removed it
+                     (2026-07-26); the flight and its landing pulse stay, they
+                     just resolve on the icon itself now. The relative class is
+                     kept - flyTo measures against this box. -->
                 <span class="relative shrink-0" data-fav-target>
                   <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-6 h-6" />
-                  <span data-fav-count hidden
-                        class="-top-1.5 -end-2 absolute place-items-center grid bg-accent-yellow rounded-full min-w-[18px] h-[18px] px-1 font-bold text-[#062A1C] text-[10px] leading-none">0</span>
                 </span>
                 <span class="font-normal text-white text-[13px] leading-5" data-account-label>${esc(t("الحساب"))}</span>
                 <span class="w-[18px] h-[18px] text-white shrink-0 chevron">${ICON.chevronDown}</span>
@@ -1064,7 +1071,28 @@
                     it out of flow with position:fixed. */
               : `<div data-navbar class="relative z-30 bg-primary h-[48px]">
                    <nav class="mx-auto px-4 max-w-[1536px] h-full">
-                     <ul class="flex items-start gap-9 h-full overflow-x-auto no-scrollbar">${nav}</ul>
+                     <!-- The scroll is dropped from lg up, and that is a bug fix,
+                          not a tidy-up. CSS does not allow scrolling one axis and
+                          leaving the other visible: set overflow-x to auto and
+                          overflow-y computes to auto too. So this 48px bar was a
+                          scroll container 287px tall - the per-category hover
+                          panels hang 239px below it and were being clipped and
+                          scrolled inside a 48px window. Wheeling over the nav
+                          scrolled the panel rather than the page, which is the
+                          scroll that was noticed.
+
+                          It cannot simply be deleted: the row genuinely needs
+                          970px (Arabic; 960 English, measured in both) and the
+                          band starts at md, where only 736px exists. So the
+                          scroll stays below lg, where the categories would
+                          otherwise be unreachable, and goes at lg where they fit.
+
+                          gap-6 until xl buys the headroom that makes lg safe:
+                          at gap-9 the row needed 970 of the 992 available at lg,
+                          a 22px margin that one longer category name would eat.
+                          At gap-6 it needs 886, leaving 106px. Full spacing
+                          returns at xl, where there was never any pressure. -->
+                     <ul class="flex items-start gap-6 xl:gap-9 h-full overflow-x-auto lg:overflow-visible no-scrollbar">${nav}</ul>
                    </nav>
                  </div>`
           }
@@ -1294,22 +1322,54 @@
      * of a different real product (قراصيا, id 1445). Replaced with a real
      * catalogue item at the same price so the layout is unchanged.
      */
+    /* Seven, not the two it shipped with. Two portrait cards are 280px in a
+       380px track, so they fit — the rail had nothing to scroll and the arrows
+       Ahmed asked for would have been decoration on a row that never moved.
+
+       Every one is a real catalogue product: id, Arabic name, price and image
+       all copied from data/catalog.json, and all are top-15 by the client's
+       own popularityRank with a price under EGP 90. That is the honest version
+       of "what people add at the last minute" — impulse-priced items the
+       client actually sells most of — rather than a hand-picked shelf. They
+       are literals here because the drawer is built at boot and scripts.js has
+       no build-time access to the catalogue; if these drift from catalog.json,
+       the prices on the card are what goes stale. */
     const upsell = [
+      { id: "16499", name: "بافس بالجبنة 40 جرام", price: 11, img: "images/abuauf/products/6223011438028.webp" },
+      { id: "16502", name: "بافس بالشطة والليمون 40 جرام", price: 11, img: "images/abuauf/products/6223011438035.webp" },
       { id: "1631", name: "كرانبيري - 25 جم", price: 30, img: "images/abuauf/products/6223006314092.webp" },
+      { id: "1320", name: "فول سوداني بالشيكولاتة - 100 جم", price: 35.5, img: "images/abuauf/products/2000208000000.webp" },
+      { id: "1368", name: "بروتين بار براونيز شيكولاتة - 70 جم", price: 65, img: "images/abuauf/products/6223006315341-thumb.webp" },
       { id: "46238", name: "بسكويت محشو تمر - 12 قطعة", price: 65, img: "images/abuauf/products/image-600x600-1.png" },
+      { id: "1445", name: "قراصيا بدون نواه - 100 جم", price: 72.5, img: "images/abuauf/products/2000102000000.webp" },
     ]
       .map(
         (p) => `
-        <div class="flex items-center gap-3 bg-white p-3 border border-neutral-divider rounded-2xl"
+        <article class="carousel-slide flex flex-col gap-2 bg-white p-2 border border-neutral-divider rounded-2xl w-[136px] shrink-0"
              data-product data-id="${esc(p.id)}" data-name="${esc(p.name)}"
              data-price="${p.price}" data-image="${esc(p.img)}">
-          <img src="${p.img}" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-14 h-14 object-contain" loading="lazy" />
-          <div class="flex-1 min-w-0">
-            <p class="font-medium text-[#062A1C] text-sm line-clamp-2">${esc(p.name)}</p>
-            <span class="inline-block bg-accent-yellow mt-1 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">EGP ${p.price}.00</span>
+          <img src="${p.img}" alt="" class="bg-interaction-base p-1 rounded-xl w-full aspect-square object-contain" loading="lazy" />
+          <!-- Two lines reserved whatever the name's length, so a one-line and
+               a two-line product do not make neighbouring cards different
+               heights in a row that has no other alignment to fall back on. -->
+          <p class="font-medium text-[#062A1C] text-xs leading-4 line-clamp-2 min-h-8">${esc(p.name)}</p>
+          <div class="flex justify-between items-center gap-1">
+            <!-- egp(), not the hand-built "EGP price .00" string this used to
+                 interpolate. That was safe only while every upsell price was a
+                 whole number; the real catalogue has 35.5 and 72.5, which it
+                 would have rendered as "EGP 35.5.00". -->
+            <span class="bg-accent-yellow px-1.5 py-0.5 rounded font-bold text-[#062A1C] text-[10px] latin">${egp(p.price)}</span>
+            <!-- Icon-only, so the accessible name comes from aria-label. It is
+                 the full "اضف الى السلة" rather than "اضف", because a screen
+                 reader gets no help from the basket it is sitting next to.
+                 size-11 keeps the audited 44px tap target: the card is 136px
+                 wide, so the chip and the button fit without shrinking it. -->
+            <button type="button" data-add-to-cart aria-label="اضف الى السلة"
+                    class="place-items-center grid bg-cta hover:bg-cta-hover shrink-0 rounded-full text-white transition-colors size-11">
+              <span class="w-4 h-4">${ICON.plus}</span>
+            </button>
           </div>
-          <button type="button" data-add-to-cart class="flex items-center gap-1.5 bg-cta hover:bg-cta-hover shrink-0 px-4 rounded-full min-h-11 font-semibold text-white text-sm transition-colors">اضف</button>
-        </div>`,
+        </article>`,
       )
       .join("");
 
@@ -1320,11 +1380,11 @@
           <span class="text-neutral-secondary">${esc(t("مصاريف التوصيل"))}</span>
           <span class="font-semibold text-[#062A1C] latin">${egp(DELIVERY_FEE)}</span>
         </div>
-        <!-- Points discount, when applied on the cart or checkout page. The
+        <!-- Wallet discount, when applied on the cart or checkout page. The
              drawer must show WHY its total is lower than items + delivery,
              or the smaller number reads as a bug. -->
         <div class="flex justify-between items-center text-sm" data-cart-discount-row hidden>
-          <span class="text-neutral-secondary">${esc(t("خصم النقاط"))}</span>
+          <span class="text-neutral-secondary">${esc(t("خصم المحفظة"))}</span>
           <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
         </div>
         <div class="flex justify-between items-center">
@@ -1351,9 +1411,30 @@
       </div>
       <div class="flex-1 px-5 overflow-y-auto">
         <div data-cart-lines></div>
-        <div class="mt-4">
-          <p class="mb-2 font-bold text-[#062A1C] text-sm">${esc(t("قد يعجبك أيضا"))}</p>
-          <div class="flex flex-col gap-2">${upsell}</div>
+        <!-- Upsell rail. Portrait cards in a looping carousel, with the arrows
+             sitting on the opposite end of the heading row rather than floating
+             over the slides (Ahmed, 2026-07-26). Overlaid arrows are what the
+             page rails do, but they can afford to: they are 1536px wide with
+             room outside the track. In a 420px drawer an overlaid arrow covers
+             a card.
+
+             Reuses the .carousel contract from components.py rather than a
+             second implementation - the class names ARE the API, and this way
+             the drawer inherits the RTL logical-axis scrolling, the once-per-
+             frame update and the idempotent init for free. -->
+        <div class="mt-4 carousel" data-carousel-loop style="--carousel-gap:8px">
+          <div class="flex justify-between items-center gap-2 mb-2">
+            <p class="font-bold text-[#062A1C] text-sm">${esc(t("قد يعجبك أيضا"))}</p>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button type="button" class="place-items-center grid bg-interaction-base hover:bg-interaction-tertiary-hover rounded-full text-cta transition size-8 carousel-prev" aria-label="السابق">
+                <span class="w-4 h-4 rtl:scale-flip">${ICON.arrowRight}</span>
+              </button>
+              <button type="button" class="place-items-center grid bg-interaction-base hover:bg-interaction-tertiary-hover rounded-full text-cta transition size-8 carousel-next" aria-label="التالي">
+                <span class="w-4 h-4 ltr:scale-flip">${ICON.arrowRight}</span>
+              </button>
+            </div>
+          </div>
+          <div class="carousel-track">${upsell}</div>
         </div>
       </div>
       <div class="flex flex-col gap-2 shadow-cart-overview px-5 py-4 border-neutral-divider border-t">
@@ -1544,6 +1625,64 @@
       </form>
     </div>
 
+    <!-- Store picker (checkout). Governorate -> branch, on the client's real
+         316 branches; see the note in build/pages/checkout.py for why there is
+         no third level. Confirm stays disabled until a branch is chosen, so
+         the row's meta can never resolve to nothing. -->
+    <div data-modal="storepicker" class="modal-shell">
+      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[480px] overflow-hidden" data-modal-box>
+        <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
+          <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("اختر الفرع"))}</h2>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+        </div>
+        <div class="flex flex-col gap-3 p-5">
+          <label class="block">
+            <span class="label">${esc(t("المحافظة"))}</span>
+            <select data-store-gov class="select-control mt-1 px-3 border border-neutral-divider rounded-lg w-full h-12 text-[#062A1C]"></select>
+          </label>
+          <div data-store-list class="flex flex-col gap-2 pe-1 max-h-[280px] overflow-y-auto"></div>
+        </div>
+        <div class="px-5 pb-5">
+          <button type="button" data-store-confirm disabled
+                  class="disabled:opacity-40 bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white transition-colors disabled:cursor-not-allowed">${esc(t("تأكيد الفرع"))}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule picker (checkout). Days are computed at RUNTIME from today,
+         never baked at build time — a build-time date list is wrong the next
+         morning and silently offers a delivery slot in the past. -->
+    <div data-modal="schedule" class="modal-shell">
+      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[480px] overflow-hidden" data-modal-box>
+        <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
+          <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("حدد اليوم والوقت"))}</h2>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+        </div>
+        <div class="flex flex-col gap-4 p-5">
+          <!-- The arrows sit OUTSIDE [data-sched-days] deliberately:
+               renderSchedule() replaces that container's innerHTML on every
+               day and slot press, so anything inside it is destroyed and would
+               lose its listeners. -->
+          <div class="flex items-center gap-2">
+            <button type="button" data-sched-nav="-1" aria-label="أيام سابقة"
+                    class="sched-arrow place-items-center grid shrink-0 border border-neutral-divider rounded-full size-8 text-cta transition-colors">
+              <span class="w-4 h-4 rtl:scale-flip">${ICON.arrowLeft}</span>
+            </button>
+            <div data-sched-days class="flex flex-1 gap-2 -mx-1 px-1 min-w-0 overflow-x-auto no-scrollbar scroll-smooth"></div>
+            <button type="button" data-sched-nav="1" aria-label="أيام تالية"
+                    class="sched-arrow place-items-center grid shrink-0 border border-neutral-divider rounded-full size-8 text-cta transition-colors">
+              <span class="w-4 h-4 rtl:scale-flip">${ICON.arrowRight}</span>
+            </button>
+          </div>
+          <div data-sched-slots class="gap-2 grid grid-cols-2"></div>
+        </div>
+        <div class="px-5 pb-5">
+          <button type="button" data-sched-confirm disabled
+                  class="disabled:opacity-40 bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white transition-colors disabled:cursor-not-allowed">${esc(t("تأكيد الموعد"))}</button>
+        </div>
+      </div>
+    </div>
+
     <div id="toast-container"></div>`;
   }
 
@@ -1551,6 +1690,8 @@
      Overlay open/close plumbing
      --------------------------------------------------------------- */
   const openMap = {
+    storepicker: '[data-modal="storepicker"]',
+    schedule: '[data-modal="schedule"]',
     cart: '[data-drawer="cart"]',
     menu: '[data-drawer="menu"]',
     search: '[data-modal="search"]',
@@ -1809,6 +1950,14 @@
     const next = root.querySelector(".carousel-next");
     const dotsWrap = root.querySelector(".carousel-dots");
 
+    /* `data-carousel-loop` — wrap around instead of stopping at the ends.
+       Wrap-around, NOT cloned slides. Cloning would put a second element
+       carrying the same `data-id` in the DOM, and both the cart store and
+       syncCardSteppers key off that id; a rail of two products would end up
+       with duplicate hosts for one line. Jumping the scroll position is the
+       same affordance with none of that. */
+    const loop = root.hasAttribute("data-carousel-loop");
+
     /* Direction is read off <html>, not off the track's computed style.
        getComputedStyle forces a style recalc, and this used to sit inside
        getPos() — which runs on every scroll frame, twice per update(). `dir`
@@ -1860,8 +2009,12 @@
       const pos = getPos();
       const max = maxPos();
       const idx = Math.round(pos / slideStep());
-      if (prev) prev.classList.toggle("is-disabled", pos <= 1);
-      if (next) next.classList.toggle("is-disabled", pos >= max);
+      if (prev && !loop) prev.classList.toggle("is-disabled", pos <= 1);
+      // A looping rail has no ends to be at, so its arrows never disable —
+      // greying one out would say "you cannot go that way" about the one
+      // direction that always works.
+      if (prev && loop) prev.classList.remove("is-disabled");
+      if (next) next.classList.toggle("is-disabled", !loop && pos >= max);
       if (dotsWrap) {
         dotsWrap
           .querySelectorAll(".carousel-dot")
@@ -1896,10 +2049,30 @@
       });
     }
 
+    /* "Within half a slide of the end" — not an exact comparison, and not a
+       fixed pixel slop either. A snap-settled rail does not park on its own
+       maximum: measured here it sat 4px short of the end, and 18px past the
+       start right after a wrap. A fixed tolerance big enough for one of those
+       was still too small for the other.
+
+       Half a slide is the honest rule. Resting positions are multiples of the
+       step (144px here), so anything inside 72px of an end IS that end, and no
+       genuine mid-rail position can be mistaken for one. It also scales with
+       the card size instead of needing a new magic number per rail. */
+    const atStart = (pos) => pos <= slideStep() / 2;
+    const atEnd = (pos) => pos >= maxPos() - slideStep() / 2;
     if (prev)
-      prev.addEventListener("click", () => setPos(getPos() - slideStep()));
+      prev.addEventListener("click", () => {
+        const pos = getPos();
+        if (loop && atStart(pos)) setPos(maxPos());
+        else setPos(pos - slideStep());
+      });
     if (next)
-      next.addEventListener("click", () => setPos(getPos() + slideStep()));
+      next.addEventListener("click", () => {
+        const pos = getPos();
+        if (loop && atEnd(pos)) setPos(0);
+        else setPos(pos + slideStep());
+      });
 
     if (dotsWrap) {
       const slides = track.querySelectorAll(".carousel-slide");
@@ -2120,8 +2293,13 @@
     });
   }
 
+  /* `:not([data-cart-bound])` — a cart-bound stepper is a view of the cart
+     line, not an independent counter, so it is driven by the delegated
+     handler in the cart section. Binding this one too would give the same
+     button two writers: this one would move the local digit while the other
+     moved the store, and whichever painted last would win. */
   function initSteppers(scope) {
-    scope.querySelectorAll("[data-stepper]").forEach((st) => {
+    scope.querySelectorAll("[data-stepper]:not([data-cart-bound])").forEach((st) => {
       const qtyEl = st.querySelector("[data-qty]");
       st.querySelectorAll("[data-step]").forEach((b) => {
         b.addEventListener("click", () => {
@@ -2884,6 +3062,63 @@
     );
   }
 
+  /* A small burst from the centre of `el` — the "you just saved money" beat on
+     the wallet toggle. Deliberately modest: a dozen 6px dots on the brand
+     greens over roughly half a second, no sound, no full-screen confetti. It
+     marks a discount on a shopping cart, not a prize.
+
+     Fixed-position particles appended to <body>, like the fly-to-cart ghost,
+     so no ancestor's overflow can clip them — the toggle sits inside the
+     summary column, which is exactly the kind of box that would. They are
+     removed on their own animation end, and the wrapper is pointer-events:none
+     so it can never swallow a click on the switch underneath.
+
+     Skipped entirely under reduced motion, where the toast is the whole
+     feedback. Also skipped when Element.animate is missing rather than
+     hand-rolling a fallback: this is decoration, and its absence costs the
+     shopper nothing. */
+  function celebrate(el) {
+    if (!el || reduceMotion() || !el.animate) return;
+    const r = el.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const wrap = document.createElement("div");
+    wrap.style.cssText =
+      "position:fixed;left:0;top:0;width:0;height:0;z-index:120;pointer-events:none";
+    const colors = ["#163300", "#185039", "#346853", "#EDC843", "#ffffff"];
+    for (let i = 0; i < 12; i++) {
+      const dot = document.createElement("span");
+      const angle = (Math.PI * 2 * i) / 12 + Math.random() * 0.4;
+      const dist = 46 + Math.random() * 38;
+      dot.style.cssText =
+        "position:fixed;width:6px;height:6px;border-radius:9999px;left:" +
+        cx + "px;top:" + cy + "px;background:" + colors[i % colors.length];
+      wrap.appendChild(dot);
+      dot.animate(
+        [
+          { transform: "translate(-50%,-50%) scale(0.4)", opacity: 1 },
+          {
+            transform:
+              "translate(calc(-50% + " + Math.cos(angle) * dist + "px), calc(-50% + " +
+              Math.sin(angle) * dist + "px)) scale(1)",
+            opacity: 1,
+            offset: 0.55,
+          },
+          {
+            transform:
+              "translate(calc(-50% + " + Math.cos(angle) * (dist + 16) + "px), calc(-50% + " +
+              Math.sin(angle) * (dist + 16) + "px)) scale(0.3)",
+            opacity: 0,
+          },
+        ],
+        { duration: 520 + Math.random() * 220, easing: "cubic-bezier(0.2,0.8,0.2,1)" },
+      );
+    }
+    document.body.appendChild(wrap);
+    setTimeout(() => wrap.remove(), 900);
+    pulse(el);
+  }
+
   /*
    * `ghostHTML` overrides what flies; by default the source element is cloned.
    * Resolves as soon as the ghost lands (or immediately when motion is
@@ -3089,9 +3324,24 @@
 
   function cartLineHTML(it) {
     return `
-      <div class="flex gap-3 py-4 border-neutral-divider border-b" data-cart-line data-id="${esc(String(it.id))}">
-        <img src="${esc(it.image)}" alt="${esc(it.name)}" class="bg-interaction-base shrink-0 p-1.5 rounded-lg w-[72px] h-[72px] object-contain" />
-        <div class="flex-1 min-w-0">
+      <div class="flex items-stretch gap-3 py-4 border-neutral-divider border-b" data-cart-line data-id="${esc(String(it.id))}">
+        <!-- The thumb fills the row's height rather than sitting as a fixed
+             72px square with dead space beneath it: self-stretch plus h-auto
+             lets the cross size follow the row, whose height the text column
+             already decides.
+
+             The WIDTH is responsive on purpose. Widening it everywhere would
+             take 24px straight out of the text column, and at 320 that column
+             is the tightest thing on the page — the stepper row needs 138px
+             inside 141px (DESIGN-NOTES section 7), so 24px less would
+             reintroduce exactly the overflow the flex-wrap below exists to
+             prevent. 96px from the sm breakpoint up, where the space actually
+             exists; 72px at 320, where it does not. -->
+        <img src="${esc(it.image)}" alt="${esc(it.name)}" class="bg-interaction-base self-stretch shrink-0 p-1.5 rounded-lg w-[72px] sm:w-24 h-auto min-h-[72px] object-contain" />
+        <!-- justify-between, so the three rows distribute across whatever
+             height the line has instead of bunching at the top and leaving a
+             gap under the stepper — the misalignment Ahmed flagged. -->
+        <div class="flex flex-col flex-1 justify-between gap-1 min-w-0">
           <div class="flex justify-between items-start gap-2">
             <p class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm line-clamp-2">${esc(it.name)}</p>
             <span data-line-total class="bg-accent-yellow shrink-0 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">${egp(it.price * it.qty)}</span>
@@ -3116,12 +3366,35 @@
                  between container and buttons - the px-2 py-1 it had gave
                  8px sides against 4px verticals and read as a different
                  control. Also 2px narrower, which the 320px budget likes. -->
-            <div class="inline-flex items-center gap-1 sm:gap-3 p-1 border border-neutral-divider rounded-full">
-              <button type="button" data-cart-step="-1" class="place-items-center grid shrink-0 w-8 h-8 text-[#062A1C]" aria-label="إنقاص"><span class="w-3.5 h-3.5">${ICON.minus}</span></button>
+            <!-- data-cart-stepper is a STYLING hook only (styles.css pins the
+                 − … + axis to LTR so it does not mirror in Arabic). The click
+                 handling is delegated off [data-cart-step] on the buttons, so
+                 this attribute deliberately does not match [data-stepper],
+                 which initStepper would bind a second, conflicting handler to. -->
+            <div data-cart-stepper class="inline-flex items-center gap-1 sm:gap-3 p-1 border border-neutral-divider rounded-full">
+              <!-- At quantity 1 the − becomes a trash can and removing is what
+                   it does (Ahmed, 2026-07-26). The behaviour was already this:
+                   the handler removes the line when the step would take it
+                   below 1. Only the glyph lied, showing "one fewer" for a press
+                   that emptied the row.
+
+                   This replaced a separate حذف text link, which is a real win
+                   beyond the tidying: that link was a 24px-wide target on every
+                   cart line (DESIGN-NOTES §7), and its width was what pushed
+                   the row over its 320px budget and blocked the stepper being
+                   grown to 44px. One control instead of two, and the budget
+                   back.
+
+                   Both glyphs ship and are toggled, rather than the innerHTML
+                   being rewritten: the rows are keyed-reconciled and keep their
+                   DOM nodes, so swapping markup under a live row would discard
+                   whatever the icon was doing mid-transition. -->
+              <button type="button" data-cart-step="-1" class="place-items-center grid shrink-0 w-8 h-8 text-[#062A1C]" aria-label="إنقاص" data-line-dec>
+                <span class="w-3.5 h-3.5" data-line-dec-minus>${ICON.minus}</span>
+                <span class="w-3.5 h-3.5 text-neutral-secondary" data-line-dec-trash hidden>${ICON.trash}</span>
+              </button>
               <span class="w-4 text-sm text-center latin" data-line-qty-num>${it.qty}</span>
               <button type="button" data-cart-step="1" class="place-items-center grid shrink-0 bg-cta hover:bg-cta-hover rounded-full w-8 h-8 text-white transition-colors" aria-label="زيادة"><span class="w-3.5 h-3.5">${ICON.plus}</span></button>
-            </div>
-            <button type="button" data-cart-remove class="shrink-0 min-h-11 text-accent-error text-xs underline">حذف</button>
           </div>
         </div>
       </div>`;
@@ -3160,6 +3433,299 @@
   }
 
   /* ---------------------------------------------------------------
+     Checkout option rows, and the two pickers behind them.
+
+     `setOptMeta(key, text, resolved)` is the ONE writer of a row's status
+     text. A row is either prompting for a choice it still needs ("اختر الفرع",
+     painted as a call to action) or showing the answer. Keeping both states in
+     one function is what stops a confirmed branch name from being repainted as
+     a prompt by some later handler.
+     --------------------------------------------------------------- */
+  function setOptMeta(key, text, resolved) {
+    document.querySelectorAll('[data-opt-meta="' + key + '"]').forEach((el) => {
+      el.textContent = text;
+      el.classList.toggle("is-prompt", !resolved);
+      el.classList.toggle("is-resolved", !!resolved);
+    });
+  }
+
+  function optMetaText(key) {
+    const el = document.querySelector('[data-opt-meta="' + key + '"]');
+    return el ? el.textContent.trim() : "";
+  }
+
+  function optMetaResolved(key) {
+    const el = document.querySelector('[data-opt-meta="' + key + '"]');
+    return !!el && el.classList.contains("is-resolved");
+  }
+
+  /* Store picker ---------------------------------------------------
+     Reads the governorate/branch tree baked into checkout.html at build time
+     (see build/pages/checkout.py). Parsed once, lazily, on first open — the
+     payload is only needed if the shopper actually picks up in store, and
+     parsing 316 branches on every checkout load to serve the minority who do
+     is work most visits never use. */
+  let storeTree = null;
+  function loadStoreTree() {
+    if (storeTree) return storeTree;
+    const tag = document.querySelector("[data-store-tree]");
+    if (!tag) return (storeTree = []);
+    try {
+      storeTree = JSON.parse(tag.textContent) || [];
+    } catch (err) {
+      storeTree = [];
+    }
+    return storeTree;
+  }
+
+  let pickedStore = null;
+
+  function renderStoreList(govIndex) {
+    const list = document.querySelector("[data-store-list]");
+    const confirm = document.querySelector("[data-store-confirm]");
+    if (!list) return;
+    const tree = loadStoreTree();
+    const group = tree[govIndex];
+    const branches = (group && group.branches) || [];
+    pickedStore = null;
+    if (confirm) confirm.disabled = true;
+
+    if (!branches.length) {
+      // Says what happened rather than rendering nothing — an empty box reads
+      // as a broken picker, which is the same failure the search modal's empty
+      // state exists to avoid.
+      list.innerHTML =
+        '<p class="py-6 text-neutral-secondary text-sm text-center">' +
+        esc(t("لا توجد فروع في هذه المحافظة")) +
+        "</p>";
+      return;
+    }
+    list.innerHTML = branches
+      .map(
+        (b, i) => `
+        <button type="button" data-store-pick="${i}"
+                class="store-option flex flex-col items-start gap-0.5 bg-white p-3 border border-neutral-divider rounded-xl w-full text-start transition-colors">
+          <span class="font-semibold text-[#062A1C] text-sm">${esc(b.t)}</span>
+          ${b.a ? `<span class="text-neutral-secondary text-xs leading-5">${esc(b.a)}</span>` : ""}
+        </button>`,
+      )
+      .join("");
+  }
+
+  function initStorePicker() {
+    const gov = document.querySelector("[data-store-gov]");
+    if (!gov || gov.dataset.ready === "true") return;
+    gov.dataset.ready = "true";
+    const tree = loadStoreTree();
+    gov.innerHTML = tree
+      .map((g, i) => `<option value="${i}">${esc(g.gov)}</option>`)
+      .join("");
+    renderStoreList(0);
+    gov.addEventListener("change", () => renderStoreList(+gov.value || 0));
+  }
+
+  /* Schedule picker ------------------------------------------------
+     Slots are in-house placeholder — the client publishes no delivery windows
+     anywhere, so these are plausible rather than real (DESIGN-NOTES). The DAYS
+     are real and computed from the device clock at open time. */
+  /* Per language, for the same reason as the day names: these are picked by
+     INDEX and pasted into the row's status text, so a single Arabic array left
+     English mode showing "Tuesday 28 July · 12:00 م - 2:00 م" — half a
+     sentence in each language. Kept as parallel arrays rather than formatted
+     from numbers because ص/م do not map onto AM/PM by a rule worth writing for
+     six fixed windows. */
+  const SCHED_SLOTS_BY_LANG = {
+    ar: [
+      "10:00 ص - 12:00 م",
+      "12:00 م - 2:00 م",
+      "2:00 م - 4:00 م",
+      "4:00 م - 6:00 م",
+      "6:00 م - 8:00 م",
+      "8:00 م - 10:00 م",
+    ],
+    en: [
+      "10:00 AM - 12:00 PM",
+      "12:00 PM - 2:00 PM",
+      "2:00 PM - 4:00 PM",
+      "4:00 PM - 6:00 PM",
+      "6:00 PM - 8:00 PM",
+      "8:00 PM - 10:00 PM",
+    ],
+  };
+  const schedSlots = () => SCHED_SLOTS_BY_LANG[currentLang()] || SCHED_SLOTS_BY_LANG.ar;
+  /* Day and month names per language. These CANNOT go through t(): the strings
+     are assembled at runtime from the device clock, so there is no fixed
+     Arabic phrase for the dictionary to key on — "الإثنين 27 يوليو" only
+     exists on one day of one year. Shipping only the Arabic set left the
+     English chips reading "Today, الإثنين 27 يوليو", which is how this was
+     caught.
+
+     Deliberately NOT Intl.DateTimeFormat: it resolves against the BROWSER's
+     locale, not the site's language toggle, so a visitor on an English OS
+     reading the Arabic site would get English day names inside Arabic copy.
+     The site's own language has to win. */
+  const DAY_NAMES = {
+    ar: ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"],
+    en: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  };
+  const MONTH_NAMES = {
+    ar: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+         "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
+    en: ["January", "February", "March", "April", "May", "June",
+         "July", "August", "September", "October", "November", "December"],
+  };
+
+  let pickedDay = null;
+  let pickedSlot = null;
+  // Survives a gift toggle so a chosen branch is not lost to an unrelated
+  // switch — see the restore in the gift handler.
+  let savedPickupMeta = "";
+
+  function schedDays() {
+    const out = [];
+    const lang = currentLang();
+    const days = DAY_NAMES[lang] || DAY_NAMES.ar;
+    const months = MONTH_NAMES[lang] || MONTH_NAMES.ar;
+    const now = new Date();
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+      out.push({
+        label: i === 0
+          ? t("اليوم")
+          : days[d.getDay()] + " " + d.getDate() + " " + months[d.getMonth()],
+        key: d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(),
+      });
+    }
+    return out;
+  }
+
+  /* Day-strip arrows.
+
+     All the arithmetic is done on the ABSOLUTE scroll offset, because RTL
+     reports `scrollLeft` as negative in this engine — the same trap that broke
+     the product carousels (HANDOFF §4.1) and that `getPos()` there exists to
+     paper over. Working in absolute terms means one set of comparisons for
+     both directions; only the sign applied to the final scroll differs.
+
+     `dir` is LOGICAL (+1 = further into the strip), so the arrows mean the
+     same thing in Arabic and English and the glyphs mirror via rtl:scale-flip. */
+  const schedPos = (el) => Math.abs(el.scrollLeft);
+  const schedMax = (el) => Math.max(0, el.scrollWidth - el.clientWidth);
+
+  function syncSchedArrows() {
+    const strip = document.querySelector("[data-sched-days]");
+    if (!strip) return;
+    const pos = schedPos(strip);
+    const max = schedMax(strip);
+    // 2px tolerance: a scrolled strip settles a fraction short of its own
+    // maximum, and an arrow that stays lit at the end reads as broken.
+    document.querySelectorAll("[data-sched-nav]").forEach((btn) => {
+      const dir = +btn.dataset.schedNav;
+      const atEnd = dir > 0 ? pos >= max - 2 : pos <= 2;
+      btn.disabled = max === 0 || atEnd;
+      btn.classList.toggle("is-disabled", btn.disabled);
+    });
+  }
+
+  function scrollSchedDays(dir) {
+    const strip = document.querySelector("[data-sched-days]");
+    if (!strip) return;
+    const chip = strip.querySelector("[data-sched-day]");
+    // Two chips per press — enough to feel like progress, small enough that
+    // nothing is skipped past unseen. Falls back to half the strip if the
+    // chips have not been measured yet.
+    const step = chip
+      ? (chip.getBoundingClientRect().width + 8) * 2
+      : strip.clientWidth / 2;
+    const rtl = document.documentElement.getAttribute("dir") === "rtl";
+    strip.scrollBy({ left: (rtl ? -1 : 1) * dir * step, behavior: "smooth" });
+  }
+
+  function renderSchedule() {
+    const daysBox = document.querySelector("[data-sched-days]");
+    const slotsBox = document.querySelector("[data-sched-slots]");
+    const confirm = document.querySelector("[data-sched-confirm]");
+    if (!daysBox || !slotsBox) return;
+    const days = schedDays();
+    if (pickedDay === null) pickedDay = 0;
+    daysBox.innerHTML = days
+      .map(
+        (d, i) => `
+        <button type="button" data-sched-day="${i}"
+                class="sched-chip shrink-0 px-4 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors${i === pickedDay ? " is-active" : ""}">${esc(d.label)}</button>`,
+      )
+      .join("");
+    slotsBox.innerHTML = schedSlots().map(
+      (s, i) => `
+        <button type="button" data-sched-slot="${i}"
+                class="sched-chip px-3 py-2 border rounded-xl text-sm transition-colors${i === pickedSlot ? " is-active" : ""}">${esc(s)}</button>`,
+    ).join("");
+    if (confirm) confirm.disabled = pickedSlot === null;
+
+    /* Arrow state is measured AFTER the chips exist, and again on the next
+       frame. While the modal is still hidden every width reports 0, so a
+       measurement taken at render time concludes the strip does not overflow
+       and greys both arrows out permanently — the blueprint calls this out and
+       it is the one thing that makes this control look broken on first open. */
+    syncSchedArrows();
+    requestAnimationFrame(syncSchedArrows);
+    if (!daysBox.dataset.navReady) {
+      daysBox.dataset.navReady = "1";
+      daysBox.addEventListener("scroll", syncSchedArrows, { passive: true });
+    }
+  }
+
+  /* ---------------------------------------------------------------
+     Product-page buy block — the CTA label and the cart-bound stepper.
+
+     Same contract as syncCardSteppers: state is read from the store by the
+     host's `data-id`, never held here, so a change made in the drawer, on a
+     card, or in another tab's restored cart repaints this block too, and a
+     reload restores it with no extra persistence.
+
+     The label is two spans toggled on `hidden`, not one span whose text is
+     rewritten, because translateDocument() keys off exact strings and stashes
+     the original text node in a WeakMap. Rewriting textContent under it would
+     either lose the English on the next language switch or restore the wrong
+     Arabic on the way back.
+     --------------------------------------------------------------- */
+  function syncBuyBlock(scope) {
+    (scope || document).querySelectorAll("[data-cart-bound]").forEach((stepper) => {
+      const host = stepper.closest("[data-product]");
+      if (!host) return;
+      const line = Cart.find(host.dataset.id);
+      const qty = line ? line.qty : 0;
+
+      /* The DIGIT floors at 1; the STATE does not (Ahmed, 2026-07-26). A
+         product page opens on someone who has not decided anything yet, and a
+         0 there reads as out of stock — so it rests at 1 even with an empty
+         basket. The real quantity still drives everything else below, which is
+         what keeps the floor from becoming a lie. */
+      const qtyEl = stepper.querySelector("[data-qty]");
+      const shown = Math.max(1, qty);
+      if (qtyEl) {
+        rollTo(qtyEl, shown, shown >= (parseInt(qtyEl.textContent, 10) || 0) ? 1 : -1);
+      }
+
+      /* ...and the − button is what tells the two apart, since "1, not in the
+         basket" and "1, in the basket" are now drawn with the same digit:
+
+             not in basket   disabled + dimmed, minus glyph
+             1 in basket     live, trash glyph
+             2+ in basket    live, minus glyph
+
+         So the first + leaves the digit at 1 and still visibly answers the
+         press — the − lights up, the ghost flies, the badge ticks. */
+      const dec = stepper.querySelector("[data-line-dec]");
+      if (dec) {
+        dec.disabled = qty === 0;
+        dec.classList.toggle("opacity-40", qty === 0);
+        syncLineDecrement(stepper, qty);
+      }
+    });
+  }
+
+  /* ---------------------------------------------------------------
      Points discount (the "خصم المبلغ" banner on cart and checkout)
 
      Stored, not held in a variable: the shopper applies it on the cart page
@@ -3167,28 +3733,118 @@
      data attribute at click time; nothing here knows what a point is worth.
      Demo state like the points balance itself — see DESIGN-NOTES.
      --------------------------------------------------------------- */
-  const POINTS_KEY = "abuauf:pointsDiscount";
-  const pointsDiscount = () => Number(localStorage.getItem(POINTS_KEY)) || 0;
+  const WALLET_KEY = "abuauf:walletApplied";
+  const walletApplied = () => Number(localStorage.getItem(WALLET_KEY)) || 0;
 
-  function syncPointsUI() {
-    const d = pointsDiscount();
-    document.querySelectorAll("[data-points-apply]").forEach((b) => {
-      b.textContent = d ? t("إلغاء الخصم") : t("خصم المبلغ");
-      b.setAttribute("aria-pressed", d ? "true" : "false");
+  /* Promo codes. DISCOUNT10 is not invented — it is the code the site's own
+     announcement bar advertises at the top of every page ("خصم 10% لما تستخدم
+     برومو كود DISCOUNT10"), so the bar and the checkout now agree. Keep them
+     in sync: a promo bar advertising a code the checkout rejects is worse than
+     no bar. Anything else here would be inventing an offer on the client's
+     behalf, which is the line this project holds elsewhere too. */
+  // Gifting is chosen on checkout but enforced on payment, so it is stored
+  // rather than held in a variable — see the gift handler.
+  const GIFT_KEY = "abuauf:gift";
+  const isGiftOrder = () => localStorage.getItem(GIFT_KEY) === "1";
+
+  const PROMO_CODES = { DISCOUNT10: { type: "percent", value: 10 } };
+  const PROMO_KEY = "abuauf:promo";
+  const promoCode = () => (localStorage.getItem(PROMO_KEY) || "").toUpperCase();
+
+  /* Computed from the subtotal every time rather than stored as an amount:
+     a percentage banked as EGP would go stale the moment the basket changed,
+     and would keep discounting a line the shopper had already removed. */
+  function promoDiscount(sub) {
+    const rule = PROMO_CODES[promoCode()];
+    if (!rule) return 0;
+    return rule.type === "percent"
+      ? Math.round(sub * rule.value) / 100
+      : Math.min(rule.value, sub);
+  }
+
+  /* Applying a code. Success and failure both SAY something — an Apply button
+     that silently does nothing on a typo is indistinguishable from a broken
+     one, which is how the old dead button read for its whole life. */
+  function applyPromo() {
+    const input = document.querySelector("[data-promo-input]");
+    const msg = document.querySelector("[data-promo-msg]");
+    if (!input) return;
+    const code = input.value.trim().toUpperCase();
+    if (!code) return;
+    const ok = !!PROMO_CODES[code];
+    if (ok) {
+      localStorage.setItem(PROMO_KEY, code);
+      renderCart();
+      celebrate(input.closest("[data-promo]") || input);
+    } else {
+      localStorage.removeItem(PROMO_KEY);
+      renderCart();
+    }
+    if (msg) {
+      msg.hidden = false;
+      msg.textContent = ok
+        ? t("تم تطبيق الكود") + " " + code
+        : t("كود غير صالح");
+      msg.classList.toggle("text-accent-green", ok);
+      msg.classList.toggle("text-accent-error", !ok);
+    }
+  }
+
+  /* Rules a gift order imposes, applied on ARRIVAL as well as on toggle.
+     Checkout restores the switch itself; payment.html has no switch at all and
+     only ever sees the stored flag, which is the whole reason it is stored.
+
+     Both blocked rows follow the same contract as the pickup row: dimmed, not
+     removed, with the reason in place of the control, and the selection handed
+     to a sibling if the blocked one was chosen — a disabled row left checked
+     is a form the shopper cannot submit and cannot fix. */
+  function syncGiftRules() {
+    const on = isGiftOrder();
+
+    const giftSwitch = document.querySelector("[data-gift-switch]");
+    if (giftSwitch && giftSwitch.checked !== on) {
+      giftSwitch.checked = on;
+      giftSwitch.dispatchEvent(new Event("change", { bubbles: true }));
+      return; // the change handler does the rest, including this row's rules
+    }
+
+    const cod = document.querySelector("[data-cod-option]");
+    if (cod) {
+      cod.classList.toggle("option-blocked", on);
+      const input = cod.querySelector("input[type=radio]");
+      if (input) {
+        input.disabled = on;
+        if (on && input.checked) {
+          const fallback = document.querySelector(
+            'input[name="' + input.name + '"]:not([value="cod"])',
+          );
+          if (fallback) fallback.checked = true;
+        }
+      }
+    }
+  }
+
+  function syncWalletUI() {
+    const d = walletApplied();
+    /* The switch is the state, so it is set rather than asked. This also
+       covers the load path: arriving at checkout with the wallet already on
+       from the cart page has to paint the switch on, and a checkbox does not
+       remember anything across a navigation by itself. */
+    document.querySelectorAll("[data-wallet-switch]").forEach((input) => {
+      if (input.checked !== !!d) input.checked = !!d;
     });
-    /* The banner's message follows the state: spent points must not keep
+    /* The card's caption follows the state: a spent balance must not keep
        being offered as available.
 
        `invisible`, not `hidden`. The two copies are stacked in one grid cell
-       (see points_banner in components.py) so that the banner keeps the
-       height of its tallest state — toggling them in and out of flow instead
-       collapsed the banner by 100px on press and shunted the whole order
-       summary up under the cursor. */
+       (see wallet_toggle in components.py) so the card keeps the height of its
+       tallest state — toggling them in and out of flow instead collapsed the
+       block on press and shunted the whole order summary up under the cursor. */
     document
-      .querySelectorAll("[data-points-idle]")
+      .querySelectorAll("[data-wallet-idle]")
       .forEach((el) => el.classList.toggle("invisible", !!d));
     document
-      .querySelectorAll("[data-points-used]")
+      .querySelectorAll("[data-wallet-used]")
       .forEach((el) => el.classList.toggle("invisible", !d));
     /* Deliberately no totals work here. The checkout summary used to be
        static build-time markup with its own data-base-total, so this function
@@ -3196,6 +3852,27 @@
        page's hooks instead: renderCart owns every figure on both pages, and
        every caller of this function already calls it. One renderer to keep
        correct rather than two to keep agreeing. */
+  }
+
+  /* The decrement button's two meanings. At 2+ it subtracts; at 1 the next
+     press empties the row, so it says so — trash glyph, error ink, and an
+     accessible name that matches, because a screen-reader user hearing
+     "decrease" would have no warning at all that the row is about to go. */
+  function syncLineDecrement(row, qty) {
+    if (!row) return;
+    const btn = row.querySelector("[data-line-dec]");
+    if (!btn) return;
+    /* Exactly 1, not <= 1. At 0 the button is disabled and there is nothing to
+       delete, so a trash can there promises an action that cannot happen; the
+       product page's stepper sits at 0 whenever the product is out of the
+       basket, which is most of the time. Cart rows never reach 0 — the line is
+       gone by then — so this reads the same on both. */
+    const removes = qty === 1;
+    const minus = btn.querySelector("[data-line-dec-minus]");
+    const trash = btn.querySelector("[data-line-dec-trash]");
+    if (minus) minus.hidden = removes;
+    if (trash) trash.hidden = !removes;
+    btn.setAttribute("aria-label", removes ? t("حذف") : t("إنقاص"));
   }
 
   function renderCart() {
@@ -3206,7 +3883,21 @@
     const empty = items.length === 0;
     // Capped at the order's own worth — a 100 EGP wallet against a 60 EGP
     // basket discounts 60, it does not owe the shopper money.
-    const discount = empty ? 0 : Math.min(pointsDiscount(), sub + DELIVERY_FEE);
+    /* THE money math, in one place and in this order:
+         afterPromo = max(0, subtotal + delivery − promo)
+         walletUsed = min(wallet, afterPromo)     ← capped at the bill
+         total      = afterPromo − walletUsed
+       Promo resolves first because it is a discount ON the order; the wallet is
+       a payment against whatever is left. Reversing them would let a wallet
+       cover the pre-discount figure and hand back the difference as change. */
+    const gross = empty ? 0 : sub + DELIVERY_FEE;
+    const promo = empty ? 0 : Math.min(promoDiscount(sub), gross);
+    const afterPromo = Math.max(0, gross - promo);
+    const walletUsed = empty ? 0 : Math.min(walletApplied(), afterPromo);
+    // One row shows both deductions — the summary has a single "discount"
+    // line, so a promo and a wallet applied together must add up in it rather
+    // than one quietly replacing the other.
+    const discount = promo + walletUsed;
 
     /* Badge — every cart button on the page.
        While a ghost is mid-flight the badge is held at its old value, so the
@@ -3215,8 +3906,10 @@
     if (!badgeHold) syncCartBadges();
 
     // The card stepper is the thing being pressed, so it is NOT held back
-    // with the badge — its number has to answer the tap immediately.
+    // with the badge — its number has to answer the tap immediately. The
+    // product page's buy block is the same case for the same reason.
     syncCardSteppers();
+    syncBuyBlock();
 
     /*
      * Keyed reconcile rather than innerHTML replacement. Blowing the list away
@@ -3258,6 +3951,11 @@
             rollTo(qtyNum, it.qty, it.qty > (parseInt(qtyNum.textContent, 10) || 0) ? 1 : -1);
           }
         }
+        /* Runs for BOTH branches — a freshly created row starts at whatever
+           quantity it was added with, which is routinely 1, so painting this
+           only on the update path would ship every new line with a minus that
+           removes. */
+        syncLineDecrement(row, it.qty);
         // Keep DOM order in step with state order.
         if (host.children[i] !== row) host.insertBefore(row, host.children[i] || null);
       });
@@ -3269,7 +3967,7 @@
 
     /* Totals + checkout gating, drawer and cart page alike. */
     document.querySelectorAll("[data-cart-subtotal]").forEach((el) => (el.textContent = egp(sub)));
-    document.querySelectorAll("[data-cart-total]").forEach((el) => (el.textContent = egp(empty ? 0 : sub + DELIVERY_FEE - discount)));
+    document.querySelectorAll("[data-cart-total]").forEach((el) => (el.textContent = egp(Math.max(0, afterPromo - walletUsed))));
     document.querySelectorAll("[data-cart-discount-row]").forEach((el) => (el.hidden = !discount));
     document.querySelectorAll("[data-cart-discount]").forEach((el) => (el.textContent = "− " + egp(discount)));
     document.querySelectorAll("[data-cart-shortfall]").forEach((el) => (el.textContent = egp(shortfall)));
@@ -3288,11 +3986,23 @@
    * to know: the badge is held from BEFORE the mutation until the landing, so
    * a hold with no flight to release it would freeze the number forever.
    */
+  /* opts.onLand fires when the ghost arrives — or immediately when there is
+     no flight to wait for (no source, no cart button on screen, or reduced
+     motion). Callers that open something on arrival need it to run in EVERY
+     one of those cases, or the drawer silently never opens for a shopper who
+     has reduced motion turned on. It is called before the badgeHold guard
+     below for the same reason: that guard is about which flight repaints the
+     badge, and has nothing to do with this caller's follow-up. */
   function throwToCart(sourceEl, opts) {
     const target = visibleCartButton();
-    if (!sourceEl || !target || reduceMotion()) return false;
+    const onLand = opts && opts.onLand;
+    if (!sourceEl || !target || reduceMotion()) {
+      if (onLand) onLand();
+      return false;
+    }
     badgeHold++;
     flyTo(sourceEl, target, null, opts).then(() => {
+      if (onLand) onLand();
       badgeHold = Math.max(0, badgeHold - 1);
       if (badgeHold) return;
       // syncCartBadges rolls the badge to its new number, so the badge is not
@@ -3331,30 +4041,268 @@
     syncBundleTotal();
     document.addEventListener("change", (e) => {
       if (e.target.closest("[data-bundle-check]")) syncBundleTotal();
+
+      /* Wallet switch. `change`, not `click`: the control is a checkbox inside
+         a <label>, so a click on the label fires click TWICE (once for the
+         label, once for the forwarded activation) but change exactly once.
+         Reading e.target.checked also means the keyboard path (space) works
+         without a second handler. */
+      /* Gift order. Three things follow the switch, and they have to move
+         together or the form contradicts itself. */
+      const giftSwitch = e.target.closest("[data-gift-switch]");
+      if (giftSwitch) {
+        const on = giftSwitch.checked;
+        const panel = document.querySelector("[data-gift-panel]");
+
+        /* Persisted, because the rule it enforces lives on the NEXT page. The
+           gift card promises "الدفع عند الاستلام غير متاح لطلبات الهدايا", and
+           cash on delivery is chosen on payment.html — so the flag has to
+           survive the navigation or the promise is decoration. */
+        if (on) localStorage.setItem(GIFT_KEY, "1");
+        else localStorage.removeItem(GIFT_KEY);
+
+        /* `required` is added and removed with the toggle, never authored into
+           the markup. A required field inside the collapsed panel makes the
+           browser refuse to submit and point its validation bubble at an
+           element with no height — the shopper gets a blocked form and nothing
+           to look at. */
+        if (panel) {
+          panel.querySelectorAll("input").forEach((input) => {
+            if (on) input.setAttribute("required", "");
+            else input.removeAttribute("required");
+          });
+          /* aria-hidden follows the collapse so a screen reader does not walk
+             into fields that are visually gone. */
+          panel.setAttribute("aria-hidden", on ? "false" : "true");
+        }
+
+        /* Pickup contradicts gifting — the recipient is the point — so it is
+           blocked rather than merely discouraged. If it was already the
+           selection, hand the choice back to delivery: leaving a dimmed,
+           unclickable option checked would strand the form in a state the
+           shopper cannot get out of. */
+        const pickupBox = document.querySelector("[data-pickup-option]");
+        if (pickupBox) {
+          /* One class does the whole visual change: dimming, blocking the
+             pointer, and swapping the radio dot for the reason (styles.css).
+             Nothing here shows or hides the note itself, so the two can never
+             disagree about which is on screen. */
+          pickupBox.classList.toggle("option-blocked", on);
+
+          /* The chosen branch is SAVED and restored, not recomputed. Turning
+             gifting on and off again used to be enough to lose it: the row's
+             meta would come back as the generic "اختر الفرع" prompt and the
+             shopper would have to re-pick a store they had already chosen. */
+          if (on) {
+            if (optMetaResolved("pickup")) savedPickupMeta = optMetaText("pickup");
+          } else if (savedPickupMeta) {
+            setOptMeta("pickup", savedPickupMeta, true);
+          }
+
+          const pickupInput = pickupBox.querySelector("input[type=radio]");
+          if (on && pickupInput && pickupInput.checked) {
+            const fallback = document.querySelector(
+              'input[name="' + pickupInput.name + '"]:not([value="pickup"])',
+            );
+            if (fallback) {
+              fallback.checked = true;
+              toast("الاستلام من المتجر غير متاح لطلبات الهدايا");
+            }
+          }
+          if (pickupInput) pickupInput.disabled = on;
+        }
+        return;
+      }
+
+      const walletSwitch = e.target.closest("[data-wallet-switch]");
+      if (walletSwitch) {
+        const card = walletSwitch.closest("[data-wallet-toggle]");
+        const balance = Number(card && card.dataset.walletBalance) || 0;
+        if (walletSwitch.checked && balance > 0) {
+          localStorage.setItem(WALLET_KEY, String(balance));
+          /* renderCart caps the figure at the bill, so quote what was actually
+             taken off rather than the whole balance — telling someone with a
+             EGP 90 basket that EGP 1,200 came off is wrong twice over. */
+          renderCart();
+          syncWalletUI();
+          const used = Math.min(balance, Cart.subtotal() + DELIVERY_FEE);
+          toast("تم خصم " + egp(used) + " من الإجمالي");
+          celebrate(card);
+        } else {
+          localStorage.removeItem(WALLET_KEY);
+          renderCart();
+          syncWalletUI();
+          toast("تم إلغاء خصم المحفظة");
+        }
+        return;
+      }
     });
     // A discount applied on a previous page (cart -> checkout) must paint on
     // arrival, not wait for the first click.
-    syncPointsUI();
+    syncWalletUI();
+    syncGiftRules();
 
     document.addEventListener("click", (e) => {
-      /* خصم المبلغ — apply the wallet-points discount, or press again to
-         take it back. The mutation is a stored number plus a repaint; the
-         same handler serves the cart page and checkout. */
-      const applyPoints = e.target.closest("[data-points-apply]");
-      if (applyPoints) {
-        const banner = applyPoints.closest("[data-points-banner]");
-        const amount = Number(banner && banner.dataset.pointsDiscount) || 0;
-        if (pointsDiscount()) {
-          localStorage.removeItem(POINTS_KEY);
-          toast("تم إلغاء خصم النقاط");
-        } else if (amount > 0) {
-          localStorage.setItem(POINTS_KEY, String(amount));
-          toast("تم خصم " + egp(amount) + " من الإجمالي");
+
+      /* Promo — open the field, then apply. Both live here rather than in the
+         component so the cart page and checkout share one implementation. */
+      if (e.target.closest("[data-promo-open]")) {
+        const box = document.querySelector("[data-promo-box]");
+        const opener = document.querySelector("[data-promo-open]");
+        if (box) {
+          box.hidden = false;
+          if (opener) opener.hidden = true;
+          const input = box.querySelector("[data-promo-input]");
+          if (input) input.focus();
         }
-        syncPointsUI();
-        renderCart();
-        pulse(applyPoints);
         return;
+      }
+
+      if (e.target.closest("[data-promo-apply]")) {
+        applyPromo();
+        return;
+      }
+
+      /* An option row that owns a picker opens it on selection, so choosing
+         "pick up in store" and choosing WHICH store are one gesture. Not
+         `return`-ing: the row is a <label>, and the radio still has to receive
+         the click that selects it. */
+      const opensRow = e.target.closest("[data-opens]");
+      if (opensRow) {
+        const key = opensRow.getAttribute("data-opens");
+        if (key === "storepicker") initStorePicker();
+        if (key === "schedule") renderSchedule();
+        openOverlay(key);
+        /* Re-measure once the modal is actually on screen. Everything inside a
+           hidden overlay has zero width, so the arrows sized during the render
+           above would conclude there is nothing to scroll. */
+        if (key === "schedule") setTimeout(syncSchedArrows, 60);
+      }
+
+      const storePick = e.target.closest("[data-store-pick]");
+      if (storePick) {
+        const list = storePick.closest("[data-store-list]");
+        list.querySelectorAll("[data-store-pick]").forEach((b) => b.classList.remove("is-active"));
+        storePick.classList.add("is-active");
+        const gov = document.querySelector("[data-store-gov]");
+        const tree = loadStoreTree();
+        const group = tree[(gov && +gov.value) || 0];
+        pickedStore = group && group.branches[+storePick.dataset.storePick];
+        const confirm = document.querySelector("[data-store-confirm]");
+        if (confirm) confirm.disabled = !pickedStore;
+        return;
+      }
+
+      if (e.target.closest("[data-store-confirm]")) {
+        if (pickedStore) {
+          setOptMeta("pickup", pickedStore.t, true);
+          closeOverlay();
+        }
+        return;
+      }
+
+      const schedNav = e.target.closest("[data-sched-nav]");
+      if (schedNav) {
+        scrollSchedDays(+schedNav.dataset.schedNav);
+        return;
+      }
+
+      const schedDay = e.target.closest("[data-sched-day]");
+      if (schedDay) {
+        pickedDay = +schedDay.dataset.schedDay;
+        // Changing the day clears the slot: slot 3 on Tuesday is not slot 3 on
+        // Wednesday, and silently carrying the index over would confirm a time
+        // the shopper never looked at.
+        pickedSlot = null;
+        renderSchedule();
+        return;
+      }
+
+      const schedSlot = e.target.closest("[data-sched-slot]");
+      if (schedSlot) {
+        pickedSlot = +schedSlot.dataset.schedSlot;
+        renderSchedule();
+        return;
+      }
+
+      if (e.target.closest("[data-sched-confirm]")) {
+        if (pickedSlot !== null) {
+          const days = schedDays();
+          setOptMeta("later", days[pickedDay].label + " · " + schedSlots()[pickedSlot], true);
+          closeOverlay();
+        }
+        return;
+      }
+
+      /* Product-page buy CTA. Two states on one button — see the block
+         comment in build/pages/product.py for the flow it replaces.
+
+         Already in the cart: this is "عرض السلة", so just open the summary.
+         Adding nothing is the point; the stepper is how you change quantity
+         now, and a CTA that silently re-added would fight it.
+
+         Not in the cart: add the stepper's quantity, then open the summary
+         WHEN THE GHOST LANDS. Opening immediately would slide the drawer over
+         the top of the flight it was supposed to complete — the item would
+         appear to be thrown at a panel that was already covering the target.
+         onLand also fires when there is no flight at all (reduced motion, or
+         the cart button off-screen), so the drawer opens either way. */
+      const buyCta = e.target.closest("[data-buy-cta]");
+      if (buyCta) {
+        const product = productFrom(buyCta);
+        if (!product) return;
+        /* Already in the basket — the stepper put it there — so this is purely
+           "carry on", and the summary is what carries on. */
+        if (Cart.find(product.id)) {
+          openOverlay("cart");
+          return;
+        }
+        /* Not in the basket. "Buy now" that buys nothing would be a dead
+           button, so add one and open the summary when it lands. */
+        const scope = buyCta.closest("[data-product]") || document;
+        const img = scope.querySelector("img");
+        throwToCart(img, {
+          card: true,
+          tag: "+1",
+          onLand: () => openOverlay("cart"),
+        });
+        Cart.add(product, 1);
+        toast("تمت الإضافة إلى السلة");
+        return;
+      }
+
+      /* Cart-bound stepper (product page). This is the add control: there is
+         no separate "add to cart" press any more, so + on a product that is
+         not in the basket is what puts it there, and every press after that
+         moves the same line. − at 1 removes it and the counter returns to 0.
+
+         Every + throws a ghost to the cart, exactly like the card stepper —
+         with no add button left, this flight is the only motion confirming
+         that a press reached the basket. Cart.setQty removes below 1 by
+         itself, so there is no separate branch for the trash state. */
+      const boundStep = e.target.closest("[data-cart-bound] [data-step]");
+      if (boundStep) {
+        const delta = parseInt(boundStep.getAttribute("data-step"), 10);
+        const product = productFrom(boundStep);
+        if (!product) return;
+        const line = Cart.find(product.id);
+        const scope = boundStep.closest("[data-product]");
+
+        if (delta > 0) {
+          throwToCart(scope && scope.querySelector("img"), {
+            card: true,
+            quick: true,
+            tag: "+1",
+          });
+        }
+        if (!line) {
+          if (delta > 0) Cart.add(product, 1);
+          return; // at 0 a − has nothing to take away
+        }
+        const next = line.qty + delta;
+        Cart.setQty(product.id, next);
+        if (next < 1) toast("تمت الإزالة من السلة");
+        return; // syncBuyBlock repaints the digit off the store
       }
 
       const add = e.target.closest("[data-add-to-cart]");
@@ -3434,17 +4382,22 @@
         return;
       }
 
+      /* Cart line stepper. Cart.setQty removes the line by itself below 1, so
+         the trash state of the − button needs no separate branch — it is the
+         same press, and the store already did the right thing with it. The
+         toast is here because removal is now one tap from a quantity of 1,
+         where it used to need the separate حذف link: it names what went, so an
+         accidental press is recoverable knowledge rather than a row that
+         vanished. */
       const step = e.target.closest("[data-cart-step]");
       if (step) {
         const line = step.closest("[data-cart-line]");
         const it = Cart.find(line.dataset.id);
-        if (it) Cart.setQty(it.id, it.qty + parseInt(step.dataset.cartStep, 10));
+        if (!it) return;
+        const next = it.qty + parseInt(step.dataset.cartStep, 10);
+        Cart.setQty(it.id, next);
+        if (next < 1) toast("تمت الإزالة من السلة");
         return;
-      }
-      const rm = e.target.closest("[data-cart-remove]");
-      if (rm) {
-        const line = rm.closest("[data-cart-line]");
-        Cart.remove(line.dataset.id);
       }
     });
   }
@@ -3571,7 +4524,6 @@
     const refresh = () => {
       syncFavButtons();
       renderFavsPage();
-      syncFavCount();
     };
     document.addEventListener("favs:change", refresh);
     refresh();
@@ -3601,18 +4553,8 @@
         '<path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/>' +
         "</svg></span>";
       flyTo(btn, target, heartGhost).then(() => {
-        syncFavCount();
-        pulse(target.querySelector("[data-fav-count]") || target);
+        pulse(target);
       });
-    });
-  }
-
-  /* Favourites badge on the account button. */
-  function syncFavCount() {
-    const n = Favs.count();
-    document.querySelectorAll("[data-fav-count]").forEach((el) => {
-      el.textContent = n;
-      el.hidden = n === 0;
     });
   }
 

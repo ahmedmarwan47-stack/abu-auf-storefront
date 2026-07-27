@@ -46,7 +46,7 @@
     <!-- Shared header is injected here by scripts.js -->
     <div id="site-header"></div>
 
-    <main id="main" tabindex="-1" class="overflow-x-hidden">
+    <main id="main" tabindex="-1" class="overflow-x-clip">
       <section data-reveal class="pt-6">
         <div class="flex flex-col gap-4 mx-auto px-4 max-w-[1536px]">
           <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">سلة التسوق</span></nav>
@@ -65,6 +65,47 @@
           <aside class="flex flex-col gap-4 lg:sticky lg:top-4 order-last lg:order-none min-w-0">
             <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
+
+            <!-- Light green, not the brand yellow it shipped as (Ahmed,
+                 2026-07-26). #E9F3E6 is already this project's "good news"
+                 tint — the discount chip in the summary directly below is drawn
+                 on it — so the toggle and the saving it produces now read as
+                 the same thought. Yellow is the PRICE colour here (every price
+                 chip on the site is accent-yellow), which put the wallet in the
+                 same visual family as the amounts it reduces. -->
+            <label data-wallet-toggle data-wallet-balance="1200"
+                   class="wallet-toggle flex items-center gap-3 bg-[#E9F3E6] p-4 rounded-xl cursor-pointer">
+              <span class="place-items-center grid bg-accent-green/10 rounded-full text-accent-green size-10 shrink-0">
+                <span class="w-5 h-5"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7"/><path d="M16 12h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+              </span>
+              <span class="flex flex-col flex-1 gap-0.5 min-w-0">
+                <span class="font-semibold text-[#062A1C] text-sm">الدفع من المحفظة</span>
+                <!-- Two copies, one per state, stacked in a single grid cell so
+                     the taller one reserves the height and the card cannot
+                     resize on toggle. `invisible` rather than the `hidden`
+                     attribute keeps both in flow while keeping the inactive one
+                     out of the accessibility tree, so nothing reads both. -->
+                <!-- The balance carries `accent-green` (#346853), the design
+                     system's own "Green Text" token, and NOT `success`
+                     (#16BB55): the bright one measures about 2.2:1 on this
+                     tint and fails AA outright, where #346853 measures 5.9:1.
+                     Success-coloured text that cannot be read is not a success
+                     signal. -->
+                <span class="grid">
+                  <span class="col-start-1 row-start-1 text-[#062A1C]/80 text-xs leading-5" data-wallet-idle>
+                    رصيدك <span class="font-bold text-accent-green latin">EGP 1200</span>
+                  </span>
+                  <span class="col-start-1 row-start-1 font-semibold text-accent-green text-xs leading-5 invisible" data-wallet-used>
+                    تم الخصم من رصيدك
+                  </span>
+                </span>
+              </span>
+              <!-- The real control. sr-only rather than display:none so it
+                   stays focusable and announceable; the painted switch beside
+                   it is aria-hidden decoration driven off :checked. -->
+              <input type="checkbox" data-switch data-wallet-switch class="sr-only" />
+              <span class="switch shrink-0" aria-hidden="true"><span class="switch__knob"></span></span>
+            </label>
               <div class="flex flex-col gap-2 text-sm">
                 <div class="flex justify-between">
                   <span class="text-neutral-secondary">مصاريف التوصيل</span>
@@ -77,68 +118,32 @@
                 <!-- Points discount — hidden until the banner below applies
                      it; renderCart owns both the visibility and the figure. -->
                 <div class="flex justify-between items-center" data-cart-discount-row hidden>
-                  <span class="text-neutral-secondary">خصم النقاط</span>
+                  <span class="text-neutral-secondary">خصم المحفظة</span>
                   <!-- The green counterpart of the yellow price chip: a saving
                        is good news and should read as one at a glance. -->
                   <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
                 </div>
               </div>
-              <button type="button" class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
-                هل لديك برومو كود؟
-              </button>
+
+              <div data-promo class="flex flex-col gap-2">
+                <button type="button" data-promo-open class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
+                  هل لديك برومو كود؟
+                </button>
+                <div data-promo-box hidden class="flex flex-col gap-2">
+                  <div class="flex items-center gap-2">
+                    <input type="text" data-promo-input inputmode="latin" autocomplete="off"
+                           placeholder="اكتب الكود"
+                           class="flex-1 bg-white px-3 py-2 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none min-w-0 text-[#062A1C] text-sm transition-colors latin" />
+                    <button type="button" data-promo-apply
+                            class="bg-cta hover:bg-cta-hover px-4 rounded-full min-h-11 font-semibold text-white text-sm whitespace-nowrap transition-colors">تطبيق</button>
+                  </div>
+                  <p data-promo-msg hidden class="text-xs leading-5"></p>
+                </div>
+              </div>
               <div class="flex justify-between items-center pt-3 border-neutral-divider border-t">
                 <span class="font-bold text-[#062A1C] text-base">الإجمالي</span>
                 <span class="font-bold text-[#062A1C] text-2xl latin" data-cart-total>EGP 542.5</span>
               </div>
-
-            <div data-points-banner data-points-discount="100" class="flex justify-between items-center gap-3 bg-accent-yellow p-4 rounded-xl">
-              <!-- The two states are STACKED in one grid cell, not shown and
-                   hidden in flow, and they swap on `invisible` rather than on
-                   the `hidden` attribute. Both therefore always occupy
-                   layout, so the banner is permanently as tall as its tallest
-                   state and does not resize when the button is pressed.
-
-                   That matters more than it sounds. In the 380px summary
-                   column this message wraps hard, and the idle copy is a line
-                   longer than the used copy — measured, the banner collapsed
-                   from 230px to 130px on press, jumping the entire order
-                   summary up 100px under the shopper's cursor. A min-height
-                   cannot fix that, because the height that needs reserving
-                   depends on where the text happens to wrap at that width.
-
-                   `visibility: hidden` also keeps the inactive copy out of
-                   the accessibility tree, so nothing reads both. -->
-              <span class="grid items-center" data-points-msg>
-                <!-- Two copies of the message, one per state, toggled by
-                     syncPointsUI. With one copy the banner kept promising
-                     "لديك 100 نقطة" AFTER the points were spent — the state
-                     changed under it and the words did not (Ahmed,
-                     2026-07-22). -->
-                <span class="col-start-1 row-start-1 font-semibold text-[#062A1C] text-sm leading-6" data-points-idle>
-                  لديك <span class="latin">100</span> نقطة في محفظتك<br />ويمكنك خصم <span class="latin">EGP 100</span>
-                </span>
-                <!-- One clause, not two. This used to end "وتم خصم EGP 100 من
-                     الإجمالي", which is word for word what the خصم النقاط row
-                     in the summary directly below already says — the same fact
-                     stated twice, two elements apart (Ahmed, 2026-07-22). The
-                     summary row is the one that stays: it is load-bearing
-                     arithmetic, the line that makes subtotal + delivery -
-                     discount reconcile to الإجمالي. What is left here is the
-                     only thing the summary does NOT say, which is what became
-                     of the wallet. -->
-                <span class="col-start-1 row-start-1 font-semibold text-[#062A1C] text-sm leading-6 invisible" data-points-used>
-                  استخدمت <span class="latin">100</span> نقطة من محفظتك
-                </span>
-              </span>
-              <!-- Tier is state-driven, off the same aria-pressed syncPointsUI
-                   already sets — applying is the primary action, taking the
-                   discount back is not, and a destructive-ish undo painted in
-                   full CTA green competes with اتمام الشراء further down the
-                   page. `.points-apply` in styles.css carries both tiers; the
-                   pressed selector is (0,2,0) so it outranks the bg-cta and
-                   text-white utilities here. -->
-              <button type="button" data-points-apply aria-pressed="false" class="points-apply bg-cta hover:bg-cta-hover px-4 py-2 rounded-full font-semibold text-white text-xs whitespace-nowrap transition-colors">خصم المبلغ</button>
-            </div>
               <a href="checkout.html" data-cart-checkout class="block bg-cta hover:bg-cta-hover py-4 rounded-full w-full font-semibold text-white text-base text-center transition-colors">أطلب الآن</a>
               <p data-cart-warning hidden class="flex items-start gap-2 text-accent-error text-xs leading-5"><span aria-hidden="true">⚠</span>متبقي <span class="latin" data-cart-shortfall></span> لاستكمال الحد الأدنى للطلب</p>
             </div>

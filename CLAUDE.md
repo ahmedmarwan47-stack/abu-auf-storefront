@@ -236,6 +236,15 @@ These have each cost real time. Read them.
   icons carry `preserveAspectRatio="none"` too. Check exported SVGs render.
 - **`neutral.secondary` is for light surfaces only.** It inverts badly on black
   (3.29:1); use `onBlack` there.
+- **`overflow-x-hidden` silently kills `position: sticky` in its subtree.**
+  `hidden` on one axis forces the other to `auto`, which makes the element a
+  scroll container — and a scroll container is what a sticky descendant sticks
+  to, so it resolves against a box that never scrolls and simply does nothing.
+  No error, no warning. `<main>` is **`overflow-x-clip`** for exactly this
+  reason (see `page()` in components.py); `clip` clips identically without
+  creating a scroll container. If a sticky element "does nothing", walk its
+  ancestors for an overflow that is not `visible` or `clip` before touching the
+  element itself.
 - **`min-w-0` on flex/grid children.** The single most common bug class in this
   codebase. A `flex-1` child has `min-width: auto`, so it cannot shrink below its
   content and pushes its parent wider. Symptom: clipped content that page-level

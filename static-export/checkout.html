@@ -46,9 +46,29 @@
     <!-- Shared header is injected here by scripts.js -->
     <div id="site-header"></div>
 
-    <main id="main" tabindex="-1" class="overflow-x-hidden">
+    <main id="main" tabindex="-1" class="overflow-x-clip">
+      <!-- application/json, not a JS assignment: the browser never parses or
+           executes it, so a stray quote in a branch name cannot break the
+           page, and scripts.js reads it with JSON.parse only when the picker
+           is first opened. -->
+      <script type="application/json" data-store-tree>[{"gov":"القاهرة","branches":[{"t":"Al-Zohour Sports Club","a":"شارع يوسف عباس، الأستاد،نادى الزهور الرياضى"},{"t":"ChillOut AlRehab 3 Towers \"to go\"","a":"بنزينه شيل اوت الرحاب امام بوابه ٢٠ الرحاب مبني العباسي جروب"},{"t":"Degla Maadi","a":"22 شارع 233 - دجلة المعادي"},{"t":"Nozha Hospital","a":"9 شارع الرشيدي شيراتون - مستشفى النزهة الدولى"},{"t":"Auto Samir Rayan","a":"Auto Samir Rayan - Nasr City Branch، النصر، السريات الشرقية، ثان مدينة نصر، محافظة القاهرة‬ 4435013"},{"t":"Strip Way 6 October","a":"6 اكتوبر المتميز ستريب واي بجانب بلبن"},{"t":"Al Ahly SC Nasr City","a":"شارع حسن المأمون - امام البوابة الرئيسية - داخل النادي الاهلي مدينة نصر 3/4"},{"t":"Shams Club","a":"نادى الشمس بوابه ١"},{"t":"Obour Golf City","a":"مدينه  العبور - مول  جولف سيتي بجوار ايجي بنك"},{"t":"Aljazeera Academy","a":"اكاديمية الجزيرة شارع الصفا من شارع ٩ المقطم"},{"t":"Al Rehab Club","a":"بوابة 8 - نادي الرحاب - بجوار الكيدز اريا"},{"t":"Abbasiya to go","a":"ميدان العباسية - بجوار ايتوال"},{"t":"Shoubra-Al-Khalafawi","a":"ميدان الخلفاوي - شبرا - بجوار حواوشي الرفاعي"},{"t":"Al Matareya To Go","a":"18 شارع الحرية من ميدان المطرية بجوار كشري الخديوي"},{"t":"Tahrir Square","a":"15 ميدان التحرير - بجوار KFC"},{"t":"Sherif St.","a":"١٣ شارع شريف وسط البلد بجانب وزاره الأوقاف"},{"t":"Al Husseini to go","a":"الحسيني مول التجمع بجانب كمبوند النخيل الاول القاهرة الجديدة محافظه القاهرة"},{"t":"Mostafa El Nahas","a":"16مصطفي النحاس، المنطقة السادسة، مدينة نصر بجوار بيتزا بريموس"},{"t":"Al Qasr Al Ainy","a":"93 شارع القصر العيني محل رقم 13/9 بجانب روزا اليوسف"},{"t":"Hadayek Al Kobba","a":"156 شارع مصر والسودان بجوار مطعم أسماك اليوم"},{"t":"Al-Ahly Club Al-Jazira","a":"استاد التتش امام بوابة الصالات"},{"t":"Sixty Walk Mall","a":"العاصمه الاداريه الحي الحكومي بجوار وزارة المالية مول سيكستي"},{"t":"Up Town-Moktam","a":"البلازا الجديده امام سيلستا جاردنز"},{"t":"Shoubra 2","a":"٤١ أ شارع شبرا"},{"t":"Qasr El-Nil","a":"56 قصر النيل امام بنك وفا و اسكندرية"},{"t":"Panda ElMaadi","a":"7 أ كورنيش النيل، برج دلة، قسم المعادي، القاهرة"},{"t":"Morshedy Degla View","a":"الهضبه الوسطى شارع صلاح الدين بوابه B31 امام كارفور و فرع اديداس"},{"t":"Morshedy One Kattameya","a":"وان قطامية - مجمع المرشدى - ميدان محمد زكى - مبنى 214"},{"t":"Bavaria Town El-Maadi","a":"عماره 12 بافاريا تاون بجوار EG-Bank-امام البارون"},{"t":"City Center Maadi 2","a":"الطريق الدائري - بساتين الشرقية - البساتين - القاهرة"},{"t":"Tseppas - Genena Mall","a":"9 شارع البطراوي، جنينة مول، مدينة نصر"},{"t":"Girls College","a":"كلية البنات- الميرغنى- داخل الكلية"},{"t":"College of Education","a":"كلية تربية أمام بنزينة شيل أوت روكسى داخل الكلية"},{"t":"Ain Shams University 3","a":"جامعة عين شمس - كلية الأداب"},{"t":"Ain Shams Law","a":"جامعة عين شمس - كلية الحقوق"},{"t":"AirPort T2-G","a":"مطار سفر٢ -امام الجراج المتعدد"},{"t":"Metro Heliopolis","a":"18شارع الخليفة المأمون، منشية البكري ‬"},{"t":"Metro Ahly Club","a":"17 شارع الأهرام، أمام سينما نورماندى , الكوربة"},{"t":"Madinaty Food Hall","a":"مول اوبن اير-مبني F"},{"t":"East Hub Madinaty","a":"مول ايست هب مدينتي امام الكرفت زون"},{"t":"Residence Hotel","a":"فندق ريزيدانس - التجمع الأول- داخل الفندق"},{"t":"Petrojet Booth","a":"فرع بتروجيت بداخل الشركة مواعيد العمل من الأحد للخميس من الساعة ٨ صباحاً حتى الساعة ٣ مساءا"},{"t":"Pearl Mall","a":"بيرل مول تقاطع شارع التسعين على المحور الرئيسي"},{"t":"Heliopolis star","a":"Star of Heliopolis (Gamal Salama) Mohamed Naguib Axis"},{"t":"Spinneys Maxim Mall","a":"شارع التسعين الشمالي, ماكسيم مول, التجمع الخامس"},{"t":"Wadi Degla - Settlement","a":"كومبوند النخيل - التجمع الاول - نادى وادى دجلة - منطقة التنس"},{"t":"South Gate New cairo","a":"شارع ال ٩٠ مول ساوس جيت بجوار بنك مصر الجهه الاماميه الموازيه لمول كونكورد بلازا"},{"t":"Metro Market-Panorama Mall","a":"بداخل بانوراما الشروق مول مدينة الشروق ، القاهرة الجديدة"},{"t":"Spinneys Al-Shorouk","a":"سيتي بلازا مول-طريق الشهدا - بجوار الجامعة البريطانية وأكاديمية الشروق - الشروق"},{"t":"Royal House Al Shorouk","a":"طريق السادات بجوار مول Terrace , الشروق"},{"t":"Shorouk Sky Plaza","a":"مدينة الشروق، بوابة 1 طريق مصر الإسماعيلية"},{"t":"Shoubra","a":"70 شارع شبرا , بين مسرة و روض الفرج."},{"t":"Carrefour-Helwan","a":"شارع مصطفى فهمي، حلوان، القاهرة‬"},{"t":"Helwan University","a":"جامعة حلوان - بجوار السنتر التجاري - و مدرج 4"},{"t":"Helwan","a":"40 شارع راغب تقاطع شارع محمد سيد احمد امام كنتاكي و مطعم جاد"},{"t":"Metro Market-Al Mokattam","a":"المقطم 16 ش 9 ميدان النافورة المقطم, القاهرة امام البنك الاهلى المصرى"},{"t":"Mokattam","a":"23 شارع 9 , المقطم."},{"t":"Open Air 2 - Madinty","a":"اوبن اير مول -بجوار كريستال عصفور"},{"t":"Open Air 3 - Madinty","a":"اوبن اير مول-Kids Area-قطعة C"},{"t":"Madinaty-Craft Zone","a":"الكرافت زون , مدينتي - القاهرة الجديدة"},{"t":"Madinaty","a":"طريق مدينتي امام كارفور"},{"t":"Egypt Station 2","a":"محطة مصر ,ميدان رمسيس، الفجالة، الأزبكية، محافظة القاهرة‬ أمام المحطة"},{"t":"Egypt Station 1","a":"محطة مصر ,ميدان رمسيس، الفجالة، الأزبكية، محافظة القاهرة‬"},{"t":"Civilization Museum","a":"متحف الحضارة - الفسطاط"},{"t":"El Manial","a":"٨١شارع المنيل الرئيسي."},{"t":"Zamalek Taha Husein","a":"٢ طه حسين أمام اليمامة سنتر بجوار بنك الكويت الوطني."},{"t":"Zamalek Brazil","a":"5 شارع البرازيل، الزمالك امام اورانج"},{"t":"Adly Mansour Metro Station","a":"محطه عدلي منصور المركزيه موقف العاشر داخل المحطة"},{"t":"Seoudi Market-City Stars","a":"شارع عمر ابن الخطاب، سيتي ستارز مول ، مدينة نصر"},{"t":"Carrefour Golf Salah Salem","a":"طريق صلاح سالم بجوار دار القوات الجوية - م.نصر -القاهرة"},{"t":"Global Medical City","a":"المنطقة السادسة . مدينة نصر .القاهرة"},{"t":"Carrefour- City Center Almaza","a":"طريق السويس، شيراتون المطار، مدينة نصر‬."},{"t":"Carrefour-Tiba Mall","a":"4 شارع انور المفتى من طريق النصر, مدينة نصر"},{"t":"Panda Market","a":"7 طريق النصر، المنطقة السادسة، مدينة نصر"},{"t":"Metro Market-Al Ahly Club","a":"84 حسن مأمون، المنطقة السادسة،شارع النادي الاهلي, مدينة نصر"},{"t":"Metro Genena Mall","a":"6 شارع البطراوي خلف جنينة مول، مدينة نصر"},{"t":"Go Bus","a":"الحي السادس، بجوار شركة زانوسى , مدينة نصر، القاهرة"},{"t":"City Stars 3","a":"شارع عمر ابن الخطاب، سيتي ستارز مول , الدور الرابع، مدينة نصر"},{"t":"City Stars 1","a":"شارع عمر ابن الخطاب، سيتي ستارز مول , الدور الاول، مدينة نصر"},{"t":"Makram Ebeid","a":"90 شارع مكرم عبيد، مدينة نصر بجوار كافيه بينوس"},{"t":"Carrefour-Tora Al Asmnt","a":"٥٥ كورنيش النيل، طرة الأسمنت، المعادي"},{"t":"Metro Market-Maadi","a":"53 طريق مصر حلوان الزراعي، المعادي."},{"t":"Carrefour-New Maadi","a":"كارفور نيو معادي"},{"t":"Spinneys-Zahraa Al-Maadi","a":"مول 50 , زهراء المعادي - القاهرة"},{"t":"Oscar Grand Stores - Maadi","a":"شارع الزهراء الرئيسي ف زهراء المعادي برج ريحانه بلازا بجوار فودافون"},{"t":"Spinneys-Maadi","a":"شارع 250 , السرايات الغربيه - امام جراند مول المعادى ."},{"t":"Watanya El-Maadi","a":"طريق صقر قريش امام بنك مصر متفرع من شارع النصر بجوار المعونة الأمريكية و ماكدونالدز"},{"t":"Wadi Degla Maadi","a":"الشطر الرابع زهراء المعادي قريب من المسجد الكويتي داخل النادي بوابة 4"},{"t":"Maadi Laselki St.","a":"شارع 216 . عزبة فهمي. من شارع اللاسلكي"},{"t":"El Maadi","a":"62 شارع 9 بجوار محطة ثكنات المعادى بجوار دنكن دونتس"},{"t":"Maadi 50","a":"شارع الخمسين زهراء المعادى بجوار كنتاكى و بنك QNB"},{"t":"Metro Market-Al Rehab","a":"مول الرحاب -الدور الارضي-شارع طلعت مصطفي"},{"t":"Carrefour - Al Rehab","a":"افينيو مول - مجموعة 130 الرحاب 2, مدينة الرحاب"},{"t":"Fathalla Market-Al Rehab","a":"محور السادات، اول القاهرة الجديدة، محافظة القاهرة‬"},{"t":"Watania-Al Rehab","a":"أمام بوابة 1 الرحاب - محور تحرير القاهرة"},{"t":"Gateway Mall - Al Rehab","a":"مول جيت واى بجانب الفا ماركت بوابه 13 .الرحاب"},{"t":"Avenue Mall -Al Rehab","a":"مول افينيو بجوار السجل المدني الدور الثاني , القاهرة الجديدة ، الرحاب ، القاهرة"},{"t":"Al Rehab - Eastern Market","a":"منطقة المطاعم ، الرحاب السوق الشرقي ، مدينة الرحاب ، محافظة القاهرة"},{"t":"ChillOut AlRehab","a":"بنزينه شيل أوت - الرحاب - القاهره الجديده."},{"t":"Spinneys-Arena Mall","a":"مجمع البنوك ، شارع التسعين , اول القاهرة الجديدة ."},{"t":"Al Far Market","a":"شارع التسعين الجنوبي ، التجمع الخامس, امام كونكورد بلازا مول"},{"t":"Oscar Grand Stores-Tagamoa","a":"القطعة 425 - ش التسعين قطاع 3 - التجمع الخامس, القاهرة الجديدة."},{"t":"Petrojet","a":"فرع بتروجيت بداخل الشركة مواعيد العمل من الأحد للخميس من الساعة ٨ صباحاً حتى الساعة ٣ مساءا"},{"t":"El Far Market Arabella","a":"ماركت محمود الفار - ارابيلا بلازا - التجمع الثالث"},{"t":"Seoudi Market-Water Way","a":"22 أ - ذا ووتر واى كومبوند المستثمرين الشمالية, القاهرة الجديدة, داخل دبليو مول - الدور الارضى."},{"t":"Fresh Food Market-Point 90","a":"امام الجامعه الامريكية بوابة 5- بوينت 90 مول"},{"t":"Carrefour-Mega Mall","a":"كارفور میجا مول – التجمع الخامس"},{"t":"Al-Manara 2","a":"المركز الدولى للمؤتمرات محور المشير طنطاوى- بجوار قاعه 4"},{"t":"Al-Manara 1","a":"المركز الدولى للمؤتمرات محور المشير طنطاوى- بجوار قاعه 1"},{"t":"Spinneys-Pearl Des Rois","a":"اخر شارع الجامعه الامريكيه بجانب بنك مصر - منفذ بيع اسبينس بيرل دي روا- التجمع الثالث"},{"t":"Géant Supermarket","a":"محطة شيل اوت الشويفات, بجانب فندق تريومف - التجمع الخامس , القاهرة الجديدة"},{"t":"Carrefour - Mirage Mall","a":"كارفور ماركت - ميراج مول - التجمع الاول"},{"t":"Carrefour - Mivida","a":"شارع التسعين , كمبوند ميفيدا-التجمع الخامس"},{"t":"Carrefour-Al Hamad Mall","a":"79 Axis, اول القاهرة الجديدة،بجانب سیتى فیستفیال مول"},{"t":"District 5 Mall","a":"مول district 5 طريق العين السخنة-المنطقة الصناعية"},{"t":"Mivida","a":"التجمع الخامس بعد الجامعه الامريكيه , صينيه النادي داخل كومبوند ميفيدا"},{"t":"Lulu Market-New Cairo","a":"التجمع الاول مول لولو ماركت بجوار اكاديميه الشركه الدور الاول"},{"t":"Agora Mall","a":"مول أجورا-الدور الارضي- التجمع الخامس"},{"t":"The Park Mall","a":"بارك مول التجمع الخامس امام هايبر لولو ماركت بجانب فندق بورتو كايرو أمام الجامعه الامريكيه"},{"t":"Lake House","a":"ليك هاوس شارع التسعين بجوار فندق دوسيد داخل نادى ليك هاوس"},{"t":"Arabella","a":"أرابيلا مول الجديد ، التجمع الثالث، بجوار صيدلية عز الدين القاهرة الجديدة."},{"t":"Concord Plaza","a":"شارع التسعين، التجمع الخامس كونكورد بلازا مول"},{"t":"Down Town Mall","a":"شارع التسعين مول الداون تاون، التجمع الخامس"},{"t":"Lake View","a":"شارع التسعين، خلف مستشفى القوات الجويه التجمع الخامس"},{"t":"ChillOut AlShouyfat","a":"مدخل الشويفات - أول مدخل كومبوند الجولف القطاميه - بنزينه شيل أوت."},{"t":"CFC 2","a":"تقاطع الدائري مع شارع التسعين، امام النافوره بجوار اكاديمية الشرطة"},{"t":"Cairo Festival City 1","a":"تقاطع الدائري مع شارع التسعين، امام النافوره بجوار اكاديمية الشرطة"},{"t":"Ain Shams University","a":"جامعة عين شمس - كلية التجارة"},{"t":"Metro Market - Roxi","a":"18شارع الخليفة المأمون، منشية البكري"},{"t":"Negmet Heliopolisa-Gamee Square","a":"5 شارع الرمله، البستان، قسم مصر الجديدة، محافظة القاهرة‬"},{"t":"AirPort T1","a":"مطار 1 القديم"},{"t":"AirPort T3-F","a":"المطار الجديد 3 - ممر F"},{"t":"AirPort T3-G","a":"مطار 3 الجديد - ممر G"},{"t":"Metro Market - El Korba","a":"17 شارع الأهرام، أمام سينما نورماندى , الكوربة"},{"t":"Royal House Market-Merryland","a":"6 شارع روكسى امام حديقه الميريلاند خلف عمارات عثمان احمد عثمان-رويال هاوس ماركت"},{"t":"Negmet Heliopolis - Sheraton","a":"ماركت جمال سلامه بجانب مرور النزهه - شيراتون"},{"t":"Carrefour - Al Zaytoun","a":"العزيز بالله، الزيتون الشرقية، الزيتون"},{"t":"Carrefour - Saraya Mall","a":"إمتداد شارع ولي العهد، حدائق القبة"},{"t":"Oscar Grand Stores - Heliopolis","a":"105 عمر بن الخطاب، الماظة، مصر الجديدة‬"},{"t":"AirPort T2","a":"المطار الجديد صالة 2"},{"t":"lulu Heliopolis","a":"مول لولو ديستريكت-وادي دجلة بعد بنزينة وطنية"},{"t":"Sheraton Heliopolis","a":"24 شارع سيد زكريا شيراتون امام سلينترو"},{"t":"City Center Almaza","a":"مطار الماظة، شيراتون المطار ، القاهرة"},{"t":"Almaza Avenue","a":"مول ألماظة أفينيو الجديد بجوار مستشفى مصر الطيران - هليوبوليس"},{"t":"El Korba","a":"١٨ CIB شارع نزيه خليفة مصر الجديدة امام مستشفى الثورة بجوار بنك"},{"t":"Merghany","a":"١٠٥ شارع السيد المرغني، مصر الجديدة بجوار تورتينا الحلوانى"}]},{"gov":"الفيوم","branches":[{"t":"Fayom","a":"مول دله أو The Get شارع جمال عبدالناصر بجوار RGS Tower للملابس و بجوار مطعم مصر"}]},{"gov":"الجيزة","branches":[{"t":"Sodic","a":"اب ويست داون سوديك بافرلي هيلز"},{"t":"G Yard Octobar","a":"حدائق اكتوبر شارع زويل بجوار مول الحسن"},{"t":"Mariouteya","a":"103ش فيصل - محطة المريوطيه بجوار ڤودافون"},{"t":"Zamalek sc - to go","a":"نادي الزمالك بوابة 2 داخل النادي"},{"t":"Al Batal Ahmed Abdel Aziz Street","a":"29 شارع البطل احمد عبد العزيز - المهندسين"},{"t":"Hadayek Al-Ahram 2","a":"حدائق الاهرام البوابه الأولى - 291أ شارع الثروة المعدنية"},{"t":"Cairo University 3","a":"الباب الرئيسي بجوار القبة امام مبني الساعة-جامعة القاهرة"},{"t":"Hadayek Al-Ahram","a":"حدائق الأهرام - البوابه الرابعه بوابه مينا شارع الجيش بجوار قويدر للحلويات"},{"t":"Rofayda Hospital","a":"داخل مستشفي رفيدة- 27محور كريزي واتر مدخل2"},{"t":"Carrefour Mall of Egypt","a":"مول مصر، مدينة السادس من أكتوبر - الجيزة"},{"t":"Cairo University - October","a":"جامعه القاهره بجوار كلية طب اسنان - مدخل زايد 1 بجوار هايبر وان - اكتوبر"},{"t":"Wadi Degla October 2","a":"6اكتوبر الحي الاول- نادي وادي دجله 2 - بجوار محطه اتوبيس مصر"},{"t":"Wadi Degla October","a":"وادي دجلة اكتوبر ع طريق الواحات بجوار مول مصر - وعلي دخلة جهينة"},{"t":"Hadaba Al Ahram","a":"عماره ٤١٣ ن شارع الجيش البوابه الرابعة حدائق الأهرام بجوار فرع فودافون"},{"t":"Faisal","a":"عمارة 282 - مطبعة فيصل - بجوار الرفاعي"},{"t":"Carrefour - Beverly Hills","a":"داخل ويست سكوير مول - سوديك ويست، بفرلى هيلز - الشيخ زايد"},{"t":"Metro Market - Sheikh Zayed","a":"الشيخ زايد - مدخل بالم هيلز"},{"t":"Spinneys Mall of Arabia","a":"ميدان جهينة - السادس من أكتوبر"},{"t":"Fresh Food Market-Palm Hills","a":"طريق الشباب، الشيخ زايد، أكتوبر"},{"t":"Hyper 10 Booth 3","a":"مدخل زايد ، داخل هايبر وان، السادس من أكتوبر، الجيزة"},{"t":"Carrefour-Dandy Mall","a":"طريق القاهرة - الإسكندرية الصحراوي، الجيزة."},{"t":"Best Way-October","a":"إدن مول , الجزيرة , الشيخ زايد"},{"t":"Seoudi Market-Beverly Hills","a":"ستريب مول - بيفرلي هيلز، 6 أكتوبر"},{"t":"Seoudi Market-Dream Land","a":"طريق الواحات، قسم أول 6 أكتوبر،الجيزة"},{"t":"Metro Market-El Yasmeen","a":"مشروع لا سيتى - الحى الثامن، قسم أول 6 أكتوبر"},{"t":"Panda Mall-October","a":"المحورالمركزي - ميدان الحرية ,أكتوبر"},{"t":"Seoudi Market-Zayed 2000","a":"كومباوند زايد 2000، مدخل 9 الشيخ زايد,أكتوبر"},{"t":"Hyper Salmaniyah Booth","a":"هايبر 1 السلمانية، طريق الصحراوي"},{"t":"Hyper Selmaneyah","a":"هايبر 1 السلمانية، طريق الصحراوي"},{"t":"Americana Plaza","a":"أمريكانا بلازا , مدينة الشيخ زايد , أكتوبر."},{"t":"Twin Tower - Shiekh Zayed","a":"الشيخ زايد- مبنى c"},{"t":"Hyper One-October (2)","a":"مدخل زايد 1، بجانب موقف السيارات الصغير, هايبر وان، السادس من أكتوبر، الجيزة"},{"t":"Hyper One-October (1)","a":"مدخل زايد 1 بجوار موقف السيارات الكبير، هايبر وان، السادس من أكتوبر، الجيزة"},{"t":"Walk of Cairo - Sheikh Zayed","a":"الكيلو 38 مصر إسكندرية الصحرواي بجوار بوابة سوديك - مول Walk Of Cairo"},{"t":"Mall of Arabia ( Food Court )","a":"بداخل مول العرب في منطقة الفود كورت، ميدان جهينه، 6 أكتوبر، بوابه 2"},{"t":"Mall of Arabia","a":"ميدان جهينه - 6 أكتوبر – بوابه 2"},{"t":"New Giza Club","a":"نادى نيو جيزة الجديد - طريق مصر أسكندرية الصحراوى - خلف حازم حسن - 6 أكتوبر"},{"t":"Mall of Egypt","a":"مول مصر، بجوار مجمع المطاعم , مدينة السادس من أكتوبر"},{"t":"ChillOut Oct","a":"بنزينه شيل أوت - الخمايل - محور 26 يوليو - 6 أكتوبر"},{"t":"Palm Hills","a":"شارع ٨٨، نادي بالم هيلز، ٦ أكتوبر بجوار اكاديمية برشلونه"},{"t":"Arkan","a":"الشيخ زايد مول اركان امام زايد 2000 الدور الارضى المكتب الرئيسى"},{"t":"Fresco Mart","a":"36 شارع النخيل من سليمان اباظه , المهندسيين"},{"t":"Metro-Gamaet El Dewal","a":"28 شارع جامعه الدول أمام كوستا كافيه -المهندسين"},{"t":"Lebanon Square","a":"53 شارع لبنان بجوار لابوار و H&M و أمام بنك الأستثمار العربى"},{"t":"Syria","a":"43 شارع سوريا متفرع من شارع جامعة الدول العربيه امام مترو ماركت"},{"t":"Mohandeseen Aswan","a":"11 شارع الجزائر ، ميدان أسوان"},{"t":"Spinneys Al-Haram","a":"46 شارع الهرم - داخل جالاكسي مول - بجوار كريستال مول"},{"t":"Carrefour-Zezenia","a":"230 شارع الاهرام - العمرانية - الهرم، الجيزة"},{"t":"Metro Market-Haram","a":"١١٢ أ شارع العريش، الهرم,الجيزة"},{"t":"Carrefour-Al Haram","a":"٢٢ شارع الهرم، الجيزة"},{"t":"Al Haram","a":"اخر شارع الهرم بجوار مطعم جاد ومحل ضجه - مشعل"},{"t":"Cairo University 2","a":"جامعة القاهرة 2 -عند مكتبة ثقه بين كلية تجارة و كلية حقوق و كلية علوم"},{"t":"Cairo University","a":"كلية دار العلوم - بجوار المكتبة المركزية - جامعة القاهرة"},{"t":"Metro Market-Cairo University","a":"مترو ماركت، جامعة القاهرة، الجيزة"},{"t":"Carrefour-El Mohafza","a":"كارفور المحافظة, الجيزة"},{"t":"Metro Market-Dokki","a":"5 شارع المساحة، متفرع من ميدان المساحة، قريب من المدرسة الالمانية الانجيلية الثانوية بالقاهرة الدقي ، الجيزة"},{"t":"Shooting Club","a":"20 نادي الصيد بجوار بنك اسكندرية - وبعد حلوانى الدمياطى"},{"t":"Dokki","a":"٦٢ شارع مصدق الدقي بجوار شاورما ابو رامز"}]},{"gov":"الإسكندرية","branches":[{"t":"Porto Marina","a":"مارينا 3 _بجوار مدخل بوابة مارينا 3"},{"t":"Seashell Playa","a":"داخل قريه سي شيل بالا امام مسجد القريه"},{"t":"Daniel St. Alex","a":"عقار 5،7 طريق الحرية مع 36 النبي دانيال امام برجر وهمي - العطارين - اسكندرية"},{"t":"Mandara Alex","a":"15 شارع وردة اليازجي مع جمال عبد الناصر المندرة بحري"},{"t":"Louran","a":"212 عبدالسلام عارف بين ترام لوران وثروت"},{"t":"Zahran Badr","a":"قرية بدر -امام زهران ماركت– كيلو 82.5 طريق اسكندريه مطروح الساحلى الدولى"},{"t":"Al Balah","a":"قرية البلاح بجانب مدخل القرية- الكيلو 65"},{"t":"Seashell","a":"قرية سى شيل امام منطقة ملاعب التنس"},{"t":"North coast Hacienda","a":"هاسيندا باي بجانب مترو ماركت - بجوار مكتب كهرباء هاسيندا باي"},{"t":"Imperium Marassi","a":"مول  M Porium - امام منطقة سيدي عبدالرحمن"},{"t":"North coast Almaza Bay","a":"منطقه مطاعم ترافكو - بجوار مطعم طبالي"},{"t":"North coast Amwaj","a":"قريه امواج مول ريفت - بجوار سبينس ماركت"},{"t":"Zahran Pharaohs","a":"ش الفراعنه متفرع من ش فؤاد امام عماره مصر للتأمين عمارة رقم 6 -ماركت زهران"},{"t":"Wadi Degla","a":"طريق القبارى السريع غيط العنب شرق نادي وادي دجلة"},{"t":"Metro Louran","a":"25 الفريق إسماعيل سرهنك، سان ستفانو، قسم ثان الرمل، محافظة الإسكندرية"},{"t":"Metro Zezenia","a":"طريق الحرية 601 - شارع ابو قير - بجوار شركة الاسكندرية لتوزيع الكهرباء - بجوار صيدلية العزبى"},{"t":"El Bitash Alexandria","a":"البيطاش - البيطاش غرب, الدخيلة, محافظة الاسكندرية امام كازيون"},{"t":"Carrefour-Kafr Abdo","a":"أبو النواطير - سيدي جابر، الأسكندرية"},{"t":"Fresh Food Market-Alexandria","a":"8-10 شارع الكازينو، سان ستفانو، قسم الرمل."},{"t":"Carrefour-Green Plaza","a":"طريق 14 مايو، سموحة، سيدي جابر"},{"t":"Raml Station Alex","a":"شارع القائد ابراهيم - منطقة جراج الخالدين - المنطقه المركزيه - محطة الرمل"},{"t":"Carrefour-El-Agamy","a":"طريق الإسكندرية - مرسى مطروح، العجمي البحري"},{"t":"Metro Market-Smouha","a":"شارع ألبرت الاول - داخل مترو ماركت - امام مستشفى بيت النعمه."},{"t":"Carrefour-City Light","a":"أمين حسونة، السيوف قبلي ، قسم ثان المنتزة."},{"t":"Carrefour-Multaqa","a":"الشهيد طيار محمود شاكر عبد المنعم، عزبة سعد، سيدي جابر."},{"t":"Carrefour-Al Arouba Mall","a":"طريق مطار برج العرب - الساحل الشمالى، الذراع البحري، قسم برج العرب"},{"t":"Carrefour-Royal Plaza","a":"العمراوي ، قسم المنتزه ."},{"t":"Romanian Camp","a":"رشدى- شارع المعسكر الرومانى بجوار حلوانى فلوكيجر"},{"t":"Ganakles","a":"٦٣٧ طريق الحرية جناكليس بجوار صيدليه اسامة الطيبى"},{"t":"Smouha Club","a":"17-19 فيكتور ايمانويل الثالث ، امام البوابة الرئيسية لنادي سموحه"},{"t":"Alaqbal Alex","a":"25 شارع الاقبال بجانب ماكدونالدز , لوران , الاسكندرية"},{"t":"Miami Alex","a":"برج نفرتيتى - تقاطع جمال عبد الناصر مع اسكندر ابراهيم - ميامي الحديقة الاولى برج نفرتيتى - تقاطع جمال عبد الناصر مع اسكندر ابراهيم - امام الاكاديميه العربيه و ماكدونالدز"},{"t":"City Center Alex 2","a":"سيتى سنتر مول الداون تاون قطاع الطريق الصحراوي"},{"t":"Abrahimia","a":"58 طريق الجيش، الإبراهيمية بحري وسيدي جا، قسم باب شرقي."},{"t":"Shalalat Alex","a":"116 طريق الحريه اول شارع السلطان حسين.عمارة البنك الاهلي المصري"},{"t":"Kafr Abdo","a":"23 شارع سانت جيني ، كفر عبده ، أبو النواتير ، سيدي جابر"},{"t":"Smouha","a":"شارع ألبرت الاول - امام مستشفى بيت النعمه"}]},{"gov":"الغربية","branches":[{"t":"Al-Mahala","a":"المحله الكبري ميدان المشحمه امام مسجد قادوس الكبير"},{"t":"Tanta Stadium","a":"طنطا شارع الاستاد بجوار براند بلبن"},{"t":"Spinneys-Mall Of Tanta","a":"مول طنطا بالمنطقة اللوجيستيه بسبرباي"},{"t":"Carrefour-Tanta","a":"طريق طنطا - المحلة الكبري، طنطا,الغربية"},{"t":"Tanta El Bahr St.","a":"شارع البحر-بجوار صيدناوي-قسم اول طنطا-الغربية"},{"t":"Mall Of Tanta","a":"مول طنطا بالمنطقة اللوجيستيه بسبرباي الدور التانى"}]},{"gov":"البحر الأحمر","branches":[{"t":"Sharm El Sheikh","a":"كيلوباترا مول شرم الشيخ"},{"t":"Bestway El Gouna","a":"المنجروفى - داخل ماركت بست واى"},{"t":"Bestway-El Ahyaa","a":"الأحياء -بجوار حى شمال"},{"t":"Spinneys-Senzo Mall","a":"طريق القري سينزو مول"},{"t":"Spinneys-El-Dahar","a":"شارع النصر عمارة ريتاج بجانب سوبر ماركت سبينس ، سفن ستارز مول ، الدهار ، الغردقة"},{"t":"Best Way-Super Market","a":"شارع حي البنوك ، الكوثر ، مقابل بنك HSBC"},{"t":"Metro Market-Sheraton Hurghada","a":"ِِِش شيراتون، سقالة، الغردقة، البحر الأحمر"},{"t":"Carrefour-Hurghada 2","a":"طريق النصر، الغردقة، البحر الأحمر"},{"t":"Carrefour-Hurghada 1","a":"طريق النصر، الغردقة، البحر الأحمر"},{"t":"Sheraton Hurghada","a":"مفارق أبو عشره شارع شيراتون امام بنك CIB - شيراتون الغردقة"}]},{"gov":"كفر الشيخ","branches":[{"t":"Kafr El-Sheikh","a":"كفر الشيخ - شارع الجامعه امام كليه تربيه"}]},{"gov":"الغردقة","branches":[{"t":"Go Bus Hurghada","a":"شارع النصر - أمام ممشي النصر جو باص"}]},{"gov":"القليوبية","branches":[{"t":"Obour O-Court","a":"الحي التاسع مول أو كورت العبور بجوار ماركت الفتح"},{"t":"Obour Golf City","a":"مدينه  العبور مول  جولف سيتي بجوار ايجي بنك"},{"t":"Banha Kornish Nile","a":"شارع بنها كورنيش النيل بجوار صيدلية العزبي"},{"t":"Shoubra El Kheima","a":"الشارع الجديد بجوار بالبن بعد كوبرى مسطرد"},{"t":"Obour Town Stars Mall","a":"العبور تاون ستارز مول بجوار بنك مصر الحى السابع"},{"t":"Abu Auf-Tseppas Obour","a":"العبور بجوار سيتى تسيباس نادى العبور"},{"t":"Banha","a":"امام نادى الرى و بجوار البنك الاهلى كورنيش النيل بداخل مول نايل فيو امام كارفور و بجوار L.C Wikiki"},{"t":"Panda-Hyper Market","a":"طريق الأسكندريه الزراعي، مدينة قها، مركز طوخ، القليوبية"},{"t":"Panda Market-Obour","a":"شارع سلمان الفارسى - الحى الاول, مدينة العبور"},{"t":"Carrefour-Golf City\"Obour\"","a":"طريق مصر اسماعيلية الصحراوى - جولف سيتى, مدينة العبور"}]},{"gov":"طنطا","branches":[{"t":"Wadi Degla Tanta","a":"طنطا الجلاء بجوار مساكن السلام نادى وادى دجلة بداخل النادى"}]},{"gov":"الشارقة","branches":[{"t":"AlZahia Uptown Mall","a":"الزاهية الشارقة - كومباوند اب تاون الزاهية أمام صيدلية ابن سينا - خلف مول سيتى سنتر الزاهية"}]},{"gov":"أسوان","branches":[{"t":"Aswan Mall","a":"شارع سعد زغلول بجوار محطه قطار أسوان في سكاي مول"},{"t":"Aswan","a":"97 كورنيش النيل"}]},{"gov":"بورسعيد","branches":[{"t":"PortSaid Marhaba","a":"شارع طرح البحر بجوار بوابه قريه مرحبا"},{"t":"Port Fouad","a":"شارع العروبه ملك فهمي سرحان عقار رقم 20 بورفؤاد - بورسعيد"},{"t":"Carrefour Port Fouad","a":"ميدان اسوق حمام - بجوار كنتاكى - بور فؤاد"},{"t":"PortSaid AlGomhoria","a":"شارع ٢٣ يوليو بجوار بيتزا بينو."},{"t":"Albatros Mall","a":"مول الباتروس من جهة الباركينج - شارع طرح البحر"}]},{"gov":"دمياط","branches":[{"t":"Ras El Bar","a":"راس البر منطقه اللسان شارع 44 خلف فندق السلام بجوار ماركت بهنس"},{"t":"Wadi Degla New Damietta","a":"دمياط الجديده _ المجاوره 27 نادي وادي دجله - امام كيدز اريا و ‎La Doreeحلواني‎"},{"t":"New Damietta","a":"دمياط الجديده - المركزية - شارع الاستاد - بجوار مطعم سحارة ودويدار للأجهزة الكهربائية"},{"t":"Domiatt-El Bahr Street","a":"عمارة رقم 141 -كورنيش النيل-زقاق النعماني-قسم رابع بندر دمياط"}]},{"gov":"البحيرة","branches":[{"t":"Damanhour 2 to go","a":"٣ شارع عبد السلام الشاذلي بجوار مطعم كنتاكي - دمنهور - البحيره"},{"t":"Damanhour","a":"١ ش الرويني من عبد السلام الشاذلي أمام بنك الإسكان و التعمير"}]},{"gov":"الأقصر","branches":[{"t":"Luxor","a":"2 شارع التلفزيون و المدينه المنوره بجوار فرع فودافون و محل منزلك"}]},{"gov":"الدقهلية","branches":[{"t":"Mansoura Canal Street","a":"العنوان اول شارع الترعه من ناحيه القريه الاولمبيه بجوار عصير الكتب"},{"t":"Prime Mart | Sun Mall","a":"ميدان الساعه - عبد السلام عارف، المنصورة (قسم 2)، اول المنصورة، محافظة الدقهلية"},{"t":"Wekalet ElMansoura-AlTeraa Street","a":"شارع الترعة بجوار ميدان الشيماء ,المنصورة"},{"t":"Wekalet ElMansoura -Suez Street","a":"شارع قناة السويس , برج الميريلاند ,المنصورة"},{"t":"Carrefour-Mansoura 2","a":"خلف استاد المنصورة، الدقهلية"},{"t":"Carrefour-Mansoura 1","a":"بنيان حي الجامعه بجوار بوابه توشكى -كارفور المنصورة"},{"t":"Mansoura Wekala Store","a":"شارع عبد السلام عارف - بجوار حى غرب المنصورة وحده رقم 1 الدور الارضى"},{"t":"Mansoura Suez Canal Street","a":"شارع الترعة بجوار ميدان الشيماء ,المنصورة"},{"t":"Mansoura Al-Mashya","a":"شارع الجامعه المشايه السفليه امام نادى النيل"}]},{"gov":"المنيا","branches":[{"t":"Wadi Degla Minya Club","a":"المنيا الجديدة نادي وادي دجلة"},{"t":"Spinneys El Minya","a":"سبينيس سيتي سكيب مول - المنيا الجديدة - القطعة الثامنة, امتداد طريق الاوسط, المنيا الجديدة, المنيا"},{"t":"Minya","a":"شارع البحر بداخل فندق جراند اتون.المنيا"}]},{"gov":"أسيوط","branches":[{"t":"Wadi Degla Asyut","a":"نادي وادي دجلة الطريق الصحراوى الشرقي اول اسيوط الجديدة"},{"t":"Asyut 2","a":"13- ابراج عثمان بن عفان - شارع الجمهوريه - امام بنك القاهره"},{"t":"Asyut 1","a":"تقسيم الحقوقيين - شارع الجامعه الازهريه (شارع الازهر - اسيوط ثان)"}]},{"gov":"دبي","branches":[{"t":"Dubai Mall","a":"دبي مول -الدور الثالث بجانب دانكن دونتس وهواوي"},{"t":"Dubai Hills Mall","a":"دبي هيلز مول -بجانب محل العربية للعود"}]},{"gov":"ديرا","branches":[{"t":"City Centre Deira","a":"وحده BR008 - بجانب الانصاري للصرافه - ديرا سيتي سنتر"}]},{"gov":"السويس","branches":[{"t":"Dreams Market-Telal","a":"تلال دريمز ماركت بجانب قريه تلال السخنه"},{"t":"Dreams Market- La Vista","a":"لافيستا دريمز ماركت. بجانب قريه بورتو ساوث بيتش"},{"t":"Porto Sokhna","a":"زهران ماركت داخل بورتو السخنة"},{"t":"Suez Al-Shohadaa","a":"السويس شارع الشهداء امام اردوور برج الصفوه"},{"t":"Suez-Sporting City","a":"برج مهاود شارع المدينة الرياضية, بجانب دوكلاند ,الملاحة الجديدة , محافظة السويس."}]},{"gov":"جنوب سيناء","branches":[{"t":"SOHO Square-Sharm El Sheikh","a":"سوهو مول داخل سوهو سكوار أمام فندق ساڤو"},{"t":"Go Bus Mall-Sharm El Sheikh","a":"حي النور بجوار مستشفي شرم الشيخ الدولي"}]},{"gov":"المنوفية","branches":[{"t":"Spinneys Sadat","a":"سفن ستارز مول- المنطقة الخامسة المحور المركزي - امام منطقة البنوك"}]},{"gov":"الشرقية","branches":[{"t":"Carrefour-Al Zagazig","a":"طريق القنايات - الزقازيق، شيبة النكارية، الزقازيق، الشرقية."},{"t":"Zagazig","a":"شارع الدكتور طلبة عويضه (برج المصطفي) بجوار مستشفي صلاح سالم-القوميه-الشرقية"},{"t":"Cross 10 Mall","a":"كروس تن مول بجوار هايبر وان"},{"t":"Hyper 10th Of Ramadan","a":"طريق مصر-الإسماعيليه الصحراوي كيلو 52 , مدينة العاشر من رمضان , الشرقية"}]}]</script>
       <section data-reveal class="py-8">
-        <div class="items-start gap-10 grid grid-cols-1 lg:grid-cols-[1fr_380px] mx-auto px-4 max-w-[1536px]">
+        <!-- 1100px, NOT the site's 1536px container (Ahmed, 2026-07-26: the
+             form is far too wide). Checkout is the one page that is a form
+             rather than a shop window, and it inherited a container built for
+             product grids: at 1536 the summary takes its fixed 380 and the
+             form column is left with 1116px, so a two-up name row put each
+             field at ~540px. A 540px text input is not generous, it is hard to
+             use — the eye has to travel the whole width to find a 5-character
+             answer, and typography guidance puts a comfortable input at
+             roughly 45-75 characters.
+
+             1100 leaves the form ~680px and the same 380px summary beside it,
+             and `mx-auto` then centres the pair on the page rather than
+             stretching them across it. The header above spans both columns and
+             is inside this container, so it narrows and centres with them —
+             which is what makes the page read as one centred block. -->
+        <div class="items-start gap-10 grid grid-cols-1 lg:grid-cols-[1fr_380px] mx-auto px-4 max-w-[1100px]">
 
           <!-- Header is its own grid item spanning both columns, because the
                Figma mobile checkout (753:36339) puts the order summary directly
@@ -57,70 +77,12 @@
                and this spans row 1, leaving the desktop columns as they were. -->
           <div class="flex flex-col gap-3 order-1 lg:order-none lg:col-span-2 min-w-0">
             <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">إتمام عملية الشراء بأمان</h1>
-            <nav aria-label="خطوات الشراء" class="flex flex-wrap items-center gap-2"><span class="flex items-center gap-2"><span class="place-items-center grid rounded-full size-5 text-xs latin bg-interaction-base text-neutral-secondary">1</span><span class="text-neutral-secondary text-sm">سلة التسوق</span><span aria-hidden="true" class="text-neutral-outline">/</span></span><span class="flex items-center gap-2"><span class="place-items-center grid rounded-full size-5 text-xs latin bg-cta text-white">2</span><span class="font-semibold text-[#062A1C] text-sm">بيانات العميل</span><span aria-hidden="true" class="text-neutral-outline">/</span></span><span class="flex items-center gap-2"><span class="place-items-center grid rounded-full size-5 text-xs latin bg-interaction-base text-neutral-secondary">3</span><span class="text-neutral-secondary text-sm">طريقة الدفع</span><span aria-hidden="true" class="text-neutral-outline">/</span></span><span class="flex items-center gap-2"><span class="place-items-center grid rounded-full size-5 text-xs latin bg-interaction-base text-neutral-secondary">4</span><span class="text-neutral-secondary text-sm">تأكيد عملية الشراء</span></span></nav>
+            <nav aria-label="خطوات الشراء" class="flex flex-wrap items-center gap-2"><span class="flex items-center gap-2"><span class="place-items-center grid rounded-full size-5 text-xs latin bg-[#E9F3E6] text-accent-green">✓</span><span class="text-accent-green text-sm">سلة التسوق</span><span aria-hidden="true" class="text-neutral-outline">/</span></span><span class="flex items-center gap-2"><span class="place-items-center grid rounded-full size-5 text-xs latin bg-cta text-white">2</span><span class="font-semibold text-[#062A1C] text-sm">بيانات العميل</span><span aria-hidden="true" class="text-neutral-outline">/</span></span><span class="flex items-center gap-2"><span class="place-items-center grid rounded-full size-5 text-xs latin bg-interaction-base text-neutral-secondary">3</span><span class="text-neutral-secondary text-sm">طريقة الدفع</span><span aria-hidden="true" class="text-neutral-outline">/</span></span><span class="flex items-center gap-2"><span class="place-items-center grid rounded-full size-5 text-xs latin bg-interaction-base text-neutral-secondary">4</span><span class="text-neutral-secondary text-sm">تأكيد عملية الشراء</span></span></nav>
           </div>
 
           <!-- RTL start: form -->
           <div class="flex flex-col gap-8 order-3 lg:order-none min-w-0">
             <form class="flex flex-col gap-8">
-              <fieldset class="flex flex-col gap-4">
-                <legend class="mb-3 font-bold text-[#062A1C] text-lg">نوع الطلب</legend>
-                <div class="flex sm:flex-row flex-col gap-4">
-
-                <!-- min-w-0 on BOTH nested flex children. A flex item's
-                     min-width is `auto`, so without these the label column
-                     cannot shrink below its longest line and pushes the whole
-                     checkout form wider than its grid track. Caught at 375 in
-                     English, where the form ran 31px over and the page's
-                     `overflow-x-hidden` swallowed it — clipped copy that no
-                     amount of scrolling reveals, which is exactly why
-                     CLAUDE.md calls this the most common bug class here.
-                     Arabic never showed it: "أرسل الطلب كهدية لشخص تحبه" is
-                     simply shorter than "Send this order as a gift to someone
-                     you love". Latent until the site actually translated. -->
-                <label class="flex-1 min-w-0 cursor-pointer">
-                  <input type="radio" name="order-type" value="normal" class="peer sr-only" checked />
-                  <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full">
-                    <span class="flex items-center gap-3 min-w-0">
-                      <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6ZM3 6h18M16 10a4 4 0 0 1-8 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                      <span class="flex flex-col min-w-0">
-                        <span class="font-semibold text-[#062A1C] text-base">طلب عادي</span>
-                        
-                      </span>
-                    </span>
-                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
-                  </span>
-                </label>
-<!-- The subtitle restates the option itself rather than promising a
-     wrapping service nobody at Abu Auf has signed off on. -->
-
-                <!-- min-w-0 on BOTH nested flex children. A flex item's
-                     min-width is `auto`, so without these the label column
-                     cannot shrink below its longest line and pushes the whole
-                     checkout form wider than its grid track. Caught at 375 in
-                     English, where the form ran 31px over and the page's
-                     `overflow-x-hidden` swallowed it — clipped copy that no
-                     amount of scrolling reveals, which is exactly why
-                     CLAUDE.md calls this the most common bug class here.
-                     Arabic never showed it: "أرسل الطلب كهدية لشخص تحبه" is
-                     simply shorter than "Send this order as a gift to someone
-                     you love". Latent until the site actually translated. -->
-                <label class="flex-1 min-w-0 cursor-pointer">
-                  <input type="radio" name="order-type" value="gift" class="peer sr-only" />
-                  <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full radio-card-accent">
-                    <span class="flex items-center gap-3 min-w-0">
-                      <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M20 12v9H4v-9M22 7H2v5h20V7ZM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                      <span class="flex flex-col min-w-0">
-                        <span class="font-semibold text-[#062A1C] text-base">إهداء الطلب</span>
-                        <span class="text-neutral-secondary text-xs">أرسل الطلب كهدية لشخص تحبه</span>
-                      </span>
-                    </span>
-                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
-                  </span>
-                </label>
-                </div>
-              </fieldset>
-
               <fieldset class="flex flex-col gap-4">
                 <div class="flex flex-wrap justify-between items-center gap-2 mb-1">
                   <legend class="font-bold text-[#062A1C] text-lg">بيانات العميل</legend>
@@ -161,6 +123,80 @@
                 </div>
               </fieldset>
 
+              <!-- Gifting sits AFTER the customer's own details: it asks who is
+                   receiving the order, which only makes sense once who is
+                   ordering has been answered. It replaced a normal/gift radio
+                   pair at the top of the form — see gift_toggle(). -->
+
+              <!-- Order matters: input, then label, then panel, all SIBLINGS.
+                   The CSS opens the panel with `[data-gift-switch]:checked ~
+                   .gift-panel`, and `~` only reaches siblings — with the input
+                   nested inside the label (the shape the wallet toggle uses)
+                   the panel is not a sibling of it and never opened.
+
+                   The label therefore points at the input by `for`, which also
+                   keeps the recipient fields out of the label's own subtree: a
+                   form control inside a <label> that labels a DIFFERENT control
+                   gets claimed by it, so clicking the recipient's name would
+                   have toggled gifting off. -->
+              <div class="bg-white p-5 border border-neutral-divider rounded-xl">
+                <input type="checkbox" id="gift-order" data-switch data-gift-switch class="sr-only" />
+                <label for="gift-order" class="flex items-center gap-3 cursor-pointer">
+                  <span class="place-items-center grid bg-accent-green/10 rounded-full text-accent-green size-10 shrink-0">
+                    <span class="w-5 h-5"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M20 12v9H4v-9M22 7H2v5h20V7ZM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  </span>
+                  <span class="flex flex-col flex-1 gap-0.5 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-base">إهداء الطلب</span>
+                    <span class="text-neutral-secondary text-xs leading-5">أرسل الطلب كهدية لشخص تحبه</span>
+                  </span>
+                  <span class="switch shrink-0" aria-hidden="true"><span class="switch__knob"></span></span>
+                </label>
+                <!-- The terms sit OUTSIDE the collapsing panel, so they are
+                     readable with the switch off (Ahmed, 2026-07-26). They
+                     describe what turning it ON will do — no prices on the
+                     invoice, no cash on delivery — so putting them behind it
+                     meant you could only read the consequences after accepting
+                     them. Only the recipient fields collapse, because those are
+                     the part that genuinely does not exist until you gift. -->
+                <ul class="flex flex-col gap-2 mt-4 pt-4 border-neutral-divider border-t text-neutral-secondary text-xs leading-5">
+                  <li class="flex items-start gap-2">
+                    <span class="mt-0.5 text-accent-green shrink-0 w-4 h-4"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    <span>عند الإرسال كهدية، لن تظهر الأسعار في الفاتورة.</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="mt-0.5 text-accent-green shrink-0 w-4 h-4"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    <span>سيتم توصيل طلبك إلى العنوان المحدد.</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="mt-0.5 text-accent-green shrink-0 w-4 h-4"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    <span>الدفع عند الاستلام غير متاح لطلبات الهدايا.</span>
+                  </li>
+                </ul>
+                <div class="gift-panel" data-gift-panel aria-hidden="true">
+                  <div>
+                    <div class="flex flex-col gap-4 mt-4">
+                      <p class="font-semibold text-[#062A1C] text-sm">بيانات المستلم</p>
+                      <div class="gap-4 grid sm:grid-cols-2">
+
+                <div class="flex flex-col gap-1.5 ">
+                  <label for="recipient-name" class="font-medium text-neutral-secondary text-sm">اسم المستلم</label>
+                  <input type="text" id="recipient-name" name="recipient-name"
+                         value="" placeholder=""
+                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
+                </div>
+
+                <div class="flex flex-col gap-1.5 ">
+                  <label for="recipient-phone" class="font-medium text-neutral-secondary text-sm">رقم هاتف المستلم</label>
+                  <input type="tel" id="recipient-phone" name="recipient-phone"
+                         value="" placeholder=""
+                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
+                </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <fieldset class="flex flex-col gap-4">
                 <legend class="mb-3 font-bold text-[#062A1C] text-lg">وقت التوصيل</legend>
                 <div class="flex sm:flex-row flex-col gap-4">
@@ -179,7 +215,7 @@
                 <label class="flex-1 min-w-0 cursor-pointer">
                   <input type="radio" name="delivery-time" value="now" class="peer sr-only" checked />
                   <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full">
-                    <span class="flex items-center gap-3 min-w-0">
+                    <span class="radio-card__body flex items-center gap-3 min-w-0">
                       <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
                       <span class="flex flex-col min-w-0">
                         <span class="font-semibold text-[#062A1C] text-base">اليوم</span>
@@ -201,17 +237,17 @@
                      Arabic never showed it: "أرسل الطلب كهدية لشخص تحبه" is
                      simply shorter than "Send this order as a gift to someone
                      you love". Latent until the site actually translated. -->
-                <label class="flex-1 min-w-0 cursor-pointer">
+                <label class="flex-1 min-w-0 cursor-pointer" data-opens="schedule">
                   <input type="radio" name="delivery-time" value="later" class="peer sr-only" />
                   <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full">
-                    <span class="flex items-center gap-3 min-w-0">
+                    <span class="radio-card__body flex items-center gap-3 min-w-0">
                       <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
                       <span class="flex flex-col min-w-0">
                         <span class="font-semibold text-[#062A1C] text-base">أختار تاريخ</span>
-                        <span class="text-neutral-secondary text-xs">حدد اليوم والوقت المناسب</span>
+                        
                       </span>
                     </span>
-                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                    <span data-opt-meta="later" class="opt-meta is-prompt shrink-0 text-xs text-end leading-4">حدد اليوم والوقت</span><span class="radio-dot shrink-0" aria-hidden="true"></span>
                   </span>
                 </label>
                 </div>
@@ -235,7 +271,7 @@
                 <label class="flex-1 min-w-0 cursor-pointer">
                   <input type="radio" name="delivery-method" value="delivery" class="peer sr-only" checked />
                   <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full">
-                    <span class="flex items-center gap-3 min-w-0">
+                    <span class="radio-card__body flex items-center gap-3 min-w-0">
                       <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M1 3h13v13H1zM14 8h4l3 3v5h-7V8ZM7.5 19a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM19.5 19a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                       <span class="flex flex-col min-w-0">
                         <span class="font-semibold text-[#062A1C] text-base">توصيل</span>
@@ -245,6 +281,14 @@
                     <span class="radio-dot shrink-0" aria-hidden="true"></span>
                   </span>
                 </label>
+                  <!-- Pickup is ruled out by a gift order — the whole point is
+                       that the recipient receives it, so collecting it yourself
+                       is a contradiction. It stays in the layout, dimmed, with
+                       the reason replacing its radio dot: removing the card
+                       would leave the shopper hunting for an option that
+                       silently vanished. scripts.js puts `.option-blocked` on
+                       [data-pickup-option] and styles.css does the swap. -->
+                  <div class="flex flex-1 min-w-0" data-pickup-option>
 
                 <!-- min-w-0 on BOTH nested flex children. A flex item's
                      min-width is `auto`, so without these the label column
@@ -257,19 +301,20 @@
                      Arabic never showed it: "أرسل الطلب كهدية لشخص تحبه" is
                      simply shorter than "Send this order as a gift to someone
                      you love". Latent until the site actually translated. -->
-                <label class="flex-1 min-w-0 cursor-pointer">
+                <label class="flex-1 min-w-0 cursor-pointer" data-opens="storepicker">
                   <input type="radio" name="delivery-method" value="pickup" class="peer sr-only" />
                   <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full">
-                    <span class="flex items-center gap-3 min-w-0">
+                    <span class="radio-card__body flex items-center gap-3 min-w-0">
                       <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M3 9 4.5 4h15L21 9M3 9h18M3 9v11h18V9M9 20v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                       <span class="flex flex-col min-w-0">
                         <span class="font-semibold text-[#062A1C] text-base">الاستلام من المتجر</span>
                         
                       </span>
                     </span>
-                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                    <span data-opt-meta="pickup" class="opt-meta is-prompt shrink-0 text-xs text-end leading-4">اختر الفرع</span><span class="radio-dot shrink-0" aria-hidden="true"></span><span class="blocked-note shrink-0 text-neutral-secondary text-xs text-end leading-4">غير متاح لطلبات الهدايا</span>
                   </span>
                 </label>
+                  </div>
                 </div>
               </fieldset>
 
@@ -343,13 +388,13 @@
                    below-minimum basket, exactly as it already blocked the cart
                    page's own CTA. Without it checkout was the one place you
                    could carry an empty basket through to the thank-you page. -->
-              <a href="thank-you.html" data-cart-checkout class="bg-cta hover:bg-cta-hover py-4 rounded-full w-full font-semibold text-white text-base text-center transition-colors">
+              <a href="payment.html" data-cart-checkout class="bg-cta hover:bg-cta-hover py-4 rounded-full w-full font-semibold text-white text-base text-center transition-colors">
                 أكمل إلى الدفع
               </a>
             </form>
           </div>
 
-          <!-- RTL end: summary -->
+
           <aside class="lg:top-4 lg:sticky flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px] order-2 lg:order-none min-w-0">
             <div class="flex justify-between items-center">
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
@@ -372,57 +417,62 @@
                 </div>
             </div>
 
-            <div data-points-banner data-points-discount="100" class="flex justify-between items-center gap-3 bg-accent-yellow p-4 rounded-xl">
-              <!-- The two states are STACKED in one grid cell, not shown and
-                   hidden in flow, and they swap on `invisible` rather than on
-                   the `hidden` attribute. Both therefore always occupy
-                   layout, so the banner is permanently as tall as its tallest
-                   state and does not resize when the button is pressed.
-
-                   That matters more than it sounds. In the 380px summary
-                   column this message wraps hard, and the idle copy is a line
-                   longer than the used copy — measured, the banner collapsed
-                   from 230px to 130px on press, jumping the entire order
-                   summary up 100px under the shopper's cursor. A min-height
-                   cannot fix that, because the height that needs reserving
-                   depends on where the text happens to wrap at that width.
-
-                   `visibility: hidden` also keeps the inactive copy out of
-                   the accessibility tree, so nothing reads both. -->
-              <span class="grid items-center" data-points-msg>
-                <!-- Two copies of the message, one per state, toggled by
-                     syncPointsUI. With one copy the banner kept promising
-                     "لديك 100 نقطة" AFTER the points were spent — the state
-                     changed under it and the words did not (Ahmed,
-                     2026-07-22). -->
-                <span class="col-start-1 row-start-1 font-semibold text-[#062A1C] text-sm leading-6" data-points-idle>
-                  لديك <span class="latin">100</span> نقطة في محفظتك<br />ويمكنك خصم <span class="latin">EGP 100</span>
-                </span>
-                <!-- One clause, not two. This used to end "وتم خصم EGP 100 من
-                     الإجمالي", which is word for word what the خصم النقاط row
-                     in the summary directly below already says — the same fact
-                     stated twice, two elements apart (Ahmed, 2026-07-22). The
-                     summary row is the one that stays: it is load-bearing
-                     arithmetic, the line that makes subtotal + delivery -
-                     discount reconcile to الإجمالي. What is left here is the
-                     only thing the summary does NOT say, which is what became
-                     of the wallet. -->
-                <span class="col-start-1 row-start-1 font-semibold text-[#062A1C] text-sm leading-6 invisible" data-points-used>
-                  استخدمت <span class="latin">100</span> نقطة من محفظتك
+            <!-- Light green, not the brand yellow it shipped as (Ahmed,
+                 2026-07-26). #E9F3E6 is already this project's "good news"
+                 tint — the discount chip in the summary directly below is drawn
+                 on it — so the toggle and the saving it produces now read as
+                 the same thought. Yellow is the PRICE colour here (every price
+                 chip on the site is accent-yellow), which put the wallet in the
+                 same visual family as the amounts it reduces. -->
+            <label data-wallet-toggle data-wallet-balance="1200"
+                   class="wallet-toggle flex items-center gap-3 bg-[#E9F3E6] p-4 rounded-xl cursor-pointer">
+              <span class="place-items-center grid bg-accent-green/10 rounded-full text-accent-green size-10 shrink-0">
+                <span class="w-5 h-5"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7"/><path d="M16 12h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+              </span>
+              <span class="flex flex-col flex-1 gap-0.5 min-w-0">
+                <span class="font-semibold text-[#062A1C] text-sm">الدفع من المحفظة</span>
+                <!-- Two copies, one per state, stacked in a single grid cell so
+                     the taller one reserves the height and the card cannot
+                     resize on toggle. `invisible` rather than the `hidden`
+                     attribute keeps both in flow while keeping the inactive one
+                     out of the accessibility tree, so nothing reads both. -->
+                <!-- The balance carries `accent-green` (#346853), the design
+                     system's own "Green Text" token, and NOT `success`
+                     (#16BB55): the bright one measures about 2.2:1 on this
+                     tint and fails AA outright, where #346853 measures 5.9:1.
+                     Success-coloured text that cannot be read is not a success
+                     signal. -->
+                <span class="grid">
+                  <span class="col-start-1 row-start-1 text-[#062A1C]/80 text-xs leading-5" data-wallet-idle>
+                    رصيدك <span class="font-bold text-accent-green latin">EGP 1200</span>
+                  </span>
+                  <span class="col-start-1 row-start-1 font-semibold text-accent-green text-xs leading-5 invisible" data-wallet-used>
+                    تم الخصم من رصيدك
+                  </span>
                 </span>
               </span>
-              <!-- Tier is state-driven, off the same aria-pressed syncPointsUI
-                   already sets — applying is the primary action, taking the
-                   discount back is not, and a destructive-ish undo painted in
-                   full CTA green competes with اتمام الشراء further down the
-                   page. `.points-apply` in styles.css carries both tiers; the
-                   pressed selector is (0,2,0) so it outranks the bg-cta and
-                   text-white utilities here. -->
-              <button type="button" data-points-apply aria-pressed="false" class="points-apply bg-cta hover:bg-cta-hover px-4 py-2 rounded-full font-semibold text-white text-xs whitespace-nowrap transition-colors">خصم المبلغ</button>
-            </div>
-            <button type="button" class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
-              هل لديك برومو كود؟
-            </button>
+              <!-- The real control. sr-only rather than display:none so it
+                   stays focusable and announceable; the painted switch beside
+                   it is aria-hidden decoration driven off :checked. -->
+              <input type="checkbox" data-switch data-wallet-switch class="sr-only" />
+              <span class="switch shrink-0" aria-hidden="true"><span class="switch__knob"></span></span>
+            </label>
+
+              <div data-promo class="flex flex-col gap-2">
+                <button type="button" data-promo-open class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
+                  هل لديك برومو كود؟
+                </button>
+                <div data-promo-box hidden class="flex flex-col gap-2">
+                  <div class="flex items-center gap-2">
+                    <input type="text" data-promo-input inputmode="latin" autocomplete="off"
+                           placeholder="اكتب الكود"
+                           class="flex-1 bg-white px-3 py-2 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none min-w-0 text-[#062A1C] text-sm transition-colors latin" />
+                    <button type="button" data-promo-apply
+                            class="bg-cta hover:bg-cta-hover px-4 rounded-full min-h-11 font-semibold text-white text-sm whitespace-nowrap transition-colors">تطبيق</button>
+                  </div>
+                  <p data-promo-msg hidden class="text-xs leading-5"></p>
+                </div>
+              </div>
             <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
               <div class="flex justify-between">
                 <span class="text-neutral-secondary">مصاريف التوصيل</span>
@@ -432,10 +482,8 @@
                 <span class="text-neutral-secondary">الإجمالي</span>
                 <span class="font-semibold text-[#062A1C] latin" data-cart-subtotal>EGP 292.5</span>
               </div>
-              <!-- Same hooks as the cart page, so one renderer owns both and
-                   the two pages cannot print different numbers. -->
               <div class="flex justify-between items-center" data-cart-discount-row hidden>
-                <span class="text-neutral-secondary">خصم النقاط</span>
+                <span class="text-neutral-secondary">خصم المحفظة</span>
                 <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
               </div>
             </div>

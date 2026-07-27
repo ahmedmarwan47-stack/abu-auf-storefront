@@ -46,7 +46,7 @@
     <!-- Shared header is injected here by scripts.js -->
     <div id="site-header"></div>
 
-    <main id="main" tabindex="-1" class="overflow-x-hidden">
+    <main id="main" tabindex="-1" class="overflow-x-clip">
       <section data-reveal class="pt-6">
         <div class="flex flex-col gap-4 mx-auto px-4 max-w-[1536px]">
           <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><a href="shop-category.html" class="text-neutral-secondary hover:text-primary transition-colors">الأكثر مبيعاً</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">كيس سناكس بروتين طماطم بالريحان - 60 جم</span></nav>
@@ -57,118 +57,37 @@
       <section data-reveal class="pt-6 pb-12">
         <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 max-w-[1536px]">
 
-          <!-- RTL start: details. data-product lets the cart store read this
-               product straight off the DOM, same as a product card. -->
-          <div class="flex flex-col gap-5 bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]"
-               data-product data-id="1563" data-name="كيس سناكس بروتين طماطم بالريحان - 60 جم"
-               data-price="20.0" data-image="images/abuauf/products/image-600x600-5.webp">
-            <div class="flex flex-col gap-3">
-              
-              <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">كيس سناكس بروتين طماطم بالريحان - 60 جم</h1>
-              <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-                <div class="flex items-center gap-1.5"><span class="rating-marks flex items-center" role="img" aria-label="4.8 من 5"><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg><span class="rating-mark__fill" style="width:80%"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span></span></span><span class="font-semibold text-[#062A1C] text-sm latin">4.8</span><span class="text-neutral-secondary text-sm">(<span class="latin">126</span> تقييم)</span></div>
-                
-              </div>
-            </div>
-            <p class="text-neutral-800 text-base leading-8">بفضل قرمشته وقوامة الهش بالأضافة إلي نكهة الطماطم المنسجمة في كل قضمة مع رائحة الريحان المنعشة، تجعل مقرمشات الطماطم بالريحان من أبوعوف الراعي الرسمي لكل سهرة ممتعة ملئية بالمرح او لكل سناكس مفضل لدي الأطفال أثناء مشاهدة أنواع الكرتون المحبوب لهم</p>
-
-            
-
-            <!-- Price responds to both controls above it: the size chips
-                 repoint it at that SKU's real price, and the quantity stepper
-                 multiplies. data-unit-price is the current SIZE's price, kept
-                 separate from the displayed total so the multiply never
-                 compounds on itself. -->
-            <div class="flex flex-wrap items-center gap-3">
-              
-              <span data-price-display data-unit-price="20.0"
-                    class="bg-accent-yellow px-4 py-1.5 rounded-lg font-bold text-[#062A1C] text-2xl latin">EGP 20</span>
-              <span data-price-breakdown hidden
-                    class="text-neutral-secondary text-sm latin"></span>
-            </div>
-
-            <div class="flex items-center gap-3">
-
-              <div data-stepper class="inline-flex items-center gap-1 bg-white p-1 border border-neutral-divider rounded-full">
-                <button type="button" data-step="-1" class="place-items-center grid border border-neutral-divider hover:bg-interaction-base rounded-full size-11 text-[#062A1C] transition-colors" aria-label="إنقاص"><span class="w-5 h-5"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></button>
-                <span data-qty class="min-w-[2.5ch] font-bold text-[#062A1C] text-base text-center latin">1</span>
-                <button type="button" data-step="1" class="place-items-center grid bg-cta hover:bg-cta-hover rounded-full size-11 text-white transition-colors" aria-label="زيادة"><span class="w-5 h-5"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></button>
-              </div>
-              <button type="button" data-add-to-cart class="flex-1 bg-cta hover:bg-cta-hover py-4 rounded-full font-semibold text-white text-base transition-colors">
-                اضف الى السلة
-              </button>
-            </div>
-            <a href="checkout.html" class="py-3.5 border border-cta rounded-full font-semibold text-cta text-base text-center hover:bg-interaction-base transition-colors">
-              اشتري الان
-            </a>
-
-            
-            <div class="gap-4 grid grid-cols-3 pt-1">
-              <div class="flex flex-col items-center gap-2 text-center">
-                <span class="place-items-center grid bg-interaction-base rounded-full text-cta size-11 shrink-0">
-                  <span class="w-5 h-5"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M20 4c0 9-5.2 13-11 13a5.6 5.6 0 0 1-5-2.6C6.5 7.6 12.3 4.6 20 4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 20c1.6-4.6 4.6-7.7 9-9.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-                </span>
-                <span class="font-semibold text-[#062A1C] text-sm text-balance leading-5 line-clamp-3">تقدم هذه الوجبات الخفيفة البروتينية نكهة لذيذة ،عبارة عن مزيج مثالي من الطماطم المنعشة والنكهات الترابية للريحان.</span>
-              </div>
-              <div class="flex flex-col items-center gap-2 text-center">
-                <span class="place-items-center grid bg-interaction-base rounded-full text-cta size-11 shrink-0">
-                  <span class="w-5 h-5"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M13.2 2.5 5 13.4h5.6L9.8 21.5 18 10.6h-5.6l.8-8.1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
-                </span>
-                <span class="font-semibold text-[#062A1C] text-sm text-balance leading-5 line-clamp-3">يمكن أضافتة إلي السهرات والتجمعات</span>
-              </div>
-              <div class="flex flex-col items-center gap-2 text-center">
-                <span class="place-items-center grid bg-interaction-base rounded-full text-cta size-11 shrink-0">
-                  <span class="w-5 h-5"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 3.2 5 5.8v5.4c0 4.2 2.9 7.6 7 9.6 4.1-2 7-5.4 7-9.6V5.8L12 3.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m9.2 11.8 2 2 3.6-3.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                </span>
-                <span class="font-semibold text-[#062A1C] text-sm text-balance leading-5 line-clamp-3">مناسب لتسالي سريعة وسط اليوم</span>
-              </div>
-            </div>
-
-            <div class="flex flex-wrap justify-between items-center gap-3 bg-interaction-base px-4 py-3 rounded-xl">
-              <span class="flex items-center gap-2 font-semibold text-primary text-sm">
-                <span class="place-items-center grid bg-primary rounded-full text-white size-5 text-xs">✓</span>
-                التوصيل خلال ساعتين في القاهرة الكبرى
-              </span>
-              <button type="button" data-open="location" class="font-semibold text-cta text-sm underline">تغيير المنطقة</button>
-            </div>
-
-            <div data-accordion>
-                <div class="accordion-item border-neutral-divider border-b is-open">
-                  <button type="button" class="accordion-trigger flex justify-between items-center gap-4 py-4 w-full text-start">
-                    <span class="font-bold text-[#062A1C] text-base">الفوائد</span>
-                    <span class="accordion-chevron text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                  </button>
-                  <div class="accordion-panel">
-                    <div class="pb-4 text-neutral-800 text-sm leading-7"><div class="desc-rich"><strong>الوزن</strong> :
-<ul>
- <li>60 جرام</li>
-</ul>
-<strong>الرائحة والطعم:</strong>
-<ul>
- <li>تقدم هذه الوجبات الخفيفة البروتينية نكهة لذيذة ،عبارة عن مزيج مثالي من الطماطم المنعشة والنكهات الترابية للريحان.</li>
-</ul>
- 
-
-<strong>طريقة الأستمتاع :</strong>
-<ul>
- <li>يمكن أضافتة إلي السهرات والتجمعات</li>
- <li>مناسب لتسالي سريعة وسط اليوم</li>
- <li>مناسب للانش بوكس المدارس</li>
- <li>مناسب لتسالي السفر</li>
-</ul></div></div>
-                  </div>
-                </div>
-              </div>
-          </div>
-
-          <!-- RTL end: gallery. Real photography from the client's CDN —
-               `images` is filled by build/fetch_galleries.py. -->
+          <!-- Gallery FIRST in the DOM, so the media leads the reading order in
+               both directions: in RTL (the default) first means the RIGHT
+               column, in LTR the left one. Both are the side the shopper's eye
+               starts on, which is where the product photo belongs.
+               `items-start` on the grid above is load-bearing — it is what lets
+               the gallery be sticky without the column stretching to the full
+               row height and pinning it in place. -->
           
-          <!-- DOM order puts the info column first so RTL lands it in the right
-               column at lg. The Figma mobile product frame (918:34326) leads
-               with the media, so pull it above the info below lg — visually
-               only, leaving the desktop column order untouched. -->
-          <div data-gallery class="flex md:flex-row flex-col-reverse gap-4 order-first lg:order-none min-w-0">
+          <!-- The gallery is FIRST in the DOM (see product.py), so it needs no
+               `order-*` override any more: it leads on mobile, which is what the
+               Figma mobile frame (918:34326) asks for, and at lg it takes the
+               RTL-right / LTR-left column. The old `order-first lg:order-none`
+               pair existed only to pull it above an info column that used to
+               come first; both are gone rather than left as no-ops.
+
+               Sticky from lg up. `top-[60px]` is not a guess — it is the same
+               parking spot `[data-sticky-actions]` uses in styles.css: the nav
+               fixes at top:0 and is 48px tall, plus a 12px gap. Reuse that
+               number rather than a second one, or the gallery and the pill sit
+               on subtly different lines. `self-start` is belt-and-braces next
+               to the grid's `items-start`; a stretched grid item is exactly as
+               tall as its row and can never scroll within it, so sticky would
+               resolve to no movement at all.
+
+               Below lg the columns stack and there is nothing to scroll past,
+               so sticky is scoped to lg and up.
+
+               This only works because <main> is `overflow-x-clip` and not
+               `overflow-x-hidden` — see page() for why. -->
+          <div data-gallery class="flex md:flex-row flex-col-reverse gap-4 min-w-0
+                                   lg:self-start lg:sticky lg:top-[60px]">
             <div class="flex md:flex-col gap-3 md:max-h-[348px] xl:max-h-[520px]
                         overflow-x-auto md:overflow-x-hidden md:overflow-y-auto no-scrollbar shrink-0">
                 <button type="button" data-gallery-thumb aria-pressed="true"
@@ -231,6 +150,123 @@
               <img data-gallery-main src="images/abuauf/products/image-600x600-5.webp" alt="كيس سناكس بروتين طماطم بالريحان - 60 جم"
                    class="mx-auto w-full h-full" />
             </div>
+          </div>
+
+          <!-- Details second: the RTL-left / LTR-right column. data-product
+               lets the cart store read this product straight off the DOM, same
+               as a product card. -->
+          <div class="flex flex-col gap-5 bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]"
+               data-product data-id="1563" data-name="كيس سناكس بروتين طماطم بالريحان - 60 جم"
+               data-price="20.0" data-image="images/abuauf/products/image-600x600-5.webp">
+            <div class="flex flex-col gap-3">
+              
+              <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">كيس سناكس بروتين طماطم بالريحان - 60 جم</h1>
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+                <div class="flex items-center gap-1.5"><span class="rating-marks flex items-center" role="img" aria-label="4.8 من 5"><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg><span class="rating-mark__fill" style="width:80%"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span></span></span><span class="font-semibold text-[#062A1C] text-sm latin">4.8</span><span class="text-neutral-secondary text-sm">(<span class="latin">126</span> تقييم)</span></div>
+                
+              </div>
+            </div>
+            <p class="text-neutral-800 text-base leading-8">بفضل قرمشته وقوامة الهش بالأضافة إلي نكهة الطماطم المنسجمة في كل قضمة مع رائحة الريحان المنعشة، تجعل مقرمشات الطماطم بالريحان من أبوعوف الراعي الرسمي لكل سهرة ممتعة ملئية بالمرح او لكل سناكس مفضل لدي الأطفال أثناء مشاهدة أنواع الكرتون المحبوب لهم</p>
+
+            
+
+            <!-- Price responds to both controls above it: the size chips
+                 repoint it at that SKU's real price, and the quantity stepper
+                 multiplies. data-unit-price is the current SIZE's price, kept
+                 separate from the displayed total so the multiply never
+                 compounds on itself. -->
+            <div class="flex flex-wrap items-center gap-3">
+              
+              <span data-price-display data-unit-price="20.0"
+                    class="bg-accent-yellow px-4 py-1.5 rounded-lg font-bold text-[#062A1C] text-2xl latin">EGP 20</span>
+              <span data-price-breakdown hidden
+                    class="text-neutral-secondary text-sm latin"></span>
+            </div>
+
+            <!-- The stepper IS the add control (Ahmed, 2026-07-26). There is
+                 no "add to cart" press any more: + puts the product in the
+                 basket, +/- move that line live, and - at 1 removes it. The
+                 counter therefore shows the CART's quantity and reads 0 when
+                 the product is not in it — a counter that "syncs directly"
+                 cannot sit at 1 while the basket holds none.
+
+                 The button beside it is اشتري الان: it opens the summary
+                 drawer to carry on, and adds one first if the basket is empty
+                 of this product, so pressing "buy now" always buys something.
+
+                 This is the second pass on this block. The first kept an
+                 "اضف الى السلة" button that committed the stepper's number;
+                 Ahmed's point is that if the counter is bound to the cart, the
+                 commit step has nothing left to do. -->
+            <div class="flex items-center gap-3">
+
+              <div data-stepper data-cart-bound class="inline-flex items-center gap-1 bg-white p-1 border border-neutral-divider rounded-full">
+                <button type="button" data-step="-1" data-line-dec class="place-items-center grid border border-neutral-divider hover:bg-interaction-base rounded-full size-11 text-[#062A1C] transition-colors" aria-label="إنقاص"><span class="w-5 h-5" data-line-dec-minus><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="w-5 h-5 text-neutral-secondary" data-line-dec-trash hidden><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M4 7h16M10 4h4M9 7v11m6-11v11M6 7l.8 12.1A2 2 0 0 0 8.8 21h6.4a2 2 0 0 0 2-1.9L18 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+                <span data-qty class="min-w-[2.5ch] font-bold text-[#062A1C] text-base text-center latin">1</span>
+                <button type="button" data-step="1" class="place-items-center grid bg-cta hover:bg-cta-hover rounded-full size-11 text-white transition-colors" aria-label="زيادة"><span class="w-5 h-5"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></button>
+              </div>
+              <button type="button" data-buy-cta class="flex-1 bg-cta hover:bg-cta-hover py-4 rounded-full font-semibold text-white text-base transition-colors">
+                اشتري الان
+              </button>
+            </div>
+
+            
+            <div class="gap-4 grid grid-cols-3 pt-1">
+              <div class="flex flex-col items-center gap-2 text-center">
+                <span class="place-items-center grid bg-interaction-base rounded-full text-cta size-11 shrink-0">
+                  <span class="w-5 h-5"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M20 4c0 9-5.2 13-11 13a5.6 5.6 0 0 1-5-2.6C6.5 7.6 12.3 4.6 20 4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 20c1.6-4.6 4.6-7.7 9-9.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+                </span>
+                <span class="font-semibold text-[#062A1C] text-sm text-balance leading-5 line-clamp-3">تقدم هذه الوجبات الخفيفة البروتينية نكهة لذيذة ،عبارة عن مزيج مثالي من الطماطم المنعشة والنكهات الترابية للريحان.</span>
+              </div>
+              <div class="flex flex-col items-center gap-2 text-center">
+                <span class="place-items-center grid bg-interaction-base rounded-full text-cta size-11 shrink-0">
+                  <span class="w-5 h-5"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M13.2 2.5 5 13.4h5.6L9.8 21.5 18 10.6h-5.6l.8-8.1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+                </span>
+                <span class="font-semibold text-[#062A1C] text-sm text-balance leading-5 line-clamp-3">يمكن أضافتة إلي السهرات والتجمعات</span>
+              </div>
+              <div class="flex flex-col items-center gap-2 text-center">
+                <span class="place-items-center grid bg-interaction-base rounded-full text-cta size-11 shrink-0">
+                  <span class="w-5 h-5"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 3.2 5 5.8v5.4c0 4.2 2.9 7.6 7 9.6 4.1-2 7-5.4 7-9.6V5.8L12 3.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m9.2 11.8 2 2 3.6-3.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </span>
+                <span class="font-semibold text-[#062A1C] text-sm text-balance leading-5 line-clamp-3">مناسب لتسالي سريعة وسط اليوم</span>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap justify-between items-center gap-3 bg-interaction-base px-4 py-3 rounded-xl">
+              <span class="flex items-center gap-2 font-semibold text-primary text-sm">
+                <span class="place-items-center grid bg-primary rounded-full text-white size-5 text-xs">✓</span>
+                التوصيل خلال ساعتين في القاهرة الكبرى
+              </span>
+              <button type="button" data-open="location" class="font-semibold text-cta text-sm underline">تغيير المنطقة</button>
+            </div>
+
+            <div data-accordion>
+                <div class="accordion-item border-neutral-divider border-b is-open">
+                  <button type="button" class="accordion-trigger flex justify-between items-center gap-4 py-4 w-full text-start">
+                    <span class="font-bold text-[#062A1C] text-base">الفوائد</span>
+                    <span class="accordion-chevron text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  </button>
+                  <div class="accordion-panel">
+                    <div class="pb-4 text-neutral-800 text-sm leading-7"><div class="desc-rich"><strong>الوزن</strong> :
+<ul>
+ <li>60 جرام</li>
+</ul>
+<strong>الرائحة والطعم:</strong>
+<ul>
+ <li>تقدم هذه الوجبات الخفيفة البروتينية نكهة لذيذة ،عبارة عن مزيج مثالي من الطماطم المنعشة والنكهات الترابية للريحان.</li>
+</ul>
+ 
+
+<strong>طريقة الأستمتاع :</strong>
+<ul>
+ <li>يمكن أضافتة إلي السهرات والتجمعات</li>
+ <li>مناسب لتسالي سريعة وسط اليوم</li>
+ <li>مناسب للانش بوكس المدارس</li>
+ <li>مناسب لتسالي السفر</li>
+</ul></div></div>
+                  </div>
+                </div>
+              </div>
           </div>
         </div>
       </section>

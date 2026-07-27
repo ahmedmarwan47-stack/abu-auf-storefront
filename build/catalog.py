@@ -85,7 +85,14 @@ try:
     _govs = json.load(open(_BRANCHES_PATH, encoding="utf-8"))
     BRANCH_COUNT = sum(len(g.get("branches") or []) for g in _govs)
 except (OSError, AttributeError, TypeError, ValueError):
+    _govs = []
     BRANCH_COUNT = 0
+
+# The governorate groups themselves, for anything that needs the branches and
+# not just how many there are — the checkout store picker builds its tree from
+# this. Exposed here rather than re-opening the file per caller, so there is
+# one reader and one failure mode.
+BRANCH_GROUPS = _govs
 
 
 def e(s):

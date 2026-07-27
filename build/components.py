@@ -98,7 +98,46 @@ ICON = {
              '3 3 0 0 1-1.4-2.6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
              '<path d="M10 20v-4.5h4V20" stroke="currentColor" stroke-width="1.6" '
              'stroke-linejoin="round"/></svg>',
+    # Wrapper-driven like every other glyph here: w-full h-full + currentColor,
+    # so the caller's span sets the size. The copy that used to live as
+    # ICON_GIFT in pages/checkout.py carried its own `w-6 h-6` and fought its
+    # wrapper — see the icons trap in CLAUDE.md.
+    "gift": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+            '<path d="M20 12v9H4v-9M22 7H2v5h20V7ZM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7Z'
+            'M12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.7" '
+            'stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    "check": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+             '<path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" '
+             'stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    # Must stay identical to ICON.trash in scripts.js — the product page draws
+    # this one at build time and the cart rows draw that one at runtime, and
+    # they are the same control in the shopper's eyes.
+    "trash": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+             '<path d="M4 7h16M10 4h4M9 7v11m6-11v11M6 7l.8 12.1A2 2 0 0 0 8.8 21h6.4a2 2 0 0 0 2-1.9L18 7" '
+             'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" '
+             'stroke-linejoin="round"/></svg>',
+    # Same artwork as the account sidebar's wallet glyph in pages/_account.py,
+    # so the toggle on the cart and the page it refers to draw the same mark.
+    "wallet": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+              '<path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" '
+              'stroke="currentColor" stroke-width="1.7"/>'
+              '<path d="M16 12h3" stroke="currentColor" stroke-width="1.7" '
+              'stroke-linecap="round"/></svg>',
 }
+
+
+# The one source for the demo wallet balance. pages/_account.py reads this for
+# CUSTOMER["wallet"], and the cart/checkout toggle renders it into its own
+# data attribute, which scripts.js reads at click time. Defined here because
+# components is imported BY the pages, never the other way round, so this is
+# the lowest point both can see.
+#
+# It exists as a constant at all because the figure it replaced did NOT have
+# one: the old points banner defaulted to 100 in one place and was called with
+# 120 in another, and the cart and checkout spent months quoting different
+# balances. Demo state either way — there is no wallet endpoint, see
+# DESIGN-NOTES §1.
+WALLET_BALANCE = 1200
 
 
 # --------------------------------------------------------------------------
@@ -338,7 +377,7 @@ def size_chips(p):
             </div>"""
 
 
-def qty_stepper():
+def qty_stepper(cart_bound=False):
     """
     The reference Ahmed supplied draws the stepper as a padded container with
     the buttons as their own bordered shapes floating inside it — the padding
@@ -347,10 +386,46 @@ def qty_stepper():
     fill (it is the "more" affordance, the louder of the two), the − stays
     quiet on a hairline. Buttons stay size-11: the reference's ~32px buttons
     would regress the audited 44px tap-target floor.
+
+    `cart_bound=True` adds `data-cart-bound`, which changes who owns the
+    number. A plain stepper owns its own count and hands it to whatever reads
+    it; a cart-bound one writes straight to the store and reads the figure back
+    from it — + is what puts the product in the basket, with no separate "add"
+    press. initSteppers skips these deliberately: they are driven by the
+    delegated handler in the cart section instead, so there is exactly one
+    writer. Used by the product page.
+
+    **It rests at 1, not 0** (Ahmed, 2026-07-26). 0 was the literal reading of
+    "mirror the cart line", and it was right about the data and wrong about the
+    page: a product page opens on a shopper who has not decided anything yet,
+    and a zero there reads as out of stock.
+
+    That leaves two states drawn with the same digit — "1, not in the basket"
+    and "1, in the basket" — so the − button carries the difference, and it is
+    the only thing that needs to:
+
+        not in basket   − is disabled and dimmed, minus glyph
+        1 in basket     − is live, trash glyph, error ink
+        2+ in basket    − is live, minus glyph
+
+    So the first + does not move the digit; it activates the −, throws the ghost
+    to the cart and ticks the badge. The number is honest in both states and the
+    press is still visibly answered — see syncBuyBlock in scripts.js.
     """
+    bound = " data-cart-bound" if cart_bound else ""
+    # Grey trash, not error red (Ahmed, 2026-07-26). Red reads as a warning,
+    # and removing one line from a basket is not one — it is ordinary editing,
+    # and reversible in a tap. neutral.secondary is the project's grey and
+    # measures 6.39:1 on white, so it stays AA.
+    dec_inner = (
+        f"""<span class="w-5 h-5" data-line-dec-minus>{ICON['minus']}</span>"""
+        f"""<span class="w-5 h-5 text-neutral-secondary" data-line-dec-trash hidden>{ICON['trash']}</span>"""
+        if cart_bound else f"""<span class="w-5 h-5">{ICON['minus']}</span>"""
+    )
+    dec_attr = " data-line-dec" if cart_bound else ""
     return f"""
-              <div data-stepper class="inline-flex items-center gap-1 bg-white p-1 border border-neutral-divider rounded-full">
-                <button type="button" data-step="-1" class="place-items-center grid border border-neutral-divider hover:bg-interaction-base rounded-full size-11 text-[#062A1C] transition-colors" aria-label="إنقاص"><span class="w-5 h-5">{ICON['minus']}</span></button>
+              <div data-stepper{bound} class="inline-flex items-center gap-1 bg-white p-1 border border-neutral-divider rounded-full">
+                <button type="button" data-step="-1"{dec_attr} class="place-items-center grid border border-neutral-divider hover:bg-interaction-base rounded-full size-11 text-[#062A1C] transition-colors" aria-label="إنقاص">{dec_inner}</button>
                 <span data-qty class="min-w-[2.5ch] font-bold text-[#062A1C] text-base text-center latin">1</span>
                 <button type="button" data-step="1" class="place-items-center grid bg-cta hover:bg-cta-hover rounded-full size-11 text-white transition-colors" aria-label="زيادة"><span class="w-5 h-5">{ICON['plus']}</span></button>
               </div>"""
@@ -423,11 +498,29 @@ def product_gallery(images, alt):
             </div>"""
 
     return f"""
-          <!-- DOM order puts the info column first so RTL lands it in the right
-               column at lg. The Figma mobile product frame (918:34326) leads
-               with the media, so pull it above the info below lg — visually
-               only, leaving the desktop column order untouched. -->
-          <div data-gallery class="flex md:flex-row flex-col-reverse gap-4 order-first lg:order-none min-w-0">{strip}
+          <!-- The gallery is FIRST in the DOM (see product.py), so it needs no
+               `order-*` override any more: it leads on mobile, which is what the
+               Figma mobile frame (918:34326) asks for, and at lg it takes the
+               RTL-right / LTR-left column. The old `order-first lg:order-none`
+               pair existed only to pull it above an info column that used to
+               come first; both are gone rather than left as no-ops.
+
+               Sticky from lg up. `top-[60px]` is not a guess — it is the same
+               parking spot `[data-sticky-actions]` uses in styles.css: the nav
+               fixes at top:0 and is 48px tall, plus a 12px gap. Reuse that
+               number rather than a second one, or the gallery and the pill sit
+               on subtly different lines. `self-start` is belt-and-braces next
+               to the grid's `items-start`; a stretched grid item is exactly as
+               tall as its row and can never scroll within it, so sticky would
+               resolve to no movement at all.
+
+               Below lg the columns stack and there is nothing to scroll past,
+               so sticky is scoped to lg and up.
+
+               This only works because <main> is `overflow-x-clip` and not
+               `overflow-x-hidden` — see page() for why. -->
+          <div data-gallery class="flex md:flex-row flex-col-reverse gap-4 min-w-0
+                                   lg:self-start lg:sticky lg:top-[60px]">{strip}
             <!-- The plate keeps its own padding for the cut-out main shot;
                  scripts.js swaps data-fill to "cover" for the photographs,
                  which drops the padding and lets them bleed to the rounded
@@ -735,7 +828,219 @@ def select_field(label, name, options, required=False, wrap=""):
                 </div>"""
 
 
-def radio_card(name, value, heading, sub="", icon="", checked=False, accent=False):
+GIFT_TERMS = [
+    "عند الإرسال كهدية، لن تظهر الأسعار في الفاتورة.",
+    "سيتم توصيل طلبك إلى العنوان المحدد.",
+    "الدفع عند الاستلام غير متاح لطلبات الهدايا.",
+]
+
+
+def gift_toggle():
+    """
+    Gift order — ONE card with a switch, replacing the two-card
+    normal/gift radio pair (Ahmed, 2026-07-26), and moved to sit after
+    بيانات العميل rather than opening the form.
+
+    Why one card. "Normal order" was never a choice anyone made: it is the
+    default state of a shopping basket, so a card asking a shopper to select it
+    spent a full row of the form confirming that nothing unusual is happening.
+    A gift is the only real decision on that row, and a decision with one
+    option is a switch.
+
+    Why after the customer's own details. Gifting asks *who is receiving this*,
+    which only makes sense once *who is ordering* has been answered. Opening
+    the form with it put the recipient's name above the buyer's own.
+
+    The terms are stated on the card because two of the three change what the
+    shopper gets — no prices on the invoice, no cash on delivery — and finding
+    that out at the payment step is finding out too late. They sit OUTSIDE the
+    collapsing panel and are always visible: they describe what turning the
+    switch on will do, so hiding them behind it would mean the consequences
+    could only be read after accepting them. Only the recipient fields
+    collapse, being the part that genuinely does not exist until you gift.
+
+    The recipient fields are NOT `required`. The panel is collapsed when gifting
+    is off, and a required field inside a collapsed panel blocks submission with
+    a browser message pointing at something the shopper cannot see. scripts.js
+    adds and removes `required` with the toggle instead.
+    """
+    terms = "".join(f"""
+                  <li class="flex items-start gap-2">
+                    <span class="mt-0.5 text-accent-green shrink-0 w-4 h-4">{ICON['check']}</span>
+                    <span>{t}</span>
+                  </li>""" for t in GIFT_TERMS)
+    return f"""
+              <!-- Order matters: input, then label, then panel, all SIBLINGS.
+                   The CSS opens the panel with `[data-gift-switch]:checked ~
+                   .gift-panel`, and `~` only reaches siblings — with the input
+                   nested inside the label (the shape the wallet toggle uses)
+                   the panel is not a sibling of it and never opened.
+
+                   The label therefore points at the input by `for`, which also
+                   keeps the recipient fields out of the label's own subtree: a
+                   form control inside a <label> that labels a DIFFERENT control
+                   gets claimed by it, so clicking the recipient's name would
+                   have toggled gifting off. -->
+              <div class="bg-white p-5 border border-neutral-divider rounded-xl">
+                <input type="checkbox" id="gift-order" data-switch data-gift-switch class="sr-only" />
+                <label for="gift-order" class="flex items-center gap-3 cursor-pointer">
+                  <span class="place-items-center grid bg-accent-green/10 rounded-full text-accent-green size-10 shrink-0">
+                    <span class="w-5 h-5">{ICON['gift']}</span>
+                  </span>
+                  <span class="flex flex-col flex-1 gap-0.5 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-base">إهداء الطلب</span>
+                    <span class="text-neutral-secondary text-xs leading-5">أرسل الطلب كهدية لشخص تحبه</span>
+                  </span>
+                  <span class="switch shrink-0" aria-hidden="true"><span class="switch__knob"></span></span>
+                </label>
+                <!-- The terms sit OUTSIDE the collapsing panel, so they are
+                     readable with the switch off (Ahmed, 2026-07-26). They
+                     describe what turning it ON will do — no prices on the
+                     invoice, no cash on delivery — so putting them behind it
+                     meant you could only read the consequences after accepting
+                     them. Only the recipient fields collapse, because those are
+                     the part that genuinely does not exist until you gift. -->
+                <ul class="flex flex-col gap-2 mt-4 pt-4 border-neutral-divider border-t text-neutral-secondary text-xs leading-5">{terms}
+                </ul>
+                <div class="gift-panel" data-gift-panel aria-hidden="true">
+                  <div>
+                    <div class="flex flex-col gap-4 mt-4">
+                      <p class="font-semibold text-[#062A1C] text-sm">بيانات المستلم</p>
+                      <div class="gap-4 grid sm:grid-cols-2">
+{field("اسم المستلم", "recipient-name")}
+{field("رقم هاتف المستلم", "recipient-phone", "tel")}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>"""
+
+
+def checkout_summary(lines_html, subtotal, total, delivery_fee):
+    """
+    The order summary shared by checkout and payment.
+
+    It lives here rather than in either page because those two screens must
+    never be able to print different numbers for the same basket — which is
+    exactly what happened when the cart page and the drawer each owned a copy
+    of the delivery fee. Same hooks on both (`data-cart-lines`,
+    `data-cart-subtotal`, `data-cart-discount`, `data-cart-total`), so
+    renderCart in scripts.js remains the single renderer for all of them.
+
+    The build-time figures are a pre-boot placeholder only: `data-cart-static`
+    rows are dropped and every total is overwritten on the first `cart:change`.
+    """
+    return f"""
+          <aside class="lg:top-4 lg:sticky flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px] order-2 lg:order-none min-w-0">
+            <div class="flex justify-between items-center">
+              <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
+              <a href="cart.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">تعديل</a>
+            </div>
+            <div class="flex flex-col gap-4" data-cart-lines>{lines_html}
+            </div>
+{wallet_toggle()}
+{promo_field()}
+            <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
+              <div class="flex justify-between">
+                <span class="text-neutral-secondary">مصاريف التوصيل</span>
+                <span class="font-semibold text-[#062A1C] latin">EGP {money(delivery_fee)}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-neutral-secondary">الإجمالي</span>
+                <span class="font-semibold text-[#062A1C] latin" data-cart-subtotal>EGP {money(subtotal)}</span>
+              </div>
+              <div class="flex justify-between items-center" data-cart-discount-row hidden>
+                <span class="text-neutral-secondary">خصم المحفظة</span>
+                <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center pt-3 border-neutral-divider border-t">
+              <span class="font-bold text-[#062A1C] text-base">الإجمالي</span>
+              <span class="font-bold text-[#062A1C] text-2xl latin" data-cart-total>EGP {money(total)}</span>
+            </div>
+          </aside>"""
+
+
+def checkout_steps(current):
+    """
+    The four-step breadcrumb across checkout and payment. `current` is the
+    0-based index of the active step.
+
+    Shared for the same reason as the summary: two pages drawing their own
+    copy is how a stepper ends up highlighting step 2 on the step-3 page.
+    """
+    sep = '<span aria-hidden="true" class="text-neutral-outline">/</span>'
+    parts = []
+    for i, s in enumerate(CHECKOUT_STEPS):
+        is_now = i == current
+        # Passed steps read as done rather than as inactive — a shopper on step
+        # 3 should be able to see that 1 and 2 are behind them.
+        done = i < current
+        # #E9F3E6 opaque, NOT `bg-accent-green/15`. The alpha version renders
+        # the same to the eye (#346853 on it measures ~5.4:1) but the sweep's
+        # `bgOf()` treats any non-zero alpha as an opaque colour, so it compared
+        # the tick against its own ink and reported 1.00:1 — three standing
+        # false failures against a baseline whose whole value is that it reads
+        # zero. An opaque tint is legible to both. It is also the tint the
+        # discount chip and the wallet card already use, so "good news" is one
+        # colour across the checkout rather than two near-identical greens.
+        dot = ("bg-cta text-white" if is_now
+               else "bg-[#E9F3E6] text-accent-green" if done
+               else "bg-interaction-base text-neutral-secondary")
+        text = ("font-semibold text-[#062A1C]" if is_now
+                else "text-accent-green" if done
+                else "text-neutral-secondary")
+        tail = "" if i == len(CHECKOUT_STEPS) - 1 else sep
+        mark = "✓" if done else str(i + 1)
+        parts.append(
+            f'<span class="flex items-center gap-2">'
+            f'<span class="place-items-center grid rounded-full size-5 text-xs latin {dot}">{mark}</span>'
+            f'<span class="{text} text-sm">{e(s)}</span>{tail}</span>'
+        )
+    return "".join(parts)
+
+
+CHECKOUT_STEPS = ["سلة التسوق", "بيانات العميل", "طريقة الدفع", "تأكيد عملية الشراء"]
+
+
+def promo_field():
+    """
+    Promo code — the control that replaced a dead link.
+
+    `هل لديك برومو كود؟` was a <button> with no handler on both the cart and
+    checkout: it looked live and did nothing, which is the exact failure class
+    this project has shipped four times already (HANDOFF §4 items 10, 11, 14,
+    15). It now opens a field and applies a real discount through renderCart.
+
+    NOT a <form>. On checkout this sits inside the place-order form, and a
+    nested form is invalid HTML that browsers silently un-nest — the Apply
+    button would submit the order. A button plus a keydown handler for Enter
+    gives the same feel with none of that.
+
+    The only code is DISCOUNT10, because that is the one the site's own
+    announcement bar advertises. Inventing a second would be inventing an
+    offer on the client's behalf.
+    """
+    return f"""
+              <div data-promo class="flex flex-col gap-2">
+                <button type="button" data-promo-open class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
+                  هل لديك برومو كود؟
+                </button>
+                <div data-promo-box hidden class="flex flex-col gap-2">
+                  <div class="flex items-center gap-2">
+                    <input type="text" data-promo-input inputmode="latin" autocomplete="off"
+                           placeholder="{e('اكتب الكود')}"
+                           class="flex-1 bg-white px-3 py-2 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none min-w-0 text-[#062A1C] text-sm transition-colors latin" />
+                    <button type="button" data-promo-apply
+                            class="bg-cta hover:bg-cta-hover px-4 rounded-full min-h-11 font-semibold text-white text-sm whitespace-nowrap transition-colors">تطبيق</button>
+                  </div>
+                  <p data-promo-msg hidden class="text-xs leading-5"></p>
+                </div>
+              </div>"""
+
+
+def radio_card(name, value, heading, sub="", icon="", checked=False, accent=False,
+               blocked_note="", meta_key="", meta_prompt="", opens=""):
     """Big selectable card — order type, delivery time, delivery method.
 
     The trailing glyph is a real radio indicator (`.radio-dot`, styles.css),
@@ -759,6 +1064,30 @@ def radio_card(name, value, heading, sub="", icon="", checked=False, accent=Fals
     """
     sub_html = f'<span class="text-neutral-secondary text-xs">{e(sub)}</span>' if sub else ""
     icon_html = f'<span class="text-cta shrink-0">{icon}</span>'
+    # `blocked_note` renders in the RADIO DOT's place, not under the card
+    # (Ahmed, 2026-07-26): while the option is unavailable there is nothing to
+    # indicate the state of, so the indicator is exactly the space the reason
+    # should occupy. Which of the two shows is decided entirely by
+    # `.option-blocked` on an ancestor (styles.css) — no JS toggles it, so the
+    # dot and the note can never both be visible.
+    note_html = (
+        f'<span class="blocked-note shrink-0 text-neutral-secondary text-xs text-end leading-4">{e(blocked_note)}</span>'
+        if blocked_note else ""
+    )
+    # The right-aligned status text (skill §3). Two states, and the distinction
+    # carries real information: `--prompt` means "this choice is not finished,
+    # press it" and is painted as a call to action; once a picker confirms, JS
+    # writes the answer here and drops the modifier, so it becomes plain
+    # resolved text. A row reading "اختر الفرع" and a row reading "فرع الزهور"
+    # are then visibly different states rather than the same grey line.
+    meta_html = (
+        f'<span data-opt-meta="{e(meta_key)}" class="opt-meta is-prompt shrink-0 text-xs text-end leading-4">{e(meta_prompt)}</span>'
+        if meta_key else ""
+    )
+    # `data-opens` makes selecting the row ALSO open its picker, so choosing
+    # "pick up from a store" and choosing WHICH store are one gesture rather
+    # than a selection followed by a hunt for the next control.
+    opens_attr = f' data-opens="{e(opens)}"' if opens else ""
     return f"""
                 <!-- min-w-0 on BOTH nested flex children. A flex item's
                      min-width is `auto`, so without these the label column
@@ -771,17 +1100,17 @@ def radio_card(name, value, heading, sub="", icon="", checked=False, accent=Fals
                      Arabic never showed it: "أرسل الطلب كهدية لشخص تحبه" is
                      simply shorter than "Send this order as a gift to someone
                      you love". Latent until the site actually translated. -->
-                <label class="flex-1 min-w-0 cursor-pointer">
+                <label class="flex-1 min-w-0 cursor-pointer"{opens_attr}>
                   <input type="radio" name="{e(name)}" value="{e(value)}" class="peer sr-only"{' checked' if checked else ''} />
                   <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors h-full{' radio-card-accent' if accent else ''}">
-                    <span class="flex items-center gap-3 min-w-0">
+                    <span class="radio-card__body flex items-center gap-3 min-w-0">
                       {icon_html}
                       <span class="flex flex-col min-w-0">
                         <span class="font-semibold text-[#062A1C] text-base">{e(heading)}</span>
                         {sub_html}
                       </span>
                     </span>
-                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                    {meta_html}<span class="radio-dot shrink-0" aria-hidden="true"></span>{note_html}
                   </span>
                 </label>"""
 
@@ -816,66 +1145,76 @@ def cart_line(p, qty=1, weight="250 جم"):
               </article>"""
 
 
-def points_banner(points=100, discount=100):
+def wallet_toggle(balance=WALLET_BALANCE):
     """
-    Live control, not decoration: scripts.js applies `discount` to the cart
-    totals when the button is pressed and stores it under abuauf:pointsDiscount,
-    so it survives the trip from cart to checkout. Pressing again cancels it.
-    Defaults are 100/100 so the cart and checkout describe the SAME wallet —
-    they used to say 120 points on one page and 100 on the other.
+    "Pay from your wallet" — a switch, replacing the points banner (Ahmed,
+    2026-07-26: simpler, a toggle, and the WALLET balance rather than points).
 
-    The points themselves are demo state (no wallet endpoint exists) — see
-    DESIGN-NOTES. The button had no handler at all until Ahmed pressed it.
+    Why the balance and not the points. The banner spoke in two currencies at
+    once — "you have 100 points, so you can take EGP 100 off" — which asks the
+    shopper to hold a conversion rate in their head to understand an offer.
+    The wallet is already denominated in the same unit as the bill, so the
+    switch can just say what it will do. The points balance has no endpoint
+    behind it either way (DESIGN-NOTES §1); this at least stops the UI teaching
+    a made-up exchange rate.
+
+    Why a label + checkbox and never a button. On checkout this sits inside the
+    place-order form, where a <button> with no explicit type submits it — the
+    control would place the order. A checkbox is also the honest semantic: this
+    is a persistent on/off choice, not an action, and it gets keyboard support,
+    the right role and the right announced state for free.
+
+    Two states, one line of copy each, and the card is a FIXED height (the
+    `wallet-toggle` class in styles.css) so flipping it cannot resize the
+    summary column. That is inherited from the banner this replaces, where the
+    idle copy was a line longer than the used copy and pressing the button
+    collapsed the block by 100px and shunted the whole summary up under the
+    cursor. Same trap, same remedy — reserve the taller state.
+
+    `balance` is written to a data attribute rather than baked into the copy
+    alone, because scripts.js reads the amount from there at click time.
     """
     return f"""
-            <div data-points-banner data-points-discount="{discount}" class="flex justify-between items-center gap-3 bg-accent-yellow p-4 rounded-xl">
-              <!-- The two states are STACKED in one grid cell, not shown and
-                   hidden in flow, and they swap on `invisible` rather than on
-                   the `hidden` attribute. Both therefore always occupy
-                   layout, so the banner is permanently as tall as its tallest
-                   state and does not resize when the button is pressed.
-
-                   That matters more than it sounds. In the 380px summary
-                   column this message wraps hard, and the idle copy is a line
-                   longer than the used copy — measured, the banner collapsed
-                   from 230px to 130px on press, jumping the entire order
-                   summary up 100px under the shopper's cursor. A min-height
-                   cannot fix that, because the height that needs reserving
-                   depends on where the text happens to wrap at that width.
-
-                   `visibility: hidden` also keeps the inactive copy out of
-                   the accessibility tree, so nothing reads both. -->
-              <span class="grid items-center" data-points-msg>
-                <!-- Two copies of the message, one per state, toggled by
-                     syncPointsUI. With one copy the banner kept promising
-                     "لديك 100 نقطة" AFTER the points were spent — the state
-                     changed under it and the words did not (Ahmed,
-                     2026-07-22). -->
-                <span class="col-start-1 row-start-1 font-semibold text-[#062A1C] text-sm leading-6" data-points-idle>
-                  لديك <span class="latin">{points}</span> نقطة في محفظتك<br />ويمكنك خصم <span class="latin">EGP {discount}</span>
-                </span>
-                <!-- One clause, not two. This used to end "وتم خصم EGP 100 من
-                     الإجمالي", which is word for word what the خصم النقاط row
-                     in the summary directly below already says — the same fact
-                     stated twice, two elements apart (Ahmed, 2026-07-22). The
-                     summary row is the one that stays: it is load-bearing
-                     arithmetic, the line that makes subtotal + delivery -
-                     discount reconcile to الإجمالي. What is left here is the
-                     only thing the summary does NOT say, which is what became
-                     of the wallet. -->
-                <span class="col-start-1 row-start-1 font-semibold text-[#062A1C] text-sm leading-6 invisible" data-points-used>
-                  استخدمت <span class="latin">{points}</span> نقطة من محفظتك
+            <!-- Light green, not the brand yellow it shipped as (Ahmed,
+                 2026-07-26). #E9F3E6 is already this project's "good news"
+                 tint — the discount chip in the summary directly below is drawn
+                 on it — so the toggle and the saving it produces now read as
+                 the same thought. Yellow is the PRICE colour here (every price
+                 chip on the site is accent-yellow), which put the wallet in the
+                 same visual family as the amounts it reduces. -->
+            <label data-wallet-toggle data-wallet-balance="{balance}"
+                   class="wallet-toggle flex items-center gap-3 bg-[#E9F3E6] p-4 rounded-xl cursor-pointer">
+              <span class="place-items-center grid bg-accent-green/10 rounded-full text-accent-green size-10 shrink-0">
+                <span class="w-5 h-5">{ICON['wallet']}</span>
+              </span>
+              <span class="flex flex-col flex-1 gap-0.5 min-w-0">
+                <span class="font-semibold text-[#062A1C] text-sm">الدفع من المحفظة</span>
+                <!-- Two copies, one per state, stacked in a single grid cell so
+                     the taller one reserves the height and the card cannot
+                     resize on toggle. `invisible` rather than the `hidden`
+                     attribute keeps both in flow while keeping the inactive one
+                     out of the accessibility tree, so nothing reads both. -->
+                <!-- The balance carries `accent-green` (#346853), the design
+                     system's own "Green Text" token, and NOT `success`
+                     (#16BB55): the bright one measures about 2.2:1 on this
+                     tint and fails AA outright, where #346853 measures 5.9:1.
+                     Success-coloured text that cannot be read is not a success
+                     signal. -->
+                <span class="grid">
+                  <span class="col-start-1 row-start-1 text-[#062A1C]/80 text-xs leading-5" data-wallet-idle>
+                    رصيدك <span class="font-bold text-accent-green latin">EGP {balance}</span>
+                  </span>
+                  <span class="col-start-1 row-start-1 font-semibold text-accent-green text-xs leading-5 invisible" data-wallet-used>
+                    تم الخصم من رصيدك
+                  </span>
                 </span>
               </span>
-              <!-- Tier is state-driven, off the same aria-pressed syncPointsUI
-                   already sets — applying is the primary action, taking the
-                   discount back is not, and a destructive-ish undo painted in
-                   full CTA green competes with اتمام الشراء further down the
-                   page. `.points-apply` in styles.css carries both tiers; the
-                   pressed selector is (0,2,0) so it outranks the bg-cta and
-                   text-white utilities here. -->
-              <button type="button" data-points-apply aria-pressed="false" class="points-apply bg-cta hover:bg-cta-hover px-4 py-2 rounded-full font-semibold text-white text-xs whitespace-nowrap transition-colors">خصم المبلغ</button>
-            </div>"""
+              <!-- The real control. sr-only rather than display:none so it
+                   stays focusable and announceable; the painted switch beside
+                   it is aria-hidden decoration driven off :checked. -->
+              <input type="checkbox" data-switch data-wallet-switch class="sr-only" />
+              <span class="switch shrink-0" aria-hidden="true"><span class="switch__knob"></span></span>
+            </label>"""
 
 
 def bundle_item(p, checked=True):
@@ -1180,10 +1519,24 @@ def _with_reveal(body):
     return _SECTION_OPEN.sub(r"<section data-reveal\1", body)
 
 
-def page(title_text, description, body, page_id, path, main_class="overflow-x-hidden"):
+def page(title_text, description, body, page_id, path, main_class="overflow-x-clip"):
     """
     Standard document shell. Header, footer and overlays are mount points
     filled at runtime by scripts.js, so chrome changes need no rebuild.
+
+    `overflow-x-clip`, NOT `overflow-x-hidden`. They clip identically, but
+    `hidden` on one axis forces the other to `auto`, which makes <main> a
+    scroll container — and a scroll container is what `position: sticky`
+    sticks to. Any sticky descendant then measures itself against a box that
+    never scrolls, so it silently does nothing: no error, no warning, the
+    element simply sits there. That is what blocked the sticky product gallery.
+    `clip` creates no scroll container and leaves the other axis visible, so
+    sticky resolves against the viewport as intended.
+
+    This is the same class of silent failure as the `[hidden]` and emit-order
+    traps in CLAUDE.md — the markup looked right and lost anyway. If a sticky
+    element ever "does nothing" here, walk its ancestors for an overflow that
+    is not `visible` or `clip` before touching the element itself.
     """
     body = _with_reveal(body)
     social = _social_meta(title_text, description, path)

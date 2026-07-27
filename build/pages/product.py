@@ -276,8 +276,18 @@ def _render(p):
       <section class="pt-6 pb-12">
         <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 max-w-[1536px]">
 
-          <!-- RTL start: details. data-product lets the cart store read this
-               product straight off the DOM, same as a product card. -->
+          <!-- Gallery FIRST in the DOM, so the media leads the reading order in
+               both directions: in RTL (the default) first means the RIGHT
+               column, in LTR the left one. Both are the side the shopper's eye
+               starts on, which is where the product photo belongs.
+               `items-start` on the grid above is load-bearing — it is what lets
+               the gallery be sticky without the column stretching to the full
+               row height and pinning it in place. -->
+          {product_gallery(p.get("images") or [p["image"]], title(p))}
+
+          <!-- Details second: the RTL-left / LTR-right column. data-product
+               lets the cart store read this product straight off the DOM, same
+               as a product card. -->
           <div class="flex flex-col gap-5 bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]"
                data-product data-id="{p.get('id', 0)}" data-name="{e(title(p))}"
                data-price="{p.get('sale') or p.get('price') or 0}" data-image="{e(p['image'])}">
@@ -306,15 +316,27 @@ def _render(p):
                     class="text-neutral-secondary text-sm latin"></span>
             </div>
 
+            <!-- The stepper IS the add control (Ahmed, 2026-07-26). There is
+                 no "add to cart" press any more: + puts the product in the
+                 basket, +/- move that line live, and - at 1 removes it. The
+                 counter therefore shows the CART's quantity and reads 0 when
+                 the product is not in it — a counter that "syncs directly"
+                 cannot sit at 1 while the basket holds none.
+
+                 The button beside it is اشتري الان: it opens the summary
+                 drawer to carry on, and adds one first if the basket is empty
+                 of this product, so pressing "buy now" always buys something.
+
+                 This is the second pass on this block. The first kept an
+                 "اضف الى السلة" button that committed the stepper's number;
+                 Ahmed's point is that if the counter is bound to the cart, the
+                 commit step has nothing left to do. -->
             <div class="flex items-center gap-3">
-{qty_stepper()}
-              <button type="button" data-add-to-cart class="flex-1 bg-cta hover:bg-cta-hover py-4 rounded-full font-semibold text-white text-base transition-colors">
-                اضف الى السلة
+{qty_stepper(cart_bound=True)}
+              <button type="button" data-buy-cta class="flex-1 bg-cta hover:bg-cta-hover py-4 rounded-full font-semibold text-white text-base transition-colors">
+                اشتري الان
               </button>
             </div>
-            <a href="checkout.html" class="py-3.5 border border-cta rounded-full font-semibold text-cta text-base text-center hover:bg-interaction-base transition-colors">
-              اشتري الان
-            </a>
 
             {trust_html}
 
@@ -328,10 +350,6 @@ def _render(p):
 
             {acc_html}
           </div>
-
-          <!-- RTL end: gallery. Real photography from the client's CDN —
-               `images` is filled by build/fetch_galleries.py. -->
-          {product_gallery(p.get("images") or [p["image"]], title(p))}
         </div>
       </section>
 {bundle_section}

@@ -5,24 +5,18 @@ Header and footer collapse to the minimal checkout variants automatically:
 scripts.js keys off data-page="checkout" via isCheckout().
 """
 from _geo import CAIRO_AREAS, GOVERNORATES
-from catalog import e, in_category, money
+import json
+
+from catalog import BRANCH_GROUPS, e, in_category, money
 from components import (
-    ICON, breadcrumb, field, page, points_banner, radio_card, select_field,
+    ICON, breadcrumb, checkout_steps, checkout_summary, field, gift_toggle, page,
+    radio_card, select_field,
 )
 
 SLUG = "checkout.html"
 
 DELIVERY_FEE = 30.0
 
-STEPS = ["سلة التسوق", "بيانات العميل", "طريقة الدفع", "تأكيد عملية الشراء"]
-
-ICON_GIFT = ('<svg viewBox="0 0 24 24" fill="none" class="w-6 h-6">'
-             '<path d="M20 12v9H4v-9M22 7H2v5h20V7ZM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7Z'
-             'M12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.7" '
-             'stroke-linecap="round" stroke-linejoin="round"/></svg>')
-ICON_BAG = ('<svg viewBox="0 0 24 24" fill="none" class="w-6 h-6">'
-            '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6ZM3 6h18M16 10a4 4 0 0 1-8 0" '
-            'stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>')
 ICON_CAL = ('<svg viewBox="0 0 24 24" fill="none" class="w-6 h-6">'
             '<rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/>'
             '<path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>')
@@ -39,23 +33,28 @@ def build():
     subtotal = sum(p["price"] for p in items)
     total = subtotal + DELIVERY_FEE
 
-    # Decorative separator — hidden from assistive tech (the steps are
-    # already separate elements) and toned up from #C6C6C6 (1.71:1).
-    SEP = '<span aria-hidden="true" class="text-neutral-outline">/</span>'
-    step_parts = []
-    for i, s in enumerate(STEPS):
-        current = i == 1
-        dot = ("bg-cta text-white" if current
-               else "bg-interaction-base text-neutral-secondary")
-        text = ("font-semibold text-[#062A1C]" if current
-                else "text-neutral-secondary")
-        sep = "" if i == len(STEPS) - 1 else SEP
-        step_parts.append(
-            f'<span class="flex items-center gap-2">'
-            f'<span class="place-items-center grid rounded-full size-5 text-xs latin {dot}">{i + 1}</span>'
-            f'<span class="{text} text-sm">{e(s)}</span>{sep}</span>'
-        )
-    steps_html = "".join(step_parts)
+    # The store picker's data, baked in at build time as JSON rather than
+    # fetched. Everything on this site except search is build-time data on
+    # purpose, so the pages keep working from file:// — see CLAUDE.md. Only
+    # checkout carries this payload; the other 30 pages have no store picker
+    # and should not pay for one.
+    #
+    # Governorate -> branch, NOT the skill's City -> Area -> branch: the
+    # client's `branches.json` has no area field on any of its 316 branches,
+    # so a third level would have to be invented. Two real levels beat three
+    # where one is made up. Addresses come along because a shopper choosing
+    # between four branches in one governorate needs to tell them apart, and
+    # `phone` is deliberately omitted — every one of the 316 is empty
+    # (DESIGN-NOTES §1).
+    store_tree = json.dumps(
+        [{"gov": g["gov"],
+          "branches": [{"t": b["title"], "a": b.get("address", "")}
+                       for b in g["branches"]]}
+         for g in BRANCH_GROUPS],
+        ensure_ascii=False, separators=(",", ":"),
+    )
+
+    steps_html = checkout_steps(1)
 
     # data-cart-static: server-rendered so the summary is never blank before
     # scripts.js boots, and dropped by renderCart on the first paint — the
@@ -73,8 +72,28 @@ def build():
                 </div>""" for p in items)
 
     body = f"""
+      <!-- application/json, not a JS assignment: the browser never parses or
+           executes it, so a stray quote in a branch name cannot break the
+           page, and scripts.js reads it with JSON.parse only when the picker
+           is first opened. -->
+      <script type="application/json" data-store-tree>{store_tree}</script>
       <section class="py-8">
-        <div class="items-start gap-10 grid grid-cols-1 lg:grid-cols-[1fr_380px] mx-auto px-4 max-w-[1536px]">
+        <!-- 1100px, NOT the site's 1536px container (Ahmed, 2026-07-26: the
+             form is far too wide). Checkout is the one page that is a form
+             rather than a shop window, and it inherited a container built for
+             product grids: at 1536 the summary takes its fixed 380 and the
+             form column is left with 1116px, so a two-up name row put each
+             field at ~540px. A 540px text input is not generous, it is hard to
+             use — the eye has to travel the whole width to find a 5-character
+             answer, and typography guidance puts a comfortable input at
+             roughly 45-75 characters.
+
+             1100 leaves the form ~680px and the same 380px summary beside it,
+             and `mx-auto` then centres the pair on the page rather than
+             stretching them across it. The header above spans both columns and
+             is inside this container, so it narrows and centres with them —
+             which is what makes the page read as one centred block. -->
+        <div class="items-start gap-10 grid grid-cols-1 lg:grid-cols-[1fr_380px] mx-auto px-4 max-w-[1100px]">
 
           <!-- Header is its own grid item spanning both columns, because the
                Figma mobile checkout (753:36339) puts the order summary directly
@@ -89,16 +108,6 @@ def build():
           <!-- RTL start: form -->
           <div class="flex flex-col gap-8 order-3 lg:order-none min-w-0">
             <form class="flex flex-col gap-8">
-              <fieldset class="flex flex-col gap-4">
-                <legend class="mb-3 font-bold text-[#062A1C] text-lg">نوع الطلب</legend>
-                <div class="flex sm:flex-row flex-col gap-4">
-{radio_card("order-type", "normal", "طلب عادي", "", ICON_BAG, checked=True)}
-<!-- The subtitle restates the option itself rather than promising a
-     wrapping service nobody at Abu Auf has signed off on. -->
-{radio_card("order-type", "gift", "إهداء الطلب", "أرسل الطلب كهدية لشخص تحبه", ICON_GIFT, accent=True)}
-                </div>
-              </fieldset>
-
               <fieldset class="flex flex-col gap-4">
                 <div class="flex flex-wrap justify-between items-center gap-2 mb-1">
                   <legend class="font-bold text-[#062A1C] text-lg">بيانات العميل</legend>
@@ -115,11 +124,18 @@ def build():
 {field("رقم الهاتف", "phone", "tel", required=True)}
               </fieldset>
 
+              <!-- Gifting sits AFTER the customer's own details: it asks who is
+                   receiving the order, which only makes sense once who is
+                   ordering has been answered. It replaced a normal/gift radio
+                   pair at the top of the form — see gift_toggle(). -->
+{gift_toggle()}
+
               <fieldset class="flex flex-col gap-4">
                 <legend class="mb-3 font-bold text-[#062A1C] text-lg">وقت التوصيل</legend>
                 <div class="flex sm:flex-row flex-col gap-4">
 {radio_card("delivery-time", "now", "اليوم", "في غضون 60 دقيقة", ICON_CAL, checked=True)}
-{radio_card("delivery-time", "later", "أختار تاريخ", "حدد اليوم والوقت المناسب", ICON_CAL)}
+{radio_card("delivery-time", "later", "أختار تاريخ", "", ICON_CAL,
+            meta_key="later", meta_prompt="حدد اليوم والوقت", opens="schedule")}
                 </div>
               </fieldset>
 
@@ -127,7 +143,18 @@ def build():
                 <legend class="mb-3 font-bold text-[#062A1C] text-lg">طريقة التوصيل</legend>
                 <div class="flex sm:flex-row flex-col gap-4">
 {radio_card("delivery-method", "delivery", "توصيل", "بإضافة مصاريف اضافية", ICON_TRUCK, checked=True)}
-{radio_card("delivery-method", "pickup", "الاستلام من المتجر", "", ICON_STORE)}
+                  <!-- Pickup is ruled out by a gift order — the whole point is
+                       that the recipient receives it, so collecting it yourself
+                       is a contradiction. It stays in the layout, dimmed, with
+                       the reason replacing its radio dot: removing the card
+                       would leave the shopper hunting for an option that
+                       silently vanished. scripts.js puts `.option-blocked` on
+                       [data-pickup-option] and styles.css does the swap. -->
+                  <div class="flex flex-1 min-w-0" data-pickup-option>
+{radio_card("delivery-method", "pickup", "الاستلام من المتجر", "", ICON_STORE,
+            blocked_note="غير متاح لطلبات الهدايا",
+            meta_key="pickup", meta_prompt="اختر الفرع", opens="storepicker")}
+                  </div>
                 </div>
               </fieldset>
 
@@ -162,45 +189,13 @@ def build():
                    below-minimum basket, exactly as it already blocked the cart
                    page's own CTA. Without it checkout was the one place you
                    could carry an empty basket through to the thank-you page. -->
-              <a href="thank-you.html" data-cart-checkout class="bg-cta hover:bg-cta-hover py-4 rounded-full w-full font-semibold text-white text-base text-center transition-colors">
+              <a href="payment.html" data-cart-checkout class="bg-cta hover:bg-cta-hover py-4 rounded-full w-full font-semibold text-white text-base text-center transition-colors">
                 أكمل إلى الدفع
               </a>
             </form>
           </div>
 
-          <!-- RTL end: summary -->
-          <aside class="lg:top-4 lg:sticky flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px] order-2 lg:order-none min-w-0">
-            <div class="flex justify-between items-center">
-              <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
-              <a href="cart.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">تعديل</a>
-            </div>
-            <div class="flex flex-col gap-4" data-cart-lines>{summary_lines}
-            </div>
-{points_banner(100, 100)}
-            <button type="button" class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
-              هل لديك برومو كود؟
-            </button>
-            <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
-              <div class="flex justify-between">
-                <span class="text-neutral-secondary">مصاريف التوصيل</span>
-                <span class="font-semibold text-[#062A1C] latin">EGP {money(DELIVERY_FEE)}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-neutral-secondary">الإجمالي</span>
-                <span class="font-semibold text-[#062A1C] latin" data-cart-subtotal>EGP {money(subtotal)}</span>
-              </div>
-              <!-- Same hooks as the cart page, so one renderer owns both and
-                   the two pages cannot print different numbers. -->
-              <div class="flex justify-between items-center" data-cart-discount-row hidden>
-                <span class="text-neutral-secondary">خصم النقاط</span>
-                <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
-              </div>
-            </div>
-            <div class="flex justify-between items-center pt-3 border-neutral-divider border-t">
-              <span class="font-bold text-[#062A1C] text-base">الإجمالي</span>
-              <span class="font-bold text-[#062A1C] text-2xl latin" data-cart-total>EGP {money(total)}</span>
-            </div>
-          </aside>
+{checkout_summary(summary_lines, subtotal, total, DELIVERY_FEE)}
         </div>
       </section>"""
 
