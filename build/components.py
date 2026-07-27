@@ -229,20 +229,35 @@ _SORT_ICON = ('<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden=
               'stroke="currentColor" stroke-width="1.7" stroke-linecap="round" '
               'stroke-linejoin="round"/></svg>')
 
+# Down chevron for the sort pill — wrapper-driven (no size on the svg), so the
+# w-3.5 span in sort_select owns its scale. Signals "this opens a menu".
+_SORT_CHEVRON = ('<svg viewBox="0 0 24 24" fill="none" class="w-full h-full" '
+                 'aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" '
+                 'stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+
 
 def sort_select(options, label="ترتيب حسب"):
     """Sort control.
 
     The mobile Collection frame (350:17805) shows this bare — a sort glyph and
-    the current value, no chrome and no 'ترتيب حسب' prefix. The desktop frame
-    keeps the outlined pill with its label, so the chrome is xl-only.
+    the current value, no chrome and no 'ترتيب حسب' prefix. Desktop keeps that
+    minimal content and only adds the outlined pill around it (Ahmed,
+    2026-07-27): the old desktop variant carried the full 'ترتيب حسب' prefix
+    AND a native <select> (its own arrow, its own border inside the pill's
+    border), which was wide enough to crowd the chip row beside it. Now both
+    breakpoints read `↕ <value> ⌄`; only the pill chrome is xl-only.
+
+    The chevron is drawn here, not by the browser: `appearance-none` on both
+    breakpoints drops the native arrow so the glyph is consistent and sits
+    inside the pill rather than at the select's own edge. The label survives as
+    `aria-label` — the sort glyph and chevron carry the meaning visually.
     """
     opts = "".join(f'<option value="{e(v)}">{e(t)}</option>' for v, t in options)
     return f"""
-            <label class="inline-flex items-center gap-2 xl:bg-white px-0 xl:px-4 py-2 border border-transparent xl:border-neutral-divider rounded-full shrink-0">
-              <span class="xl:hidden text-cta">{_SORT_ICON}</span>
-              <span class="hidden xl:inline text-neutral-secondary text-sm">{e(label)}</span>
-              <select class="select-sort bg-transparent font-semibold text-[#062A1C] text-sm outline-none cursor-pointer appearance-none xl:appearance-auto border-0 xl:border xl:border-neutral-divider">{opts}</select>
+            <label class="inline-flex items-center gap-2 xl:bg-white px-0 xl:px-4 py-2 border border-transparent xl:border-neutral-divider rounded-full shrink-0" aria-label="{e(label)}">
+              <span class="text-cta shrink-0">{_SORT_ICON}</span>
+              <select class="select-sort bg-transparent font-semibold text-[#062A1C] text-sm outline-none cursor-pointer appearance-none border-0">{opts}</select>
+              <span class="text-neutral-secondary w-3.5 h-3.5 shrink-0 pointer-events-none">{_SORT_CHEVRON}</span>
             </label>"""
 
 

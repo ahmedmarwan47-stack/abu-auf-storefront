@@ -1967,8 +1967,23 @@ input:checked + .radio-card-accent {
   box-shadow: 0 0 0 2px #ffffff;
 }
 
-select.select-sort:focus-visible,
-input.search-row__input:focus-visible {
+/* The site search field is `type=search` for the semantics, but WebKit/iOS
+   paint that with their own rounded field border and a native "×" clear
+   button — off-brand chrome that hugged the input (icon and close sitting
+   outside it) and duplicated the modal's own close. Reset it so the only
+   focus indicator is the .search-row ring above. Chromium desktop never drew
+   this, which is why it only showed on iOS. */
+[data-search-input] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+[data-search-input]::-webkit-search-cancel-button,
+[data-search-input]::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+select.select-sort:focus-visible {
   outline: 2px solid #163300;
   outline-offset: 2px;
   border-radius: 6px;
