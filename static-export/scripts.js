@@ -4767,6 +4767,120 @@
   }
 
   /* ---------------------------------------------------------------
+     Custom sort dropdown (desktop)
+
+     A native <select> stays the source of truth, the mobile control (the OS
+     picker beats a popover on a phone) and the no-JS fallback — see
+     sort_select() in components.py. On desktop this hides it and drives a
+     styled listbox that writes the choice straight back to the select and
+     fires `change`, so initListing's sort wiring is untouched.
+
+     The option labels are rendered at build time in Arabic, so
+     translateDocument() — which runs BEFORE kInit on a language switch — keeps
+     both the native <option>s and these rows translated. We only re-sync the
+     trigger's own label text, on every kInit, from the already-translated row.
+     --------------------------------------------------------------- */
+  function initFancySelect(scope) {
+    scope.querySelectorAll("[data-fancy-select]").forEach((box) => {
+      const select = box.querySelector("select");
+      const fallback = box.querySelector("[data-fancy-fallback]");
+      const ui = box.querySelector("[data-fancy-ui]");
+      const trigger = box.querySelector("[data-fancy-trigger]");
+      const pop = box.querySelector("[data-fancy-pop]");
+      const label = box.querySelector("[data-fancy-label]");
+      const items = [...box.querySelectorAll("[data-fancy-opt]")];
+      if (!select || !ui || !trigger || !pop || !label || !items.length) return;
+
+      // Trigger label + selected marks, read from the (already translated)
+      // rows. Runs on every kInit, so a language switch and a pick made through
+      // the native mobile control both land here.
+      const sync = () => {
+        const active =
+          items.find((li) => li.dataset.value === select.value) || items[0];
+        label.textContent = active.querySelector("[data-opt-text]").textContent;
+        items.forEach((li) =>
+          li.setAttribute("aria-selected", li === active ? "true" : "false"),
+        );
+      };
+
+      if (box.dataset.fancyReady) {
+        sync();
+        return;
+      }
+      box.dataset.fancyReady = "1";
+
+      // Reveal the custom UI on desktop only; drop the native select from the
+      // a11y tree there (this listbox replaces it) but keep it functional.
+      fallback.classList.add("xl:hidden");
+      ui.classList.add("xl:block");
+      select.setAttribute("aria-hidden", "true");
+      select.tabIndex = -1;
+
+      const isOpen = () => !pop.classList.contains("hidden");
+      function onOutside(e) {
+        if (!box.contains(e.target)) close(false);
+      }
+      const open = () => {
+        pop.classList.remove("hidden");
+        trigger.setAttribute("aria-expanded", "true");
+        (
+          items.find((li) => li.getAttribute("aria-selected") === "true") ||
+          items[0]
+        ).focus();
+        document.addEventListener("pointerdown", onOutside, true);
+      };
+      const close = (focusTrigger) => {
+        pop.classList.add("hidden");
+        trigger.setAttribute("aria-expanded", "false");
+        document.removeEventListener("pointerdown", onOutside, true);
+        if (focusTrigger) trigger.focus();
+      };
+      const choose = (li) => {
+        if (select.value !== li.dataset.value) {
+          select.value = li.dataset.value;
+          select.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+        sync();
+        close(true);
+      };
+
+      trigger.addEventListener("click", () =>
+        isOpen() ? close(false) : open(),
+      );
+      trigger.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          open();
+        }
+      });
+      items.forEach((li, i) => {
+        li.tabIndex = -1;
+        li.addEventListener("click", () => choose(li));
+        li.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            choose(li);
+          } else if (e.key === "ArrowDown") {
+            e.preventDefault();
+            (items[i + 1] || items[0]).focus();
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            (items[i - 1] || items[items.length - 1]).focus();
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            close(true);
+          } else if (e.key === "Tab") {
+            close(false);
+          }
+        });
+      });
+
+      select.addEventListener("change", sync);
+      sync();
+    });
+  }
+
+  /* ---------------------------------------------------------------
      Order notes, referral copy, addresses
 
      Three controls that shipped as dead markup and now do what they say
@@ -5009,6 +5123,7 @@
     initDemoForms(scope);
     initPasswordReveals(scope);
     initListing(scope);
+    initFancySelect(scope);
     initReveal(scope);
   };
 

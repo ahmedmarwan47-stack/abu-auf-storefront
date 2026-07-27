@@ -1983,6 +1983,16 @@ input:checked + .radio-card-accent {
   appearance: none;
 }
 
+/* Custom sort dropdown (initFancySelect). The check marks the selected row;
+   unselected rows keep the glyph's slot (opacity, not display) so the labels
+   never shift as selection moves. */
+[data-fancy-check] {
+  opacity: 0;
+}
+[data-fancy-opt][aria-selected="true"] [data-fancy-check] {
+  opacity: 1;
+}
+
 select.select-sort:focus-visible {
   outline: 2px solid #163300;
   outline-offset: 2px;

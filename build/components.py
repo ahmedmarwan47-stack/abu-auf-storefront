@@ -253,12 +253,44 @@ def sort_select(options, label="ترتيب حسب"):
     `aria-label` — the sort glyph and chevron carry the meaning visually.
     """
     opts = "".join(f'<option value="{e(v)}">{e(t)}</option>' for v, t in options)
+    first_text = e(options[0][1]) if options else ""
+    # Custom-dropdown option rows, rendered at build time so translateDocument
+    # translates their labels in place (same Arabic keys as the native
+    # <option>s). initFancySelect() in scripts.js only wires behaviour.
+    li = "".join(f"""
+                <li role="option" data-fancy-opt data-value="{e(v)}" aria-selected="{'true' if i == 0 else 'false'}"
+                    class="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer text-sm font-medium text-[#062A1C] hover:bg-interaction-base focus-visible:bg-interaction-base focus:outline-none transition-colors">
+                  <span class="w-4 h-4 shrink-0 text-cta" data-fancy-check>{ICON['check']}</span>
+                  <span data-opt-text class="whitespace-nowrap">{e(t)}</span>
+                </li>""" for i, (v, t) in enumerate(options))
     return f"""
-            <label class="inline-flex items-center gap-2 xl:bg-white px-0 xl:px-4 py-2 border border-transparent xl:border-neutral-divider rounded-full shrink-0" aria-label="{e(label)}">
-              <span class="text-cta shrink-0">{_SORT_ICON}</span>
-              <select class="select-sort bg-transparent font-semibold text-[#062A1C] text-sm outline-none cursor-pointer appearance-none border-0">{opts}</select>
-              <span class="text-neutral-secondary w-3.5 h-3.5 shrink-0 pointer-events-none">{_SORT_CHEVRON}</span>
-            </label>"""
+            <div class="relative shrink-0 text-start" data-fancy-select>
+              <!-- Native select: the source of truth, the mobile control (the OS
+                   picker beats a custom popover on a phone) and the no-JS
+                   fallback. On desktop, initFancySelect() hides this and shows
+                   the custom trigger; a pick there writes back here + fires
+                   change, so the listing sort (which reads this value) is
+                   untouched. -->
+              <label class="inline-flex items-center gap-2 xl:bg-white px-0 xl:px-4 py-2 border border-transparent xl:border-neutral-divider rounded-full" aria-label="{e(label)}" data-fancy-fallback>
+                <span class="text-cta shrink-0">{_SORT_ICON}</span>
+                <select class="select-sort bg-transparent font-semibold text-[#062A1C] text-sm outline-none cursor-pointer appearance-none border-0">{opts}</select>
+                <span class="text-neutral-secondary w-3.5 h-3.5 shrink-0 pointer-events-none">{_SORT_CHEVRON}</span>
+              </label>
+
+              <!-- Custom dropdown (desktop). Starts fully hidden so no-JS keeps
+                   the native select; JS switches it to `hidden xl:block`. -->
+              <div class="hidden" data-fancy-ui>
+                <button type="button" data-fancy-trigger aria-haspopup="listbox" aria-expanded="false" aria-label="{e(label)}"
+                        class="inline-flex items-center gap-2 bg-white hover:border-cta px-4 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors shadow-custom4">
+                  <span class="text-cta shrink-0">{_SORT_ICON}</span>
+                  <span data-fancy-label class="whitespace-nowrap">{first_text}</span>
+                  <span class="text-neutral-secondary w-3.5 h-3.5 shrink-0 pointer-events-none">{_SORT_CHEVRON}</span>
+                </button>
+                <ul role="listbox" tabindex="-1" data-fancy-pop
+                    class="hidden top-full end-0 z-40 absolute bg-white shadow-custom3 mt-2 p-1.5 border border-neutral-divider rounded-2xl min-w-[220px]">{li}
+                </ul>
+              </div>
+            </div>"""
 
 
 def page_header(heading, trail=None):

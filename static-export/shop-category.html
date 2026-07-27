@@ -66,11 +66,53 @@
             <div class="flex gap-2 -mx-1 px-1 w-full xl:flex-1 min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible"><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors bg-cta text-white border-cta">القهوة</a><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة تركي</a><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة برازيلي</a><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة مطحونة طازجة</a><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">إسبريسو</a><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة سريعة التحضير</a><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">مشروبات ساخنة</a>
             </div>
 
-            <label class="inline-flex items-center gap-2 xl:bg-white px-0 xl:px-4 py-2 border border-transparent xl:border-neutral-divider rounded-full shrink-0" aria-label="ترتيب حسب">
-              <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true"><path d="M7 4v16m0 0-3-3m3 3 3-3M17 20V4m0 0-3 3m3-3 3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-              <select class="select-sort bg-transparent font-semibold text-[#062A1C] text-sm outline-none cursor-pointer appearance-none border-0"><option value="popular">الأكثر مبيعاً</option><option value="newest">وصل حديثاً</option><option value="price-asc">السعر: من الأقل</option><option value="price-desc">السعر: من الأعلى</option></select>
-              <span class="text-neutral-secondary w-3.5 h-3.5 shrink-0 pointer-events-none"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            </label>
+            <div class="relative shrink-0 text-start" data-fancy-select>
+              <!-- Native select: the source of truth, the mobile control (the OS
+                   picker beats a custom popover on a phone) and the no-JS
+                   fallback. On desktop, initFancySelect() hides this and shows
+                   the custom trigger; a pick there writes back here + fires
+                   change, so the listing sort (which reads this value) is
+                   untouched. -->
+              <label class="inline-flex items-center gap-2 xl:bg-white px-0 xl:px-4 py-2 border border-transparent xl:border-neutral-divider rounded-full" aria-label="ترتيب حسب" data-fancy-fallback>
+                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true"><path d="M7 4v16m0 0-3-3m3 3 3-3M17 20V4m0 0-3 3m3-3 3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <select class="select-sort bg-transparent font-semibold text-[#062A1C] text-sm outline-none cursor-pointer appearance-none border-0"><option value="popular">الأكثر مبيعاً</option><option value="newest">وصل حديثاً</option><option value="price-asc">السعر: من الأقل</option><option value="price-desc">السعر: من الأعلى</option></select>
+                <span class="text-neutral-secondary w-3.5 h-3.5 shrink-0 pointer-events-none"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </label>
+
+              <!-- Custom dropdown (desktop). Starts fully hidden so no-JS keeps
+                   the native select; JS switches it to `hidden xl:block`. -->
+              <div class="hidden" data-fancy-ui>
+                <button type="button" data-fancy-trigger aria-haspopup="listbox" aria-expanded="false" aria-label="ترتيب حسب"
+                        class="inline-flex items-center gap-2 bg-white hover:border-cta px-4 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors shadow-custom4">
+                  <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true"><path d="M7 4v16m0 0-3-3m3 3 3-3M17 20V4m0 0-3 3m3-3 3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span data-fancy-label class="whitespace-nowrap">الأكثر مبيعاً</span>
+                  <span class="text-neutral-secondary w-3.5 h-3.5 shrink-0 pointer-events-none"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </button>
+                <ul role="listbox" tabindex="-1" data-fancy-pop
+                    class="hidden top-full end-0 z-40 absolute bg-white shadow-custom3 mt-2 p-1.5 border border-neutral-divider rounded-2xl min-w-[220px]">
+                <li role="option" data-fancy-opt data-value="popular" aria-selected="true"
+                    class="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer text-sm font-medium text-[#062A1C] hover:bg-interaction-base focus-visible:bg-interaction-base focus:outline-none transition-colors">
+                  <span class="w-4 h-4 shrink-0 text-cta" data-fancy-check><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span data-opt-text class="whitespace-nowrap">الأكثر مبيعاً</span>
+                </li>
+                <li role="option" data-fancy-opt data-value="newest" aria-selected="false"
+                    class="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer text-sm font-medium text-[#062A1C] hover:bg-interaction-base focus-visible:bg-interaction-base focus:outline-none transition-colors">
+                  <span class="w-4 h-4 shrink-0 text-cta" data-fancy-check><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span data-opt-text class="whitespace-nowrap">وصل حديثاً</span>
+                </li>
+                <li role="option" data-fancy-opt data-value="price-asc" aria-selected="false"
+                    class="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer text-sm font-medium text-[#062A1C] hover:bg-interaction-base focus-visible:bg-interaction-base focus:outline-none transition-colors">
+                  <span class="w-4 h-4 shrink-0 text-cta" data-fancy-check><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span data-opt-text class="whitespace-nowrap">السعر: من الأقل</span>
+                </li>
+                <li role="option" data-fancy-opt data-value="price-desc" aria-selected="false"
+                    class="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer text-sm font-medium text-[#062A1C] hover:bg-interaction-base focus-visible:bg-interaction-base focus:outline-none transition-colors">
+                  <span class="w-4 h-4 shrink-0 text-cta" data-fancy-check><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span data-opt-text class="whitespace-nowrap">السعر: من الأعلى</span>
+                </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>
