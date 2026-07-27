@@ -303,7 +303,14 @@ select {
 
      overscroll-behavior-x stops a fling that reaches the end of a rail from
      chaining outward into page-level horizontal scroll or a browser back
-     navigation. */
+     navigation.
+
+     NOTE: this is the no-JS fallback. It holds on Blink, but WebKit (all iOS
+     browsers) does not reliably pass a vertical gesture that starts on the
+     rail back to the page, so once initCarousel() runs it overrides this to
+     `pan-y` and drives horizontal scrolling from pointer events instead —
+     which is the only arrangement that guarantees the page scrolls. See the
+     drag-to-scroll block in scripts.js. */
   touch-action: pan-x pinch-zoom;
   overscroll-behavior-x: contain;
 
@@ -345,6 +352,18 @@ select {
   .carousel-track {
     scroll-behavior: smooth;
   }
+}
+/* While a pointer-drag is in progress the rail scrolls freely and instantly.
+   scroll-snap would fight each frame's scrollLeft write, snapping the position
+   back under the finger; `scroll-behavior: smooth` (above) would animate every
+   write into lag. Both are suspended for the drag — endDrag() removes this
+   class and then setPos() snaps to the nearest slide. The 0,2,0 selector beats
+   the smooth rule regardless of the media query. See the drag-to-scroll block
+   in scripts.js, and the `pan-y` note above for why the rail drags in JS. */
+.carousel-track.is-dragging {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+  cursor: grabbing;
 }
 .carousel-track::-webkit-scrollbar {
   display: none;

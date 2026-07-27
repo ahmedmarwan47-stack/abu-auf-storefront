@@ -2095,6 +2095,90 @@
     window.addEventListener("resize", onResize, { passive: true });
     update();
 
+    /* ---------------------------------------------------------------
+       Drag-to-scroll — and why the rail hands the vertical axis back.
+
+       Reported on iPhone/Brave, i.e. WebKit (every iOS browser is WebKit): a
+       vertical swipe that STARTS on a rail did not scroll the page — it just
+       sat there. `touch-action: pan-x` (styles.css) is the textbook fix and it
+       holds on Blink, but WebKit does not reliably hand a vertical gesture
+       back to the page once a finger is inside a horizontal scroll-snap
+       container. The requirement — vertical always scrolls — cannot be met by
+       any touch-action value that leaves the browser to disambiguate the axis.
+
+       So the browser is handed the vertical axis outright: `pan-y` means it
+       owns vertical (the page scrolls, every time) and never starts a
+       horizontal scroll on the track — we drive that from pointer events, the
+       way Swiper did. A vertical drag fires `pointercancel` here (the browser
+       took it) and we bail; a horizontal drag never becomes a browser scroll,
+       so we translate it into scrollLeft.
+
+       Set HERE, not in the CSS, on purpose: if this script never runs the CSS
+       `pan-x` still gives native horizontal scrolling, so a JS-off page
+       degrades to the old behaviour, not to a rail that cannot move at all. */
+    track.style.touchAction = "pan-y pinch-zoom";
+
+    let dragActive = false; // a pointer is down and being tracked
+    let dragScroll = false; // it has crossed the slop into a real drag
+    let dragStartX = 0, dragStartSL = 0, dragMoved = 0, dragId = null;
+
+    track.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      dragActive = true;
+      dragScroll = false;
+      dragMoved = 0;
+      dragStartX = e.clientX;
+      dragStartSL = track.scrollLeft;
+      dragId = e.pointerId;
+    });
+
+    track.addEventListener("pointermove", (e) => {
+      if (!dragActive || e.pointerId !== dragId) return;
+      const dx = e.clientX - dragStartX;
+      /* 4px of slop before we claim the gesture: below it a tap is still a tap,
+         and a nascent vertical swipe still belongs to the page (the browser
+         will pointercancel us the instant it decides the drag is vertical). */
+      if (!dragScroll && Math.abs(dx) > 4) {
+        dragScroll = true;
+        track.classList.add("is-dragging"); // suspends snap + smooth mid-drag
+        try { track.setPointerCapture(dragId); } catch (_) {}
+      }
+      if (dragScroll) {
+        dragMoved = dx;
+        // Physical scrollLeft, moved opposite the finger so content follows it.
+        // A physical coordinate needs no RTL branch — unlike getPos/setPos.
+        track.scrollLeft = dragStartSL - dx;
+        e.preventDefault();
+      }
+    });
+
+    const endDrag = () => {
+      if (!dragActive) return;
+      dragActive = false;
+      if (!dragScroll) return;
+      dragScroll = false;
+      track.classList.remove("is-dragging"); // restores snap + smooth
+      // Settle on the nearest slide rather than wherever the finger stopped.
+      setPos(Math.round(getPos() / slideStep()) * slideStep());
+    };
+    track.addEventListener("pointerup", endDrag);
+    track.addEventListener("pointercancel", endDrag);
+
+    /* A drag must not also click the card under it. Capture phase, so this
+       beats the link/button's own handler; only a real drag (past the tap
+       slop) is suppressed, so a genuine tap still activates the card. */
+    track.addEventListener(
+      "click",
+      (e) => {
+        if (Math.abs(dragMoved) > 4) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        dragMoved = 0;
+      },
+      true,
+    );
+
     if (root.hasAttribute("data-autoplay")) {
       /* Was a bare setInterval that ran for the life of the page. Three
          problems, all of them paid on the main thread:
