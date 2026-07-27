@@ -1427,10 +1427,10 @@
             <p class="font-bold text-[#062A1C] text-sm">${esc(t("قد يعجبك أيضا"))}</p>
             <div class="flex items-center gap-1.5 shrink-0">
               <button type="button" class="place-items-center grid bg-interaction-base hover:bg-interaction-tertiary-hover rounded-full text-cta transition size-8 carousel-prev" aria-label="السابق">
-                <span class="w-4 h-4 rtl:scale-flip">${ICON.arrowRight}</span>
+                <span class="w-4 h-4 rtl:scale-flip">${ICON.arrowLeft}</span>
               </button>
               <button type="button" class="place-items-center grid bg-interaction-base hover:bg-interaction-tertiary-hover rounded-full text-cta transition size-8 carousel-next" aria-label="التالي">
-                <span class="w-4 h-4 ltr:scale-flip">${ICON.arrowRight}</span>
+                <span class="w-4 h-4 ltr:scale-flip">${ICON.arrowLeft}</span>
               </button>
             </div>
           </div>
@@ -1607,7 +1607,7 @@
       <form data-location-form class="flex flex-col gap-3">
         <label class="block">
           <span class="label">المدينة</span>
-          <select class="select-control mt-1 px-3 border border-neutral-divider rounded-lg w-full h-12 text-[#062A1C] placeholder-select">
+          <select class="select-control mt-1 px-3 border border-neutral-divider rounded-lg w-full h-12 text-[#062A1C]">
             ${["القاهرة", "الجيزه", "الاسكندريه", "القليوبيه", "الشرقيه", "الدقهليه", "المنوفيه", "الغربيه"]
               .map((c) => `<option>${c}</option>`)
               .join("")}
@@ -1615,7 +1615,7 @@
         </label>
         <label class="block">
           <span class="label">المنطقة</span>
-          <select class="select-control mt-1 px-3 border border-neutral-divider rounded-lg w-full h-12 text-[#062A1C] placeholder-select">
+          <select class="select-control mt-1 px-3 border border-neutral-divider rounded-lg w-full h-12 text-[#062A1C]">
             ${["التجمع الخامس", "مدينه نصر", "المعادي", "الزمالك", "هليوبوليس", "الشروق", "الرحاب", "المقطم"]
               .map((a) => `<option>${a}</option>`)
               .join("")}
