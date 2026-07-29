@@ -1421,7 +1421,7 @@
     <aside data-drawer="cart" class="side-drawer side-drawer--right" aria-label="سلة التسوق">
       <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
         <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("سلة التسوق"))}</h2>
-        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 -me-2 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
       </div>
       <div class="flex-1 px-5 overflow-y-auto">
         <div data-cart-lines></div>
@@ -1484,7 +1484,7 @@
           <input type="search" id="site-search" data-search-input autocomplete="off"
                  placeholder="ابحث عن قهوة، مكسرات، تمور…"
                  class="flex-1 bg-transparent outline-none min-w-0 text-[#062A1C] text-base" />
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-11 h-11 -me-2 text-[#062A1C] shrink-0" aria-label="إغلاق">${ICON.close}</button>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-11 h-11 -me-2 text-[#062A1C] shrink-0" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
         </div>
 
         <!-- Idle state: the query is empty. These were five links that all
@@ -1540,7 +1540,7 @@
       <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
       <div class="flex justify-between items-center mb-4">
         <h2 id="locale-sheet-title" class="font-bold text-[#062A1C] text-lg">${esc(t("الدولة واللغة"))}</h2>
-        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 -me-2 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
       </div>
       <div class="flex flex-col gap-5">
         <fieldset class="flex flex-col gap-2">
@@ -1580,7 +1580,7 @@
       <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[440px] overflow-hidden" data-modal-box>
         <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
           <h2 class="font-bold text-[#062A1C] text-lg" data-address-form-title>${esc(t("اضف عنوان"))}</h2>
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 -me-2 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
         </div>
         <form data-address-form data-address-id="" class="flex flex-col gap-3 p-5">
           <label class="block">
@@ -1616,7 +1616,7 @@
       <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
       <div class="flex justify-between items-center mb-4">
         <h2 class="font-bold text-[#062A1C] text-lg">أختار منطقة التوصيل</h2>
-        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 -me-2 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
       </div>
       <form data-location-form class="flex flex-col gap-3">
         <label class="block">
@@ -1647,7 +1647,7 @@
       <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[480px] overflow-hidden" data-modal-box>
         <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
           <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("اختر الفرع"))}</h2>
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 -me-2 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
         </div>
         <div class="flex flex-col gap-3 p-5">
           <label class="block">
@@ -1670,7 +1670,7 @@
       <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[480px] overflow-hidden" data-modal-box>
         <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
           <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("حدد اليوم والوقت"))}</h2>
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 -me-2 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
         </div>
         <div class="flex flex-col gap-4 p-5">
           <!-- The arrows sit OUTSIDE [data-sched-days] deliberately:
