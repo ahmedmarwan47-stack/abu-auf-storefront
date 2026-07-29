@@ -183,10 +183,14 @@ def carousel(slides_html, gap=24, arrows_top="130px", autoplay=False, dots=False
           <div class="relative carousel {extra}"{' data-autoplay' if autoplay else ''} style="--carousel-gap:{gap}px">
             <div class="carousel-track">{slides_html}
             </div>
-            <button type="button" class="hidden xl:grid top-[{arrows_top}] -start-5 absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-prev" aria-label="السابق">
+            <!-- The side offset is set in styles.css on .carousel-prev/.next
+                 (centre ON the track border, -22px = half the 44px circle):
+                 a -start/-end utility here ties with that rule and loses on
+                 source order, same as the hero arrows. -->
+            <button type="button" class="hidden xl:grid top-[{arrows_top}] absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-prev" aria-label="السابق">
               <span class="rtl:scale-flip">{ICON['arrow']}</span>
             </button>
-            <button type="button" class="hidden xl:grid top-[{arrows_top}] -end-5 absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-next" aria-label="التالي">
+            <button type="button" class="hidden xl:grid top-[{arrows_top}] absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-next" aria-label="التالي">
               <span class="ltr:scale-flip">{ICON['arrow']}</span>
             </button>
             {'<div class="flex justify-center mt-4 carousel-dots"></div>' if dots else ''}

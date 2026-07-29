@@ -389,11 +389,16 @@ select {
   cursor: default;
   pointer-events: none;
 }
+/* Rail arrows are the default 44px (size-11); their centre sits ON the track's
+   side border, straddling it, rather than tucked inside — -22px = half the
+   circle (Ahmed, 2026-07-29, same call as the hero arrows). This governs the
+   rails on source order over the inline -start/-end utility, which is the exact
+   tie CLAUDE.md documents, so the offset lives here, not on the button. */
 .carousel-prev {
-  inset-inline-start: -10px;
+  inset-inline-start: -22px;
 }
 .carousel-next {
-  inset-inline-end: -10px;
+  inset-inline-end: -22px;
 }
 /* Hero arrows are 64px and Ahmed wants their centre ON the banner's side
    border, straddling it, rather than tucked inside. -32px = half the circle.
