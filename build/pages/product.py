@@ -27,10 +27,19 @@ from catalog import PRODUCTS, e, in_category, money, rail_products, title
 from components import (
     ICON, accordion, best_seller_badge, button, carousel, page, page_header,
     product_card, product_gallery, qty_stepper, rating, recipe_card,
-    size_chips, sold_proof, trust_row, product_benefits, bundle_item, section_heading,
+    size_chips, sold_proof, trust_row, trust_row_3d, product_benefits,
+    bundle_item, section_heading,
 )
 
 SLUG = "product.html"
+
+# Which spec-strip treatment to render under the CTA (Ahmed, 2026-07-29):
+#   "default" — the flat icon-over-text tiles (trust_row)
+#   "3d"      — horizontal [3D icon | text] cells, right-aligned (trust_row_3d)
+# One flag drives both the hero and the per-product path below; flip it back to
+# "default" to revert the whole site with no other change.
+SPECS_VARIANT = "3d"
+_SPECS_ROW = trust_row_3d if SPECS_VARIANT == "3d" else trust_row
 
 
 def product_slug(p):
@@ -231,7 +240,8 @@ def _render(p):
     # falls back to GENERIC_BENEFITS — a generic PRODUCT-benefit trio, not the
     # old service strip — only where the client wrote no benefits at all (35 of
     # 99), so the spec row reads as benefits on every page.
-    trust_html = trust_row(BENEFIT_ITEMS) if hero else product_benefits(p, GENERIC_BENEFITS)
+    trust_html = (_SPECS_ROW(BENEFIT_ITEMS) if hero
+                  else product_benefits(p, GENERIC_BENEFITS, renderer=_SPECS_ROW))
 
     # Related products — an INTERACTIVE "you may also like" widget in the sticky
     # media column (Ahmed, 2026-07-29): each row a checkbox, a running total and
@@ -242,13 +252,24 @@ def _render(p):
     # up and finds no [data-product] host on this side, so the base is empty).
     # Capped to four so the media side stays shorter than the scrollable info
     # side; dropped entirely when the category has no companions.
+    # Align the related list under the MAIN PHOTO, not the whole gallery
+    # (Ahmed, 2026-07-29). On md+ the gallery is a row [strip | plate]: the
+    # thumbnail strip is w-20 (80px) on the RTL-inline-start side with a gap-4
+    # (16px), and the plate is flex-1 beside it. So the plate is 96px narrower
+    # than the column; matching that means insetting the related list 96px on
+    # the inline-start side (ms). ONLY when a strip exists — a single-image
+    # product has no strip, so the plate already fills the column and an inset
+    # would push the list off-centre. Below md the gallery stacks full-width, so
+    # the inset is scoped to md+.
+    gallery_images = [i for i in (p.get("images") or [p["image"]]) if i]
+    related_inset = " md:ms-[96px]" if len(gallery_images) > 1 else ""
     related_list = ""
     if similar:
         picks = similar[:4]
         related_total = sum(x["price"] for x in picks)
         rows = "".join(bundle_item(x) for x in picks)
         related_list = f"""
-          <div data-bundle class="flex flex-col bg-white shadow-custom4 p-4 xl:p-5 rounded-[20px]">
+          <div data-bundle class="flex flex-col bg-white shadow-custom4 p-4 xl:p-5 rounded-[20px]{related_inset}">
             <h2 class="mb-1 px-2 font-bold text-[#062A1C] text-base xl:text-lg">قد يعجبك أيضاً</h2>
             <div class="flex flex-col">{rows}
             </div>

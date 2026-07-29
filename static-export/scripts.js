@@ -1044,7 +1044,12 @@
                    [data-sticky-actions][data-stuck] in styles.css and parked
                    under the sticky nav on an elevated pill. Driven by the same
                    scroll handler as the nav so the two can never disagree. -->
-              <div data-sticky-actions class="flex items-center gap-6">
+              <!-- gap-3 (12px), NOT gap-6: the search-to-cart spacing matches
+                   the floating pill's own 12px gap in styles.css, so the pair
+                   sits identically spaced before and after it sticks (Ahmed,
+                   2026-07-29). The account-to-search gap stays 24px — that comes
+                   from the parent, not this group. -->
+              <div data-sticky-actions class="flex items-center gap-3">
                 ${
                   checkout
                     ? ""

@@ -824,8 +824,57 @@ def benefit_bullets(p, limit=3):
 # or "tested" mark would.
 _BENEFIT_ICONS = ("leaf", "bolt", "shield")
 
+# 3D-render variant of the three benefit glyphs (Ahmed, 2026-07-29). Same
+# positional leaf/bolt/shield keys the benefit builders already emit, mapped to
+# pre-rendered PNGs that carry their own transparency and soft shadow. Used only
+# by trust_row_3d; the flat ICON glyphs above still drive the default row.
+_BENEFIT_ICONS_3D = {
+    "leaf": "images/abuauf/icons/spec-leaf.png",
+    "bolt": "images/abuauf/icons/spec-bolt.png",
+    "shield": "images/abuauf/icons/spec-shield.png",
+}
 
-def product_benefits(p, fallback):
+
+def trust_row_3d(items):
+    """
+    3D-icon variant of trust_row (Ahmed, 2026-07-29), selected by SPECS_VARIANT
+    in product.py — flip that flag back and trust_row runs instead, this stays
+    dormant. Same `items` contract: [(icon_key, title, subtitle)].
+
+    Layout differs on purpose: each cell is a HORIZONTAL [icon | text] pair
+    rather than the default's icon-over-text, right-aligned in RTL (the icon
+    leads on the inline-start / right edge, the copy flows from it). The cells
+    sit in one row on sm+ and stack to one column on mobile, where three
+    horizontal pairs across a phone would be unreadable.
+
+    Icons are the pre-rendered 3D PNGs, keyed by the same leaf/bolt/shield the
+    benefit builders emit; an unknown key falls back to the leaf so a cell is
+    never iconless.
+    """
+    if not items:
+        return ""
+    n = len(items)
+    cols = {1: "sm:grid-cols-1", 2: "sm:grid-cols-2"}.get(n, "sm:grid-cols-3")
+    cells = ""
+    for icon, title_, sub in items:
+        src = _BENEFIT_ICONS_3D.get(icon, _BENEFIT_ICONS_3D["leaf"])
+        sub_html = (
+            f'\n                  <span class="text-neutral-secondary text-xs leading-4">{e(sub)}</span>'
+            if sub else ""
+        )
+        cells += f"""
+              <div class="flex items-center gap-1">
+                <img src="{src}" alt="" class="w-12 xl:w-14 h-12 xl:h-14 shrink-0 object-contain" loading="lazy" />
+                <span class="flex flex-col min-w-0">
+                  <span class="font-semibold text-[#062A1C] text-sm text-balance leading-5">{e(title_)}</span>{sub_html}
+                </span>
+              </div>"""
+    return f"""
+            <div class="gap-4 grid grid-cols-1 {cols} pt-1">{cells}
+            </div>"""
+
+
+def product_benefits(p, fallback, renderer=trust_row):
     """
     The strip under the CTA, built from the client's OWN benefit copy.
 
@@ -837,14 +886,17 @@ def product_benefits(p, fallback):
 
     Coverage is the honest limit of the data: 64 of 99 products have at least
     two usable benefit lines in `descHtmlAr`. The remaining 35 have none — the
-    client never wrote them — so those keep the service strip rather than
+    client never wrote them — so those keep the generic trio rather than
     getting invented copy. Absence over invention, same rule as the branch
     phone numbers.
+
+    `renderer` is the row component — trust_row (default) or trust_row_3d —
+    passed in by product.py's SPECS_VARIANT flag so the variant is one switch.
     """
     bullets = benefit_bullets(p)
     if len(bullets) < 2:
-        return trust_row(fallback)
-    return trust_row([(_BENEFIT_ICONS[i], b, "") for i, b in enumerate(bullets)])
+        return renderer(fallback)
+    return renderer([(_BENEFIT_ICONS[i], b, "") for i, b in enumerate(bullets)])
 
 
 # --------------------------------------------------------------------------
