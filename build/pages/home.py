@@ -118,12 +118,15 @@ def build():
           <div class="relative carousel hero-banners" data-autoplay style="--carousel-gap:16px">
             <div class="carousel-track">{hero_slides}
             </div>
-            <!-- start/end-3, was -6: Ahmed asked for the pair to sit further
-                 apart, so each arrow moved 12px toward its own edge. -->
-            <button type="button" class="hidden md:grid top-1/2 start-3 absolute place-items-center bg-white/90 hover:bg-white shadow-custom3 -translate-y-1/2 rounded-full text-cta transition size-16 carousel-prev" aria-label="السابق">
+            <!-- Offset is set in styles.css, scoped to .hero-banners: the 64px
+                 circle is pulled out by half its width so its centre lands ON the
+                 banner's side border (Ahmed, 2026-07-29 — "in the middle of the
+                 border"). A start/end utility here would tie on specificity with
+                 the global .carousel-prev -10px and lose on source order. -->
+            <button type="button" class="hidden md:grid top-1/2 absolute place-items-center bg-white/90 hover:bg-white shadow-custom3 -translate-y-1/2 rounded-full text-cta transition size-16 carousel-prev" aria-label="السابق">
               <span class="rtl:scale-flip">{ICON['arrow']}</span>
             </button>
-            <button type="button" class="hidden md:grid top-1/2 end-3 absolute place-items-center bg-white/90 hover:bg-white shadow-custom3 -translate-y-1/2 rounded-full text-cta transition size-16 carousel-next" aria-label="التالي">
+            <button type="button" class="hidden md:grid top-1/2 absolute place-items-center bg-white/90 hover:bg-white shadow-custom3 -translate-y-1/2 rounded-full text-cta transition size-16 carousel-next" aria-label="التالي">
               <span class="ltr:scale-flip">{ICON['arrow']}</span>
             </button>
             <div class="flex justify-center mt-4 carousel-dots"></div>
@@ -138,7 +141,15 @@ def build():
           <!-- The Figma mobile home (2595:60104) stacks these one per row; the
                tiles are 220px wide, so forcing two columns at 375px clipped
                30px off each. One column below sm, two from sm. -->
-          <div class="gap-x-6 gap-y-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">{tiles}
+          <!-- Content-width columns centred as a group, NOT 1fr tracks. With
+               1fr the three tracks filled max-w-[1536px] and justify-items-center
+               left ~240px of air between the 250px circles; Ahmed wanted that
+               horizontal gap cut while keeping gap-y. Now gap-x IS the gap. -->
+          <!-- justify-items-center: at mobile the single 1fr column is full
+               width, so without it the 220px tile sits at justify-self:start
+               (= right in RTL) and the cards hug the right edge. On desktop the
+               tracks already equal the tile width, so it is a no-op there. -->
+          <div class="justify-center justify-items-center gap-x-16 gap-y-12 grid grid-cols-1 sm:grid-cols-[repeat(2,auto)] lg:grid-cols-[repeat(3,auto)]">{tiles}
           </div>
         </div>
       </section>
@@ -175,7 +186,10 @@ def build():
       <section data-reveal class="py-12 xl:py-16">
         <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("أراء العملاء", "كل التعليقات", "faqs.html")}
-          <div class="gap-x-24 gap-y-12 grid md:grid-cols-2">{"".join(review_card(*r) for r in REVIEWS)}
+          <!-- Dark cards now, so a card gap rather than the old airy text
+               columns. A row of four at xl (the reference's row-of-cards),
+               2×2 from md, stacked below. -->
+          <div class="gap-6 xl:gap-8 grid md:grid-cols-2 xl:grid-cols-4">{"".join(review_card(*r) for r in REVIEWS)}
           </div>
         </div>
       </section>

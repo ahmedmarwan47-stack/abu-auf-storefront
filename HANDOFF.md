@@ -305,6 +305,155 @@ style.** This is why the sweep uses an iframe.
 
 ---
 
+## 5b. Session 2026-07-29 — home-page polish, sticky buy bar, product-page restructure
+
+A round of small home-page fixes, a new sticky re-CTA on the product page, and
+a real restructure of the product page's layout and data plumbing. All done in
+the same three-layer model as always: `build/*.py` for markup, `scripts.js` /
+`styles.css` for runtime behaviour, rebuild + `node --check` + the koueider
+grep before every commit.
+
+**Home page:**
+
+- Hero carousel arrows now straddle the banner's side border (`inset-inline-*:
+  -32px`, half the 64px circle) instead of sitting inset. Had to be scoped to
+  `.hero-banners .carousel-prev/-next` in `styles.css` — a Tailwind utility on
+  the button tied on specificity with the global `.carousel-prev { -10px }`
+  rule and lost on source order (the exact trap CLAUDE.md already warns about).
+- Category circles: cut the desktop horizontal gap (1fr tracks were spreading
+  three 250px circles across the full 1536px container) by switching to
+  `grid-cols-[repeat(3,auto)]` + `justify-center` — gap is now real `gap-x-16`
+  (64px), vertical gap untouched. Mobile needs `justify-items-center` alongside
+  it, or the fixed-width tile falls to `justify-self:start` or `-right` in a
+  now-full-width `1fr` track — lost that once mid-session, caught by the user,
+  re-added.
+- `.tile-lift:hover` now uses `--lift-shadow-sm` instead of `--lift-shadow` —
+  softer hover shadow on category circles only.
+- Testimonials (`review_card` in `components.py`) rebuilt to a dark-card
+  reference: `#14432f` card, large accent-yellow quote glyph (new `ICON.quote`),
+  testimonial text, then an INITIALS avatar (no photo — no real customer
+  portraits exist, same no-invention rule as the branch phones) + name + city.
+  Grid is now `md:grid-cols-2 xl:grid-cols-4` with a card gap, not the old
+  2-column airy text layout.
+
+**Navbar:**
+
+- Search and cart circles were both `bg-cta` at rest, hovering to `bg-cta-hover`
+  (`#185039`) — which is the masthead's own background colour, so the search
+  button visually disappeared on hover. Both are now `bg-cta` → `hover:bg-
+  primary-900` (darker, never matches the masthead). Cart's small count badge
+  moved from green-on-white-ring to **yellow-on-green-ring** (`bg-accent-yellow
+  ring-primary`) so it reads as cropped into the corner rather than a stuck-on
+  dot. Same treatment on the mobile masthead's cart badge.
+
+**Product cards (site-wide, `components.py: product_card`):**
+
+- Removed the favourites heart button; `[data-add-to-cart]` is now `w-full`
+  instead of splitting the row with the heart via matched `basis-[104px]`. The
+  stepper that replaces it on add is also `w-full` now, so the swap still never
+  resizes the card.
+- **The heart moved to the product-detail page's gallery plate** (`top-4
+  end-4`, so it's top-LEFT in RTL — the mirror of the usual top-right spot; use
+  `end`, never `left`, so it flips correctly in LTR). It carries its own
+  `data-product`/id/name/price/image, because the gallery is a different DOM
+  subtree from the details host and `productFrom()` only walks up to the
+  *nearest* `[data-product]` ancestor.
+
+**New: sticky buy bar on the product page** (`product.py`, new markup +
+`initStickyBuyBar()` in `scripts.js`, `.sticky-buybar` in `styles.css`):
+
+- Appears once `[data-buy-block]` (the real stepper + buy-now row) has
+  scrolled *past* the top of the viewport — checked via
+  `IntersectionObserver` + `boundingClientRect.top < 0`, not plain
+  `!isIntersecting`, so it does not also fire on mobile before the shopper has
+  scrolled down TO the block.
+- **Desktop:** docks under the sticky nav at `top: 60px`. **Mobile:** docks at
+  the bottom, above the safe area.
+- **It owns no state.** Its −/＋ buttons and its CTA all forward clicks to the
+  real cart-bound stepper and the real `[data-buy-cta]` — never a second
+  writer of the cart. Title/price/qty are mirrored via a `MutationObserver` on
+  the real nodes plus a `cart:change` listener, so a size-chip change (which
+  fires no cart event) still repaints the bar.
+- **CTA is "اشتري الان" (buy now), not "اضف الى السلة".** This was tried both
+  ways mid-session — briefly changed to a plain add-to-cart, reverted on
+  Ahmed's explicit correction. The bar's CTA must mirror the real buy button
+  (opens the side cart after the quantity is set), not become a second
+  add-only control.
+- **+ is always on the visual right**, forced with `dir="ltr"` on just the
+  stepper `<div>` — in the page's RTL flow the flex row would otherwise put −
+  on the right. The digit is already `latin`, so this changes nothing but
+  button order.
+- **Collides with `[data-sticky-actions]`** (the floating search/cart pill)
+  on desktop, since both dock near the top edge. Fixed by having
+  `initStickyBuyBar` toggle `html.buybar-shown`, which `styles.css` uses to
+  drop the pill's `top` from 60px to 140px (below the bar) only at `lg` and
+  only while the bar is visible — **not** a horizontal-padding hack (tried and
+  reverted; the correct fix is vertical separation, per Ahmed).
+
+**Best-seller badge + red "best seller" proof line — now UNIFIED and ALWAYS
+VISIBLE on every product page (`components.py`).** This went through two
+states this session, worth knowing both:
+
+1. First pass: made both elements always-*emitted* but self-*hiding*
+   (`hidden` attribute, `data-best-seller` / `data-sold-proof` markers) when
+   the product's real `popularityRank` didn't earn them — "unified template,
+   shows/hides itself off the data" was the original ask.
+2. Ahmed then clarified he wants them **visibly shown on every product**, not
+   just present-but-hidden — for the developer handoff, so no page is ever
+   missing the slot. Final state: `_best_seller_label(p) or "الأكثر مبيعاً"`
+   and `_sold_proof_label(p) or "ضمن الأكثر مبيعاً في أبو عوف"` — ranked
+   products keep their real, earned copy; everywhere else gets a uniform
+   fallback string. **This means the badge is no longer purely a data-earned
+   signal** on the ~80 unranked products — flagged in `DESIGN-NOTES.md` §1 as
+   a deliberate, explicit exception to the project's "real data only" rule.
+   The `data-*` markers are left in place for a future developer to wire real
+   rank-driven show/hide if that's ever wanted back.
+
+**Product-detail page — layout restructured into two columns, plus a new
+generic FAQ:**
+
+- **Sticky media column** (`lg:sticky lg:top-[60px]`, moved off the gallery
+  itself and onto a wrapping `<div>`): the photo gallery **plus** a "قد يعجبك
+  أيضاً" related-products box, riding down together as one sticky unit. Media
+  column height is intentionally capped (related list limited to 4 items) so
+  it stays shorter than the scrollable info column — a sticky column taller
+  than its sibling has nothing to scroll against.
+- **The related box is INTERACTIVE, not a static list.** It reuses the
+  existing "frequently bought together" bundle machinery verbatim
+  (`bundle_item()`, `[data-bundle]`/`[data-bundle-check]`/`[data-bundle-add]`,
+  `syncBundleTotal()` in `scripts.js`) — checkboxes, a running "الإجمالي"
+  total, and an "أضف الكل للسلة" add-all button. Deliberately **no**
+  `data-product` and **no** `data-bundle-base` on this box (unlike the old
+  full-width section), so the total and the add-all cover ONLY the related
+  items, not the current product — `productFrom()` finds no host and
+  contributes nothing extra. The old full-width "عادة ما يتم شراؤه معاً"
+  section below the fold is gone; this replaces it entirely rather than
+  duplicating it.
+- Went through a mobile-ordering iteration worth knowing: at one point the
+  related list was reordered to the bottom on mobile (`order-last
+  lg:order-none`) so the buy box would come first. **Ahmed asked to revert
+  that** — mobile keeps its natural DOM stacking order (gallery → related →
+  buy box → benefits → FAQ). Don't reintroduce the reorder without asking
+  again.
+- **New generic FAQ accordion** (`FAQ_ITEMS` in `product.py`), identical on
+  every product page by design: 4 Q&As (delivery time, returns window,
+  storage/freshness, sizes), each answer restating a policy the site commits
+  to elsewhere on the same page or on `return-policy.html` — never a new,
+  unverifiable claim about the specific SKU. Sits in the scrollable info
+  column beneath the client's own benefits accordion.
+- **New divider** between the buy-CTA row and the specs/benefits strip below
+  it — a plain flex child (`border-t`, no independent padding), so it lines up
+  inside the card's existing `p-6 xl:p-8` rather than bleeding to the card
+  edges.
+
+**Data-honesty note for whoever picks this up next:** the specs/benefits strip
+still only carries real product-specific copy for 64 of 99 products (the ones
+with usable `descHtmlAr` benefit lines); the other 35 fall back to the generic
+delivery/returns/branches trio, same as before this session — that gap did not
+close and can't, without the client writing benefit copy for those SKUs.
+
+---
+
 ## 6. The language toggle — what it is and isn't
 
 Ahmed asked for a working language switcher to test RTL. It:

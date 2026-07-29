@@ -33,6 +33,11 @@ ICON = {
     "expand": '<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4">'
               '<path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" '
               'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    # Opening double-quote — testimonial cards. Two filled "66" blobs; the
+    # caller sizes and colours it (accent yellow on the dark card).
+    "quote": '<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full">'
+             '<path d="M10 6c-3.3 0-6 2.7-6 6v6h6v-6H7c0-1.7 1.3-3 3-3V6Z"/>'
+             '<path d="M20 6c-3.3 0-6 2.7-6 6v6h6v-6h-3c0-1.7 1.3-3 3-3V6Z"/></svg>',
     "clock": '<svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">'
              '<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/>'
              '<path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
@@ -493,11 +498,19 @@ def accordion(items, multi=False):
     return f'<div data-accordion{" data-accordion-multi" if multi else ""}>{rows}\n              </div>'
 
 
-def product_gallery(images, alt):
+def product_gallery(images, alt, p=None):
     """
     Main image with a selectable thumbnail strip — RTL puts thumbs on the far
     side. `images` is the product's real `images` list from catalog.json, main
     shot first; `fetch_galleries.py` fills it from the client's own CDN.
+
+    `p` (optional) is the product dict; when given, the favourites heart is
+    drawn on the main plate. It carries its OWN data-product/id/name/price/image
+    because the gallery sits in a separate column from the details host, so
+    productFrom() (which walks to the nearest [data-product]) would otherwise
+    find nothing. The extra host is invisible to every other [data-product]
+    consumer — they all guard on a child (price display, stepper, add button)
+    the heart does not have.
 
     The strip is suppressed entirely at one image, because a lone thumbnail
     under a photo reads as a broken carousel rather than a choice. 26 of the 99
@@ -512,6 +525,22 @@ def product_gallery(images, alt):
     if not images:
         return ""
     main_img = images[0]
+
+    # Favourites heart, overlaid on the main plate. top-4 end-4: inset by its
+    # own padding, and `end` (a logical property) puts it top-left in RTL — the
+    # mirror of the conventional top-right wishlist heart. Same fav-btn contract
+    # as everywhere else; carries its own product data (see docstring).
+    fav_btn = ""
+    if p:
+        fav_price = p.get("sale") or p.get("price") or 0
+        fav_btn = (
+            f'<button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة" '
+            f'data-product data-id="{p.get("id", 0)}" data-name="{e(title(p))}" '
+            f'data-price="{fav_price}" data-image="{e(p["image"])}" '
+            f'class="fav-btn btn-elevate absolute top-4 end-4 z-10 place-items-center grid '
+            f'bg-white/90 hover:bg-white shadow-custom4 rounded-full text-cta size-11">'
+            f'{ICON["heart"]}{ICON["heart_full"]}</button>'
+        )
 
     # The main shot is a background-isolated cutout and has to sit INSIDE the
     # plate with padding, contained. Every other shot is a real photograph with
@@ -552,22 +581,12 @@ def product_gallery(images, alt):
                pair existed only to pull it above an info column that used to
                come first; both are gone rather than left as no-ops.
 
-               Sticky from lg up. `top-[60px]` is not a guess — it is the same
-               parking spot `[data-sticky-actions]` uses in styles.css: the nav
-               fixes at top:0 and is 48px tall, plus a 12px gap. Reuse that
-               number rather than a second one, or the gallery and the pill sit
-               on subtly different lines. `self-start` is belt-and-braces next
-               to the grid's `items-start`; a stretched grid item is exactly as
-               tall as its row and can never scroll within it, so sticky would
-               resolve to no movement at all.
-
-               Below lg the columns stack and there is nothing to scroll past,
-               so sticky is scoped to lg and up.
-
-               This only works because <main> is `overflow-x-clip` and not
-               `overflow-x-hidden` — see page() for why. -->
-          <div data-gallery class="flex md:flex-row flex-col-reverse gap-4 min-w-0
-                                   lg:self-start lg:sticky lg:top-[60px]">{strip}
+               Sticky is no longer on the gallery itself: the gallery now shares
+               a sticky COLUMN wrapper with the related-products list beneath it
+               (see product.py), so the whole media side rides down together.
+               The wrapper owns `lg:self-start lg:sticky lg:top-[60px]`; this
+               only works because <main> is `overflow-x-clip` (see page()). -->
+          <div data-gallery class="flex md:flex-row flex-col-reverse gap-4 min-w-0">{strip}
             <!-- The plate keeps its own padding for the cut-out main shot;
                  scripts.js swaps data-fill to "cover" for the photographs,
                  which drops the padding and lets them bleed to the rounded
@@ -580,10 +599,11 @@ def product_gallery(images, alt):
                  the whole page would jump on every thumbnail click. The height
                  is also what the thumbnail strip is capped to. -->
             <div data-gallery-plate data-fill="{'cover' if '/gallery/' in main_img else 'contain'}"
-                 class="gallery-plate flex-1 bg-interaction-base rounded-[20px] min-w-0 overflow-hidden
+                 class="gallery-plate relative flex-1 bg-interaction-base rounded-[20px] min-w-0 overflow-hidden
                         h-[348px] xl:h-[520px]">
               <img data-gallery-main src="{e(main_img)}" alt="{e(alt)}"
                    class="mx-auto w-full h-full" />
+              {fav_btn}
             </div>
           </div>"""
 
@@ -644,13 +664,18 @@ def _best_seller_label(p):
 
 def best_seller_badge(p):
     """
-    Renders only for products the client's own store actually ranks that high.
-    A product silently loses the badge when the client's sales say it should.
-    See `_best_seller_label` for the two tiers.
+    Shown VISIBLY on every product page (Ahmed, 2026-07-29 — "unified in all
+    products" for the handoff). Where the client's store ranks the product high
+    enough it carries the earned label (see `_best_seller_label`); everywhere
+    else it falls back to the plain "الأكثر مبيعاً" so no page is missing the
+    slot. The `data-best-seller` marker stays so a developer can wire the real
+    rank-driven show/hide later.
+
+    NOTE / DESIGN-NOTES: because it now paints on all 99 pages, the badge is a
+    uniform UI element rather than a data-earned signal on its own — the ranked
+    ones are still real, the rest are decoration at Ahmed's explicit request.
     """
-    label = _best_seller_label(p)
-    if not label:
-        return ""
+    label = _best_seller_label(p) or "الأكثر مبيعاً"
     # self-start, or the badge stretches to the full column width: it is a
     # child of a flex-col, where the default align-items is stretch and
     # inline-flex does nothing to stop it.
@@ -669,15 +694,15 @@ def best_seller_badge(p):
     # actualBoundingBox metrics, not eyeballed; the ink centre sits 1.9px
     # above the box centre at text-xs. `relative`, because transforms do not
     # apply to inline boxes.
-    return ('<span class="inline-flex self-start items-center gap-1.5 bg-accent-yellow px-3 py-1.5 '
+    return ('<span data-best-seller class="inline-flex self-start items-center gap-1.5 bg-accent-yellow px-3 py-1.5 '
             'rounded-full font-bold text-[#062A1C] text-xs">'
             f'<span class="place-items-center grid w-3.5 h-3.5 shrink-0">{ICON["star"]}</span>'
             f'<span class="relative top-[2px] leading-none">{e(label)}</span></span>')
 
 
-def sold_proof(p):
+def _sold_proof_label(p):
     """
-    The encouragement line beside the rating.
+    The encouragement sentence (as inner HTML) for a product, or None.
 
     Deliberately a RANK, not a unit count. The live-site pattern this mirrors
     reads "500+ sold this week", but no public endpoint carries absolute sales
@@ -688,7 +713,7 @@ def sold_proof(p):
     """
     rank = p.get("popularityRank")
     if not rank:
-        return ""
+        return None
     if rank <= BEST_SELLER_RANK:
         # Round up to a friendly bucket so the line reads as a claim, not a
         # lookup.
@@ -705,17 +730,32 @@ def sold_proof(p):
         bucket = BEST_SELLER_CATEGORY_RANK
         scope = f"في {p['categoryAr']}"
     else:
-        return ""
-    # The copy is ONE flex child, not loose text nodes beside the glyph.
-    # Bare text and the <span class="latin"> around the number were each their
-    # own flex item, so they wrapped independently — with a long category name
-    # the line broke as "ضمن / أفضل" with the numeral stranded between the two
-    # lines. Wrapping the sentence makes it flow as a sentence. `items-start`
-    # so the flame stays on the first line rather than centring against a
-    # two-line block.
-    return ('<span class="inline-flex items-start gap-1.5 font-semibold text-accent-error text-sm">'
+        return None
+    return f'ضمن أفضل <span class="latin">{bucket}</span> مبيعاً {e(scope)}'
+
+
+def sold_proof(p):
+    """
+    The red encouragement line beside the rating.
+
+    Shown VISIBLY on every product page (Ahmed, 2026-07-29 — same "unified in
+    all products" call as best_seller_badge). Ranked products carry the real
+    line; everywhere else it falls back to the non-numeric "ضمن الأكثر مبيعاً
+    في أبو عوف" so the slot is never empty. `data-sold-proof` stays as the
+    developer's show/hide hook. Its leading hairline is folded INTO the element
+    so it can never dangle beside the rating.
+
+    The copy is ONE flex child, not loose text nodes beside the glyph. Bare text
+    and the <span class="latin"> around the number were each their own flex
+    item, so they wrapped independently — with a long category name the line
+    broke as "ضمن / أفضل" with the numeral stranded. `items-start` keeps the
+    flame on the first line rather than centring against a two-line block.
+    """
+    label = _sold_proof_label(p) or "ضمن الأكثر مبيعاً في أبو عوف"
+    return ('<span data-sold-proof class="inline-flex items-start gap-1.5 font-semibold text-accent-error text-sm">'
+            '<span aria-hidden="true" class="bg-neutral-divider mt-0.5 me-0.5 w-px h-4 self-stretch"></span>'
             f'<span class="mt-0.5 w-4 h-4 shrink-0">{ICON["flame"]}</span>'
-            f'<span>ضمن أفضل <span class="latin">{bucket}</span> مبيعاً {e(scope)}</span></span>')
+            f'<span>{label}</span></span>')
 
 
 def trust_row(items):
@@ -1331,33 +1371,13 @@ def product_card(p, slide=True):
                   {old}
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP {money(p['price'])}</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          >{ICON['heart']}{ICON['heart_full']}</button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -1374,7 +1394,7 @@ def product_card(p, slide=True):
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
@@ -1403,7 +1423,7 @@ def category_tile(cat, label=None, href="shop-category.html"):
     """
     name = label or cat["ar"]
     return f"""
-        <a href="{href}" class="group flex flex-col items-center gap-4 text-center">
+        <a href="{href}" class="group flex flex-col items-center gap-4 w-[220px] xl:w-[250px] text-center">
           <span class="tile-lift relative bg-beige rounded-full w-[220px] xl:w-[250px] h-[220px] xl:h-[250px] overflow-hidden group-hover:scale-[1.03]">
             <img src="{e(cat['image'])}" alt="{e(name)}" class="w-full h-full object-cover" loading="lazy" />
           </span>
@@ -1416,19 +1436,31 @@ def category_tile(cat, label=None, href="shop-category.html"):
 
 def review_card(name, city, text, score="4.8"):
     """
-    The score row is the shared rating() — stars per Ahmed's 2026-07-22
-    direction, superseding the Figma's heart component (the heart now means
-    favourites and nothing else). It also fixes what the old hand-rolled row
-    got wrong: five identical FULL marks beside the text "4.8", the exact
-    self-contradiction rating() was built to eliminate. One component, so
-    reviews and the product page can never disagree on what a rating looks
-    like.
+    Dark testimonial card to Ahmed's reference (2026-07-29): a large accent-
+    yellow opening quote, the testimonial, then an avatar with name and city.
+
+    The avatar is the reviewer's INITIALS, not a photo — there are no real
+    customer portraits and this project does not invent them (the same rule
+    that left the branch phones missing). The star rating is dropped here on
+    purpose; the quote glyph carries the section now. rating() still lives on
+    the product page, so the two are just different treatments, not a drift.
+
+    Colours are hand-checked for AA on the #14432f card: white/90 body ~8:1,
+    white/75 city ~6.5:1, white initials on the #185039 avatar ~8:1.
     """
+    parts = [w for w in name.split() if w]
+    initials = "".join(w[0] for w in parts[:2])
     return f"""
-          <article class="flex flex-col gap-4">
-            {rating(score)}
-            <p class="text-neutral-800 text-base xl:text-lg leading-7">{e(text)}</p>
-            <p class="font-semibold text-neutral-secondary text-sm">{e(name)} — {e(city)}</p>
+          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] h-full">
+            <span class="block w-10 xl:w-12 h-10 xl:h-12 text-accent-yellow" aria-hidden="true">{ICON['quote']}</span>
+            <p class="flex-1 text-white/90 text-base xl:text-lg leading-8">{e(text)}</p>
+            <div class="flex items-center gap-3">
+              <span class="place-items-center grid bg-primary rounded-full font-bold text-white shrink-0 size-11" aria-hidden="true">{e(initials)}</span>
+              <span class="flex flex-col min-w-0">
+                <span class="font-bold text-white text-sm truncate">{e(name)}</span>
+                <span class="text-white/75 text-xs truncate">{e(city)}</span>
+              </span>
+            </div>
           </article>"""
 
 

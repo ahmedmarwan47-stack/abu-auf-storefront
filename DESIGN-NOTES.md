@@ -229,10 +229,11 @@ breaks. Per-page content is only what we genuinely have per product:
   it; **`maamoul-offer-2-chocolate-1-cinnamon-1-plain` (62393) and
   `cranberry-25-gm` (1631) have none** — the client never wrote any — and
   render without a description rather than with invented prose.
-- **The reassurance strip is on every page** — product benefits on the hero,
-  the `SERVICE_ITEMS` service trio on the other 98 (see the strip's own
-  section below). Initially hero-only; Ahmed asked for the layout to be
-  uniform across products the same day.
+- **The reassurance strip is on every page, and reads as product benefits on
+  all 99** — the client's own benefit lines where they exist (65 pages), a
+  `GENERIC_BENEFITS` trio where they don't (34), and the hero's hand-written
+  tiles (1). The old `SERVICE_ITEMS` delivery/returns/branch strip is gone
+  (Ahmed, 2026-07-29 — see the strip's own section below).
 - **The bundle block builds from the product's own category** and is dropped
   below two companions.
 - **The placeholder `4.8 (126 تقييم)` rating is now on 99 pages, not one.**
@@ -339,6 +340,7 @@ on-brand, and it is **not** the client's approved copy.
 | Blog & recipes (`build/pages/_posts.py`) | 6 posts; the live blog is client-rendered so its Arabic copy is not scrapable |
 | Home page reviews | 4 invented testimonials with invented names. **There is no real substitute** — see below |
 | Account pages | Sample customer "محمد عادل", order numbers and wallet balances are illustrative |
+| Generic product-benefit tiles (`GENERIC_BENEFITS` in `build/pages/product.py`) | `منتج مختار بعناية` / `طازج وعالي الجودة` / `جودة أبو عوف المضمونة`, shown on the 34 products with no client benefit copy. Brand-level reassurance, no auditable SKU claim. Needs sign-off or replacement with real per-product benefits |
 | **All English strings** in the `EN` dictionary in `scripts.js` | Standard commerce terminology written in-house — `Offers & Discounts`, `Checkout`, `View cart`. Not the client's wording. **Product names are the one exception** — those are real catalogue data |
 
 ### Cart figures — now matching the live site
@@ -437,12 +439,24 @@ any other product saw the page change template.
 |---|---|
 | 3 benefit tiles from client copy | 59 |
 | 2 benefit tiles from client copy | 6 |
-| service strip (client wrote no benefits) | 34 |
+| generic benefit trio (client wrote no benefits) | 34 |
 
-**The 34 are the honest limit, not an oversight.** Those products have no
-benefits list in the scrape at all, and the alternative is writing product
-claims on the client's behalf — the same line the branch phone numbers and
-the compare-at prices were held to.
+**Update (2026-07-29):** the 34 fallback pages previously showed the
+delivery / returns / branch-count **service strip**, which Ahmed reported read
+as a delivery notice sitting where every other product shows benefits — a
+developer opening two pages saw two different spec rows. Those 34 now fall back
+to `GENERIC_BENEFITS`, a generic **product-benefit** trio (`منتج مختار بعناية`
+/ `طازج وعالي الجودة` / `جودة أبو عوف المضمونة`), so the spec row reads as
+product benefits on all 99 pages. `SERVICE_ITEMS` and the `BRANCH_COUNT` import
+are removed from `product.py`. The generic copy is **in-house Arabic pending
+client sign-off** — see §2 — deliberately brand-level with no auditable
+supply-chain claim, the same restraint as the hero copy.
+
+**The 34 having no client copy is the honest limit, not an oversight.** Those
+products have no benefits list in the scrape at all, and the alternative is
+writing product-specific claims on the client's behalf — the same line the
+branch phone numbers and the compare-at prices were held to. The generic trio
+sidesteps that by staying brand-level rather than making a claim about the SKU.
 
 Two details worth keeping:
 

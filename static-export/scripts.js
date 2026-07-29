@@ -1048,16 +1048,23 @@
                 ${
                   checkout
                     ? ""
-                    : `<button type="button" data-open="search" aria-label="بحث" class="btn-elevate place-items-center grid bg-cta hover:bg-cta-hover border-2 border-cta rounded-full size-12">
+                    : `<!-- Rest fill is the DARKER-than-masthead green, hover goes
+                            darker still. It used to hover to bg-cta-hover (#185039),
+                            which is the masthead's own colour, so the circle vanished
+                            into the bar on hover - Ahmed reported it. Default is now
+                            the lighter of the two, hover the darker. -->
+                       <button type="button" data-open="search" aria-label="بحث" class="btn-elevate place-items-center grid bg-cta hover:bg-primary-900 rounded-full size-12">
                          <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
                        </button>`
                 }
-                <button type="button" data-open="cart" aria-label="السلة" class="btn-elevate relative place-items-center grid bg-accent-yellow hover:bg-accent-500 rounded-full text-[#163300] size-12">
+                <!-- Same green circle as search; the yellow accent moved onto the
+                     count badge below. Icon is white on the green. -->
+                <button type="button" data-open="cart" aria-label="السلة" class="btn-elevate relative place-items-center grid bg-cta hover:bg-primary-900 rounded-full text-white size-12">
                   <span class="w-7 h-7" data-cart-glyph>${ICON.cart}</span>
-                  <!-- Brand ink on a white ring rather than a bare white dot:
-                       the ring separates it from the yellow button underneath,
-                       and white-on-#163300 keeps AA with room to spare. -->
-                  <span class="-top-2 -end-2 absolute place-items-center grid bg-cta ring-2 ring-white px-1.5 rounded-full min-w-[22px] h-[22px] font-bold text-white text-xs latin" data-cart-count>2</span>
+                  <!-- Yellow chip, ringed in the masthead's own green so the ring
+                       reads as background rather than an outline - the badge looks
+                       cropped into the button corner. Dark ink on yellow keeps AA. -->
+                  <span class="-top-2 -end-2 absolute place-items-center grid bg-accent-yellow ring-2 ring-primary px-1.5 rounded-full min-w-[22px] h-[22px] font-bold text-[#163300] text-xs latin" data-cart-count>2</span>
                 </button>
               </div>
             </div>
@@ -1144,9 +1151,11 @@
                    <button type="button" data-open="search" class="place-items-center grid shrink-0 size-11" aria-label="بحث">
                      <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
                    </button>
-                   <button type="button" data-open="cart" class="relative place-items-center grid bg-accent-yellow shrink-0 rounded-full text-[#163300] size-11" aria-label="السلة">
+                   <button type="button" data-open="cart" class="relative place-items-center grid bg-cta shrink-0 rounded-full text-white size-11" aria-label="السلة">
                      <span class="w-7 h-7" data-cart-glyph>${ICON.cart}</span>
-                     <span class="-top-1 -end-1 absolute place-items-center grid bg-cta ring-2 ring-white rounded-full w-5 h-5 font-bold text-[10px] text-white latin" data-cart-count>2</span>
+                     <!-- Yellow chip ringed in the masthead green, matching the
+                          desktop badge so the two mastheads never disagree. -->
+                     <span class="-top-1 -end-1 absolute place-items-center grid bg-accent-yellow ring-2 ring-primary rounded-full w-5 h-5 font-bold text-[10px] text-[#163300] latin" data-cart-count>2</span>
                    </button>
                  </div>`
           }
@@ -3810,6 +3819,90 @@
   }
 
   /* ---------------------------------------------------------------
+     Sticky buy bar (product page)
+
+     A re-CTA that appears once the real buy block has scrolled ABOVE the
+     viewport: fixed to the bottom on mobile, and parked under the sticky nav
+     at the top on desktop. It owns NO state — its −/＋ and CTA forward to the
+     real cart-bound stepper and buy button, and its title/price/quantity
+     mirror them, so there is exactly one writer of the cart (the existing
+     delegated handlers).
+
+     Show/hide keys off `boundingClientRect.top < 0`, not plain
+     `!isIntersecting`: on mobile the buy block starts BELOW the fold, and a bar
+     that appeared before the shopper had even reached the product would be
+     noise. It shows only after the block has left past the TOP.
+     --------------------------------------------------------------- */
+  function initStickyBuyBar() {
+    const bar = document.querySelector("[data-sticky-buybar]");
+    if (!bar) return;
+    const buyBlock = document.querySelector("[data-buy-block]");
+    const host = buyBlock && buyBlock.closest("[data-product]");
+    if (!buyBlock || !host) return;
+
+    const mainStepper = host.querySelector("[data-cart-bound]");
+    const mainBuy = host.querySelector("[data-buy-cta]");
+    const mainPrice = host.querySelector("[data-price-display]");
+    const mainQty = mainStepper && mainStepper.querySelector("[data-qty]");
+    const barPrice = bar.querySelector("[data-sticky-price]");
+    const barQty = bar.querySelector("[data-sticky-qty]");
+
+    // Mirror the real controls' text. Idempotent, so it can run on any signal
+    // that might have moved either number.
+    const mirror = () => {
+      if (barPrice && mainPrice) barPrice.textContent = mainPrice.textContent;
+      if (barQty && mainQty) barQty.textContent = mainQty.textContent;
+    };
+
+    // Forward, don't duplicate: the bar drives the real controls so the cart
+    // keeps a single writer. The +/− mirror the stepper; the CTA mirrors the
+    // real buy button, which opens the side cart once the quantity is set.
+    bar.addEventListener("click", (e) => {
+      const step = e.target.closest("[data-sticky-step]");
+      if (step) {
+        if (mainStepper) {
+          const real = mainStepper.querySelector(
+            '[data-step="' + step.getAttribute("data-sticky-step") + '"]',
+          );
+          if (real) real.click();
+        }
+        return;
+      }
+      if (e.target.closest("[data-sticky-buy]") && mainBuy) mainBuy.click();
+    });
+
+    // A size chip fires no cart:change but does repoint the price, and the
+    // quantity rolls its own text node — so watch the nodes themselves rather
+    // than only the store.
+    if (window.MutationObserver) {
+      const mo = new MutationObserver(mirror);
+      const opts = { childList: true, characterData: true, subtree: true };
+      if (mainPrice) mo.observe(mainPrice, opts);
+      if (mainQty) mo.observe(mainQty, opts);
+    }
+    document.addEventListener("cart:change", mirror);
+    mirror();
+
+    // Visible only once the block has left past the top edge.
+    if (window.IntersectionObserver) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((en) => {
+            const past = !en.isIntersecting && en.boundingClientRect.top < 0;
+            bar.classList.toggle("is-visible", past);
+            bar.setAttribute("aria-hidden", past ? "false" : "true");
+            // Lets styles.css drop the floating search/cart pill below the bar
+            // on desktop, where the two share the top edge (see .buybar-shown).
+            document.documentElement.classList.toggle("buybar-shown", past);
+          });
+        },
+        { threshold: 0 },
+      );
+      io.observe(buyBlock);
+    }
+  }
+
+  /* ---------------------------------------------------------------
      Points discount (the "خصم المبلغ" banner on cart and checkout)
 
      Stored, not held in a variable: the shopper applies it on the cart page
@@ -5157,6 +5250,9 @@
     // stored English preference only styled the chrome.
     applyLangToContent();
     window.kInit(document);
+    // Once per page, after the buy block and its host are in the DOM. Guards
+    // itself off [data-sticky-buybar], so it is a no-op everywhere but product.
+    initStickyBuyBar();
   }
 
   if (document.readyState === "loading") {

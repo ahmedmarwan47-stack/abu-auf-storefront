@@ -23,7 +23,7 @@ ours — same rule as the branch phone numbers.
 import re
 from html import unescape
 
-from catalog import BRANCH_COUNT, PRODUCTS, e, in_category, money, rail_products, title
+from catalog import PRODUCTS, e, in_category, money, rail_products, title
 from components import (
     ICON, accordion, best_seller_badge, button, carousel, page, page_header,
     product_card, product_gallery, qty_stepper, rating, recipe_card,
@@ -90,17 +90,24 @@ BENEFIT_ITEMS = [
     ("shield", "مذاق ناعم", "مناسب للتحضير اليومي"),
 ]
 
-# The reassurance strip every OTHER product page carries, so the layout is
-# uniform across all 99 (Ahmed, 2026-07-22 — a product opened after the hero
-# looked like a different template). Exactly what trust_row's contract asks
-# for: every claim restates something this site already says elsewhere —
-# the two-hour delivery row lower on this same page, the 14-day window on
-# return-policy.html, and the real branch count from branches.json. The
-# branch number is computed, not typed, so it moves with the data.
-SERVICE_ITEMS = [
-    ("truck", "توصيل خلال ساعتين", "في القاهرة الكبرى"),
-    ("return", "استرجاع خلال 14 يوم", "من تاريخ الاستلام"),
-    ("store", f"+{BRANCH_COUNT} فرعاً في مصر", "في 25 محافظة"),
+# Generic benefit trio, shown on the products the client never wrote benefit
+# copy for (35 of 99). It used to be the site-service strip (delivery / returns
+# / branch count), which read as a delivery notice sitting where every other
+# product shows benefits — a developer opening two pages saw two different
+# spec rows (Ahmed, 2026-07-29: "make it generic for consistency and developer
+# hand-off, I don't want to confuse them"). Now the spec row is product benefits
+# on all 99: the client's own lines where they exist, this generic set where
+# they don't.
+#
+# Brand-level reassurance only — no auditable supply-chain claim (nothing like
+# "third-party tested"), same restraint as the hero copy. Still OUR unsigned
+# Arabic; flagged in DESIGN-NOTES pending client sign-off like every other
+# in-house string in this build. Single-line tiles (empty subtitle) so they
+# match the shape of the client-benefit tiles beside them.
+GENERIC_BENEFITS = [
+    ("leaf", "منتج مختار بعناية", ""),
+    ("bolt", "طازج وعالي الجودة", ""),
+    ("shield", "جودة أبو عوف المضمونة", ""),
 ]
 
 BENEFITS = """
@@ -122,6 +129,26 @@ RECIPES = [
      "وصفة سهلة تجمع بين حلاوة التمر ودفء القرفة، جاهزة في أقل من ساعة.", 45),
     ("images/abuauf/site/big.webp", "الوصفات", "فتوتشيني ألفريدو دجاج مع الكاجو",
      "طبق كريمي غني بالمكسرات، مناسب لعشاء سريع في نص ساعة.", 30),
+]
+
+# Generic product FAQ — IDENTICAL on all 99 pages by design (Ahmed, 2026-07-29).
+# There is no per-product FAQ data in the catalogue, and this project does not
+# invent product content, so every answer here restates something the site
+# already commits to elsewhere: the two-hour delivery row on this same page, the
+# 14-day window on return-policy.html, and the size chips above. Storage and
+# freshness are generic handling advice, not a claim about this SKU. Making it
+# uniform is the point — the developer handoff gets one FAQ component that is the
+# same on every page rather than a section that appears only where data exists.
+_P = 'class="text-neutral-800 leading-7"'
+FAQ_ITEMS = [
+    ("كم يستغرق توصيل الطلب؟",
+     f'<p {_P}>التوصيل خلال ساعتين داخل القاهرة الكبرى، ويصل إلى باقي المحافظات حسب المنطقة. يمكنك تغيير منطقة التوصيل من أعلى الصفحة.</p>'),
+    ("هل يمكنني استرجاع المنتج؟",
+     f'<p {_P}>نعم، يمكنك الاسترجاع خلال 14 يوماً من تاريخ الاستلام وفق سياسة الاسترجاع المتبعة.</p>'),
+    ("كيف أحافظ على المنتج طازجاً؟",
+     f'<p {_P}>يُحفظ المنتج في مكان جاف بعيداً عن الرطوبة وأشعة الشمس المباشرة ومصادر الحرارة للحفاظ على نكهته وطزاجته.</p>'),
+    ("هل تتوفر أحجام أو عبوات أخرى؟",
+     f'<p {_P}>تختلف الأحجام المتاحة حسب المنتج، وتظهر خيارات الحجم أعلى الصفحة عند توفر أكثر من عبوة.</p>'),
 ]
 
 
@@ -174,13 +201,6 @@ def _render(p):
         if on_sale else ""
     )
 
-    # Companions come from the product's OWN category now — the bundle was
-    # hardcoded to dates, which read absurdly under a bag of parmesan popcorn.
-    # Fewer than two companions and the block is dropped: "بضاعة تُشترى معاً"
-    # with one item is a claim the layout itself contradicts.
-    bundle = [x for x in in_category(p["category"]) if x["id"] != p["id"]][:3]
-    bundle_total = sum(x["price"] for x in bundle) + p["price"]
-
     similar = [x for x in in_category(p["category"]) if x["id"] != p["id"]][:10]
     more = rail_products("Nuts | Seeds & Crackers", "Coffee & Beverages", limit=10)
 
@@ -208,63 +228,47 @@ def _render(p):
     # catalog.json is a single line reading "100جرام", which is the pack
     # weight the size chips already show, so deriving from it would be a
     # downgrade. Everything else derives from the client's `descHtmlAr`, and
-    # falls back to the service trio only where the client wrote no benefits
-    # at all (35 of 99).
-    trust_html = trust_row(BENEFIT_ITEMS) if hero else product_benefits(p, SERVICE_ITEMS)
+    # falls back to GENERIC_BENEFITS — a generic PRODUCT-benefit trio, not the
+    # old service strip — only where the client wrote no benefits at all (35 of
+    # 99), so the spec row reads as benefits on every page.
+    trust_html = trust_row(BENEFIT_ITEMS) if hero else product_benefits(p, GENERIC_BENEFITS)
 
-    # Rating and social proof share a row, split by a hairline, so the two
-    # signals read as one block of evidence. The rating numbers are still
-    # placeholder (the client's review endpoint returns average_rating "0"
-    # for every product); the proof line beside it is real and renders only
-    # for genuinely top-ranked products. Both flagged in DESIGN-NOTES.
-    proof = sold_proof(p)
-    proof_row = (
-        f'<span aria-hidden="true" class="bg-neutral-divider w-px h-4"></span>\n                {proof}'
-        if proof else ""
-    )
-
-    bundle_section = f"""
-      <!-- ==================== FREQUENTLY BOUGHT TOGETHER ==================== -->
-      <section data-reveal class="py-8">
-        <div class="mx-auto px-4 max-w-[1536px]">
-          <!-- data-bundle-base is THIS product's price: the total covers the
-               product being viewed plus whichever companions are still
-               ticked, so unticking one has to take it back off. -->
-          <!-- data-product as well as data-bundle: productFrom() only reads
-               a [data-product] host, so without it the block described this
-               product but could not contribute it to its own bundle. -->
-          <div class="bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]"
-               data-bundle data-product data-bundle-base="{p['price']}"
-               data-id="{p.get('id', 0)}" data-name="{e(title(p))}"
-               data-price="{p['price']}" data-image="{e(p['image'])}">
-            <h2 class="mb-6 font-bold text-[#062A1C] text-xl xl:text-2xl">عادة ما يتم شراؤه معاً: أضف هذه العناصر</h2>
-            <div class="items-center gap-6 lg:gap-8 grid grid-cols-1 lg:grid-cols-[1fr_auto]">
-              <div class="flex flex-col min-w-0">{"".join(bundle_item(x) for x in bundle)}
-              </div>
-              <div class="flex flex-col items-center gap-3 bg-interaction-base p-6 rounded-xl">
-                <span class="text-neutral-secondary text-sm">الإجمالي</span>
-                <span class="font-bold text-[#062A1C] text-2xl latin" data-bundle-total>EGP {money(bundle_total)}</span>
-                <!-- data-bundle-add, NOT data-add-to-cart: this button adds
-                     several products, so it cannot go through the single
-                     product handler, which is exactly why it silently did
-                     nothing before. -->
-                <button type="button" data-bundle-add class="bg-cta hover:bg-cta-hover px-8 py-3 rounded-full font-semibold text-white text-sm whitespace-nowrap transition-colors">
-                  أضف الجميع الى السلة
-                </button>
-              </div>
+    # Related products — an INTERACTIVE "you may also like" widget in the sticky
+    # media column (Ahmed, 2026-07-29): each row a checkbox, a running total and
+    # an "add all" button, reusing the bundle machinery in scripts.js. It is a
+    # [data-bundle] box with NO data-product and no data-bundle-base, so both the
+    # total and the add cover the RELATED items only — the current product is not
+    # folded in the way "frequently bought together" folds it (productFrom walks
+    # up and finds no [data-product] host on this side, so the base is empty).
+    # Capped to four so the media side stays shorter than the scrollable info
+    # side; dropped entirely when the category has no companions.
+    related_list = ""
+    if similar:
+        picks = similar[:4]
+        related_total = sum(x["price"] for x in picks)
+        rows = "".join(bundle_item(x) for x in picks)
+        related_list = f"""
+          <div data-bundle class="flex flex-col bg-white shadow-custom4 p-4 xl:p-5 rounded-[20px]">
+            <h2 class="mb-1 px-2 font-bold text-[#062A1C] text-base xl:text-lg">قد يعجبك أيضاً</h2>
+            <div class="flex flex-col">{rows}
             </div>
-          </div>
-        </div>
-      </section>""" if len(bundle) >= 2 else ""
+            <div class="flex flex-wrap justify-between items-center gap-3 mt-3 px-2 pt-3 border-neutral-divider border-t">
+              <div class="flex flex-col">
+                <span class="text-neutral-secondary text-xs">الإجمالي</span>
+                <span class="font-bold text-[#062A1C] text-lg latin" data-bundle-total>EGP {money(related_total)}</span>
+              </div>
+              <button type="button" data-bundle-add class="bg-cta hover:bg-cta-hover px-5 py-2.5 rounded-full font-semibold text-white text-sm whitespace-nowrap transition-colors">أضف الكل للسلة</button>
+            </div>
+          </div>"""
 
-    similar_section = f"""
-      <!-- ========================= SIMILAR PRODUCTS ========================= -->
-      <section data-reveal class="py-12">
-        <div class="mx-auto px-4 max-w-[1536px]">
-          {section_heading("منتجات مشابهة", "عرض المزيد", "shop-category.html")}
-          {carousel("".join(product_card(x) for x in similar))}
-        </div>
-      </section>""" if similar else ""
+    # Generic FAQ, same on every page — sits in the scrollable info column
+    # beneath the client's benefits accordion. See FAQ_ITEMS for why it is
+    # uniform rather than per-product.
+    faq_html = f"""
+            <div class="flex flex-col gap-2">
+              <h2 class="mt-1 font-bold text-[#062A1C] text-lg xl:text-xl">الأسئلة الشائعة</h2>
+              {accordion(FAQ_ITEMS)}
+            </div>"""
 
     # Breadcrumb category read off the product, not typed in — it said
     # "التمور والفواكه المجففة" on a coffee page until this was made dynamic.
@@ -276,14 +280,21 @@ def _render(p):
       <section class="pt-6 pb-12">
         <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 max-w-[1536px]">
 
-          <!-- Gallery FIRST in the DOM, so the media leads the reading order in
+          <!-- Media column FIRST in the DOM, so it leads the reading order in
                both directions: in RTL (the default) first means the RIGHT
-               column, in LTR the left one. Both are the side the shopper's eye
-               starts on, which is where the product photo belongs.
-               `items-start` on the grid above is load-bearing — it is what lets
-               the gallery be sticky without the column stretching to the full
-               row height and pinning it in place. -->
-          {product_gallery(p.get("images") or [p["image"]], title(p))}
+               column, in LTR the left one. It holds the gallery AND the related
+               list, and the WHOLE column is the sticky one now — `items-start`
+               on the grid is load-bearing, it is what lets a grid child be
+               shorter than its row so sticky has room to move. Sticky scoped to
+               lg; below it the columns stack and there is nothing to scroll
+               past. Works only because <main> is overflow-x-clip (see page()).
+               On mobile the gallery and related list simply stack in DOM order
+               (gallery, then related) — Ahmed asked to leave the mobile order
+               as-is rather than reorder the related list to the bottom. -->
+          <div class="flex flex-col gap-6 min-w-0 lg:self-start lg:sticky lg:top-[60px]">
+          {product_gallery(p.get("images") or [p["image"]], title(p), p)}
+          {related_list}
+          </div>
 
           <!-- Details second: the RTL-left / LTR-right column. data-product
                lets the cart store read this product straight off the DOM, same
@@ -296,7 +307,7 @@ def _render(p):
               <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">{e(title(p))}</h1>
               <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
                 {rating("4.8", 126)}
-                {proof_row}
+                {sold_proof(p)}
               </div>
             </div>
             {desc_html}
@@ -331,12 +342,20 @@ def _render(p):
                  "اضف الى السلة" button that committed the stepper's number;
                  Ahmed's point is that if the counter is bound to the cart, the
                  commit step has nothing left to do. -->
-            <div class="flex items-center gap-3">
+            <!-- data-buy-block: the sticky re-CTA watches this row and appears
+                 once it has scrolled above the viewport. -->
+            <div data-buy-block class="flex items-center gap-3">
 {qty_stepper(cart_bound=True)}
               <button type="button" data-buy-cta class="flex-1 bg-cta hover:bg-cta-hover py-4 rounded-full font-semibold text-white text-base transition-colors">
                 اشتري الان
               </button>
             </div>
+
+            <!-- Divider between the CTA and the product specs below it. It is a
+                 plain flex child, so it sits inside the card's own p-6/xl:p-8
+                 padding and lines up with every other row rather than bleeding
+                 to the card edges (Ahmed, 2026-07-29). -->
+            <div class="border-neutral-divider border-t" role="separator"></div>
 
             {trust_html}
 
@@ -349,10 +368,10 @@ def _render(p):
             </div>
 
             {acc_html}
+            {faq_html}
           </div>
         </div>
       </section>
-{bundle_section}
 
       <!-- ============================= RECIPES ============================= -->
       <section data-reveal class="bg-interaction-base py-12">
@@ -362,7 +381,6 @@ def _render(p):
           </div>
         </div>
       </section>
-{similar_section}
 
       <!-- =========================== MORE FROM US =========================== -->
       <section data-reveal class="pb-12">
@@ -370,7 +388,45 @@ def _render(p):
           {section_heading("تسوق اكتر من أبو عوف", "عرض المزيد", "shop.html")}
           {carousel("".join(product_card(x) for x in more))}
         </div>
-      </section>"""
+      </section>
+
+      <!-- ========================= STICKY BUY BAR =========================
+           A re-CTA that appears once the real buy block scrolls above the
+           viewport: fixed to the BOTTOM on mobile, and under the sticky nav at
+           the TOP on desktop (lg). It owns no state — its −/＋ and CTA forward
+           to the real cart-bound stepper and buy button, and its title/price/
+           quantity mirror them, so there is one writer of the cart. Enter/exit
+           and the hidden rest state live in styles.css (.sticky-buybar); JS
+           only toggles .is-visible. -->
+      <div data-sticky-buybar aria-hidden="true"
+           class="sticky-buybar fixed inset-x-0 bottom-0 lg:bottom-auto lg:top-12 z-30
+                  bg-white border-neutral-divider border-t lg:border-t-0 lg:border-b">
+        <div class="flex items-center gap-3 lg:gap-6 mx-auto px-4 max-w-[1536px] py-3">
+          <img src="{e(p['image'])}" alt=""
+               class="hidden sm:block bg-interaction-base p-1 rounded-xl w-12 xl:w-14 h-12 xl:h-14 object-contain shrink-0" />
+          <div class="flex flex-col flex-1 min-w-0">
+            <p class="font-bold text-[#062A1C] text-sm xl:text-base truncate">{e(title(p))}</p>
+            <span data-sticky-price class="font-bold text-primary text-sm xl:text-base latin">EGP {money(p['price'])}</span>
+          </div>
+          <!-- Quantity mirror — buttons forward to the real cart-bound stepper.
+               dir="ltr" so the + always sits on the RIGHT (Ahmed, 2026-07-29):
+               in the page's RTL flow the − would otherwise take the right slot.
+               The digit is latin already, so forcing LTR here changes nothing
+               but the button order. -->
+          <div dir="ltr" class="inline-flex items-center gap-1 bg-white p-1 border border-neutral-divider rounded-full shrink-0">
+            <button type="button" data-sticky-step="-1" aria-label="إنقاص"
+                    class="place-items-center grid border border-neutral-divider hover:bg-interaction-base rounded-full size-9 text-[#062A1C] transition-colors"><span class="w-4 h-4">{ICON['minus']}</span></button>
+            <span data-sticky-qty class="min-w-[2ch] font-bold text-[#062A1C] text-sm text-center latin">1</span>
+            <button type="button" data-sticky-step="1" aria-label="زيادة"
+                    class="place-items-center grid bg-cta hover:bg-cta-hover rounded-full size-9 text-white transition-colors"><span class="w-4 h-4">{ICON['plus']}</span></button>
+          </div>
+          <!-- Buy now — forwards to the real buy CTA, which opens the side cart
+               after the quantity is set (Ahmed, 2026-07-29). This mirrors the
+               main block's own button; it is deliberately NOT a plain add. -->
+          <button type="button" data-sticky-buy
+                  class="bg-cta hover:bg-cta-hover px-5 xl:px-8 py-2.5 rounded-full font-semibold text-white text-sm whitespace-nowrap transition-colors shrink-0">اشتري الان</button>
+        </div>
+      </div>"""
 
     return page(
         f"{title(p)} | أبو عوف",

@@ -147,33 +147,13 @@
                   
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 91</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          ><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -190,7 +170,7 @@
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
@@ -225,33 +205,13 @@
                   
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 82.5</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          ><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -268,7 +228,7 @@
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
@@ -303,33 +263,13 @@
                   
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 82.5</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          ><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -346,7 +286,7 @@
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
@@ -381,33 +321,13 @@
                   
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 91</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          ><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -424,7 +344,7 @@
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
@@ -459,33 +379,13 @@
                   
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 110</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          ><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -502,7 +402,7 @@
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
@@ -537,33 +437,13 @@
                   
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 110</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          ><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -580,7 +460,7 @@
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
@@ -615,33 +495,13 @@
                   
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 200</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          ><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -658,7 +518,7 @@
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
@@ -693,33 +553,13 @@
                   
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 160</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          ><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -736,7 +576,7 @@
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
@@ -771,33 +611,13 @@
                   
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 155</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          ><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -814,7 +634,7 @@
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
@@ -849,33 +669,13 @@
                   
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 308</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          ><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -892,7 +692,7 @@
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
@@ -927,33 +727,13 @@
                   
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 99</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          ><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -970,7 +750,7 @@
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
@@ -1005,33 +785,13 @@
                   
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 99</span>
                 </div>
-                <!-- flex-wrap + the SAME flex-basis on both controls.
-                     In the 2-column listing grid the card is 128.5px wide at
-                     320, so 96.5px of content — which fits neither the add
-                     button on one readable line nor the stepper beside the
-                     heart. An equal basis makes both wrap to their own line at
-                     the same width, so swapping one for the other never
-                     changes the card's height.
-
-                     basis, NOT min-width: basis drives the line break AND
-                     still lets the control shrink once it is alone on its
-                     line. min-width did one or the other, never both — at 104
-                     it overflowed the 96.5px card at 320, and at 88 it stayed
-                     wedged beside the heart at 414 and squeezed the taps to
-                     38px. 104px = 44 + 16 + 44, the stepper at full tap size.
-
-                     `grow shrink basis-*` rather than `flex-1 basis-*`:
-                     Tailwind emits the `flex` shorthand after `basis`, so
-                     flex-1 would quietly reset the basis to 0. -->
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <!-- Saved state is carried by aria-pressed alone, so the
-                       accessible state and the painted state cannot drift;
-                       styles.css swaps the icon off that selector. -->
-                  <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة"
-                          class="fav-btn btn-elevate place-items-center grid hover:bg-interaction-base border border-neutral-divider rounded-full text-cta shrink-0 size-11"
-                          ><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="pt-2">
                   <button type="button" data-add-to-cart
-                          class="btn-elevate grow shrink basis-[104px] bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces
@@ -1048,7 +808,7 @@
                        an item already in the cart reads as settled rather than
                        shouting as loudly as the button that put it there. -->
                   <div data-card-stepper hidden
-                       class="card-stepper flex grow shrink basis-[104px] min-w-0 items-center rounded-full h-11">
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                     <!-- The visible circle is the inner .stepper-face, NOT the
                          button. The face is 36px, inset 4px like the product
                          page's padded counter, while the button stays the
