@@ -1421,7 +1421,7 @@
     <aside data-drawer="cart" class="side-drawer side-drawer--right" aria-label="سلة التسوق">
       <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
         <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("سلة التسوق"))}</h2>
-        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 -me-2 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
       </div>
       <div class="flex-1 px-5 overflow-y-auto">
         <div data-cart-lines></div>
@@ -1484,7 +1484,7 @@
           <input type="search" id="site-search" data-search-input autocomplete="off"
                  placeholder="ابحث عن قهوة، مكسرات، تمور…"
                  class="flex-1 bg-transparent outline-none min-w-0 text-[#062A1C] text-base" />
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-11 h-11 text-[#062A1C] shrink-0" aria-label="إغلاق">${ICON.close}</button>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-11 h-11 -me-2 text-[#062A1C] shrink-0" aria-label="إغلاق">${ICON.close}</button>
         </div>
 
         <!-- Idle state: the query is empty. These were five links that all
@@ -1540,7 +1540,7 @@
       <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
       <div class="flex justify-between items-center mb-4">
         <h2 id="locale-sheet-title" class="font-bold text-[#062A1C] text-lg">${esc(t("الدولة واللغة"))}</h2>
-        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 -me-2 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
       </div>
       <div class="flex flex-col gap-5">
         <fieldset class="flex flex-col gap-2">
@@ -1580,7 +1580,7 @@
       <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[440px] overflow-hidden" data-modal-box>
         <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
           <h2 class="font-bold text-[#062A1C] text-lg" data-address-form-title>${esc(t("اضف عنوان"))}</h2>
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 -me-2 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
         </div>
         <form data-address-form data-address-id="" class="flex flex-col gap-3 p-5">
           <label class="block">
@@ -1616,7 +1616,7 @@
       <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
       <div class="flex justify-between items-center mb-4">
         <h2 class="font-bold text-[#062A1C] text-lg">أختار منطقة التوصيل</h2>
-        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 -me-2 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
       </div>
       <form data-location-form class="flex flex-col gap-3">
         <label class="block">
@@ -1647,7 +1647,7 @@
       <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[480px] overflow-hidden" data-modal-box>
         <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
           <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("اختر الفرع"))}</h2>
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 -me-2 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
         </div>
         <div class="flex flex-col gap-3 p-5">
           <label class="block">
@@ -1670,7 +1670,7 @@
       <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[480px] overflow-hidden" data-modal-box>
         <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
           <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("حدد اليوم والوقت"))}</h2>
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 -me-2 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
         </div>
         <div class="flex flex-col gap-4 p-5">
           <!-- The arrows sit OUTSIDE [data-sched-days] deliberately:
@@ -2864,6 +2864,92 @@
   })();
 
   window.abuaufFavs = Favs;
+
+  /* ---------------------------------------------------------------
+     Recently viewed — window.abuaufRecent, localStorage `abuauf:recent`.
+
+     Same store contract as Cart and Favs: load once, mutate through one
+     object, persist to localStorage, broadcast a `recent:change`
+     CustomEvent on every write. No seed data, unlike Cart/Favs — those
+     exist so a first-ever visit is not empty by design; a shopper who has
+     genuinely viewed nothing yet SHOULD see nothing here.
+
+     Holds each product's own id/name/price/image, captured off the page's
+     `[data-record-view]` host at view time (via `productFrom`, the same
+     helper the cart uses) rather than a bare id resolved against
+     catalog.json later. `loadCatalog()` is documented as the ONE feature
+     that fetches the catalogue, and everything else works from file:// —
+     keeping this store self-contained, like the cart and favourites cards,
+     means the "previously seen" rail does not quietly become a second
+     fetch dependency.
+     --------------------------------------------------------------- */
+  const RECENT_KEY = "abuauf:recent";
+  const RECENT_MAX = 12;
+
+  const Recent = (function () {
+    let items = [];
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(RECENT_KEY);
+        items = raw === null ? [] : JSON.parse(raw);
+        if (!Array.isArray(items)) items = [];
+      } catch (e) {
+        items = [];
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(RECENT_KEY, JSON.stringify(items));
+      } catch (e) {
+        /* private mode — state still lives for this page view */
+      }
+    }
+
+    function emit(reason) {
+      save();
+      document.dispatchEvent(
+        new CustomEvent("recent:change", {
+          detail: { reason: reason, items: items.slice(), count: items.length },
+        }),
+      );
+    }
+
+    return {
+      init: function () {
+        load();
+      },
+      items: function () {
+        return items.slice();
+      },
+      // Most-recently-viewed first, with `id` excluded — a product's own
+      // page must never list itself among "شاهدت هذا مؤخراً".
+      exclude: function (id) {
+        return items.filter((x) => String(x.id) !== String(id));
+      },
+      add: function (product) {
+        if (!product || !product.id) return this;
+        items = items.filter((x) => String(x.id) !== String(product.id));
+        items.unshift({
+          id: product.id,
+          name: product.name,
+          price: Number(product.price) || 0,
+          image: product.image,
+        });
+        if (items.length > RECENT_MAX) items.length = RECENT_MAX;
+        emit("add");
+        return this;
+      },
+      clear: function () {
+        items = [];
+        emit("clear");
+        return this;
+      },
+    };
+  })();
+
+  window.abuaufRecent = Recent;
 
   /* ---------------------------------------------------------------
      Demo auth
@@ -4700,6 +4786,69 @@
     });
   }
 
+  /* ---------------------------------------------------------------
+     "شاهدت هذا مؤخراً" — the recently-viewed rail on the product page.
+
+     Renders the SAME card shape as `product_card()` in components.py
+     (`.product-card`, `.product-card__frame`, `[data-card-stepper]` and all)
+     so it drops straight into the existing add-to-cart delegation and
+     `syncCardSteppers()` with no card-specific wiring. It only omits the
+     sale strike-through and the "peek" zoom badge, because a stored view —
+     unlike a card built from catalog.json — never carries `regular`/`sale`.
+     --------------------------------------------------------------- */
+  function recentCardHTML(p) {
+    const id = esc(String(p.id));
+    const name = esc(p.name || "");
+    return `
+      <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0"
+               data-product data-id="${id}" data-name="${name}" data-price="${Number(p.price) || 0}" data-image="${esc(p.image || "")}">
+        <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+          <a href="product-${id}.html" class="product-card__media block relative bg-interaction-base p-4">
+            <img src="${esc(p.image || "")}" alt="${name}" class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+          </a>
+          <div class="flex flex-col flex-1 gap-1.5 p-4">
+            <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
+              <a href="product-${id}.html" data-product-title class="hover:text-primary transition-colors">${name}</a>
+            </h3>
+            <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
+              <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">${egp(Number(p.price) || 0)}</span>
+            </div>
+            <div class="pt-2">
+              <button type="button" data-add-to-cart
+                      class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+              <div data-card-stepper hidden class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
+                <button type="button" data-card-step="-1" aria-label="إنقاص"
+                        class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4">${ICON.minus}</span></span></button>
+                <span data-card-qty class="flex-1 font-bold text-base text-center latin">1</span>
+                <button type="button" data-card-step="1" aria-label="زيادة"
+                        class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4">${ICON.plus}</span></span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>`;
+  }
+
+  function initRecentlyViewed() {
+    Recent.init();
+
+    document.querySelectorAll("[data-recently-viewed]").forEach((section) => {
+      const track = section.querySelector("[data-recent-track]");
+      if (!track) return;
+      const items = Recent.exclude(section.dataset.excludeId);
+      if (!items.length) return;
+      track.innerHTML = items.map(recentCardHTML).join("");
+      section.hidden = false;
+      syncCardSteppers(section);
+    });
+
+    // Record the CURRENT product as viewed AFTER rendering the rail above,
+    // so a product never lists itself the first time its own page loads.
+    const host = document.querySelector("[data-record-view]");
+    const product = host && productFrom(host);
+    if (product) Recent.add(product);
+  }
+
   function initFavsUI() {
     Favs.init();
 
@@ -5247,6 +5396,10 @@
     initCartUI();
     initAuthUI();
     initFavsUI();
+    // Reads/writes localStorage only — no fetch — so it can safely run
+    // before applyLangToContent() and window.kInit() below, which need the
+    // rail's cards (if any) already in the DOM to translate and reveal them.
+    initRecentlyViewed();
     initOrderNotes();
     initReferralCopy();
     initAddresses();

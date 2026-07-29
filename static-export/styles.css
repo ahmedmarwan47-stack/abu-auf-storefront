@@ -34,6 +34,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
   color: #2c3340;
+  /* Site-wide rule (Ahmed, 2026-07-29): never leave a single orphan word
+     alone on the last line of wrapped copy. `text-wrap` is an inherited
+     property, so setting it here reaches every paragraph, heading, list
+     item and button label without per-component classes. Unsupported
+     browsers just keep today's plain wrap — this is additive, not a
+     dependency. */
+  text-wrap: pretty;
 }
 
 /* Latin runs (prices, SKUs, codes) inside Arabic copy. */
@@ -859,6 +866,18 @@ fieldset {
 }
 .fav-btn[aria-pressed="true"] > svg:nth-of-type(2) {
   display: block;
+}
+
+/* Saved heart is solid pink, not the brand CTA green `.fav-btn` paints by
+   default (Ahmed, 2026-07-29) — a deliberate one-off outside the design
+   system's palette, flagged in DESIGN-NOTES §3. `heart_full`'s path is
+   already a solid fill (`fill="currentColor"`, no stroke), so only the
+   colour needs overriding here; the attribute selector outranks the
+   `.text-cta` utility `.fav-btn` also carries, so this wins regardless of
+   stylesheet order (same trick as the sticky-nav and mega-cat selectors
+   noted in CLAUDE.md). */
+.fav-btn[aria-pressed="true"] {
+  color: #e11d48;
 }
 
 /* --------------------------------------------------------------------------

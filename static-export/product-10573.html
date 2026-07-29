@@ -59,15 +59,23 @@
 
           <!-- Media column FIRST in the DOM, so it leads the reading order in
                both directions: in RTL (the default) first means the RIGHT
-               column, in LTR the left one. It holds the gallery AND the related
-               list, and the WHOLE column is the sticky one now — `items-start`
-               on the grid is load-bearing, it is what lets a grid child be
-               shorter than its row so sticky has room to move. Sticky scoped to
-               lg; below it the columns stack and there is nothing to scroll
-               past. Works only because <main> is overflow-x-clip (see page()).
-               On mobile the gallery and related list simply stack in DOM order
-               (gallery, then related) — Ahmed asked to leave the mobile order
-               as-is rather than reorder the related list to the bottom. -->
+               column, in LTR the left one. It holds the gallery AND (at lg
+               only) the related list, and the WHOLE column is the sticky one
+               — `items-start` on the grid is load-bearing, it is what lets a
+               grid child be shorter than its row so sticky has room to move.
+               Sticky scoped to lg; below it the columns stack and there is
+               nothing to scroll past. Works only because <main> is
+               overflow-x-clip (see page()).
+
+               On mobile the related list is NOT rendered here — Ahmed
+               reversed the earlier call (2026-07-29): it must sit BELOW the
+               product-details card, not between the gallery and the details.
+               `hidden lg:block` keeps it out of the mobile flow entirely; a
+               second copy after the details column (`lg:hidden` below) is the
+               one mobile actually sees. Duplicating the markup rather than
+               reordering with grid-template-areas avoids reworking the sticky
+               column's row/track sizing, which is tuned exactly for this
+               2-column shape. -->
           <div class="flex flex-col gap-6 min-w-0 lg:self-start lg:sticky lg:top-[60px]">
           
           <!-- The gallery is FIRST in the DOM (see product.py), so it needs no
@@ -140,7 +148,7 @@
               <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة" data-product data-id="10573" data-name="سودانى كرى كرى بطعم الجبنة -45 جم" data-price="17.0" data-image="images/abuauf/products/6223011434013-6.webp" class="fav-btn btn-elevate absolute top-4 end-4 z-10 place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-cta size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
             </div>
           </div>
-          
+          <div class="hidden lg:block">
           <div data-bundle class="flex flex-col bg-white shadow-custom4 p-4 xl:p-5 rounded-[20px] md:ms-[96px]">
             <h2 class="mb-1 px-2 font-bold text-[#062A1C] text-base xl:text-lg">قد يعجبك أيضاً</h2>
             <div class="flex flex-col">
@@ -188,14 +196,14 @@
               </div>
               <button type="button" data-bundle-add class="bg-cta hover:bg-cta-hover px-5 py-2.5 rounded-full font-semibold text-white text-sm whitespace-nowrap transition-colors">أضف الكل للسلة</button>
             </div>
-          </div>
+          </div></div>
           </div>
 
           <!-- Details second: the RTL-left / LTR-right column. data-product
                lets the cart store read this product straight off the DOM, same
                as a product card. -->
           <div class="flex flex-col gap-5 bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]"
-               data-product data-id="10573" data-name="سودانى كرى كرى بطعم الجبنة -45 جم"
+               data-product data-record-view data-id="10573" data-name="سودانى كرى كرى بطعم الجبنة -45 جم"
                data-price="17.0" data-image="images/abuauf/products/6223011434013-6.webp">
             <div class="flex flex-col gap-3">
               <span data-best-seller class="inline-flex self-start items-center gap-1.5 bg-accent-yellow px-3 py-1.5 rounded-full font-bold text-[#062A1C] text-xs"><span class="place-items-center grid w-3.5 h-3.5 shrink-0"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="relative top-[2px] leading-none">الأكثر مبيعاً</span></span>
@@ -345,6 +353,62 @@
               </div>
             </div>
           </div>
+
+          <!-- Mobile-only related list — the counterpart to the `hidden
+               lg:block` copy inside the sticky media column above. Same
+               string, rendered once by Python either way, so there is one
+               source of truth for the markup even though it appears twice in
+               the HTML. `lg:hidden` removes it from the grid at lg entirely,
+               so it adds no row/track there. -->
+          <div class="lg:hidden">
+          <div data-bundle class="flex flex-col bg-white shadow-custom4 p-4 xl:p-5 rounded-[20px] md:ms-[96px]">
+            <h2 class="mb-1 px-2 font-bold text-[#062A1C] text-base xl:text-lg">قد يعجبك أيضاً</h2>
+            <div class="flex flex-col">
+                <label data-product data-bundle-item
+                       data-id="1320" data-name="فول سوداني بالشيكولاتة - 100 جم"
+                       data-price="35.5" data-image="images/abuauf/products/2000208000000.webp"
+                       class="flex items-center gap-3 py-2 cursor-pointer">
+                  <input type="checkbox" data-bundle-check checked class="accent-[#163300] shrink-0 rounded w-5 h-5" />
+                  <img src="images/abuauf/products/2000208000000.webp" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
+                  <span class="flex-1 min-w-0 text-[#062A1C] text-sm leading-5 line-clamp-2">فول سوداني بالشيكولاتة - 100 جم</span>
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 35.5</span>
+                </label>
+                <label data-product data-bundle-item
+                       data-id="1280" data-name="عين جمل مقشر - 100 جم"
+                       data-price="121.0" data-image="images/abuauf/products/2000079000000.webp"
+                       class="flex items-center gap-3 py-2 cursor-pointer">
+                  <input type="checkbox" data-bundle-check checked class="accent-[#163300] shrink-0 rounded w-5 h-5" />
+                  <img src="images/abuauf/products/2000079000000.webp" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
+                  <span class="flex-1 min-w-0 text-[#062A1C] text-sm leading-5 line-clamp-2">عين جمل مقشر - 100 جم</span>
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 121</span>
+                </label>
+                <label data-product data-bundle-item
+                       data-id="1287" data-name="كاجو محمص ملح جامبو - 100 جم"
+                       data-price="156.0" data-image="images/abuauf/products/2000404000000.webp"
+                       class="flex items-center gap-3 py-2 cursor-pointer">
+                  <input type="checkbox" data-bundle-check checked class="accent-[#163300] shrink-0 rounded w-5 h-5" />
+                  <img src="images/abuauf/products/2000404000000.webp" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
+                  <span class="flex-1 min-w-0 text-[#062A1C] text-sm leading-5 line-clamp-2">كاجو محمص ملح جامبو - 100 جم</span>
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 156</span>
+                </label>
+                <label data-product data-bundle-item
+                       data-id="1288" data-name="فستق امريكى ملح - 100 جم"
+                       data-price="146.5" data-image="images/abuauf/products/2000197000000.webp"
+                       class="flex items-center gap-3 py-2 cursor-pointer">
+                  <input type="checkbox" data-bundle-check checked class="accent-[#163300] shrink-0 rounded w-5 h-5" />
+                  <img src="images/abuauf/products/2000197000000.webp" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
+                  <span class="flex-1 min-w-0 text-[#062A1C] text-sm leading-5 line-clamp-2">فستق امريكى ملح - 100 جم</span>
+                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 146.5</span>
+                </label>
+            </div>
+            <div class="flex flex-wrap justify-between items-center gap-3 mt-3 px-2 pt-3 border-neutral-divider border-t">
+              <div class="flex flex-col">
+                <span class="text-neutral-secondary text-xs">الإجمالي</span>
+                <span class="font-bold text-[#062A1C] text-lg latin" data-bundle-total>EGP 459</span>
+              </div>
+              <button type="button" data-bundle-add class="bg-cta hover:bg-cta-hover px-5 py-2.5 rounded-full font-semibold text-white text-sm whitespace-nowrap transition-colors">أضف الكل للسلة</button>
+            </div>
+          </div></div>
         </div>
       </section>
 
@@ -392,7 +456,7 @@
       </section>
 
       <!-- =========================== MORE FROM US =========================== -->
-      <section data-reveal class="pb-12">
+      <section data-reveal class="py-12 xl:py-16">
         <div class="mx-auto px-4 max-w-[1536px]">
           <div class="flex flex-wrap justify-between items-center gap-4 mb-10"><h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">تسوق اكتر من أبو عوف</h2><a href="shop.html" class="inline-flex justify-center items-center rounded-full font-semibold transition-colors px-6 py-2.5 text-sm border border-cta text-cta hover:bg-interaction-base ">عرض المزيد</a></div>
           
@@ -978,6 +1042,37 @@
               </div>
             </div>
           </article>
+            </div>
+            <!-- The side offset is set in styles.css on .carousel-prev/.next
+                 (centre ON the track border, -22px = half the 44px circle):
+                 a -start/-end utility here ties with that rule and loses on
+                 source order, same as the hero arrows. -->
+            <button type="button" class="hidden xl:grid top-[130px] absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-prev" aria-label="السابق">
+              <span class="rtl:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+            <button type="button" class="hidden xl:grid top-[130px] absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-next" aria-label="التالي">
+              <span class="ltr:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+            
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== PREVIOUSLY SEEN PRODUCTS =====================
+           Per-shopper history, not catalogue data — there is nothing to render
+           at build time, so this ships `hidden` and empty. scripts.js
+           (initRecentlyViewed) fills [data-recent-track] from the
+           `abuauf:recent` localStorage store and un-hides the section only
+           when it finds at least one entry that is not THIS product; a
+           first-time visitor or one who has only ever viewed this page never
+           sees it appear. No-JS/JS-broken degrades to "section absent",
+           never to a broken empty rail. -->
+      <section data-reveal data-recently-viewed data-exclude-id="10573" hidden class="py-12 xl:py-16">
+        <div class="mx-auto px-4 max-w-[1536px]">
+          <div class="flex flex-wrap justify-between items-center gap-4 mb-10"><h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">شاهدت هذا مؤخراً</h2></div>
+          
+          <div class="relative carousel " style="--carousel-gap:24px">
+            <div class="carousel-track" data-recent-track>
             </div>
             <!-- The side offset is set in styles.css on .carousel-prev/.next
                  (centre ON the track border, -22px = half the 44px circle):

@@ -944,6 +944,19 @@ styling one.
 The toggle is a direction/UI test harness, not a reversal. See `HANDOFF.md` §6
 for exactly what it does and doesn't translate.
 
+### The saved-favourite heart is pink — a colour outside the design system
+
+Ahmed's direction (2026-07-29): the heart icon should paint solid pink once
+saved, rather than the brand CTA green every other "selected" state in this
+build uses. Neither the Figma variables nor `tailwind.config.js` define a pink
+token anywhere in the palette — this is a deliberate one-off exception, the
+conventional red/pink "liked" heart from outside this design system, not a
+value pulled from Figma or measured off abuauf.com (their live storefront has
+no favourites/wishlist affordance to measure against). Implemented as a literal
+`#E11D48` in `styles.css` on `.fav-btn[aria-pressed="true"]` rather than a new
+config token, because it is used in exactly one place. **The designer should
+be told** — same footing as the WCAG contrast deviation above.
+
 ---
 
 ## 4. Where the live site beat the Figma

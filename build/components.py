@@ -174,14 +174,19 @@ def section_heading(heading, cta_label=None, cta_href="#", centered=False):
             f'<h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">{e(heading)}</h2>{cta}</div>')
 
 
-def carousel(slides_html, gap=24, arrows_top="130px", autoplay=False, dots=False, extra=""):
+def carousel(slides_html, gap=24, arrows_top="130px", autoplay=False, dots=False, extra="", track_attr=""):
     """
     Direction-agnostic carousel shell. The JS in scripts.js drives it on a
     logical scroll axis so it behaves identically in RTL and LTR.
+
+    `track_attr` tags the `.carousel-track` itself (e.g. a `data-*` marker),
+    for the rare caller that needs to find ITS track specifically when a page
+    holds more than one carousel — plain string, not `extra`, because `extra`
+    lands on the outer `.carousel` wrapper instead.
     """
     return f"""
           <div class="relative carousel {extra}"{' data-autoplay' if autoplay else ''} style="--carousel-gap:{gap}px">
-            <div class="carousel-track">{slides_html}
+            <div class="carousel-track"{track_attr}>{slides_html}
             </div>
             <!-- The side offset is set in styles.css on .carousel-prev/.next
                  (centre ON the track border, -22px = half the 44px circle):

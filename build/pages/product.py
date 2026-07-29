@@ -303,25 +303,33 @@ def _render(p):
 
           <!-- Media column FIRST in the DOM, so it leads the reading order in
                both directions: in RTL (the default) first means the RIGHT
-               column, in LTR the left one. It holds the gallery AND the related
-               list, and the WHOLE column is the sticky one now — `items-start`
-               on the grid is load-bearing, it is what lets a grid child be
-               shorter than its row so sticky has room to move. Sticky scoped to
-               lg; below it the columns stack and there is nothing to scroll
-               past. Works only because <main> is overflow-x-clip (see page()).
-               On mobile the gallery and related list simply stack in DOM order
-               (gallery, then related) — Ahmed asked to leave the mobile order
-               as-is rather than reorder the related list to the bottom. -->
+               column, in LTR the left one. It holds the gallery AND (at lg
+               only) the related list, and the WHOLE column is the sticky one
+               — `items-start` on the grid is load-bearing, it is what lets a
+               grid child be shorter than its row so sticky has room to move.
+               Sticky scoped to lg; below it the columns stack and there is
+               nothing to scroll past. Works only because <main> is
+               overflow-x-clip (see page()).
+
+               On mobile the related list is NOT rendered here — Ahmed
+               reversed the earlier call (2026-07-29): it must sit BELOW the
+               product-details card, not between the gallery and the details.
+               `hidden lg:block` keeps it out of the mobile flow entirely; a
+               second copy after the details column (`lg:hidden` below) is the
+               one mobile actually sees. Duplicating the markup rather than
+               reordering with grid-template-areas avoids reworking the sticky
+               column's row/track sizing, which is tuned exactly for this
+               2-column shape. -->
           <div class="flex flex-col gap-6 min-w-0 lg:self-start lg:sticky lg:top-[60px]">
           {product_gallery(p.get("images") or [p["image"]], title(p), p)}
-          {related_list}
+          <div class="hidden lg:block">{related_list}</div>
           </div>
 
           <!-- Details second: the RTL-left / LTR-right column. data-product
                lets the cart store read this product straight off the DOM, same
                as a product card. -->
           <div class="flex flex-col gap-5 bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]"
-               data-product data-id="{p.get('id', 0)}" data-name="{e(title(p))}"
+               data-product data-record-view data-id="{p.get('id', 0)}" data-name="{e(title(p))}"
                data-price="{p.get('sale') or p.get('price') or 0}" data-image="{e(p['image'])}">
             <div class="flex flex-col gap-3">
               {best_seller_badge(p)}
@@ -391,6 +399,14 @@ def _render(p):
             {acc_html}
             {faq_html}
           </div>
+
+          <!-- Mobile-only related list — the counterpart to the `hidden
+               lg:block` copy inside the sticky media column above. Same
+               string, rendered once by Python either way, so there is one
+               source of truth for the markup even though it appears twice in
+               the HTML. `lg:hidden` removes it from the grid at lg entirely,
+               so it adds no row/track there. -->
+          <div class="lg:hidden">{related_list}</div>
         </div>
       </section>
 
@@ -404,10 +420,26 @@ def _render(p):
       </section>
 
       <!-- =========================== MORE FROM US =========================== -->
-      <section data-reveal class="pb-12">
+      <section data-reveal class="py-12 xl:py-16">
         <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("تسوق اكتر من أبو عوف", "عرض المزيد", "shop.html")}
           {carousel("".join(product_card(x) for x in more))}
+        </div>
+      </section>
+
+      <!-- ===================== PREVIOUSLY SEEN PRODUCTS =====================
+           Per-shopper history, not catalogue data — there is nothing to render
+           at build time, so this ships `hidden` and empty. scripts.js
+           (initRecentlyViewed) fills [data-recent-track] from the
+           `abuauf:recent` localStorage store and un-hides the section only
+           when it finds at least one entry that is not THIS product; a
+           first-time visitor or one who has only ever viewed this page never
+           sees it appear. No-JS/JS-broken degrades to "section absent",
+           never to a broken empty rail. -->
+      <section data-recently-viewed data-exclude-id="{p.get('id', 0)}" hidden class="py-12 xl:py-16">
+        <div class="mx-auto px-4 max-w-[1536px]">
+          {section_heading("شاهدت هذا مؤخراً")}
+          {carousel("", track_attr=" data-recent-track")}
         </div>
       </section>
 
