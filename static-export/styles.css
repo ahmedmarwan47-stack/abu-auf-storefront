@@ -1732,11 +1732,12 @@ input:checked + .radio-card-accent {
 
    Hover is transient and says only "the pointer is here": it GROWS from the
    tab's centre to full width (Ahmed asked for the increasing-width motion,
-   2026-07-22), in white at half opacity rather than the brand beige. The
-   growth is the tell — the current-page bar is simply there, never seen
-   arriving — and the colour keeps the two states apart even in a still
-   screenshot, so neither can be mistaken for the other. That confusion is
-   the bug Ahmed reported three times.
+   2026-07-22), in the brand accent yellow (#EDC843, Ahmed 2026-07-30) rather
+   than the brand beige. The growth is the tell — the current-page bar is
+   simply there, never seen arriving — and the colour keeps the two states
+   apart even in a still screenshot, so neither can be mistaken for the other
+   (beige current vs yellow hover). That confusion is the bug Ahmed reported
+   three times.
 
    Hovering the current tab keeps the current treatment — it is still the page
    you are on, and downgrading it under the pointer would be a step backwards.
@@ -1751,13 +1752,13 @@ input:checked + .radio-card-accent {
 /* Keyframes, not a transition: Ahmed wants full opacity to land only when
    the sweep completes, and that needs a mid-state (grow at ~half opacity,
    arrive at 1) that a two-endpoint transition cannot express. The bar still
-   cannot be confused with the current-page bar — it is white against the
+   cannot be confused with the current-page bar — it is yellow against the
    current tab's beige, and the very fact you watched it arrive is the tell.
    :not(.is-current) matters: without it the current tab's bar would re-run
    the entrance on every hover, and the rule below that pins is-current can
    only override properties, not cancel a running animation. */
 .group:hover > .nav-underline:not(.is-current) {
-  background: #ffffff;
+  background: #EDC843;
   animation: navUnderlineIn 0.3s var(--ease-out) forwards;
 }
 @keyframes navUnderlineIn {

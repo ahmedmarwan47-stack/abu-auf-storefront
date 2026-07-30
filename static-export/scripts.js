@@ -4261,6 +4261,24 @@
      has reduced motion turned on. It is called before the badgeHold guard
      below for the same reason: that guard is about which flight repaints the
      badge, and has nothing to do with this caller's follow-up. */
+  /* The flight source is meant to be the product PHOTO. On a product card
+     that is simply the card's own first <img>. But on the single-product
+     page the buy controls (the cart-bound stepper and اشتري الان) live in the
+     DETAILS column — a [data-product] host whose first <img> is a spec icon
+     (the 3D leaf/bolt/shield PNGs in trust_row_3d), not the product — while
+     the real photo is the gallery's [data-gallery-main] over in the media
+     column. Prefer that when it exists so the PRODUCT flies to the cart, not
+     the leaf icon (Ahmed, 2026-07-30). Rails on the product page keep using
+     their own card image (the card-step path passes it directly and does not
+     call this), so a companion product still flies from its own card. */
+  function productFlightImg(scope) {
+    return (
+      document.querySelector("[data-gallery-main]") ||
+      (scope && scope.querySelector("img")) ||
+      null
+    );
+  }
+
   function throwToCart(sourceEl, opts) {
     const target = visibleCartButton();
     const onLand = opts && opts.onLand;
@@ -4528,7 +4546,7 @@
         /* Not in the basket. "Buy now" that buys nothing would be a dead
            button, so add one and open the summary when it lands. */
         const scope = buyCta.closest("[data-product]") || document;
-        const img = scope.querySelector("img");
+        const img = productFlightImg(scope);
         throwToCart(img, {
           card: true,
           tag: "+1",
@@ -4557,7 +4575,7 @@
         const scope = boundStep.closest("[data-product]");
 
         if (delta > 0) {
-          throwToCart(scope && scope.querySelector("img"), {
+          throwToCart(productFlightImg(scope), {
             card: true,
             quick: true,
             tag: "+1",
@@ -4829,14 +4847,38 @@
       </article>`;
   }
 
+  // The rail must show at least this many on EVERY product page (Ahmed,
+  // 2026-07-30) — an empty "previously seen" strip on a first visit read as
+  // broken. Genuine history leads; when there is less of it than this we top
+  // up from a real-product pool so the section is never sparse. Display-only:
+  // the padding is NOT written back into the Recent store, so it never
+  // masquerades as something the shopper actually viewed once they browse.
+  const RECENT_MIN = 4;
+  const RECENT_FALLBACK = FAVS_SEED; // real catalogue products, {id,name,price,image}
+
   function initRecentlyViewed() {
     Recent.init();
 
     document.querySelectorAll("[data-recently-viewed]").forEach((section) => {
       const track = section.querySelector("[data-recent-track]");
       if (!track) return;
-      const items = Recent.exclude(section.dataset.excludeId);
-      if (!items.length) return;
+      const excludeId = section.dataset.excludeId;
+      const items = Recent.exclude(excludeId);
+
+      // Pad up to RECENT_MIN with fallback products, skipping the current
+      // product and anything already in the list (dedupe by id).
+      if (items.length < RECENT_MIN) {
+        const have = new Set(items.map((x) => String(x.id)));
+        have.add(String(excludeId));
+        for (const p of RECENT_FALLBACK) {
+          if (items.length >= RECENT_MIN) break;
+          if (have.has(String(p.id))) continue;
+          items.push(p);
+          have.add(String(p.id));
+        }
+      }
+
+      if (!items.length) return; // only if the pool itself is empty
       track.innerHTML = items.map(recentCardHTML).join("");
       section.hidden = false;
       syncCardSteppers(section);
