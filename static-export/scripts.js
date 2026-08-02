@@ -190,7 +190,22 @@
     return m;
   })();
 
+  /* Demo: static informational pages link nowhere (Ahmed, 2026-08-02). The
+     client is being walked through the shipping cycle — browse, cart, checkout,
+     account — so the chrome's links to the placeholder content pages (about,
+     blog, branches, contact, policies, rewards, export) resolve to "#" and stay
+     put instead of wandering off into unfinished static pages. Empty this set to
+     restore full navigation for launch. */
+  const DEMO_DEAD_PAGES = new Set([
+    "about.html", "branches.html", "faqs.html", "contact-us.html",
+    "privacy-policy.html", "terms-conditions.html", "return-policy.html",
+    "blogs.html", "blog.html", "rewards.html", "export.html", "store-closed.html",
+  ]);
   function pageHref(url) {
+    const href = pageHrefRaw(url);
+    return DEMO_DEAD_PAGES.has(href) ? "#" : href;
+  }
+  function pageHrefRaw(url) {
     if (!url) return "#";
     if (/^https?:\/\//.test(url) || url.startsWith("#") || url.endsWith(".html"))
       return url;
@@ -1022,57 +1037,40 @@
               }
             </div>
 
-            <!-- RTL end (left edge): account, search, cart.
-                 Checkout keeps account and cart but drops search, matching the
-                 Figma checkout header — it is not a bare logo bar. -->
-            <div class="flex items-center gap-6 shrink-0">
+            <!-- RTL end (left edge): account, search, cart. The WHOLE group is
+                 dropped on checkout (Ahmed, 2026-08-02) — the header becomes a
+                 bare logo bar so the shopper cannot wander off or edit the order
+                 mid-flow. Mobile checkout was already logo-only. -->
+            ${
+              checkout
+                ? ""
+                : `<div class="flex items-center gap-6 shrink-0">
               <a href="login.html" data-account-link class="hidden lg:flex items-center gap-3 hover:text-white/80 py-2 h-12 transition-colors">
                 <!-- Also the landing pad for the favourites flight, hence
-                     data-fav-target on the icon rather than the whole link.
-                     It carried a saved-count badge until Ahmed removed it
-                     (2026-07-26); the flight and its landing pulse stay, they
-                     just resolve on the icon itself now. The relative class is
-                     kept - flyTo measures against this box. -->
+                     data-fav-target on the icon rather than the whole link. -->
                 <span class="relative shrink-0" data-fav-target>
                   <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-6 h-6" />
                 </span>
                 <span class="font-normal text-white text-[13px] leading-5" data-account-label>${esc(t("الحساب"))}</span>
                 <span class="w-[18px] h-[18px] text-white shrink-0 chevron">${ICON.chevronDown}</span>
               </a>
-              <!-- Search and cart ride along on scroll. Once the masthead has
-                   left the viewport this group is pulled out of flow by
-                   [data-sticky-actions][data-stuck] in styles.css and parked
-                   under the sticky nav on an elevated pill. Driven by the same
-                   scroll handler as the nav so the two can never disagree. -->
-              <!-- gap-3 (12px), NOT gap-6: the search-to-cart spacing matches
-                   the floating pill's own 12px gap in styles.css, so the pair
-                   sits identically spaced before and after it sticks (Ahmed,
-                   2026-07-29). The account-to-search gap stays 24px — that comes
-                   from the parent, not this group. -->
+              <!-- Search and cart ride along on scroll: parked out of flow by
+                   [data-sticky-actions][data-stuck] in styles.css. gap-3 matches
+                   the parked pill's own 12px gap so the pair sits identically
+                   spaced before and after it sticks. -->
               <div data-sticky-actions class="flex items-center gap-3">
-                ${
-                  checkout
-                    ? ""
-                    : `<!-- Rest fill is the DARKER-than-masthead green, hover goes
-                            darker still. It used to hover to bg-cta-hover (#185039),
-                            which is the masthead's own colour, so the circle vanished
-                            into the bar on hover - Ahmed reported it. Default is now
-                            the lighter of the two, hover the darker. -->
-                       <button type="button" data-open="search" aria-label="بحث" class="btn-elevate place-items-center grid bg-cta hover:bg-primary-900 rounded-full size-12">
-                         <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
-                       </button>`
-                }
-                <!-- Same green circle as search; the yellow accent moved onto the
-                     count badge below. Icon is white on the green. -->
+                <button type="button" data-open="search" aria-label="بحث" class="btn-elevate place-items-center grid bg-cta hover:bg-primary-900 rounded-full size-12">
+                  <img src="images/abuauf/icons/icon-search.svg" alt="" class="w-5 h-5" />
+                </button>
                 <button type="button" data-open="cart" aria-label="السلة" class="btn-elevate relative place-items-center grid bg-cta hover:bg-primary-900 rounded-full text-white size-12">
                   <span class="w-7 h-7" data-cart-glyph>${ICON.cart}</span>
-                  <!-- Yellow chip, ringed in the masthead's own green so the ring
-                       reads as background rather than an outline - the badge looks
-                       cropped into the button corner. Dark ink on yellow keeps AA. -->
+                  <!-- Yellow chip, ringed in the masthead's own green; the ring
+                       is dropped once parked (styles.css). Dark ink keeps AA. -->
                   <span class="-top-2 -end-2 absolute place-items-center grid bg-accent-yellow ring-2 ring-primary px-1.5 rounded-full min-w-[22px] h-[22px] font-bold text-[#163300] text-xs latin" data-cart-count>2</span>
                 </button>
               </div>
-            </div>
+            </div>`
+            }
           </div>
 
           ${
@@ -1390,9 +1388,18 @@
     /* Static shell only — the numbers and disabled state are filled in by
        renderCart() on every cart:change. */
     const cartFooter = `
+        <!-- Free-delivery progress. renderCart fills the bar toward FREE_SHIP
+             and flips the copy to the success line once earned; hidden on an
+             empty basket. -->
+        <div data-freeship hidden class="flex flex-col gap-1.5">
+          <p class="text-[#062A1C] text-xs leading-5" data-freeship-msg></p>
+          <div class="bg-interaction-base rounded-full w-full h-2 overflow-hidden">
+            <div data-freeship-fill class="bg-cta rounded-full h-full transition-[width] duration-500" style="width:0%"></div>
+          </div>
+        </div>
         <div class="flex justify-between text-sm">
           <span class="text-neutral-secondary">${esc(t("مصاريف التوصيل"))}</span>
-          <span class="font-semibold text-[#062A1C] latin">${egp(DELIVERY_FEE)}</span>
+          <span class="font-semibold text-[#062A1C] latin" data-cart-delivery>${egp(DELIVERY_FEE)}</span>
         </div>
         <!-- Wallet discount, when applied on the cart or checkout page. The
              drawer must show WHY its total is lower than items + delivery,
@@ -1405,9 +1412,12 @@
           <span class="text-neutral-secondary text-sm">${esc(t("الإجمالي"))}</span>
           <span class="font-bold text-[#062A1C] text-lg latin" data-cart-total>${egp(0)}</span>
         </div>
-        <div class="gap-3 grid grid-cols-2 mt-1">
-          <a href="cart.html" class="flex justify-center items-center border-cta hover:bg-interaction-base border rounded-full min-h-11 font-semibold text-cta text-sm transition-colors">${esc(t("عرض السلة"))}</a>
-          <a href="checkout.html" data-cart-checkout class="flex justify-center items-center bg-cta hover:bg-cta-hover rounded-full min-h-11 font-semibold text-white text-sm text-center transition-colors">${esc(t("اتمام الشراء"))}</a>
+        <!-- Two full-width buttons stacked, not side by side (Ahmed,
+             2026-08-02). "عرض السلة" moved up to the header; its old slot here
+             is now "مواصلة التسوق", which browses all products. -->
+        <div class="flex flex-col gap-2 mt-1">
+          <a href="checkout.html" data-cart-checkout class="flex justify-center items-center bg-cta hover:bg-cta-hover rounded-full w-full min-h-11 font-semibold text-white text-sm text-center transition-colors">${esc(t("اتمام الشراء"))}</a>
+          <a href="shop.html" class="flex justify-center items-center border-cta hover:bg-interaction-base border rounded-full w-full min-h-11 font-semibold text-cta text-sm transition-colors">${esc(t("مواصلة التسوق"))}</a>
         </div>
         <p data-cart-warning hidden class="flex items-start gap-2 mt-1 text-accent-error text-xs leading-5">
           <span aria-hidden="true">⚠</span>
@@ -1419,9 +1429,14 @@
 
     <!-- Cart drawer -->
     <aside data-drawer="cart" class="side-drawer side-drawer--right" aria-label="سلة التسوق">
+      <!-- Close sits OUTSIDE the panel now (Ahmed, 2026-08-02): a white circle
+           floated just past the drawer's inner edge, over the backdrop. Its old
+           header slot is taken by a "view cart" link to the full cart page. -->
+      <button type="button" data-close aria-label="إغلاق"
+              class="drawer-close place-items-center grid bg-white shadow-custom3 rounded-full size-8 text-[#062A1C]"><span class="w-3.5 h-3.5">${ICON.close}</span></button>
       <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
         <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("سلة التسوق"))}</h2>
-        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-8 h-8 text-[#062A1C]" aria-label="إغلاق">${ICON.close}</button>
+        <a href="cart.html" class="link-sweep font-semibold text-cta text-sm underline">${esc(t("عرض السلة"))}</a>
       </div>
       <div class="flex-1 px-5 overflow-y-auto">
         <div data-cart-lines></div>
@@ -1707,6 +1722,7 @@
     storepicker: '[data-modal="storepicker"]',
     schedule: '[data-modal="schedule"]',
     cart: '[data-drawer="cart"]',
+    order: '[data-drawer="order"]',
     menu: '[data-drawer="menu"]',
     search: '[data-modal="search"]',
     locale: '[data-sheet="locale"]',
@@ -1990,6 +2006,60 @@
     }
     measureGap();
 
+    /* Fit whole cards — the rail never rests showing a half "cropped" card at
+       the trailing edge (Ahmed, 2026-08-02). Product rails size each slide to
+       fill an integer number of columns for the current width, so only whole
+       cards are ever in view. Skipped for the hero (full-width slides) and the
+       looping drawer rail; the target is a paged rail of fixed-width product
+       cards. If the script never runs, the slides keep their Tailwind widths —
+       the current no-JS behaviour. */
+    const firstSlide0 = track.querySelector(".carousel-slide");
+    const fitCols = !loop && !!firstSlide0 && firstSlide0.hasAttribute("data-product");
+    function applyFit() {
+      if (!fitCols) return;
+      const w = track.clientWidth;
+      const cols = w >= 1280 ? 5 : w >= 1024 ? 4 : w >= 640 ? 3 : 2;
+      const cardW = Math.max(1, Math.floor((w - (cols - 1) * gap) / cols));
+      track.querySelectorAll(".carousel-slide").forEach((s) => {
+        s.style.flex = "0 0 " + cardW + "px";
+        s.style.width = cardW + "px";
+      });
+    }
+    applyFit();
+
+    /* Seamless infinite loop for the hero (Ahmed, 2026-08-02): a clone of the
+       first banner is appended so autoplay can advance PAST the last banner
+       into a copy of the first, then silently reset to the real first with no
+       animation — the shopper never sees the rail rewind to the start. Scoped
+       to data-carousel-seamless (the hero only); the clone carries no data-id,
+       so the duplicate-host concern that rules out cloning on product rails
+       does not apply. */
+    const seamless = root.hasAttribute("data-carousel-seamless");
+    if (seamless && firstSlide0) {
+      const clone = firstSlide0.cloneNode(true);
+      clone.setAttribute("aria-hidden", "true");
+      clone.setAttribute("data-carousel-clone", "");
+      clone
+        .querySelectorAll("a,button,input,select,textarea,[tabindex]")
+        .forEach((el) => el.setAttribute("tabindex", "-1"));
+      track.appendChild(clone);
+    }
+    function jumpInstant(pos) {
+      const prevBehavior = track.style.scrollBehavior;
+      track.style.scrollBehavior = "auto";
+      setPos(pos);
+      void track.offsetWidth; // commit the jump before smooth is restored
+      track.style.scrollBehavior = prevBehavior;
+    }
+    function seamlessNext() {
+      if (getPos() >= maxPos() - 1) jumpInstant(0);
+      setPos(getPos() + slideStep());
+    }
+    function seamlessPrev() {
+      if (getPos() <= 1) jumpInstant(maxPos());
+      setPos(getPos() - slideStep());
+    }
+
     const maxPos = () =>
       Math.max(0, track.scrollWidth - track.clientWidth - 1);
 
@@ -2023,16 +2093,18 @@
       const pos = getPos();
       const max = maxPos();
       const idx = Math.round(pos / slideStep());
-      if (prev && !loop) prev.classList.toggle("is-disabled", pos <= 1);
-      // A looping rail has no ends to be at, so its arrows never disable —
-      // greying one out would say "you cannot go that way" about the one
-      // direction that always works.
-      if (prev && loop) prev.classList.remove("is-disabled");
-      if (next) next.classList.toggle("is-disabled", !loop && pos >= max);
+      // A looping OR seamless rail has no ends to be at, so its arrows never
+      // disable — greying one out would say "you cannot go that way" about the
+      // one direction that always works.
+      if (prev && !loop && !seamless) prev.classList.toggle("is-disabled", pos <= 1);
+      if (prev && (loop || seamless)) prev.classList.remove("is-disabled");
+      if (next) next.classList.toggle("is-disabled", !loop && !seamless && pos >= max);
       if (dotsWrap) {
-        dotsWrap
-          .querySelectorAll(".carousel-dot")
-          .forEach((d, i) => d.classList.toggle("is-active", i === idx));
+        const dots = dotsWrap.querySelectorAll(".carousel-dot");
+        const n = dots.length || 1;
+        // Modulo so the clone position (idx === real slide count) lights the
+        // first dot rather than none while the seamless hero sits on it.
+        dots.forEach((d, i) => d.classList.toggle("is-active", i === (((idx % n) + n) % n)));
       }
     }
 
@@ -2059,6 +2131,7 @@
       window.requestAnimationFrame(() => {
         resizing = false;
         measureGap();
+        applyFit();
         update();
       });
     }
@@ -2077,19 +2150,21 @@
     const atEnd = (pos) => pos >= maxPos() - slideStep() / 2;
     if (prev)
       prev.addEventListener("click", () => {
+        if (seamless) return seamlessPrev();
         const pos = getPos();
         if (loop && atStart(pos)) setPos(maxPos());
         else setPos(pos - slideStep());
       });
     if (next)
       next.addEventListener("click", () => {
+        if (seamless) return seamlessNext();
         const pos = getPos();
         if (loop && atEnd(pos)) setPos(0);
         else setPos(pos + slideStep());
       });
 
     if (dotsWrap) {
-      const slides = track.querySelectorAll(".carousel-slide");
+      const slides = track.querySelectorAll(".carousel-slide:not([data-carousel-clone])");
       const perView = Math.max(1, Math.round(track.clientWidth / slideStep()));
       const pages = Math.max(1, slides.length - perView + 1);
       dotsWrap.innerHTML = "";
@@ -2214,8 +2289,20 @@
       const start = () => {
         if (timer || reduceMotion() || document.hidden) return;
         timer = setInterval(() => {
-          if (getPos() >= maxPos()) setPos(0);
-          else setPos(getPos() + slideStep());
+          if (seamless) {
+            if (getPos() >= maxPos() - 1) {
+              // On the clone (a copy of slide 1) — reset to the real slide 1
+              // with no animation, then advance. The rail never rewinds.
+              jumpInstant(0);
+              setPos(slideStep());
+            } else {
+              setPos(getPos() + slideStep());
+            }
+          } else if (getPos() >= maxPos()) {
+            setPos(0);
+          } else {
+            setPos(getPos() + slideStep());
+          }
         }, 4500);
       };
       root.addEventListener("pointerenter", stop);
@@ -2351,14 +2438,16 @@
       const chips = [...host.querySelectorAll("[data-size-option]")];
 
       const paint = () => {
+        // Show the SINGLE-ITEM price only (Ahmed, 2026-08-02). Quantity no
+        // longer multiplies the figure on the product page — the number the
+        // shopper reads here is the unit price of the chosen SKU, and the
+        // running order total lives in the cart drawer and summary instead.
+        // Size chips still repoint this at the selected SKU's own price.
         const unit = Number(display.dataset.unitPrice) || 0;
-        const qty = Math.max(1, parseInt(qtyEl && qtyEl.textContent, 10) || 1);
-        display.textContent = egp(unit * qty);
-        // The per-unit line only earns its space once it differs from the
-        // total, i.e. from the second unit onward.
+        display.textContent = egp(unit);
         if (breakdown) {
-          breakdown.hidden = qty < 2;
-          breakdown.textContent = qty < 2 ? "" : egp(unit) + " × " + qty;
+          breakdown.hidden = true;
+          breakdown.textContent = "";
         }
       };
 
@@ -3080,6 +3169,11 @@
      --------------------------------------------------------------- */
   const DELIVERY_FEE = 30;
   const MIN_ORDER = 150;
+  /* Free delivery above this basket subtotal (Ahmed, 2026-08-02). The cart's
+     progress bar counts up to it, and renderCart zeroes the delivery fee — and
+     therefore the total — the moment it is reached, so the bar is a real
+     incentive rather than decoration. */
+  const FREE_SHIP = 500;
 
   /* ---------------------------------------------------------------
      Fly-to-target
@@ -3421,8 +3515,26 @@
   }
 
   function cartLineHTML(it) {
+    /* On checkout/payment the order is LOCKED (Ahmed, 2026-08-02): no stepper,
+       no remove, and a COMPACT row. The shopper has already decided what they
+       are buying, so the summary is a receipt to confirm, not an editor to be
+       distracted by. Everywhere else — the cart page and the drawer — the full
+       editable row below stands. renderCart's in-place update only touches
+       [data-line-total] and [data-line-qty], both present here, so the keyed
+       reconcile works for either shape. */
+    if (isCheckout()) {
+      return `
+      <div class="flex items-center gap-3 py-2.5 border-neutral-divider border-b last:border-b-0" data-cart-line data-id="${esc(String(it.id))}">
+        <img src="${esc(it.image)}" alt="${esc(it.name)}" class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
+        <div class="flex flex-col flex-1 min-w-0">
+          <p class="font-semibold text-[#062A1C] text-sm line-clamp-1">${esc(it.name)}</p>
+          <p class="text-neutral-secondary text-xs">${esc(t("العدد"))}: <span class="latin" data-line-qty>${it.qty}</span></p>
+        </div>
+        <span data-line-total class="font-bold text-[#062A1C] text-sm latin shrink-0">${egp(it.price * it.qty)}</span>
+      </div>`;
+    }
     return `
-      <div class="flex items-stretch gap-3 py-4 border-neutral-divider border-b" data-cart-line data-id="${esc(String(it.id))}">
+      <div class="flex items-stretch gap-3 py-4 border-neutral-divider border-b last:border-b-0" data-cart-line data-id="${esc(String(it.id))}">
         <!-- The thumb fills the row's height rather than sitting as a fixed
              72px square with dead space beneath it: self-stretch plus h-auto
              lets the cross size follow the row, whose height the text column
@@ -3918,6 +4030,27 @@
   const WALLET_KEY = "abuauf:walletApplied";
   const walletApplied = () => Number(localStorage.getItem(WALLET_KEY)) || 0;
 
+  /* Wallet balance = a base plus loyalty points transferred in (Ahmed,
+     2026-08-02). Redeeming points on the points page converts them to EGP and
+     adds them here; every wallet display ([data-wallet-amount], and the
+     toggle's data-wallet-balance) reads the total. BASE_WALLET mirrors
+     components.WALLET_BALANCE. */
+  const WALLET_BONUS_KEY = "abuauf:pointsWallet";
+  const BASE_WALLET = 1200;
+  const POINTS_EGP = 12; // 120 points -> EGP 12, as the points page states
+  function walletBonus() {
+    try {
+      return Number(localStorage.getItem(WALLET_BONUS_KEY)) || 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+  function syncWalletBalance() {
+    const total = BASE_WALLET + walletBonus();
+    document.querySelectorAll("[data-wallet-amount]").forEach((el) => (el.textContent = "EGP " + total));
+    document.querySelectorAll("[data-wallet-toggle]").forEach((el) => (el.dataset.walletBalance = String(total)));
+  }
+
   /* Promo codes. DISCOUNT10 is not invented — it is the code the site's own
      announcement bar advertises at the top of every page ("خصم 10% لما تستخدم
      برومو كود DISCOUNT10"), so the bar and the checkout now agree. Keep them
@@ -3970,6 +4103,32 @@
       msg.classList.toggle("text-accent-green", ok);
       msg.classList.toggle("text-accent-error", !ok);
     }
+  }
+
+  /* Promo field state (Ahmed, 2026-08-02): trigger -> input box -> applied
+     chip. Called from renderCart, so it is correct on load, after apply/remove,
+     and across cart -> checkout. When no valid code is stored it only reveals
+     the trigger if the input box is not currently open, so a change elsewhere
+     (adding an item) never collapses a code the shopper is mid-typing. */
+  function syncPromoUI() {
+    const code = promoCode();
+    const applied = !!PROMO_CODES[code];
+    document.querySelectorAll("[data-promo]").forEach((wrap) => {
+      const open = wrap.querySelector("[data-promo-open]");
+      const box = wrap.querySelector("[data-promo-box]");
+      const appliedEl = wrap.querySelector("[data-promo-applied]");
+      const codeEl = wrap.querySelector("[data-promo-applied-code]");
+      if (applied) {
+        if (open) open.hidden = true;
+        if (box) box.hidden = true;
+        if (appliedEl) appliedEl.hidden = false;
+        if (codeEl) codeEl.textContent = code;
+      } else {
+        if (appliedEl) appliedEl.hidden = true;
+        const boxOpen = box && !box.hidden;
+        if (open) open.hidden = !!boxOpen;
+      }
+    });
   }
 
   /* Rules a gift order imposes, applied on ARRIVAL as well as on toggle.
@@ -4072,7 +4231,9 @@
        Promo resolves first because it is a discount ON the order; the wallet is
        a payment against whatever is left. Reversing them would let a wallet
        cover the pre-discount figure and hand back the difference as change. */
-    const gross = empty ? 0 : sub + DELIVERY_FEE;
+    // Free delivery at/above FREE_SHIP; below it the flat fee applies.
+    const deliveryFee = empty ? 0 : sub >= FREE_SHIP ? 0 : DELIVERY_FEE;
+    const gross = empty ? 0 : sub + deliveryFee;
     const promo = empty ? 0 : Math.min(promoDiscount(sub), gross);
     const afterPromo = Math.max(0, gross - promo);
     const walletUsed = empty ? 0 : Math.min(walletApplied(), afterPromo);
@@ -4160,6 +4321,33 @@
       el.classList.toggle("opacity-50", blocked);
       el.setAttribute("aria-disabled", blocked ? "true" : "false");
     });
+
+    /* Delivery fee — a data hook now, not static build-time text, so free
+       delivery can zero it live. Reads "مجاني" in green once earned. */
+    document.querySelectorAll("[data-cart-delivery]").forEach((el) => {
+      const free = !empty && deliveryFee === 0;
+      el.textContent = free ? t("مجاني") : egp(deliveryFee);
+      el.classList.toggle("text-accent-green", free);
+      el.classList.toggle("font-bold", free);
+    });
+    /* "Add X more for free delivery" progress bar. Hidden on an empty basket;
+       fills toward FREE_SHIP and flips to the success message once reached. */
+    const toFree = Math.max(0, FREE_SHIP - sub);
+    document.querySelectorAll("[data-freeship]").forEach((el) => (el.hidden = empty));
+    document.querySelectorAll("[data-freeship-fill]").forEach((el) => {
+      el.style.width = (empty ? 0 : Math.min(100, (sub / FREE_SHIP) * 100)) + "%";
+      el.classList.toggle("bg-accent-green", toFree === 0);
+      el.classList.toggle("bg-cta", toFree !== 0);
+    });
+    document.querySelectorAll("[data-freeship-msg]").forEach((el) => {
+      el.innerHTML =
+        toFree > 0
+          ? esc(t("أضف")) +
+            ' <span class="font-bold latin">' + egp(toFree) + "</span> " +
+            esc(t("لتحصل على شحن مجاني"))
+          : "🎉 " + esc(t("مبروك! توصيل طلبك مجاني"));
+    });
+    syncPromoUI();
   }
 
   /*
@@ -4342,6 +4530,23 @@
 
       if (e.target.closest("[data-promo-apply]")) {
         applyPromo();
+        return;
+      }
+
+      /* Remove/cancel an applied code — back to the trigger state. */
+      if (e.target.closest("[data-promo-remove]")) {
+        localStorage.removeItem(PROMO_KEY);
+        const box = document.querySelector("[data-promo-box]");
+        const input = document.querySelector("[data-promo-input]");
+        const msg = document.querySelector("[data-promo-msg]");
+        if (box) box.hidden = true;
+        if (input) input.value = "";
+        if (msg) {
+          msg.hidden = true;
+          msg.textContent = "";
+        }
+        renderCart();
+        toast(t("تم إلغاء الكود"));
         return;
       }
 
@@ -4987,28 +5192,80 @@
      --------------------------------------------------------------- */
   const NOTE_KEY = "abuauf:orderNote";
 
-  function initOrderNotes() {
-    document.querySelectorAll("[data-order-note]").forEach((ta) => {
-      try {
-        ta.value = localStorage.getItem(NOTE_KEY) || "";
-      } catch (e) {
-        /* ignore */
+  /* Order note, with real states now (Ahmed, 2026-08-02): an EDIT view
+     (textarea + save) and an APPLIED view (the saved note, with edit / remove).
+     syncNoteUI swaps between them off the stored note, so a saved note comes
+     back on reload already applied rather than as a filled-in textarea. */
+  function readNote() {
+    try {
+      return (localStorage.getItem(NOTE_KEY) || "").trim();
+    } catch (e) {
+      return "";
+    }
+  }
+  function syncNoteUI() {
+    const note = readNote();
+    document.querySelectorAll("[data-note]").forEach((wrap) => {
+      const edit = wrap.querySelector("[data-note-edit]");
+      const view = wrap.querySelector("[data-note-view]");
+      const text = wrap.querySelector("[data-note-text]");
+      const ta = wrap.querySelector("[data-order-note]");
+      if (note) {
+        if (text) text.textContent = note;
+        if (view) view.hidden = false;
+        if (edit) edit.hidden = true;
+      } else {
+        if (view) view.hidden = true;
+        if (edit) edit.hidden = false;
+        if (ta) ta.value = "";
       }
     });
+  }
+
+  function initOrderNotes() {
+    syncNoteUI();
     document.addEventListener("click", (e) => {
       const save = e.target.closest("[data-order-note-save]");
-      if (!save) return;
-      const ta = (save.closest("div") || document).querySelector("[data-order-note]");
-      if (!ta) return;
-      const note = ta.value.trim();
-      try {
-        if (note) localStorage.setItem(NOTE_KEY, note);
-        else localStorage.removeItem(NOTE_KEY);
-      } catch (err) {
-        /* ignore */
+      if (save) {
+        const wrap = save.closest("[data-note]") || document;
+        const ta = wrap.querySelector("[data-order-note]");
+        if (!ta) return;
+        const note = ta.value.trim();
+        try {
+          if (note) localStorage.setItem(NOTE_KEY, note);
+          else localStorage.removeItem(NOTE_KEY);
+        } catch (err) {
+          /* ignore */
+        }
+        syncNoteUI();
+        toast(note ? "تمت إضافة ملاحظتك على الطلب" : "تمت إزالة الملاحظات");
+        pulse(save);
+        return;
       }
-      toast(note ? "تمت إضافة ملاحظتك على الطلب" : "تمت إزالة الملاحظات");
-      pulse(save);
+      // Edit an applied note — back to the textarea, prefilled.
+      const editBtn = e.target.closest("[data-note-edit-btn]");
+      if (editBtn) {
+        const wrap = editBtn.closest("[data-note]") || document;
+        const edit = wrap.querySelector("[data-note-edit]");
+        const view = wrap.querySelector("[data-note-view]");
+        const ta = wrap.querySelector("[data-order-note]");
+        if (ta) ta.value = readNote();
+        if (view) view.hidden = true;
+        if (edit) edit.hidden = false;
+        if (ta) ta.focus();
+        return;
+      }
+      // Remove an applied note.
+      if (e.target.closest("[data-note-remove]")) {
+        try {
+          localStorage.removeItem(NOTE_KEY);
+        } catch (err) {
+          /* ignore */
+        }
+        syncNoteUI();
+        toast("تمت إزالة الملاحظات");
+        return;
+      }
     });
   }
 
@@ -5086,6 +5343,108 @@
         },
         () => toast("تعذر النسخ — انسخ الرابط يدوياً", "error"),
       );
+    });
+  }
+
+  /* Loyalty points redeem (Ahmed, 2026-08-02). Points have no live endpoint
+     (DESIGN-NOTES §1), so this is a client-side demo: the button now visibly
+     redeems, zeroes the balance and persists the done state — it was a dead
+     button with no handler at all, the state the addresses page was in before
+     it was wired up. */
+  const POINTS_KEY = "abuauf:pointsRedeemed";
+  function syncPointsUI() {
+    let done = false;
+    try {
+      done = localStorage.getItem(POINTS_KEY) === "1";
+    } catch (e) {
+      /* ignore */
+    }
+    document.querySelectorAll("[data-points]").forEach((wrap) => {
+      const bal = wrap.querySelector("[data-points-balance]");
+      const hint = wrap.querySelector("[data-points-hint]");
+      const btn = wrap.querySelector("[data-redeem-points]");
+      const doneEl = wrap.querySelector("[data-points-done]");
+      if (done && bal) bal.textContent = "0";
+      if (hint) hint.hidden = done;
+      if (btn) btn.hidden = done;
+      if (doneEl) doneEl.hidden = !done;
+    });
+  }
+  function initPoints() {
+    if (!document.querySelector("[data-points]")) return;
+    syncPointsUI();
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest("[data-redeem-points]")) return;
+      try {
+        localStorage.setItem(POINTS_KEY, "1");
+        // Transfer the points' EGP value into the wallet.
+        localStorage.setItem(WALLET_BONUS_KEY, String(POINTS_EGP));
+      } catch (err) {
+        /* ignore */
+      }
+      syncPointsUI();
+      syncWalletBalance();
+      toast("تم تحويل نقاطك إلى رصيد محفظتك");
+    });
+  }
+
+  /* Order detail drawer (Ahmed, 2026-08-02): the whole order row opens a shared
+     side-drawer and reveals that order's pre-rendered panel, so several orders
+     can be viewed in turn without leaving the list. Buttons carrying
+     data-order-open (the dashboard's tracker/detail) fire the same path
+     natively; the keydown covers the <tr role="button"> rows. */
+  function initOrders() {
+    const drawer = document.querySelector('[data-drawer="order"]');
+    if (!drawer) return;
+    function open(id) {
+      drawer.querySelectorAll("[data-order-panel]").forEach((panel) => {
+        panel.hidden = panel.getAttribute("data-order-id") !== id;
+      });
+      const body = drawer.querySelector("[data-order-panels]");
+      if (body) body.scrollTop = 0;
+      openOverlay("order");
+    }
+    document.addEventListener("click", (e) => {
+      const row = e.target.closest("[data-order-open]");
+      if (!row) return;
+      open(row.getAttribute("data-order-open"));
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const row = e.target.closest("tr[data-order-open]");
+      if (!row) return;
+      e.preventDefault();
+      open(row.getAttribute("data-order-open"));
+    });
+  }
+
+  /* Re-order — add a past order's whole item list back to the cart in one
+     press, then open the cart drawer. Items ride on hidden [data-reorder-item]
+     payloads next to the button, keyed by the catalogue id so the store dedupes
+     against existing lines rather than creating a second one. */
+  function initReorder() {
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-reorder]");
+      if (!btn) return;
+      const card = btn.closest("[data-reorder-card]") || document;
+      let n = 0;
+      card.querySelectorAll("[data-reorder-item]").forEach((it) => {
+        const qty = Number(it.dataset.qty) || 1;
+        Cart.add(
+          {
+            id: it.dataset.id,
+            name: it.dataset.name,
+            price: Number(it.dataset.price) || 0,
+            image: it.dataset.image,
+          },
+          qty,
+        );
+        n += qty;
+      });
+      if (n) {
+        toast("تمت إضافة منتجات الطلب إلى السلة");
+        openOverlay("cart");
+      }
     });
   }
 
@@ -5245,11 +5604,15 @@
     initSearch();
     initLangSwitcher();
     initCartUI();
+    syncWalletBalance();
     initAuthUI();
     initFavsUI();
     initOrderNotes();
     initReferralCopy();
     initAddresses();
+    initPoints();
+    initOrders();
+    initReorder();
     // Must run after the chrome is in the DOM and after initFavsUI, so the
     // dictionary pass sees every string on the page. Without this call a
     // stored English preference only styled the chrome.

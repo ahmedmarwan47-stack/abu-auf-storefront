@@ -39,12 +39,14 @@ def listing(title_text, description, heading, trail, chips, products,
       <section class="pt-6">
         <div class="flex flex-col gap-6 mx-auto px-4 max-w-[1536px]">
           {intro_html}
-          <div class="flex xl:flex-row flex-col items-start xl:justify-between gap-4"{' data-listing' if filterable else ''}>
+          <!-- Sort sits BELOW the category filters, not beside them (Ahmed,
+               2026-08-02). The two share one column now; the sort pill drops to
+               its own row under the chips and aligns to the inline-start. -->
+          <div class="flex flex-col items-start gap-4"{' data-listing' if filterable else ''}>
             <!-- Mobile: one scrolling row (swipe). Desktop: WRAP instead — a
-                 no-scrollbar horizontal scroll clipped the last chip mid-word
-                 right up against the sort control, which read as a collision.
-                 Wrapping shows every category and never clips. -->
-            <div class="flex gap-2 -mx-1 px-1 w-full xl:flex-1 min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible">{chip_html}
+                 no-scrollbar horizontal scroll clipped the last chip mid-word,
+                 which read as a collision. Wrapping shows every category. -->
+            <div class="flex gap-2 -mx-1 px-1 w-full min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible">{chip_html}
             </div>
 {sort_select(SORT_OPTIONS)}
           </div>

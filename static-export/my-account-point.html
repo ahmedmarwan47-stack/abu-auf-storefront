@@ -154,11 +154,23 @@
           </aside>
           <div class="flex flex-col gap-6 min-w-0">
             <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">نقاطي</h1>
-            <div class="flex flex-col items-center gap-2 bg-accent-yellow p-8 rounded-[20px] text-center">
+            <!-- The redeem button was dead — no handler anywhere (it was never
+                 wired the way the addresses page was). scripts.js initPoints now
+                 redeems client-side: it zeroes the balance and shows the done
+                 state, persisted under abuauf:pointsRedeemed. Placeholder, since
+                 points have no live endpoint (DESIGN-NOTES §1). -->
+            <div data-points class="flex flex-col items-center gap-2 bg-accent-yellow p-8 rounded-[20px] text-center">
               <span class="text-[#062A1C]/70 text-sm">رصيد النقاط</span>
-              <span class="font-bold text-[#062A1C] text-4xl latin">120</span>
-              <span class="text-[#062A1C] text-sm">يمكنك خصم <span class="latin">EGP 12</span> من طلبك القادم</span>
-              <button type="button" class="bg-cta hover:bg-cta-hover mt-2 px-8 py-3 rounded-full font-semibold text-white text-sm transition-colors">استبدال النقاط</button>
+              <span class="font-bold text-[#062A1C] text-4xl latin" data-points-balance>120</span>
+              <span class="text-[#062A1C] text-sm" data-points-hint>حوّل نقاطك إلى <span class="latin">EGP 12</span> في رصيد محفظتك</span>
+              <button type="button" data-redeem-points class="bg-cta hover:bg-cta-hover mt-2 px-8 py-3 rounded-full font-semibold text-white text-sm transition-colors">استبدال النقاط</button>
+              <div data-points-done hidden class="flex flex-col items-center gap-1 mt-2">
+                <span class="flex items-center gap-2 font-bold text-[#062A1C]">
+                  <span class="place-items-center grid bg-primary rounded-full text-white size-6 text-xs">✓</span>
+                  تم تحويل نقاطك إلى المحفظة
+                </span>
+                <span class="text-[#062A1C]/80 text-sm">تمت إضافة <span class="latin">EGP 12</span> إلى رصيد محفظتك</span>
+              </div>
             </div>
             <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]"><div class="flex justify-between items-center gap-3"><h2 class="font-bold text-[#062A1C] text-base">إزاي تكسب نقاط؟</h2></div><ul class="flex flex-col gap-2 ps-5 text-neutral-800 text-sm leading-7 list-disc">
               <li>اكسب نقطة على كل جنيه تشتريه من الموقع</li>

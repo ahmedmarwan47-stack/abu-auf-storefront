@@ -164,9 +164,69 @@
                 <p class="text-neutral-secondary text-sm">يمكنك إدارة الطلبات والمحفظة ومعلومات الحساب الخاصة بك هنا.</p>
               </div>
               <div class="flex flex-col items-center gap-1 bg-white shadow-custom4 px-6 py-4 border-2 border-primary rounded-xl">
-                <span class="font-bold text-[#062A1C] text-xl latin">EGP 1200</span>
+                <span class="font-bold text-[#062A1C] text-xl latin" data-wallet-amount>EGP 1200</span>
                 <span class="text-neutral-secondary text-xs">رصيد محفظتي</span>
               </div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+              <div class="flex flex-wrap justify-between items-center gap-3">
+                <h2 class="font-bold text-[#062A1C] text-lg">طلباتي</h2>
+                <a href="my-account-orders.html" class="hover:bg-interaction-base px-5 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">كل الطلبات</a>
+              </div>
+              
+            <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
+              <div class="flex flex-wrap justify-between items-center gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-[#062A1C] text-base">تتبع طلبك الحالي</span>
+                  <span class="font-semibold text-neutral-secondary text-sm latin">#30941</span>
+                </div>
+                <span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-accent-yellow text-[#062A1C]">تحت التحضير</span>
+              </div>
+              <ol class="flex gap-1">
+                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
+                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="text-[#062A1C] text-[11px] leading-4">تم الطلب</span>
+                </li>
+                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
+                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="text-[#062A1C] text-[11px] leading-4">جاري التحضير</span>
+                </li>
+                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
+                  <span class="place-items-center grid rounded-full size-7 bg-interaction-base text-neutral-secondary">
+                    <span class="font-semibold text-xs latin">3</span>
+                  </span>
+                  <span class="text-[#062A1C] text-[11px] leading-4">في الطريق إليك</span>
+                </li>
+                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
+                  <span class="place-items-center grid rounded-full size-7 bg-interaction-base text-neutral-secondary">
+                    <span class="font-semibold text-xs latin">4</span>
+                  </span>
+                  <span class="text-[#062A1C] text-[11px] leading-4">تم التسليم</span>
+                </li>
+              </ol>
+              <button type="button" data-order-open="#30941" class="self-start bg-cta hover:bg-cta-hover px-6 py-2.5 rounded-full font-semibold text-white text-sm transition-colors">تفاصيل الطلب</button>
+            </div>
+              
+            <div data-reorder-card class="flex flex-wrap justify-between items-center gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
+              <span data-reorder-item data-id="16499" data-name="بافس بالجبنة 40 جرام" data-price="11.0" data-image="images/abuauf/products/6223011438028.webp" data-qty="1" hidden></span><span data-reorder-item data-id="1368" data-name="بروتين بار براونيز شيكولاتة - 70 جم" data-price="65.0" data-image="images/abuauf/products/6223006315341-thumb.webp" data-qty="1" hidden></span><span data-reorder-item data-id="16502" data-name="بافس بالشطة والليمون 40 جرام" data-price="11.0" data-image="images/abuauf/products/6223011438035.webp" data-qty="1" hidden></span>
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="flex gap-1 shrink-0"><img src="images/abuauf/products/6223011438028.webp" alt="" class="bg-interaction-base p-1 rounded-lg w-12 h-12 object-contain shrink-0" loading="lazy" /><img src="images/abuauf/products/6223006315341-thumb.webp" alt="" class="bg-interaction-base p-1 rounded-lg w-12 h-12 object-contain shrink-0" loading="lazy" /><img src="images/abuauf/products/6223011438035.webp" alt="" class="bg-interaction-base p-1 rounded-lg w-12 h-12 object-contain shrink-0" loading="lazy" />
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <span class="font-bold text-[#062A1C] text-sm">آخر طلب <span class="latin">#30943</span></span>
+                  <span class="text-neutral-secondary text-xs">14 مارس 2026 · <span class="latin">EGP 117</span></span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" data-order-open="#30943" class="hover:bg-interaction-base px-4 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">التفاصيل</button>
+                <button type="button" data-reorder class="bg-cta hover:bg-cta-hover px-5 py-2 rounded-full font-semibold text-white text-xs transition-colors">إعادة الطلب</button>
+              </div>
+            </div>
             </div>
 
             <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]"><div class="flex justify-between items-center gap-3"><h2 class="font-bold text-[#062A1C] text-base">شارك الموقع مع الأصحاب والعائلة</h2></div>
@@ -174,44 +234,6 @@
               <div class="flex items-center gap-2 bg-interaction-base px-4 py-2 rounded-xl">
                 <span data-ref-link class="flex-1 min-w-0 text-neutral-secondary text-xs truncate latin">WWW.ABUAUF.COM/REF/1-0200,20409</span>
                 <button type="button" data-copy-ref class="bg-cta hover:bg-cta-hover px-4 py-1.5 rounded-full font-semibold text-white text-xs transition-colors">نسخ</button>
-              </div></div>
-
-            <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]"><div class="flex justify-between items-center gap-3"><h2 class="font-bold text-[#062A1C] text-base">طلباتي الحالية</h2><a href="my-account-orders.html" class="hover:bg-interaction-base px-5 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">كل الطلبات</a></div>
-              <div class="overflow-x-auto">
-                <table class="w-full min-w-[560px] text-start">
-                  <thead>
-                    <tr class="border-neutral-divider border-b text-neutral-secondary text-xs">
-                      <th class="py-3 font-medium text-start">رقم الطلب</th>
-                      <th class="py-3 font-medium text-start">التاريخ</th>
-                      <th class="py-3 font-medium text-start">حالة الطلب</th>
-                      <th class="py-3 font-medium text-start">المجموع</th>
-                      <th class="py-3"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <tr class="border-neutral-divider border-b last:border-0">
-                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">#30941</td>
-                    <td class="py-4 text-neutral-secondary text-sm">28 مارس 2026</td>
-                    <td class="py-4"><span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-accent-yellow text-[#062A1C]">تحت التحضير</span></td>
-                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">EGP 490</td>
-                    <td class="py-4 text-end"><a href="my-account-order.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">عرض</a></td>
-                  </tr>
-                  <tr class="border-neutral-divider border-b last:border-0">
-                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">#30942</td>
-                    <td class="py-4 text-neutral-secondary text-sm">21 مارس 2026</td>
-                    <td class="py-4"><span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-accent-error text-white">ملغي</span></td>
-                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">EGP 490</td>
-                    <td class="py-4 text-end"><a href="my-account-order.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">عرض</a></td>
-                  </tr>
-                  <tr class="border-neutral-divider border-b last:border-0">
-                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">#30943</td>
-                    <td class="py-4 text-neutral-secondary text-sm">14 مارس 2026</td>
-                    <td class="py-4"><span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-primary text-white">مكتمل</span></td>
-                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">EGP 490</td>
-                    <td class="py-4 text-end"><a href="my-account-order.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">عرض</a></td>
-                  </tr>
-                  </tbody>
-                </table>
               </div></div>
 
             <h2 class="font-bold text-[#062A1C] text-lg">بياناتي</h2>
@@ -229,6 +251,178 @@
                   <span>القاهرة، مصر</span>
                 </div></div>
             </div>
+            
+    <aside data-drawer="order" class="side-drawer side-drawer--left" aria-label="تفاصيل الطلب">
+      <button type="button" data-close aria-label="إغلاق" class="drawer-close place-items-center grid bg-white shadow-custom3 rounded-full size-8 text-[#062A1C]"><svg viewBox="0 0 24 24" fill="none" class="w-3.5 h-3.5"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+      <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
+        <h2 class="font-bold text-[#062A1C] text-lg">تفاصيل الطلب</h2>
+      </div>
+      <div class="flex-1 px-5 py-4 overflow-y-auto" data-order-panels>
+              <div data-order-panel data-order-id="#30941" hidden class="flex flex-col gap-4">
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                  <h3 class="font-bold text-[#062A1C] text-base">طلب رقم <span class="latin">#30941</span></h3>
+                  <span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-accent-yellow text-[#062A1C]">تحت التحضير</span>
+                </div>
+                <div class="pb-1"><ol class="flex gap-1">
+                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
+                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="text-[#062A1C] text-[11px] leading-4">تم الطلب</span>
+                </li>
+                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
+                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="text-[#062A1C] text-[11px] leading-4">جاري التحضير</span>
+                </li>
+                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
+                  <span class="place-items-center grid rounded-full size-7 bg-interaction-base text-neutral-secondary">
+                    <span class="font-semibold text-xs latin">3</span>
+                  </span>
+                  <span class="text-[#062A1C] text-[11px] leading-4">في الطريق إليك</span>
+                </li>
+                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
+                  <span class="place-items-center grid rounded-full size-7 bg-interaction-base text-neutral-secondary">
+                    <span class="font-semibold text-xs latin">4</span>
+                  </span>
+                  <span class="text-[#062A1C] text-[11px] leading-4">تم التسليم</span>
+                </li>
+              </ol></div>
+                <div class="flex flex-col">
+                <div class="flex items-center gap-3 py-3 border-neutral-divider border-b last:border-0">
+                  <img src="images/abuauf/products/6223006310759.webp" alt="" class="bg-interaction-base p-1.5 rounded-lg w-14 h-14 object-contain shrink-0" loading="lazy" />
+                  <div class="flex flex-col flex-1 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-sm line-clamp-2">تمر صحاري بالشيكولاته و اللوز - 300 جم</span>
+                    <span class="text-neutral-secondary text-xs">عدد <span class="latin">1</span></span>
+                  </div>
+                  <span class="font-bold text-[#062A1C] text-sm latin shrink-0">EGP 220</span>
+                </div>
+                <div class="flex items-center gap-3 py-3 border-neutral-divider border-b last:border-0">
+                  <img src="images/abuauf/products/2000102000000.webp" alt="" class="bg-interaction-base p-1.5 rounded-lg w-14 h-14 object-contain shrink-0" loading="lazy" />
+                  <div class="flex flex-col flex-1 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-sm line-clamp-2">قراصيا بدون نواه - 100 جم</span>
+                    <span class="text-neutral-secondary text-xs">عدد <span class="latin">2</span></span>
+                  </div>
+                  <span class="font-bold text-[#062A1C] text-sm latin shrink-0">EGP 145</span>
+                </div>
+                </div>
+                <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
+                  <div class="flex justify-between"><span class="text-neutral-secondary">الإجمالي الفرعي</span><span class="font-semibold text-[#062A1C] latin">EGP 365</span></div>
+                  <div class="flex justify-between"><span class="text-neutral-secondary">مصاريف التوصيل</span><span class="font-semibold text-[#062A1C] latin">EGP 30</span></div>
+                  <div class="flex justify-between items-center pt-2 border-neutral-divider border-t"><span class="font-bold text-[#062A1C]">الإجمالي</span><span class="font-bold text-[#062A1C] text-lg latin">EGP 395</span></div>
+                </div>
+                <div class="flex flex-col gap-1 bg-interaction-base p-3 rounded-xl text-neutral-secondary text-sm">
+                  <span class="font-semibold text-[#062A1C]">عنوان التوصيل</span>
+                  <span>شقة 3 - 220 شارع الحرية - الدور الأول</span>
+                  <span>مصر الجديدة، القاهرة</span>
+                </div>
+              </div>
+              <div data-order-panel data-order-id="#30942" hidden class="flex flex-col gap-4">
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                  <h3 class="font-bold text-[#062A1C] text-base">طلب رقم <span class="latin">#30942</span></h3>
+                  <span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-accent-error text-white">ملغي</span>
+                </div>
+                
+                <div class="flex flex-col">
+                <div class="flex items-center gap-3 py-3 border-neutral-divider border-b last:border-0">
+                  <img src="images/abuauf/products/2000208000000.webp" alt="" class="bg-interaction-base p-1.5 rounded-lg w-14 h-14 object-contain shrink-0" loading="lazy" />
+                  <div class="flex flex-col flex-1 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-sm line-clamp-2">فول سوداني بالشيكولاتة - 100 جم</span>
+                    <span class="text-neutral-secondary text-xs">عدد <span class="latin">2</span></span>
+                  </div>
+                  <span class="font-bold text-[#062A1C] text-sm latin shrink-0">EGP 71</span>
+                </div>
+                <div class="flex items-center gap-3 py-3 border-neutral-divider border-b last:border-0">
+                  <img src="images/abuauf/products/2000079000000.webp" alt="" class="bg-interaction-base p-1.5 rounded-lg w-14 h-14 object-contain shrink-0" loading="lazy" />
+                  <div class="flex flex-col flex-1 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-sm line-clamp-2">عين جمل مقشر - 100 جم</span>
+                    <span class="text-neutral-secondary text-xs">عدد <span class="latin">1</span></span>
+                  </div>
+                  <span class="font-bold text-[#062A1C] text-sm latin shrink-0">EGP 121</span>
+                </div>
+                </div>
+                <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
+                  <div class="flex justify-between"><span class="text-neutral-secondary">الإجمالي الفرعي</span><span class="font-semibold text-[#062A1C] latin">EGP 192</span></div>
+                  <div class="flex justify-between"><span class="text-neutral-secondary">مصاريف التوصيل</span><span class="font-semibold text-[#062A1C] latin">EGP 30</span></div>
+                  <div class="flex justify-between items-center pt-2 border-neutral-divider border-t"><span class="font-bold text-[#062A1C]">الإجمالي</span><span class="font-bold text-[#062A1C] text-lg latin">EGP 222</span></div>
+                </div>
+                <div class="flex flex-col gap-1 bg-interaction-base p-3 rounded-xl text-neutral-secondary text-sm">
+                  <span class="font-semibold text-[#062A1C]">عنوان التوصيل</span>
+                  <span>شقة 3 - 220 شارع الحرية - الدور الأول</span>
+                  <span>مصر الجديدة، القاهرة</span>
+                </div>
+              </div>
+              <div data-order-panel data-order-id="#30943" hidden class="flex flex-col gap-4">
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                  <h3 class="font-bold text-[#062A1C] text-base">طلب رقم <span class="latin">#30943</span></h3>
+                  <span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-primary text-white">مكتمل</span>
+                </div>
+                <div class="pb-1"><ol class="flex gap-1">
+                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
+                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="text-[#062A1C] text-[11px] leading-4">تم الطلب</span>
+                </li>
+                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
+                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="text-[#062A1C] text-[11px] leading-4">جاري التحضير</span>
+                </li>
+                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
+                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="text-[#062A1C] text-[11px] leading-4">في الطريق إليك</span>
+                </li>
+                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
+                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="text-[#062A1C] text-[11px] leading-4">تم التسليم</span>
+                </li>
+              </ol></div>
+                <div class="flex flex-col">
+                <div class="flex items-center gap-3 py-3 border-neutral-divider border-b last:border-0">
+                  <img src="images/abuauf/products/6223011438028.webp" alt="" class="bg-interaction-base p-1.5 rounded-lg w-14 h-14 object-contain shrink-0" loading="lazy" />
+                  <div class="flex flex-col flex-1 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-sm line-clamp-2">بافس بالجبنة 40 جرام</span>
+                    <span class="text-neutral-secondary text-xs">عدد <span class="latin">1</span></span>
+                  </div>
+                  <span class="font-bold text-[#062A1C] text-sm latin shrink-0">EGP 11</span>
+                </div>
+                <div class="flex items-center gap-3 py-3 border-neutral-divider border-b last:border-0">
+                  <img src="images/abuauf/products/6223006315341-thumb.webp" alt="" class="bg-interaction-base p-1.5 rounded-lg w-14 h-14 object-contain shrink-0" loading="lazy" />
+                  <div class="flex flex-col flex-1 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-sm line-clamp-2">بروتين بار براونيز شيكولاتة - 70 جم</span>
+                    <span class="text-neutral-secondary text-xs">عدد <span class="latin">1</span></span>
+                  </div>
+                  <span class="font-bold text-[#062A1C] text-sm latin shrink-0">EGP 65</span>
+                </div>
+                <div class="flex items-center gap-3 py-3 border-neutral-divider border-b last:border-0">
+                  <img src="images/abuauf/products/6223011438035.webp" alt="" class="bg-interaction-base p-1.5 rounded-lg w-14 h-14 object-contain shrink-0" loading="lazy" />
+                  <div class="flex flex-col flex-1 min-w-0">
+                    <span class="font-semibold text-[#062A1C] text-sm line-clamp-2">بافس بالشطة والليمون 40 جرام</span>
+                    <span class="text-neutral-secondary text-xs">عدد <span class="latin">1</span></span>
+                  </div>
+                  <span class="font-bold text-[#062A1C] text-sm latin shrink-0">EGP 11</span>
+                </div>
+                </div>
+                <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
+                  <div class="flex justify-between"><span class="text-neutral-secondary">الإجمالي الفرعي</span><span class="font-semibold text-[#062A1C] latin">EGP 87</span></div>
+                  <div class="flex justify-between"><span class="text-neutral-secondary">مصاريف التوصيل</span><span class="font-semibold text-[#062A1C] latin">EGP 30</span></div>
+                  <div class="flex justify-between items-center pt-2 border-neutral-divider border-t"><span class="font-bold text-[#062A1C]">الإجمالي</span><span class="font-bold text-[#062A1C] text-lg latin">EGP 117</span></div>
+                </div>
+                <div class="flex flex-col gap-1 bg-interaction-base p-3 rounded-xl text-neutral-secondary text-sm">
+                  <span class="font-semibold text-[#062A1C]">عنوان التوصيل</span>
+                  <span>شقة 3 - 220 شارع الحرية - الدور الأول</span>
+                  <span>مصر الجديدة، القاهرة</span>
+                </div>
+              </div>
+      </div>
+    </aside>
           </div>
         </div>
       </section>

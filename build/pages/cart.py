@@ -1,8 +1,8 @@
 """Shopping cart — Figma 'Cart' (4231:22875)."""
 from catalog import in_category, money, rail_products
 from components import (
-    accordion, cart_line, carousel, page, page_header, promo_field, wallet_toggle,
-    product_card, section_heading,
+    accordion, cart_line, carousel, freeship_bar, page, page_header, promo_field,
+    wallet_toggle, product_card, section_heading,
 )
 
 SLUG = "cart.html"
@@ -24,14 +24,27 @@ def build():
 
     # Live control: scripts.js persists the note under abuauf:orderNote and
     # prefills it on the way back — the button used to do nothing at all.
+    # Note has real states now (Ahmed, 2026-08-02): an edit view (textarea +
+    # save) and an applied view (the saved note, with edit / remove). scripts.js
+    # initOrderNotes -> syncNoteUI swaps between them off abuauf:orderNote, so a
+    # saved note comes back on reload already applied.
     note_panel = """
-                      <div class="flex flex-col gap-3">
-                        <!-- aria-label, not placeholder alone: a placeholder
-                             disappears the moment you type, so it cannot be
-                             the field's accessible name. -->
-                        <textarea rows="3" placeholder="أضف ملاحظة" aria-label="ملاحظات على الطلب" data-order-note
-                                  class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-sm transition-colors"></textarea>
-                        <button type="button" data-order-note-save class="bg-cta hover:bg-cta-hover px-6 py-2 rounded-full font-semibold text-white text-sm transition-colors self-end">أضف</button>
+                      <div data-note class="flex flex-col gap-3">
+                        <div data-note-edit class="flex flex-col gap-3">
+                          <!-- aria-label, not placeholder alone: a placeholder
+                               disappears the moment you type, so it cannot be
+                               the field's accessible name. -->
+                          <textarea rows="3" placeholder="أضف ملاحظة" aria-label="ملاحظات على الطلب" data-order-note
+                                    class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-sm transition-colors"></textarea>
+                          <button type="button" data-order-note-save class="bg-cta hover:bg-cta-hover px-6 py-2 rounded-full font-semibold text-white text-sm transition-colors self-end">حفظ الملاحظة</button>
+                        </div>
+                        <div data-note-view hidden class="flex flex-col gap-2 bg-interaction-base p-3 rounded-xl">
+                          <p class="text-[#062A1C] text-sm leading-6 whitespace-pre-line" data-note-text></p>
+                          <div class="flex items-center gap-4">
+                            <button type="button" data-note-edit-btn class="font-semibold text-cta text-xs underline">تعديل</button>
+                            <button type="button" data-note-remove class="font-semibold text-accent-error text-xs underline">حذف</button>
+                          </div>
+                        </div>
                       </div>"""
 
     # The basket is client state, so whether this button is usable cannot be
@@ -69,11 +82,12 @@ def build():
           <aside class="flex flex-col gap-4 lg:sticky lg:top-4 order-last lg:order-none min-w-0">
             <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
+{freeship_bar()}
 {wallet_toggle()}
               <div class="flex flex-col gap-2 text-sm">
                 <div class="flex justify-between">
                   <span class="text-neutral-secondary">مصاريف التوصيل</span>
-                  <span class="font-semibold text-[#062A1C] latin">EGP {money(DELIVERY_FEE)}</span>
+                  <span class="font-semibold text-[#062A1C] latin" data-cart-delivery>EGP {money(DELIVERY_FEE)}</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-neutral-secondary">الإجمالي</span>

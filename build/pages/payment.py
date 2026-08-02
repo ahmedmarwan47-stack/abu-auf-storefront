@@ -105,6 +105,15 @@ def build():
                 <legend class="mb-3 font-bold text-[#062A1C] text-lg">اختر طريقة الدفع</legend>
                 <div class="flex flex-col gap-4">
 
+                  <!-- Credit card first at Ahmed's request (2026-08-02). COD
+                       keeps the default selection (checked) — it is the
+                       prevailing method in this market and the gift-order rule
+                       below depends on it — but card now leads the list. -->
+                  <div class="flex">
+{radio_card("payment-method", "card", "بطاقة ائتمان", "فيزا أو ماستركارد",
+            _marks("pay-visa.svg", "pay-mastercard.svg"))}
+                  </div>
+
                   <!-- Cash on delivery is blocked for gift orders, which is not
                        a new rule invented here: the gift card on the previous
                        screen already states it ("الدفع عند الاستلام غير متاح
@@ -115,11 +124,6 @@ def build():
                   <div class="flex" data-cod-option>
 {radio_card("payment-method", "cod", "الدفع عند الاستلام", "ادفع نقداً عند وصول طلبك", ICON_COD, checked=True,
             blocked_note="غير متاح لطلبات الهدايا")}
-                  </div>
-
-                  <div class="flex">
-{radio_card("payment-method", "card", "بطاقة ائتمان", "فيزا أو ماستركارد",
-            _marks("pay-visa.svg", "pay-mastercard.svg"))}
                   </div>
 
                   <div class="flex">

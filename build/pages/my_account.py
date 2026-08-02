@@ -1,36 +1,19 @@
 """Account overview — Figma 'Account > Overview' (312:13041)."""
-from _account import CUSTOMER, ORDERS, STATUS_STYLE, account_page, card
-from catalog import e, money
+from _account import (
+    CUSTOMER, ORDERS, account_page, card, order_drawer, order_tracking_card,
+    reorder_card,
+)
+from catalog import e
 
 SLUG = "my-account.html"
 
 
 def build():
-    rows = "".join(f"""
-                  <tr class="border-neutral-divider border-b last:border-0">
-                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">{no}</td>
-                    <td class="py-4 text-neutral-secondary text-sm">{e(date)}</td>
-                    <td class="py-4"><span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs {STATUS_STYLE[tone]}">{e(status)}</span></td>
-                    <td class="py-4 font-semibold text-[#062A1C] text-sm latin">EGP {money(total)}</td>
-                    <td class="py-4 text-end"><a href="my-account-order.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">عرض</a></td>
-                  </tr>""" for no, date, status, tone, total in ORDERS)
-
-    orders_table = f"""
-              <div class="overflow-x-auto">
-                <table class="w-full min-w-[560px] text-start">
-                  <thead>
-                    <tr class="border-neutral-divider border-b text-neutral-secondary text-xs">
-                      <th class="py-3 font-medium text-start">رقم الطلب</th>
-                      <th class="py-3 font-medium text-start">التاريخ</th>
-                      <th class="py-3 font-medium text-start">حالة الطلب</th>
-                      <th class="py-3 font-medium text-start">المجموع</th>
-                      <th class="py-3"></th>
-                    </tr>
-                  </thead>
-                  <tbody>{rows}
-                  </tbody>
-                </table>
-              </div>"""
+    # The dashboard is interactive now, not a data dump (Ahmed, 2026-08-02):
+    # a current-order tracker and a last-order re-order, with a link out to the
+    # full orders list rather than the whole table inline.
+    current = next((o for o in ORDERS if o["tone"] == "amber"), ORDERS[0])
+    last = next((o for o in ORDERS if o["tone"] == "green"), ORDERS[-1])
 
     content = f"""
             <div class="flex items-center gap-3 bg-interaction-base px-5 py-4 rounded-xl">
@@ -44,9 +27,18 @@ def build():
                 <p class="text-neutral-secondary text-sm">يمكنك إدارة الطلبات والمحفظة ومعلومات الحساب الخاصة بك هنا.</p>
               </div>
               <div class="flex flex-col items-center gap-1 bg-white shadow-custom4 px-6 py-4 border-2 border-primary rounded-xl">
-                <span class="font-bold text-[#062A1C] text-xl latin">EGP {CUSTOMER['wallet']}</span>
+                <span class="font-bold text-[#062A1C] text-xl latin" data-wallet-amount>EGP {CUSTOMER['wallet']}</span>
                 <span class="text-neutral-secondary text-xs">رصيد محفظتي</span>
               </div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+              <div class="flex flex-wrap justify-between items-center gap-3">
+                <h2 class="font-bold text-[#062A1C] text-lg">طلباتي</h2>
+                <a href="my-account-orders.html" class="hover:bg-interaction-base px-5 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">كل الطلبات</a>
+              </div>
+              {order_tracking_card(current)}
+              {reorder_card(last)}
             </div>
 
             {card("شارك الموقع مع الأصحاب والعائلة", '''
@@ -55,8 +47,6 @@ def build():
                 <span data-ref-link class="flex-1 min-w-0 text-neutral-secondary text-xs truncate latin">WWW.ABUAUF.COM/REF/1-0200,20409</span>
                 <button type="button" data-copy-ref class="bg-cta hover:bg-cta-hover px-4 py-1.5 rounded-full font-semibold text-white text-xs transition-colors">نسخ</button>
               </div>''')}
-
-            {card("طلباتي الحالية", orders_table, "كل الطلبات", "my-account-orders.html")}
 
             <h2 class="font-bold text-[#062A1C] text-lg">بياناتي</h2>
             <div class="gap-6 grid md:grid-cols-2">
@@ -72,7 +62,8 @@ def build():
                   <span>مصر الجديدة</span>
                   <span>القاهرة، مصر</span>
                 </div>''', "تعديل", "my-account-addresses.html")}
-            </div>"""
+            </div>
+            {order_drawer(ORDERS)}"""
 
     return account_page("حسابي | أبو عوف",
                         "إدارة طلباتك وعناوينك ومحفظتك في أبو عوف.",

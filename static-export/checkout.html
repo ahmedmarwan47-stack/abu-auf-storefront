@@ -396,9 +396,11 @@
 
 
           <aside class="lg:top-4 lg:sticky flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px] order-2 lg:order-none min-w-0">
+            <!-- No "تعديل" link here any more (Ahmed, 2026-08-02): the order is
+                 locked once the checkout flow starts, so the summary is a
+                 read-only receipt with no invitation to go back and edit. -->
             <div class="flex justify-between items-center">
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
-              <a href="cart.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">تعديل</a>
             </div>
             <div class="flex flex-col gap-4" data-cart-lines>
                 <div data-cart-static class="flex items-center gap-3">
@@ -444,7 +446,7 @@
                      signal. -->
                 <span class="grid">
                   <span class="col-start-1 row-start-1 text-[#062A1C]/80 text-xs leading-5" data-wallet-idle>
-                    رصيدك <span class="font-bold text-accent-green latin">EGP 1200</span>
+                    رصيدك <span class="font-bold text-accent-green latin" data-wallet-amount>EGP 1200</span>
                   </span>
                   <span class="col-start-1 row-start-1 font-semibold text-accent-green text-xs leading-5 invisible" data-wallet-used>
                     تم الخصم من رصيدك
@@ -472,11 +474,22 @@
                   </div>
                   <p data-promo-msg hidden class="text-xs leading-5"></p>
                 </div>
+                <!-- Applied state (Ahmed, 2026-08-02): the code as a removable
+                     chip. renderCart -> syncPromoUI swaps between the trigger,
+                     the input box and this on every change, so it is right on
+                     load, after apply, and across cart -> checkout. -->
+                <div data-promo-applied hidden class="flex justify-between items-center gap-2 bg-[#E9F3E6] px-3 py-2 rounded-xl">
+                  <span class="flex items-center gap-2 min-w-0 text-[#163300] text-sm">
+                    <span class="w-4 h-4 text-accent-green shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    <span class="truncate">تم تطبيق <span class="font-bold latin" data-promo-applied-code></span></span>
+                  </span>
+                  <button type="button" data-promo-remove class="shrink-0 font-semibold text-accent-error text-xs underline">إلغاء</button>
+                </div>
               </div>
             <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
               <div class="flex justify-between">
                 <span class="text-neutral-secondary">مصاريف التوصيل</span>
-                <span class="font-semibold text-[#062A1C] latin">EGP 30</span>
+                <span class="font-semibold text-[#062A1C] latin" data-cart-delivery>EGP 30</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-neutral-secondary">الإجمالي</span>

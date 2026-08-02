@@ -69,7 +69,7 @@ def build():
 
     body = f"""
       <section class="pt-10 pb-6">
-        <div class="flex flex-col gap-3 mx-auto px-4 max-w-[1536px]">
+        <div class="flex flex-col gap-3 mx-auto px-4 max-w-[1200px]">
           <div class="flex items-center gap-3">
             <span class="place-items-center grid bg-primary rounded-full text-white size-8">{CHECK}</span>
             <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">شكراً لك</h1>
@@ -85,7 +85,7 @@ def build():
 
       <!-- ========================== ORDER TRACKER ========================== -->
       <section class="pb-8">
-        <div class="mx-auto px-4 max-w-[1536px]">
+        <div class="mx-auto px-4 max-w-[1200px]">
           <ol class="flex md:flex-row flex-col gap-6 md:gap-2 bg-white shadow-custom4 p-6 rounded-[20px]">{steps_html}
           </ol>
         </div>
@@ -93,12 +93,20 @@ def build():
 
       <!-- ============================ ORDER DETAIL ============================ -->
       <section class="pb-12">
-        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 lg:grid-cols-[380px_1fr] mx-auto px-4 max-w-[1536px]">
-          <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px] min-w-0">
-            <h2 class="font-bold text-[#062A1C] text-lg">طلب رقم <span class="latin">#{ORDER_NO}</span></h2>
+        <!-- The order-detail block sits in a narrower 1200px column (Ahmed,
+             2026-08-02): a full 1536 made the order box huge for its few items
+             and the customer column a long narrow strip. Order stays the wider
+             box, the customer info is 2-up so it is no longer a tall ribbon,
+             and the two now read as a balanced pair. -->
+        <div class="items-stretch gap-6 xl:gap-8 grid grid-cols-1 lg:grid-cols-[1fr_400px] mx-auto px-4 max-w-[1200px]">
+          <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px] min-w-0">
+            <h2 class="font-bold text-[#062A1C] text-xl">طلب رقم <span class="latin">#{ORDER_NO}</span></h2>
             <div class="flex flex-col">{lines}
             </div>
-            <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
+            <!-- mt-auto sinks the totals to the bottom so the (shorter) order box
+                 fills the height the taller customer box sets — the two columns
+                 are items-stretch, so they end level (Ahmed, 2026-08-02). -->
+            <div class="flex flex-col gap-2 mt-auto pt-3 border-neutral-divider border-t text-sm">
               <div class="flex justify-between">
                 <span class="text-neutral-secondary">مصاريف التوصيل</span>
                 <span class="font-semibold text-[#062A1C] latin">EGP {money(DELIVERY_FEE)}</span>
@@ -114,14 +122,14 @@ def build():
             </div>
           </div>
 
-          <div class="flex flex-col gap-6 bg-interaction-base p-6 xl:p-8 rounded-[20px]">
-            <div class="flex flex-col gap-4">
-              <h2 class="font-bold text-[#062A1C] text-lg">بيانات العميل</h2>
+          <div class="flex flex-col gap-5 bg-interaction-base p-6 rounded-[20px]">
+            <div class="flex flex-col gap-3">
+              <h2 class="font-bold text-[#062A1C] text-base">بيانات العميل</h2>
               <div class="gap-4 grid sm:grid-cols-2">{_rows(CUSTOMER)}
               </div>
             </div>
-            <div class="flex flex-col gap-4 pt-6 border-neutral-divider border-t">
-              <h2 class="font-bold text-[#062A1C] text-lg">بيانات التوصيل</h2>
+            <div class="flex flex-col gap-3 pt-5 border-neutral-divider border-t">
+              <h2 class="font-bold text-[#062A1C] text-base">بيانات التوصيل</h2>
               <div class="gap-4 grid sm:grid-cols-2">{_rows(DELIVERY)}
               </div>
             </div>

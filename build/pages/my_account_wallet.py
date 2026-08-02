@@ -22,7 +22,7 @@ def build():
             <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">محفظتي</h1>
             <div class="flex flex-col items-center gap-2 bg-primary p-8 rounded-[20px] text-white text-center">
               <span class="text-white/70 text-sm">رصيد محفظتي</span>
-              <span class="font-bold text-4xl latin">EGP {CUSTOMER['wallet']}</span>
+              <span class="font-bold text-4xl latin" data-wallet-amount>EGP {CUSTOMER['wallet']}</span>
             </div>
             {card("سجل المعاملات", f'''<div class="overflow-x-auto"><table class="w-full min-w-[420px]">
               <tbody>{rows}</tbody></table></div>''')}"""

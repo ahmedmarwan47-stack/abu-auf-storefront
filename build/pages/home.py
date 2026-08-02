@@ -115,7 +115,7 @@ def build():
              painted — the visible identity is the masthead logo. -->
         <h1 class="sr-only">أبو عوف — قهوة ومكسرات وتمور وسناكس صحية</h1>
         <div class="mx-auto px-4 max-w-[1536px]">
-          <div class="relative carousel hero-banners" data-autoplay style="--carousel-gap:16px">
+          <div class="relative carousel hero-banners" data-autoplay data-carousel-seamless style="--carousel-gap:16px">
             <div class="carousel-track">{hero_slides}
             </div>
             <!-- Offset is set in styles.css, scoped to .hero-banners: the 64px
@@ -185,7 +185,7 @@ def build():
       <!-- ============================== REVIEWS ============================== -->
       <section data-reveal class="py-12 xl:py-16">
         <div class="mx-auto px-4 max-w-[1536px]">
-          {section_heading("أراء العملاء", "كل التعليقات", "faqs.html")}
+          {section_heading("أراء العملاء", "كل التعليقات", "#")}
           <!-- Dark cards now, so a card gap rather than the old airy text
                columns. A row of four at xl (the reference's row-of-cards),
                2×2 from md, stacked below. -->
@@ -201,7 +201,7 @@ def build():
             <p class="font-semibold text-accent-yellow text-lg xl:text-xl">عن أبو عوف</p>
             <h2 class="font-bold text-3xl xl:text-5xl leading-tight">نحن نغير مفهوم الأكل الصحي في جميع أنحاء العالم</h2>
             <p class="text-white/80 text-base xl:text-lg leading-8">{e(ABOUT_COPY)}</p>
-            {button("اعرف المزيد", "about.html", "accent", "lg", "mt-2 self-start")}
+            {button("اعرف المزيد", "#", "accent", "lg", "mt-2 self-start")}
           </div>
           <div class="lg:order-first h-[320px] lg:h-full min-h-[420px]">
             <img src="images/abuauf/site/About-Homepage.webp" alt="فرع أبو عوف" class="w-full h-full object-cover" loading="lazy" />
@@ -234,10 +234,10 @@ def build():
           <div class="gap-6 xl:gap-12 grid lg:grid-cols-2">
 {info_card("images/abuauf/site/pick-up.webp", "فروع أبو عوف",
            'يوجد أكثر من <span class="latin">150</span> فرع أبو عوف في مصر, أكتشف الأقرب اليك',
-           "اكتشف الفروع", "branches.html")}
+           "اكتشف الفروع", "#")}
 {info_card("images/abuauf/site/Abu-Auf-flags.webp", "منتجات أبو عوف خارج مصر",
            "ما بين أسواق أوروبا، آسيا، أمريكا و الوطن العربي",
-           "اعرف أكثر", "about.html", "w-[168px] h-[100px]")}
+           "اعرف أكثر", "#", "w-[168px] h-[100px]")}
           </div>
         </div>
       </section>"""
