@@ -196,6 +196,18 @@ The discount is computed from the live subtotal on every render rather than
 banked as an amount: a percentage stored in EGP goes stale the moment the
 basket changes and keeps discounting a line already removed.
 
+The field now also rides in the **cart drawer** (Ahmed, 2026-08-02), above the
+total, so a shopper can apply a code without leaving the drawer. It reuses the
+same `[data-promo*]` contract as the page field, so `syncPromoUI` keeps the two
+in step and a code applied in either shows applied in both. The handlers were
+made **field-scoped** (`applyPromo(wrap)`, `closest("[data-promo]")`) rather
+than `document.querySelector` first-match, because two fields now coexist on
+`cart.html` — a bare first-match would read and message the wrong one. Enter
+inside the input now applies too (it was Apply-button-only before). Placeholder
+is `أدخل كود الخصم`; the input border is a **single** divider that darkens to
+the CTA ink on focus — no second ring (same "one border" treatment as the
+search field above).
+
 ### Social proof — the rank is real, an absolute sold-count is not
 
 The product page shows a best-seller badge and a "ضمن أفضل 10 مبيعاً" line.
@@ -389,6 +401,25 @@ standing accessibility deviation.
 ---
 
 ## 3. Deliberate deviations from the Figma
+
+### Search field focus: a single darkened divider, not the offset ring
+
+Ahmed asked (2026-08-02) to drop the "double border" the search field showed on
+focus. The cause: `.search-row:focus-within` painted the global focus treatment
+— a `2px solid #163300` outline at `outline-offset: 2px` **plus** a white halo
+`box-shadow` — around a row that already carries its own `border-b` divider, so
+focus stacked a second, floating border outside the first.
+
+The row is now given a lighter single cue instead: `.search-row:focus-within`
+just darkens its existing bottom divider to the brand ink (`#163300`). No ring,
+no halo, no offset, no layout shift. This is a **deliberate, scoped** softening
+of the site's focus-visible standard (documented in `styles.css` under
+"Focus"), justified by the search being a self-contained modal whose **close
+button keeps the full global ring** — so a keyboard user is never left with no
+focus indicator in that context. The newsletter field, which shares the same
+pattern, was **left on the full ring** (it lives in the footer, not a modal).
+If the single-divider cue is judged too subtle, the fallback is to restore the
+ring for `.search-row` — the rule is a two-line change.
 
 ### The best-seller badge has a second, category-relative tier
 

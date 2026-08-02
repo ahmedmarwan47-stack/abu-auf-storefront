@@ -188,7 +188,10 @@
           <!-- Details second: the RTL-left / LTR-right column. data-product
                lets the cart store read this product straight off the DOM, same
                as a product card. -->
-          <div class="flex flex-col gap-5 bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]"
+          <!-- The white card is desktop-only (Ahmed, 2026-08-02): on mobile the
+               info column drops its container so the content sits inline with
+               the page grid, like the gallery beside it. lg+ keeps the card. -->
+          <div class="flex flex-col gap-5 lg:bg-white lg:shadow-custom4 lg:p-6 xl:p-8 lg:rounded-[20px]"
                data-product data-record-view data-id="1359" data-name="بن أبو عوف ساده وسط - 100 جم"
                data-price="91.0" data-image="images/abuauf/products/2000467000000.webp">
             <div class="flex flex-col gap-3">
@@ -289,12 +292,35 @@
                     <span class="accordion-chevron text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                   </button>
                   <div class="accordion-panel">
-                    <div class="pb-4 text-neutral-800 text-sm leading-7">
-                      <ul class="flex flex-col gap-2 ps-5 list-disc">
-                        <li>مكوّنات مختارة بعناية من مصادر موثوقة دون إضافات غير ضرورية</li>
-                        <li>غني بالنكهة ومثالي للتسالي في أي وقت من اليوم</li>
-                        <li>خيار رائع للضيافة والمشاركة مع العائلة والأصحاب</li>
-                        <li>يصلك طازجاً بتغليف يحافظ على جودته حتى آخر قضمة</li>
+                    <div class="pb-4 text-neutral-800 text-sm leading-7"><ul class="flex flex-col gap-4">
+                        <li class="flex gap-2.5">
+                          <span class="mt-1.5 bg-cta rounded-full size-1.5 shrink-0"></span>
+                          <div class="min-w-0">
+                            <p class="font-semibold text-[#062A1C] text-sm">مكوّنات مختارة بعناية</p>
+                            <p class="text-neutral-secondary text-xs leading-6">من مصادر موثوقة ودون أي إضافات غير ضرورية.</p>
+                          </div>
+                        </li>
+                        <li class="flex gap-2.5">
+                          <span class="mt-1.5 bg-cta rounded-full size-1.5 shrink-0"></span>
+                          <div class="min-w-0">
+                            <p class="font-semibold text-[#062A1C] text-sm">نكهة غنية ومتوازنة</p>
+                            <p class="text-neutral-secondary text-xs leading-6">مثالية للتسالي في أي وقت من اليوم.</p>
+                          </div>
+                        </li>
+                        <li class="flex gap-2.5">
+                          <span class="mt-1.5 bg-cta rounded-full size-1.5 shrink-0"></span>
+                          <div class="min-w-0">
+                            <p class="font-semibold text-[#062A1C] text-sm">الأنسب للضيافة</p>
+                            <p class="text-neutral-secondary text-xs leading-6">خيار رائع للمشاركة مع العائلة والأصحاب.</p>
+                          </div>
+                        </li>
+                        <li class="flex gap-2.5">
+                          <span class="mt-1.5 bg-cta rounded-full size-1.5 shrink-0"></span>
+                          <div class="min-w-0">
+                            <p class="font-semibold text-[#062A1C] text-sm">طازج حتى آخر قضمة</p>
+                            <p class="text-neutral-secondary text-xs leading-6">يصلك بتغليف يحافظ على جودته وطزاجته.</p>
+                          </div>
+                        </li>
                       </ul></div>
                   </div>
                 </div>

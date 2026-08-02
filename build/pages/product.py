@@ -105,12 +105,24 @@ DESCRIPTION = (
 # only way to give the section the same density and layout everywhere is one
 # fixed list. Brand-level reassurance, no auditable SKU claim; in-house Arabic
 # pending sign-off (flagged in DESIGN-NOTES).
-BENEFITS_UNIFORM = """
-                      <ul class="flex flex-col gap-2 ps-5 list-disc">
-                        <li>مكوّنات مختارة بعناية من مصادر موثوقة دون إضافات غير ضرورية</li>
-                        <li>غني بالنكهة ومثالي للتسالي في أي وقت من اليوم</li>
-                        <li>خيار رائع للضيافة والمشاركة مع العائلة والأصحاب</li>
-                        <li>يصلك طازجاً بتغليف يحافظ على جودته حتى آخر قضمة</li>
+# Each benefit now leads with its own short heading (text-sm, below the
+# accordion's text-base title) and a supporting line beneath it, so the section
+# reads as four labelled points rather than a flat bullet list. Same in-house
+# Arabic, still pending sign-off (DESIGN-NOTES).
+_BENEFIT_ITEMS = [
+    ("مكوّنات مختارة بعناية", "من مصادر موثوقة ودون أي إضافات غير ضرورية."),
+    ("نكهة غنية ومتوازنة", "مثالية للتسالي في أي وقت من اليوم."),
+    ("الأنسب للضيافة", "خيار رائع للمشاركة مع العائلة والأصحاب."),
+    ("طازج حتى آخر قضمة", "يصلك بتغليف يحافظ على جودته وطزاجته."),
+]
+BENEFITS_UNIFORM = '<ul class="flex flex-col gap-4">' + "".join(f"""
+                        <li class="flex gap-2.5">
+                          <span class="mt-1.5 bg-cta rounded-full size-1.5 shrink-0"></span>
+                          <div class="min-w-0">
+                            <p class="font-semibold text-[#062A1C] text-sm">{t}</p>
+                            <p class="text-neutral-secondary text-xs leading-6">{d}</p>
+                          </div>
+                        </li>""" for t, d in _BENEFIT_ITEMS) + """
                       </ul>"""
 
 BENEFITS = """
@@ -315,7 +327,10 @@ def _render(p):
           <!-- Details second: the RTL-left / LTR-right column. data-product
                lets the cart store read this product straight off the DOM, same
                as a product card. -->
-          <div class="flex flex-col gap-5 bg-white shadow-custom4 p-6 xl:p-8 rounded-[20px]"
+          <!-- The white card is desktop-only (Ahmed, 2026-08-02): on mobile the
+               info column drops its container so the content sits inline with
+               the page grid, like the gallery beside it. lg+ keeps the card. -->
+          <div class="flex flex-col gap-5 lg:bg-white lg:shadow-custom4 lg:p-6 xl:p-8 lg:rounded-[20px]"
                data-product data-record-view data-id="{p.get('id', 0)}" data-name="{e(title(p))}"
                data-price="{p.get('sale') or p.get('price') or 0}" data-image="{e(p['image'])}">
             <div class="flex flex-col gap-3">

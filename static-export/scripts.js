@@ -485,6 +485,11 @@
     "أطلب الآن": "Order now",
     "اشتري الان": "Buy now",
     "هل لديك برومو كود؟": "Have a promo code?",
+    "توصيل خلال ساعتين": "Delivered within 2 hours",
+    "داخل القاهرة الكبرى، ولباقي المحافظات حسب المنطقة": "Within Greater Cairo, and to other governorates by area",
+    "أدخل كود الخصم": "Enter discount code",
+    "تم تطبيق": "Applied",
+    "إلغاء": "Remove",
     "أضف ملاحظات على الطلب": "Add order notes",
     "لا توجد منتجات في هذا القسم حالياً.": "No products in this section yet.",
     "شكراً لك": "Thank you",
@@ -1408,6 +1413,32 @@
           <span class="text-neutral-secondary">${esc(t("خصم المحفظة"))}</span>
           <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
         </div>
+        <!-- Promo code — same [data-promo*] contract as the cart-page field, so
+             renderCart's syncPromoUI keeps the drawer and the page in step and a
+             code applied here drops the total below. The handlers scope to the
+             clicked [data-promo], so the two fields never cross wires. -->
+        <div data-promo class="flex flex-col gap-2 py-1 border-neutral-divider border-y">
+          <button type="button" data-promo-open class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
+            ${esc(t("هل لديك برومو كود؟"))}
+          </button>
+          <div data-promo-box hidden class="flex flex-col gap-2">
+            <div class="flex items-center gap-2">
+              <input type="text" data-promo-input inputmode="latin" autocomplete="off"
+                     placeholder="${esc(t("أدخل كود الخصم"))}"
+                     class="flex-1 bg-white px-3 py-2 border border-neutral-divider focus:border-cta rounded-xl outline-none min-w-0 text-[#062A1C] text-sm transition-colors latin" />
+              <button type="button" data-promo-apply
+                      class="bg-cta hover:bg-cta-hover px-4 rounded-full min-h-11 font-semibold text-white text-sm whitespace-nowrap transition-colors">${esc(t("تطبيق"))}</button>
+            </div>
+            <p data-promo-msg hidden class="text-xs leading-5"></p>
+          </div>
+          <div data-promo-applied hidden class="flex justify-between items-center gap-2 bg-[#E9F3E6] px-3 py-2 rounded-xl">
+            <span class="flex items-center gap-2 min-w-0 text-[#163300] text-sm">
+              <span class="w-4 h-4 text-accent-green shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="truncate">${esc(t("تم تطبيق"))} <span class="font-bold latin" data-promo-applied-code></span></span>
+            </span>
+            <button type="button" data-promo-remove class="shrink-0 font-semibold text-accent-error text-xs underline">${esc(t("إلغاء"))}</button>
+          </div>
+        </div>
         <div class="flex justify-between items-center">
           <span class="text-neutral-secondary text-sm">${esc(t("الإجمالي"))}</span>
           <span class="font-bold text-[#062A1C] text-lg latin" data-cart-total>${egp(0)}</span>
@@ -1418,6 +1449,15 @@
         <div class="flex flex-col gap-2 mt-1">
           <a href="checkout.html" data-cart-checkout class="flex justify-center items-center bg-cta hover:bg-cta-hover rounded-full w-full min-h-11 font-semibold text-white text-sm text-center transition-colors">${esc(t("اتمام الشراء"))}</a>
           <a href="shop.html" class="flex justify-center items-center border-cta hover:bg-interaction-base border rounded-full w-full min-h-11 font-semibold text-cta text-sm transition-colors">${esc(t("مواصلة التسوق"))}</a>
+        </div>
+        <!-- One-line delivery note, no background box (Ahmed, 2026-08-02): the
+             boxed two-line version ate too much of the drawer's height. Scooter
+             icon + a single line; truncates rather than wrapping. -->
+        <div class="flex items-center gap-2 mt-1 min-w-0">
+          <img src="images/abuauf/icons/spec-delivery.png" alt="" class="w-6 h-6 shrink-0 object-contain" loading="lazy" />
+          <p class="text-neutral-secondary text-xs leading-5 truncate">
+            <span class="font-semibold text-[#062A1C]">${esc(t("توصيل خلال ساعتين"))}</span> ${esc(t("داخل القاهرة الكبرى"))}
+          </p>
         </div>
         <p data-cart-warning hidden class="flex items-start gap-2 mt-1 text-accent-error text-xs leading-5">
           <span aria-hidden="true">⚠</span>
@@ -1493,7 +1533,7 @@
     <!-- Search modal -->
     <div data-modal="search" class="modal-shell">
       <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[640px] overflow-hidden" data-modal-box>
-        <div class="flex items-center gap-3 px-5 py-4 border-neutral-divider border-b search-row">
+        <div class="flex items-center gap-3 px-5 py-4 border-transparent border-b search-row">
           <span class="w-5 h-5 text-neutral-secondary shrink-0">${ICON.search}</span>
           <label class="sr-only" for="site-search">${esc(t("ابحث عن قهوة، مكسرات، تمور…"))}</label>
           <input type="search" id="site-search" data-search-input autocomplete="off"
@@ -4166,9 +4206,13 @@
   /* Applying a code. Success and failure both SAY something — an Apply button
      that silently does nothing on a typo is indistinguishable from a broken
      one, which is how the old dead button read for its whole life. */
-  function applyPromo() {
-    const input = document.querySelector("[data-promo-input]");
-    const msg = document.querySelector("[data-promo-msg]");
+  function applyPromo(wrap) {
+    // Scope to the field that was used — the drawer and the cart page each own
+    // a [data-promo], so a bare document.querySelector would read (and message)
+    // whichever happens to sit first in the DOM rather than the one clicked.
+    wrap = wrap || document.querySelector("[data-promo]");
+    const input = wrap && wrap.querySelector("[data-promo-input]");
+    const msg = wrap && wrap.querySelector("[data-promo-msg]");
     if (!input) return;
     const code = input.value.trim().toUpperCase();
     if (!code) return;
@@ -4176,7 +4220,7 @@
     if (ok) {
       localStorage.setItem(PROMO_KEY, code);
       renderCart();
-      celebrate(input.closest("[data-promo]") || input);
+      celebrate(wrap);
     } else {
       localStorage.removeItem(PROMO_KEY);
       renderCart();
@@ -4616,39 +4660,57 @@
     syncWalletUI();
     syncGiftRules();
 
+    /* Enter inside a promo input applies it — the field is not a <form> (it can
+       sit inside the checkout's place-order form, and a nested form would submit
+       the order), so the submit gesture is wired by hand. Scoped to the field
+       that holds focus, like the Apply button. */
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      const input = e.target.closest("[data-promo-input]");
+      if (!input) return;
+      e.preventDefault();
+      applyPromo(input.closest("[data-promo]"));
+    });
+
     document.addEventListener("click", (e) => {
 
       /* Promo — open the field, then apply. Both live here rather than in the
          component so the cart page and checkout share one implementation. */
-      if (e.target.closest("[data-promo-open]")) {
-        const box = document.querySelector("[data-promo-box]");
-        const opener = document.querySelector("[data-promo-open]");
+      const promoOpen = e.target.closest("[data-promo-open]");
+      if (promoOpen) {
+        const wrap = promoOpen.closest("[data-promo]");
+        const box = wrap && wrap.querySelector("[data-promo-box]");
         if (box) {
           box.hidden = false;
-          if (opener) opener.hidden = true;
+          promoOpen.hidden = true;
           const input = box.querySelector("[data-promo-input]");
           if (input) input.focus();
         }
         return;
       }
 
-      if (e.target.closest("[data-promo-apply]")) {
-        applyPromo();
+      const promoApply = e.target.closest("[data-promo-apply]");
+      if (promoApply) {
+        applyPromo(promoApply.closest("[data-promo]"));
         return;
       }
 
-      /* Remove/cancel an applied code — back to the trigger state. */
+      /* Remove/cancel an applied code — back to the trigger state. Resets EVERY
+         field, not just the one clicked: one code is stored globally, so the
+         drawer and the page both have to fall back to their trigger. */
       if (e.target.closest("[data-promo-remove]")) {
         localStorage.removeItem(PROMO_KEY);
-        const box = document.querySelector("[data-promo-box]");
-        const input = document.querySelector("[data-promo-input]");
-        const msg = document.querySelector("[data-promo-msg]");
-        if (box) box.hidden = true;
-        if (input) input.value = "";
-        if (msg) {
-          msg.hidden = true;
-          msg.textContent = "";
-        }
+        document.querySelectorAll("[data-promo]").forEach((wrap) => {
+          const box = wrap.querySelector("[data-promo-box]");
+          const input = wrap.querySelector("[data-promo-input]");
+          const msg = wrap.querySelector("[data-promo-msg]");
+          if (box) box.hidden = true;
+          if (input) input.value = "";
+          if (msg) {
+            msg.hidden = true;
+            msg.textContent = "";
+          }
+        });
         renderCart();
         toast(t("تم إلغاء الكود"));
         return;

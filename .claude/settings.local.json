@@ -9,7 +9,9 @@
       "Bash(git fetch *)",
       "Bash(gh api *)",
       "Bash(git push *)",
-      "Bash(git remote *)"
+      "Bash(git remote *)",
+      "Bash(git checkout *)",
+      "Bash(git pull *)"
     ]
   }
 }

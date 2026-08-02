@@ -1210,8 +1210,8 @@ def promo_field():
                 <div data-promo-box hidden class="flex flex-col gap-2">
                   <div class="flex items-center gap-2">
                     <input type="text" data-promo-input inputmode="latin" autocomplete="off"
-                           placeholder="{e('اكتب الكود')}"
-                           class="flex-1 bg-white px-3 py-2 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none min-w-0 text-[#062A1C] text-sm transition-colors latin" />
+                           placeholder="{e('أدخل كود الخصم')}"
+                           class="flex-1 bg-white px-3 py-2 border border-neutral-divider focus:border-cta rounded-xl outline-none min-w-0 text-[#062A1C] text-sm transition-colors latin" />
                     <button type="button" data-promo-apply
                             class="bg-cta hover:bg-cta-hover px-4 rounded-full min-h-11 font-semibold text-white text-sm whitespace-nowrap transition-colors">تطبيق</button>
                   </div>
@@ -1547,19 +1547,21 @@ def product_card(p, slide=True):
 
 def category_tile(cat, label=None, href="shop-category.html"):
     """
-    Round category tile — Figma Section 563:31568.
-    The CMS category images are photographs with their own backgrounds, not
-    transparent cutouts, so they fill the circle rather than float inside it.
+    Square (rounded) category tile — Figma Section 563:31568, switched from a
+    circle to a rounded square at Ahmed's request (2026-08-02); the radius is
+    the site's card `rounded-[20px]`, so the tiles match the product and hero
+    cards. The CMS category images are photographs with their own backgrounds,
+    not transparent cutouts, so they fill the square rather than float inside it.
     """
     name = label or cat["ar"]
     return f"""
-        <a href="{href}" class="group flex flex-col items-center gap-4 w-[220px] xl:w-[250px] text-center">
-          <span class="tile-lift relative bg-beige rounded-full w-[220px] xl:w-[250px] h-[220px] xl:h-[250px] overflow-hidden group-hover:scale-[1.03]">
+        <a href="{href}" class="group flex flex-col items-center gap-3 sm:gap-4 w-full sm:w-[220px] xl:w-[250px] text-center">
+          <span class="tile-lift relative bg-beige rounded-[20px] w-full aspect-square overflow-hidden group-hover:scale-[1.03]">
             <img src="{e(cat['image'])}" alt="{e(name)}" class="w-full h-full object-cover" loading="lazy" />
           </span>
           <span class="flex flex-col gap-1">
-            <span class="font-bold text-[#062A1C] group-hover:text-primary text-2xl xl:text-3xl transition-colors">{e(name)}</span>
-            <span class="font-medium text-neutral-secondary text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
+            <span class="font-bold text-[#062A1C] group-hover:text-primary text-base sm:text-xl xl:text-2xl transition-colors">{e(name)}</span>
+            <span class="font-medium text-neutral-secondary text-sm sm:text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
           </span>
         </a>"""
 
@@ -1581,7 +1583,7 @@ def review_card(name, city, text, score="4.8"):
     parts = [w for w in name.split() if w]
     initials = "".join(w[0] for w in parts[:2])
     return f"""
-          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] h-full">
+          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] h-full w-[80%] sm:w-[340px] md:w-auto shrink-0 snap-start">
             <span class="block w-10 xl:w-12 h-10 xl:h-12 text-accent-yellow" aria-hidden="true">{ICON['quote']}</span>
             <p class="flex-1 text-white/90 text-base xl:text-lg leading-8">{e(text)}</p>
             <div class="flex items-center gap-3">
@@ -1595,21 +1597,24 @@ def review_card(name, city, text, score="4.8"):
 
 
 def blog_card(img, tag, heading, excerpt, href="blog.html"):
+    """Horizontal card — image beside the text (Ahmed, 2026-08-02) so a post
+    takes far less vertical height than the old image-over-text stack. min-w-0
+    on the text column so the fixed-width image cannot push the card wide."""
     return f"""
-        <article class="flex flex-col bg-white shadow-custom4 rounded-2xl overflow-hidden">
-          <a href="{href}" class="block bg-interaction-base aspect-[500/366] overflow-hidden">
-            <img src="{e(img)}" alt="{e(heading)}" class="w-full h-full hover:scale-105 object-cover transition-transform duration-500" loading="lazy" />
-          </a>
-          <div class="flex flex-col gap-3 p-6 xl:p-8">
-            <span class="font-semibold text-primary text-sm">{e(tag)}</span>
-            <h3 class="font-bold text-[#062A1C] text-xl xl:text-2xl leading-8 line-clamp-2">
+        <article class="flex bg-white shadow-custom4 rounded-2xl overflow-hidden">
+          <div class="flex flex-col flex-1 gap-2 p-4 xl:p-5 min-w-0">
+            <span class="font-semibold text-primary text-xs">{e(tag)}</span>
+            <h3 class="font-bold text-[#062A1C] text-base xl:text-lg leading-6 line-clamp-2">
               <a href="{href}" class="hover:text-primary transition-colors">{e(heading)}</a>
             </h3>
-            <p class="text-neutral-secondary text-base leading-7 line-clamp-2">{e(excerpt)}</p>
-            <a href="{href}" class="inline-flex justify-center items-center bg-interaction-base hover:bg-cta mt-2 rounded-full text-cta hover:text-white transition-colors self-start size-12" aria-label="اقرأ المزيد">
-              <span class="rtl:scale-flip">{ICON['arrow']}</span>
+            <p class="text-neutral-secondary text-sm leading-6 line-clamp-2">{e(excerpt)}</p>
+            <a href="{href}" class="inline-flex items-center gap-1 mt-auto pt-1 font-semibold text-cta text-sm">
+              اقرأ المزيد <span class="w-4 h-4 rtl:scale-flip">{ICON['arrow']}</span>
             </a>
           </div>
+          <a href="{href}" class="block bg-interaction-base w-[120px] sm:w-[150px] shrink-0 overflow-hidden">
+            <img src="{e(img)}" alt="{e(heading)}" class="w-full h-full hover:scale-105 object-cover transition-transform duration-500" loading="lazy" />
+          </a>
         </article>"""
 
 

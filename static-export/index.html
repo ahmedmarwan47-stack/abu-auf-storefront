@@ -59,38 +59,26 @@
             <div class="carousel-track">
               <div class="carousel-slide w-full">
                 <a href="shop.html" class="block relative rounded-[20px] w-full overflow-hidden">
-                  <picture>
-                    <source media="(min-width: 768px)" srcset="images/abuauf/site/coffee-web-A1.webp" />
-                    <img src="images/abuauf/site/coffee.-A.webp" alt="قهوة تركي بالتوت — جديد من أبو عوف"
-                         class="w-full md:aspect-[1440/470] aspect-[505/728] object-cover" />
-                  </picture>
+                  <img src="images/abuauf/site/hero-coffee.webp" alt="قهوة طازجة تُطحن لك"
+                       class="w-full aspect-[3/1] object-cover" />
                 </a>
               </div>
               <div class="carousel-slide w-full">
                 <a href="shop.html" class="block relative rounded-[20px] w-full overflow-hidden">
-                  <picture>
-                    <source media="(min-width: 768px)" srcset="images/abuauf/site/Madjool-web-AR.webp" />
-                    <img src="images/abuauf/site/Madjool-mob-AR.webp" alt="تمور المجدول الفاخرة"
-                         class="w-full md:aspect-[1440/470] aspect-[505/728] object-cover" loading="lazy" />
-                  </picture>
+                  <img src="images/abuauf/site/hero-pistachio.webp" alt="فستق أمريكي محمص ومملح"
+                       class="w-full aspect-[3/1] object-cover" loading="lazy" />
                 </a>
               </div>
               <div class="carousel-slide w-full">
                 <a href="shop.html" class="block relative rounded-[20px] w-full overflow-hidden">
-                  <picture>
-                    <source media="(min-width: 768px)" srcset="images/abuauf/site/ps-web-A-600.webp" />
-                    <img src="images/abuauf/site/ps-mobile-A-600.webp" alt="تشكيلة أبو عوف المميزة"
-                         class="w-full md:aspect-[1440/470] aspect-[505/728] object-cover" loading="lazy" />
-                  </picture>
+                  <img src="images/abuauf/site/hero-dates.webp" alt="تمور صحراوية فاخرة وطبيعية"
+                       class="w-full aspect-[3/1] object-cover" loading="lazy" />
                 </a>
               </div>
               <div class="carousel-slide w-full">
                 <a href="shop.html" class="block relative rounded-[20px] w-full overflow-hidden">
-                  <picture>
-                    <source media="(min-width: 768px)" srcset="images/abuauf/site/UAE-Abuauf-desktop-Ar.webp" />
-                    <img src="images/abuauf/site/Dubai-hero-mobile-Ar.webp" alt="أبو عوف الآن في الإمارات"
-                         class="w-full md:aspect-[1440/470] aspect-[505/728] object-cover" loading="lazy" />
-                  </picture>
+                  <img src="images/abuauf/site/hero-nuts-mix.webp" alt="مكسرات مشكلة فاخرة وطبيعية"
+                       class="w-full aspect-[3/1] object-cover" loading="lazy" />
                 </a>
               </div>
             </div>
@@ -114,70 +102,71 @@
       <section data-reveal class="py-12 xl:py-16">
         <div class="mx-auto px-4 max-w-[1536px]">
           <h2 class="mb-10 xl:mb-12 font-bold text-[#062A1C] text-3xl xl:text-4xl text-center">تسوق منتجاتنا</h2>
-          <!-- The Figma mobile home (2595:60104) stacks these one per row; the
-               tiles are 220px wide, so forcing two columns at 375px clipped
-               30px off each. One column below sm, two from sm. -->
-          <!-- Content-width columns centred as a group, NOT 1fr tracks. With
-               1fr the three tracks filled max-w-[1536px] and justify-items-center
-               left ~240px of air between the 250px circles; Ahmed wanted that
-               horizontal gap cut while keeping gap-y. Now gap-x IS the gap. -->
-          <!-- justify-items-center: at mobile the single 1fr column is full
-               width, so without it the 220px tile sits at justify-self:start
-               (= right in RTL) and the cards hug the right edge. On desktop the
-               tracks already equal the tile width, so it is a no-op there. -->
-          <div class="justify-center justify-items-center gap-x-16 gap-y-12 grid grid-cols-1 sm:grid-cols-[repeat(2,auto)] lg:grid-cols-[repeat(3,auto)]">
-        <a href="shop-category.html" class="group flex flex-col items-center gap-4 w-[220px] xl:w-[250px] text-center">
-          <span class="tile-lift relative bg-beige rounded-full w-[220px] xl:w-[250px] h-[220px] xl:h-[250px] overflow-hidden group-hover:scale-[1.03]">
+          <!-- TWO per row on mobile (Ahmed, 2026-08-02). The old one-per-row was
+               forced because the tiles were a FIXED 220px and two of those clip
+               at 375px. They are now FLUID below sm (`w-full` + `aspect-square`
+               in category_tile), so two share the row via `grid-cols-2` 1fr
+               tracks and shrink to fit any phone; gap-x is tightened to match. -->
+          <!-- From sm up the columns go back to content-width (`repeat(N,auto)`)
+               so the tiles sit at their fixed 220/250 and the group is centred
+               with gap-x AS the gap — NOT 1fr tracks, which filled max-w-[1536px]
+               and left ~240px of air between the tiles (Ahmed cut that once). -->
+          <!-- justify-items-center centres each fixed tile inside its auto track
+               on sm+; on mobile the fluid tile fills its 1fr track, so it is a
+               no-op there. -->
+          <div class="justify-center justify-items-center gap-x-4 sm:gap-x-16 gap-y-8 sm:gap-y-12 grid grid-cols-2 sm:grid-cols-[repeat(2,auto)] lg:grid-cols-[repeat(3,auto)]">
+        <a href="shop-category.html" class="group flex flex-col items-center gap-3 sm:gap-4 w-full sm:w-[220px] xl:w-[250px] text-center">
+          <span class="tile-lift relative bg-beige rounded-[20px] w-full aspect-square overflow-hidden group-hover:scale-[1.03]">
             <img src="images/abuauf/categories/Dates.webp" alt="التمور والفواكه المجففة" class="w-full h-full object-cover" loading="lazy" />
           </span>
           <span class="flex flex-col gap-1">
-            <span class="font-bold text-[#062A1C] group-hover:text-primary text-2xl xl:text-3xl transition-colors">التمور والفواكه المجففة</span>
-            <span class="font-medium text-neutral-secondary text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
+            <span class="font-bold text-[#062A1C] group-hover:text-primary text-base sm:text-xl xl:text-2xl transition-colors">التمور والفواكه المجففة</span>
+            <span class="font-medium text-neutral-secondary text-sm sm:text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
           </span>
         </a>
-        <a href="shop-category.html" class="group flex flex-col items-center gap-4 w-[220px] xl:w-[250px] text-center">
-          <span class="tile-lift relative bg-beige rounded-full w-[220px] xl:w-[250px] h-[220px] xl:h-[250px] overflow-hidden group-hover:scale-[1.03]">
+        <a href="shop-category.html" class="group flex flex-col items-center gap-3 sm:gap-4 w-full sm:w-[220px] xl:w-[250px] text-center">
+          <span class="tile-lift relative bg-beige rounded-[20px] w-full aspect-square overflow-hidden group-hover:scale-[1.03]">
             <img src="images/abuauf/categories/Nuts.webp" alt="المكسرات" class="w-full h-full object-cover" loading="lazy" />
           </span>
           <span class="flex flex-col gap-1">
-            <span class="font-bold text-[#062A1C] group-hover:text-primary text-2xl xl:text-3xl transition-colors">المكسرات</span>
-            <span class="font-medium text-neutral-secondary text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
+            <span class="font-bold text-[#062A1C] group-hover:text-primary text-base sm:text-xl xl:text-2xl transition-colors">المكسرات</span>
+            <span class="font-medium text-neutral-secondary text-sm sm:text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
           </span>
         </a>
-        <a href="shop-category.html" class="group flex flex-col items-center gap-4 w-[220px] xl:w-[250px] text-center">
-          <span class="tile-lift relative bg-beige rounded-full w-[220px] xl:w-[250px] h-[220px] xl:h-[250px] overflow-hidden group-hover:scale-[1.03]">
+        <a href="shop-category.html" class="group flex flex-col items-center gap-3 sm:gap-4 w-full sm:w-[220px] xl:w-[250px] text-center">
+          <span class="tile-lift relative bg-beige rounded-[20px] w-full aspect-square overflow-hidden group-hover:scale-[1.03]">
             <img src="images/abuauf/categories/Drinks-1.webp" alt="القهوة" class="w-full h-full object-cover" loading="lazy" />
           </span>
           <span class="flex flex-col gap-1">
-            <span class="font-bold text-[#062A1C] group-hover:text-primary text-2xl xl:text-3xl transition-colors">القهوة</span>
-            <span class="font-medium text-neutral-secondary text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
+            <span class="font-bold text-[#062A1C] group-hover:text-primary text-base sm:text-xl xl:text-2xl transition-colors">القهوة</span>
+            <span class="font-medium text-neutral-secondary text-sm sm:text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
           </span>
         </a>
-        <a href="shop-category.html" class="group flex flex-col items-center gap-4 w-[220px] xl:w-[250px] text-center">
-          <span class="tile-lift relative bg-beige rounded-full w-[220px] xl:w-[250px] h-[220px] xl:h-[250px] overflow-hidden group-hover:scale-[1.03]">
+        <a href="shop-category.html" class="group flex flex-col items-center gap-3 sm:gap-4 w-full sm:w-[220px] xl:w-[250px] text-center">
+          <span class="tile-lift relative bg-beige rounded-[20px] w-full aspect-square overflow-hidden group-hover:scale-[1.03]">
             <img src="images/abuauf/categories/Spices-Category-1.webp" alt="البهارات والزيوت" class="w-full h-full object-cover" loading="lazy" />
           </span>
           <span class="flex flex-col gap-1">
-            <span class="font-bold text-[#062A1C] group-hover:text-primary text-2xl xl:text-3xl transition-colors">البهارات والزيوت</span>
-            <span class="font-medium text-neutral-secondary text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
+            <span class="font-bold text-[#062A1C] group-hover:text-primary text-base sm:text-xl xl:text-2xl transition-colors">البهارات والزيوت</span>
+            <span class="font-medium text-neutral-secondary text-sm sm:text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
           </span>
         </a>
-        <a href="shop-category.html" class="group flex flex-col items-center gap-4 w-[220px] xl:w-[250px] text-center">
-          <span class="tile-lift relative bg-beige rounded-full w-[220px] xl:w-[250px] h-[220px] xl:h-[250px] overflow-hidden group-hover:scale-[1.03]">
+        <a href="shop-category.html" class="group flex flex-col items-center gap-3 sm:gap-4 w-full sm:w-[220px] xl:w-[250px] text-center">
+          <span class="tile-lift relative bg-beige rounded-[20px] w-full aspect-square overflow-hidden group-hover:scale-[1.03]">
             <img src="images/abuauf/categories/Healthy_Snaks2.png" alt="الوجبات صحية" class="w-full h-full object-cover" loading="lazy" />
           </span>
           <span class="flex flex-col gap-1">
-            <span class="font-bold text-[#062A1C] group-hover:text-primary text-2xl xl:text-3xl transition-colors">الوجبات صحية</span>
-            <span class="font-medium text-neutral-secondary text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
+            <span class="font-bold text-[#062A1C] group-hover:text-primary text-base sm:text-xl xl:text-2xl transition-colors">الوجبات صحية</span>
+            <span class="font-medium text-neutral-secondary text-sm sm:text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
           </span>
         </a>
-        <a href="shop-category.html" class="group flex flex-col items-center gap-4 w-[220px] xl:w-[250px] text-center">
-          <span class="tile-lift relative bg-beige rounded-full w-[220px] xl:w-[250px] h-[220px] xl:h-[250px] overflow-hidden group-hover:scale-[1.03]">
+        <a href="shop-category.html" class="group flex flex-col items-center gap-3 sm:gap-4 w-full sm:w-[220px] xl:w-[250px] text-center">
+          <span class="tile-lift relative bg-beige rounded-[20px] w-full aspect-square overflow-hidden group-hover:scale-[1.03]">
             <img src="images/abuauf/categories/gifts.png" alt="الهدايا" class="w-full h-full object-cover" loading="lazy" />
           </span>
           <span class="flex flex-col gap-1">
-            <span class="font-bold text-[#062A1C] group-hover:text-primary text-2xl xl:text-3xl transition-colors">الهدايا</span>
-            <span class="font-medium text-neutral-secondary text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
+            <span class="font-bold text-[#062A1C] group-hover:text-primary text-base sm:text-xl xl:text-2xl transition-colors">الهدايا</span>
+            <span class="font-medium text-neutral-secondary text-sm sm:text-base xl:text-xl">تشكيلة متنوعة تبدا من <span class="latin">17</span> جنية</span>
           </span>
         </a>
           </div>
@@ -2501,11 +2490,12 @@
       <section data-reveal class="py-12 xl:py-16">
         <div class="mx-auto px-4 max-w-[1536px]">
           <div class="flex flex-wrap justify-between items-center gap-4 mb-10"><h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">أراء العملاء</h2><a href="#" class="inline-flex justify-center items-center rounded-full font-semibold transition-colors px-6 py-2.5 text-sm border border-cta text-cta hover:bg-interaction-base ">كل التعليقات</a></div>
-          <!-- Dark cards now, so a card gap rather than the old airy text
-               columns. A row of four at xl (the reference's row-of-cards),
-               2×2 from md, stacked below. -->
-          <div class="gap-6 xl:gap-8 grid md:grid-cols-2 xl:grid-cols-4">
-          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] h-full">
+          <!-- Dark cards. On mobile they scroll horizontally (narrower cards,
+               a peek of the next, full-bleed to the screen edge) rather than
+               stacking full-width and tall (Ahmed, 2026-08-02); from md they
+               return to the 2×2 / row-of-four grid. -->
+          <div class="flex md:grid gap-4 xl:gap-8 md:grid-cols-2 xl:grid-cols-4 -mx-4 px-4 md:mx-0 md:px-0 overflow-x-auto md:overflow-visible no-scrollbar snap-x">
+          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] h-full w-[80%] sm:w-[340px] md:w-auto shrink-0 snap-start">
             <span class="block w-10 xl:w-12 h-10 xl:h-12 text-accent-yellow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M10 6c-3.3 0-6 2.7-6 6v6h6v-6H7c0-1.7 1.3-3 3-3V6Z"/><path d="M20 6c-3.3 0-6 2.7-6 6v6h6v-6h-3c0-1.7 1.3-3 3-3V6Z"/></svg></span>
             <p class="flex-1 text-white/90 text-base xl:text-lg leading-8">التمور والمكسرات دايماً طازة وجودتها ثابتة، وبيوصلوا بسرعة. أبو عوف بقى جزء أساسي من تسوق البيت عندنا.</p>
             <div class="flex items-center gap-3">
@@ -2516,7 +2506,7 @@
               </span>
             </div>
           </article>
-          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] h-full">
+          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] h-full w-[80%] sm:w-[340px] md:w-auto shrink-0 snap-start">
             <span class="block w-10 xl:w-12 h-10 xl:h-12 text-accent-yellow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M10 6c-3.3 0-6 2.7-6 6v6h6v-6H7c0-1.7 1.3-3 3-3V6Z"/><path d="M20 6c-3.3 0-6 2.7-6 6v6h6v-6h-3c0-1.7 1.3-3 3-3V6Z"/></svg></span>
             <p class="flex-1 text-white/90 text-base xl:text-lg leading-8">القهوة التركي بتاعتهم أحلى حاجة جربتها، والطحن بيكون مظبوط على حسب طلبك. التغليف كمان بيحافظ على الريحة.</p>
             <div class="flex items-center gap-3">
@@ -2527,7 +2517,7 @@
               </span>
             </div>
           </article>
-          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] h-full">
+          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] h-full w-[80%] sm:w-[340px] md:w-auto shrink-0 snap-start">
             <span class="block w-10 xl:w-12 h-10 xl:h-12 text-accent-yellow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M10 6c-3.3 0-6 2.7-6 6v6h6v-6H7c0-1.7 1.3-3 3-3V6Z"/><path d="M20 6c-3.3 0-6 2.7-6 6v6h6v-6h-3c0-1.7 1.3-3 3-3V6Z"/></svg></span>
             <p class="flex-1 text-white/90 text-base xl:text-lg leading-8">طلبت هدايا لمناسبة عائلية والتغليف كان شيك جداً. الأسعار كويسة مقارنة بالجودة اللي بتاخدها.</p>
             <div class="flex items-center gap-3">
@@ -2538,7 +2528,7 @@
               </span>
             </div>
           </article>
-          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] h-full">
+          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] h-full w-[80%] sm:w-[340px] md:w-auto shrink-0 snap-start">
             <span class="block w-10 xl:w-12 h-10 xl:h-12 text-accent-yellow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M10 6c-3.3 0-6 2.7-6 6v6h6v-6H7c0-1.7 1.3-3 3-3V6Z"/><path d="M20 6c-3.3 0-6 2.7-6 6v6h6v-6h-3c0-1.7 1.3-3 3-3V6Z"/></svg></span>
             <p class="flex-1 text-white/90 text-base xl:text-lg leading-8">بحب قسم السناكس الصحية، فيه اختيارات كتير للأطفال واللانش بوكس. الخدمة سريعة والفروع منتشرة.</p>
             <div class="flex items-center gap-3">
@@ -2573,50 +2563,50 @@
         <div class="mx-auto px-4 max-w-[1536px]">
           <div class="flex flex-wrap justify-between items-center gap-4 mb-10"><h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">آخر الأخبار</h2><a href="blogs.html" class="inline-flex justify-center items-center rounded-full font-semibold transition-colors px-6 py-2.5 text-sm border border-cta text-cta hover:bg-interaction-base ">كل المقالات</a></div>
           <div class="gap-6 xl:gap-8 grid md:grid-cols-2 lg:grid-cols-3">
-        <article class="flex flex-col bg-white shadow-custom4 rounded-2xl overflow-hidden">
-          <a href="blog.html" class="block bg-interaction-base aspect-[500/366] overflow-hidden">
-            <img src="images/abuauf/site/1-2.webp" alt="فوائد المكسرات النيئة لصحة القلب" class="w-full h-full hover:scale-105 object-cover transition-transform duration-500" loading="lazy" />
-          </a>
-          <div class="flex flex-col gap-3 p-6 xl:p-8">
-            <span class="font-semibold text-primary text-sm">نصائح</span>
-            <h3 class="font-bold text-[#062A1C] text-xl xl:text-2xl leading-8 line-clamp-2">
+        <article class="flex bg-white shadow-custom4 rounded-2xl overflow-hidden">
+          <div class="flex flex-col flex-1 gap-2 p-4 xl:p-5 min-w-0">
+            <span class="font-semibold text-primary text-xs">نصائح</span>
+            <h3 class="font-bold text-[#062A1C] text-base xl:text-lg leading-6 line-clamp-2">
               <a href="blog.html" class="hover:text-primary transition-colors">فوائد المكسرات النيئة لصحة القلب</a>
             </h3>
-            <p class="text-neutral-secondary text-base leading-7 line-clamp-2">المكسرات مصدر غني بالدهون الصحية والألياف، وإضافتها لنظامك اليومي أسهل مما تتخيل.</p>
-            <a href="blog.html" class="inline-flex justify-center items-center bg-interaction-base hover:bg-cta mt-2 rounded-full text-cta hover:text-white transition-colors self-start size-12" aria-label="اقرأ المزيد">
-              <span class="rtl:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <p class="text-neutral-secondary text-sm leading-6 line-clamp-2">المكسرات مصدر غني بالدهون الصحية والألياف، وإضافتها لنظامك اليومي أسهل مما تتخيل.</p>
+            <a href="blog.html" class="inline-flex items-center gap-1 mt-auto pt-1 font-semibold text-cta text-sm">
+              اقرأ المزيد <span class="w-4 h-4 rtl:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </a>
           </div>
-        </article>
-        <article class="flex flex-col bg-white shadow-custom4 rounded-2xl overflow-hidden">
-          <a href="blog.html" class="block bg-interaction-base aspect-[500/366] overflow-hidden">
-            <img src="images/abuauf/site/2-1.webp" alt="دليلك لاختيار درجة تحميص القهوة" class="w-full h-full hover:scale-105 object-cover transition-transform duration-500" loading="lazy" />
+          <a href="blog.html" class="block bg-interaction-base w-[120px] sm:w-[150px] shrink-0 overflow-hidden">
+            <img src="images/abuauf/site/1-2.webp" alt="فوائد المكسرات النيئة لصحة القلب" class="w-full h-full hover:scale-105 object-cover transition-transform duration-500" loading="lazy" />
           </a>
-          <div class="flex flex-col gap-3 p-6 xl:p-8">
-            <span class="font-semibold text-primary text-sm">قهوة</span>
-            <h3 class="font-bold text-[#062A1C] text-xl xl:text-2xl leading-8 line-clamp-2">
+        </article>
+        <article class="flex bg-white shadow-custom4 rounded-2xl overflow-hidden">
+          <div class="flex flex-col flex-1 gap-2 p-4 xl:p-5 min-w-0">
+            <span class="font-semibold text-primary text-xs">قهوة</span>
+            <h3 class="font-bold text-[#062A1C] text-base xl:text-lg leading-6 line-clamp-2">
               <a href="blog.html" class="hover:text-primary transition-colors">دليلك لاختيار درجة تحميص القهوة</a>
             </h3>
-            <p class="text-neutral-secondary text-base leading-7 line-clamp-2">من التحميص الفاتح للغامق، كل درجة ليها طابع مختلف. تعرف على الفرق واختار اللي يناسب ذوقك.</p>
-            <a href="blog.html" class="inline-flex justify-center items-center bg-interaction-base hover:bg-cta mt-2 rounded-full text-cta hover:text-white transition-colors self-start size-12" aria-label="اقرأ المزيد">
-              <span class="rtl:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <p class="text-neutral-secondary text-sm leading-6 line-clamp-2">من التحميص الفاتح للغامق، كل درجة ليها طابع مختلف. تعرف على الفرق واختار اللي يناسب ذوقك.</p>
+            <a href="blog.html" class="inline-flex items-center gap-1 mt-auto pt-1 font-semibold text-cta text-sm">
+              اقرأ المزيد <span class="w-4 h-4 rtl:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </a>
           </div>
-        </article>
-        <article class="flex flex-col bg-white shadow-custom4 rounded-2xl overflow-hidden">
-          <a href="blog.html" class="block bg-interaction-base aspect-[500/366] overflow-hidden">
-            <img src="images/abuauf/site/3-1.webp" alt="التمور: طاقة طبيعية في كل قطعة" class="w-full h-full hover:scale-105 object-cover transition-transform duration-500" loading="lazy" />
+          <a href="blog.html" class="block bg-interaction-base w-[120px] sm:w-[150px] shrink-0 overflow-hidden">
+            <img src="images/abuauf/site/2-1.webp" alt="دليلك لاختيار درجة تحميص القهوة" class="w-full h-full hover:scale-105 object-cover transition-transform duration-500" loading="lazy" />
           </a>
-          <div class="flex flex-col gap-3 p-6 xl:p-8">
-            <span class="font-semibold text-primary text-sm">تغذية</span>
-            <h3 class="font-bold text-[#062A1C] text-xl xl:text-2xl leading-8 line-clamp-2">
+        </article>
+        <article class="flex bg-white shadow-custom4 rounded-2xl overflow-hidden">
+          <div class="flex flex-col flex-1 gap-2 p-4 xl:p-5 min-w-0">
+            <span class="font-semibold text-primary text-xs">تغذية</span>
+            <h3 class="font-bold text-[#062A1C] text-base xl:text-lg leading-6 line-clamp-2">
               <a href="blog.html" class="hover:text-primary transition-colors">التمور: طاقة طبيعية في كل قطعة</a>
             </h3>
-            <p class="text-neutral-secondary text-base leading-7 line-clamp-2">التمور مش بس حلوة المذاق، ده كمان مصدر سريع للطاقة وغنية بالبوتاسيوم والألياف.</p>
-            <a href="blog.html" class="inline-flex justify-center items-center bg-interaction-base hover:bg-cta mt-2 rounded-full text-cta hover:text-white transition-colors self-start size-12" aria-label="اقرأ المزيد">
-              <span class="rtl:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <p class="text-neutral-secondary text-sm leading-6 line-clamp-2">التمور مش بس حلوة المذاق، ده كمان مصدر سريع للطاقة وغنية بالبوتاسيوم والألياف.</p>
+            <a href="blog.html" class="inline-flex items-center gap-1 mt-auto pt-1 font-semibold text-cta text-sm">
+              اقرأ المزيد <span class="w-4 h-4 rtl:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </a>
           </div>
+          <a href="blog.html" class="block bg-interaction-base w-[120px] sm:w-[150px] shrink-0 overflow-hidden">
+            <img src="images/abuauf/site/3-1.webp" alt="التمور: طاقة طبيعية في كل قطعة" class="w-full h-full hover:scale-105 object-cover transition-transform duration-500" loading="lazy" />
+          </a>
         </article>
           </div>
         </div>

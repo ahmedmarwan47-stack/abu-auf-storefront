@@ -7,20 +7,20 @@ from components import (
 
 SLUG = "index.html"
 
-# 1440x440 desktop / 505x680 mobile pairs — the real Arabic storefront banners.
-#
-# The slide box is deliberately a little TALLER than the artwork (470 and 728
-# against 440 and 680), which is the only way to give the hero more height
-# without letterboxing: object-cover then crops the sides. How much taller is
-# capped by the tightest banner, UAE-Abuauf-desktop-Ar, whose ® sits ~96% of
-# the way across — at 1440/470 the crop is 46px a side and clears it; much
-# beyond that and the logo loses its mark. Re-check this if a banner is
-# swapped.
+# New wide client banners (Ahmed, 2026-08-02). Each is ONE 3:1 image used at
+# EVERY breakpoint — the earlier 1440x440-desktop / 505x680-mobile pairs are
+# retired. The client's art is a self-contained 3:1 composition (product left,
+# green text panel with logo + headline + trust row + CTA right), so cropping it
+# to the old wide-desktop / portrait-mobile boxes lopped off the logo and the
+# trust row. The slide now carries `aspect-[3/1]` at all widths and the source
+# is 3:1, so object-cover shows the whole banner with zero crop — desktop ~512
+# tall at the 1536 cap, a short wide strip on phones (Ahmed chose wide-on-mobile
+# over separate portrait art). One image per slide, so HERO is (image, alt).
 HERO = [
-    ("coffee-web-A1.webp", "coffee.-A.webp", "قهوة تركي بالتوت — جديد من أبو عوف"),
-    ("Madjool-web-AR.webp", "Madjool-mob-AR.webp", "تمور المجدول الفاخرة"),
-    ("ps-web-A-600.webp", "ps-mobile-A-600.webp", "تشكيلة أبو عوف المميزة"),
-    ("UAE-Abuauf-desktop-Ar.webp", "Dubai-hero-mobile-Ar.webp", "أبو عوف الآن في الإمارات"),
+    ("hero-coffee.webp", "قهوة طازجة تُطحن لك"),
+    ("hero-pistachio.webp", "فستق أمريكي محمص ومملح"),
+    ("hero-dates.webp", "تمور صحراوية فاخرة وطبيعية"),
+    ("hero-nuts-mix.webp", "مكسرات مشكلة فاخرة وطبيعية"),
 ]
 
 CATEGORY_ORDER = [
@@ -79,14 +79,11 @@ def build():
         f"""
               <div class="carousel-slide w-full">
                 <a href="shop.html" class="block relative rounded-[20px] w-full overflow-hidden">
-                  <picture>
-                    <source media="(min-width: 768px)" srcset="images/abuauf/site/{d}" />
-                    <img src="images/abuauf/site/{m}" alt="{e(alt)}"
-                         class="w-full md:aspect-[1440/470] aspect-[505/728] object-cover"{' loading="lazy"' if i else ''} />
-                  </picture>
+                  <img src="images/abuauf/site/{img}" alt="{e(alt)}"
+                       class="w-full aspect-[3/1] object-cover"{' loading="lazy"' if i else ''} />
                 </a>
               </div>"""
-        for i, (d, m, alt) in enumerate(HERO)
+        for i, (img, alt) in enumerate(HERO)
     )
 
     tiles = "".join(
@@ -138,18 +135,19 @@ def build():
       <section data-reveal class="py-12 xl:py-16">
         <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("تسوق منتجاتنا", centered=True)}
-          <!-- The Figma mobile home (2595:60104) stacks these one per row; the
-               tiles are 220px wide, so forcing two columns at 375px clipped
-               30px off each. One column below sm, two from sm. -->
-          <!-- Content-width columns centred as a group, NOT 1fr tracks. With
-               1fr the three tracks filled max-w-[1536px] and justify-items-center
-               left ~240px of air between the 250px circles; Ahmed wanted that
-               horizontal gap cut while keeping gap-y. Now gap-x IS the gap. -->
-          <!-- justify-items-center: at mobile the single 1fr column is full
-               width, so without it the 220px tile sits at justify-self:start
-               (= right in RTL) and the cards hug the right edge. On desktop the
-               tracks already equal the tile width, so it is a no-op there. -->
-          <div class="justify-center justify-items-center gap-x-16 gap-y-12 grid grid-cols-1 sm:grid-cols-[repeat(2,auto)] lg:grid-cols-[repeat(3,auto)]">{tiles}
+          <!-- TWO per row on mobile (Ahmed, 2026-08-02). The old one-per-row was
+               forced because the tiles were a FIXED 220px and two of those clip
+               at 375px. They are now FLUID below sm (`w-full` + `aspect-square`
+               in category_tile), so two share the row via `grid-cols-2` 1fr
+               tracks and shrink to fit any phone; gap-x is tightened to match. -->
+          <!-- From sm up the columns go back to content-width (`repeat(N,auto)`)
+               so the tiles sit at their fixed 220/250 and the group is centred
+               with gap-x AS the gap — NOT 1fr tracks, which filled max-w-[1536px]
+               and left ~240px of air between the tiles (Ahmed cut that once). -->
+          <!-- justify-items-center centres each fixed tile inside its auto track
+               on sm+; on mobile the fluid tile fills its 1fr track, so it is a
+               no-op there. -->
+          <div class="justify-center justify-items-center gap-x-4 sm:gap-x-16 gap-y-8 sm:gap-y-12 grid grid-cols-2 sm:grid-cols-[repeat(2,auto)] lg:grid-cols-[repeat(3,auto)]">{tiles}
           </div>
         </div>
       </section>
@@ -186,10 +184,11 @@ def build():
       <section data-reveal class="py-12 xl:py-16">
         <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("أراء العملاء", "كل التعليقات", "#")}
-          <!-- Dark cards now, so a card gap rather than the old airy text
-               columns. A row of four at xl (the reference's row-of-cards),
-               2×2 from md, stacked below. -->
-          <div class="gap-6 xl:gap-8 grid md:grid-cols-2 xl:grid-cols-4">{"".join(review_card(*r) for r in REVIEWS)}
+          <!-- Dark cards. On mobile they scroll horizontally (narrower cards,
+               a peek of the next, full-bleed to the screen edge) rather than
+               stacking full-width and tall (Ahmed, 2026-08-02); from md they
+               return to the 2×2 / row-of-four grid. -->
+          <div class="flex md:grid gap-4 xl:gap-8 md:grid-cols-2 xl:grid-cols-4 -mx-4 px-4 md:mx-0 md:px-0 overflow-x-auto md:overflow-visible no-scrollbar snap-x">{"".join(review_card(*r) for r in REVIEWS)}
           </div>
         </div>
       </section>

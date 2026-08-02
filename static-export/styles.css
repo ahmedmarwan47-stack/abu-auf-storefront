@@ -1105,7 +1105,12 @@ fieldset {
   [data-sticky-actions][data-stuck="true"] {
     position: fixed;
     top: 60px;
-    inset-inline-end: max(16px, calc((100vw - 1536px) / 2 + 16px));
+    /* Align the pill's inline-end edge to the content container's inner edge
+       (mx-auto max-w-[1536px] px-4). `100%` resolves against the fixed pill's
+       containing block — the viewport EXCLUDING the scrollbar — so it tracks the
+       container exactly; `100vw` (used before) counts the scrollbar and drifted
+       the pill ~half a scrollbar off the grid on screens wider than 1536. */
+    inset-inline-end: max(16px, calc((100% - 1536px) / 2 + 16px));
     z-index: 90;
     gap: 12px;
     padding: 8px;
@@ -1148,7 +1153,11 @@ fieldset {
   [data-sticky-actions][data-stuck="true"] {
     position: fixed;
     top: 8px;
-    inset-inline-end: 8px;
+    /* Was a flat 8px, which parked the pill 8px proud of the site's px-4 gutter
+       — it "escaped the grid" (Ahmed, 2026-08-02). Same container-aligned inset
+       as the desktop rule; below 1536 it floors at the 16px gutter, so the pill
+       lines up with the content edge on every phone. */
+    inset-inline-end: max(16px, calc((100% - 1536px) / 2 + 16px));
     z-index: 90;
     flex: none;
     gap: 4px;
@@ -2092,16 +2101,26 @@ input:checked + .radio-card-accent {
   box-shadow: 0 0 0 2px #ffffff;
 }
 
-/* Re-arm the three controls whose `outline-none` silently removed the ring.
-   Specificity 0,2,0 beats the utility. The search box and newsletter field
-   sit inside a bordered row, so the ring goes on the row via :focus-within
-   and the inner input keeps its own outline suppressed. */
-.search-row:focus-within,
+/* Re-arm the newsletter field whose `outline-none` silently removed the ring.
+   Specificity 0,2,0 beats the utility; the ring goes on the row via
+   :focus-within and the inner input keeps its own outline suppressed. */
 .newsletter-row:focus-within {
   outline: 2px solid #163300;
   outline-offset: 2px;
   border-radius: 6px;
   box-shadow: 0 0 0 2px #ffffff;
+}
+
+/* Search row: the offset ring + white halo above read as a SECOND border
+   stacked on the row's own bottom divider — a "double border" on focus that
+   Ahmed asked to drop (2026-08-02). The modal is a self-contained focus
+   context whose close button keeps the global ring, so the field takes a
+   lighter single cue instead: its existing 1px bottom divider darkens to the
+   brand ink on focus. One line that changes colour, no ring around the box,
+   and no layout shift (colour only). Still a visible keyboard indicator, so
+   it does not regress focus-visible the way removing it outright would. */
+.search-row:focus-within {
+  border-bottom-color: #163300;
 }
 
 /* The site search field is `type=search` for the semantics, but WebKit/iOS
