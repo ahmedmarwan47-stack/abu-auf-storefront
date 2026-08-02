@@ -1586,7 +1586,12 @@ def review_card(name, city, text, score="4.8"):
     parts = [w for w in name.split() if w]
     initials = "".join(w[0] for w in parts[:2])
     return f"""
-          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] h-full w-[80%] sm:w-[340px] md:w-auto shrink-0 snap-start">
+          <!-- No h-full: on the mobile flex row it forced height:100% against an
+               indefinite container and each card collapsed to its own content
+               height (unequal). Dropping it lets the flex row (mobile) and the
+               grid (md+) both stretch every card to the tallest — equal heights
+               either way (Ahmed, 2026-08-02). -->
+          <article class="flex flex-col gap-5 bg-[#14432f] p-6 xl:p-8 rounded-[20px] w-[80%] sm:w-[340px] md:w-auto shrink-0 snap-start">
             <span class="block w-10 xl:w-12 h-10 xl:h-12 text-accent-yellow" aria-hidden="true">{ICON['quote']}</span>
             <p class="flex-1 text-white/90 text-base xl:text-lg leading-8">{e(text)}</p>
             <div class="flex items-center gap-3">
