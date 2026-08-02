@@ -16,11 +16,15 @@ SLUG = "index.html"
 # is 3:1, so object-cover shows the whole banner with zero crop — desktop ~512
 # tall at the 1536 cap, a short wide strip on phones (Ahmed chose wide-on-mobile
 # over separate portrait art). One image per slide, so HERO is (image, alt).
+# Each hero is a desktop (3:1 wide) banner paired with a PORTRAIT mobile banner
+# tailored for phones (Ahmed, 2026-08-02) — the client's own artwork, matched by
+# product. The mobile files are 3:4 so they fill the phone frame edge to edge
+# without the desktop banner being letterboxed into a thin strip.
 HERO = [
-    ("hero-coffee.webp", "قهوة طازجة تُطحن لك"),
-    ("hero-pistachio.webp", "فستق أمريكي محمص ومملح"),
-    ("hero-dates.webp", "تمور صحراوية فاخرة وطبيعية"),
-    ("hero-nuts-mix.webp", "مكسرات مشكلة فاخرة وطبيعية"),
+    ("hero-coffee.webp", "hero-coffee-mob.webp", "قهوة طازجة تُطحن لك"),
+    ("hero-pistachio.webp", "hero-pistachio-mob.webp", "فستق أمريكي محمص ومملح"),
+    ("hero-dates.webp", "hero-dates-mob.webp", "تمور صحراوية فاخرة وطبيعية"),
+    ("hero-nuts-mix.webp", "hero-nuts-mix-mob.webp", "مكسرات مشكلة فاخرة وطبيعية"),
 ]
 
 CATEGORY_ORDER = [
@@ -79,11 +83,14 @@ def build():
         f"""
               <div class="carousel-slide w-full">
                 <a href="shop.html" class="block relative rounded-[20px] w-full overflow-hidden">
-                  <img src="images/abuauf/site/{img}" alt="{e(alt)}"
-                       class="w-full aspect-[3/1] object-cover"{' loading="lazy"' if i else ''} />
+                  <picture>
+                    <source media="(min-width: 768px)" srcset="images/abuauf/site/{d}" />
+                    <img src="images/abuauf/site/{m}" alt="{e(alt)}"
+                         class="w-full md:aspect-[3/1] aspect-[3/4] object-cover"{' loading="lazy"' if i else ''} />
+                  </picture>
                 </a>
               </div>"""
-        for i, (img, alt) in enumerate(HERO)
+        for i, (d, m, alt) in enumerate(HERO)
     )
 
     tiles = "".join(

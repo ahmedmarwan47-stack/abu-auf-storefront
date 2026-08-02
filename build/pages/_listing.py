@@ -46,7 +46,12 @@ def listing(title_text, description, heading, trail, chips, products,
             <!-- Mobile: one scrolling row (swipe). Desktop: WRAP instead — a
                  no-scrollbar horizontal scroll clipped the last chip mid-word,
                  which read as a collision. Wrapping shows every category. -->
-            <div class="flex gap-2 -mx-4 px-4 xl:mx-0 xl:px-0 w-full min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible">{chip_html}
+            <!-- Full-bleed to the viewport edge on mobile: the width is the
+                 parent content PLUS the 2rem the negative margins pull out, so
+                 the row reaches both screen edges and the last chip crops at the
+                 edge (signalling more) rather than 32px short of it. Reset on xl,
+                 where the row wraps instead of scrolling. -->
+            <div class="flex gap-2 -mx-4 px-4 xl:mx-0 xl:px-0 w-[calc(100%_+_2rem)] xl:w-full min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible">{chip_html}
             </div>
 {sort_select(SORT_OPTIONS)}
           </div>

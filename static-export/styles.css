@@ -2111,16 +2111,18 @@ input:checked + .radio-card-accent {
   box-shadow: 0 0 0 2px #ffffff;
 }
 
-/* Search row: the offset ring + white halo above read as a SECOND border
-   stacked on the row's own bottom divider — a "double border" on focus that
-   Ahmed asked to drop (2026-08-02). The modal is a self-contained focus
-   context whose close button keeps the global ring, so the field takes a
-   lighter single cue instead: its existing 1px bottom divider darkens to the
-   brand ink on focus. One line that changes colour, no ring around the box,
-   and no layout shift (colour only). Still a visible keyboard indicator, so
-   it does not regress focus-visible the way removing it outright would. */
-.search-row:focus-within {
-  border-bottom-color: #163300;
+/* The search field shows NO border or focus ring when activated (Ahmed,
+   2026-08-02). The resting bottom border is already transparent (markup), the
+   focus-within no longer greens it, and this rule strips the green
+   :focus-visible outline the field would otherwise inherit from the global
+   ring below. The 0,3,0 specificity is deliberate — it has to beat BOTH
+   .outline-none (0,1,0) and :where(...):focus-visible (0,1,0). The modal is a
+   self-contained focus context (its close button and the result links keep the
+   global ring, and the caret + placeholder mark the active field), so the bare
+   field does not strand keyboard users. */
+.search-row [data-search-input]:focus,
+.search-row [data-search-input]:focus-visible {
+  outline: none;
 }
 
 /* The site search field is `type=search` for the semantics, but WebKit/iOS

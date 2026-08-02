@@ -65,7 +65,12 @@
             <!-- Mobile: one scrolling row (swipe). Desktop: WRAP instead — a
                  no-scrollbar horizontal scroll clipped the last chip mid-word,
                  which read as a collision. Wrapping shows every category. -->
-            <div class="flex gap-2 -mx-4 px-4 xl:mx-0 xl:px-0 w-full min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible"><a href="#all" data-filter="all" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors bg-cta text-white border-cta">كل المنتجات</a><a href="#offers-promotions" data-filter="offers-promotions" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">العروض والخصومات</a><a href="#nuts-crackers" data-filter="nuts-crackers" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">مكسرات وحبوب ومقرمشات</a><a href="#coffee-beverage" data-filter="coffee-beverage" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة ومشروبات</a><a href="#dates-dried-fruits" data-filter="dates-dried-fruits" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">تمور وفواكه مجففة</a><a href="#healthy-snacks" data-filter="healthy-snacks" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">سناكس صحية</a><a href="#kitchen-baking" data-filter="kitchen-baking" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">اساسيات المطبخ</a><a href="#spices-kitchen-baking" data-filter="spices-kitchen-baking" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">البهارات والزيوت</a><a href="#gifting-seasonal" data-filter="gifting-seasonal" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">الهدايا والمشاركة</a>
+            <!-- Full-bleed to the viewport edge on mobile: the width is the
+                 parent content PLUS the 2rem the negative margins pull out, so
+                 the row reaches both screen edges and the last chip crops at the
+                 edge (signalling more) rather than 32px short of it. Reset on xl,
+                 where the row wraps instead of scrolling. -->
+            <div class="flex gap-2 -mx-4 px-4 xl:mx-0 xl:px-0 w-[calc(100%_+_2rem)] xl:w-full min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible"><a href="#all" data-filter="all" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors bg-cta text-white border-cta">كل المنتجات</a><a href="#offers-promotions" data-filter="offers-promotions" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">العروض والخصومات</a><a href="#nuts-crackers" data-filter="nuts-crackers" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">مكسرات وحبوب ومقرمشات</a><a href="#coffee-beverage" data-filter="coffee-beverage" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة ومشروبات</a><a href="#dates-dried-fruits" data-filter="dates-dried-fruits" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">تمور وفواكه مجففة</a><a href="#healthy-snacks" data-filter="healthy-snacks" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">سناكس صحية</a><a href="#kitchen-baking" data-filter="kitchen-baking" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">اساسيات المطبخ</a><a href="#spices-kitchen-baking" data-filter="spices-kitchen-baking" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">البهارات والزيوت</a><a href="#gifting-seasonal" data-filter="gifting-seasonal" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">الهدايا والمشاركة</a>
             </div>
 
             <div class="relative shrink-0 text-start" data-fancy-select>
@@ -152,7 +157,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     <span class="text-neutral-secondary text-sm line-through latin">EGP 325</span>
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 250</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 250</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -216,7 +224,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     <span class="text-neutral-secondary text-sm line-through latin">EGP 325</span>
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 250</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 250</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -280,7 +291,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 355</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 355</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -344,7 +358,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 320</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 320</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -408,7 +425,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 51</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 51</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -472,7 +492,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 290</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 290</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -536,7 +559,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 335</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 335</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -600,7 +626,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     <span class="text-neutral-secondary text-sm line-through latin">EGP 130</span>
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 100</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 100</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -664,7 +693,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     <span class="text-neutral-secondary text-sm line-through latin">EGP 325</span>
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 250</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 250</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -728,7 +760,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     <span class="text-neutral-secondary text-sm line-through latin">EGP 325</span>
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 250</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 250</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -792,7 +827,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 320</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 320</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -856,7 +894,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 50</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 50</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -920,7 +961,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 35.5</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 35.5</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -984,7 +1028,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 121</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 121</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1048,7 +1095,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 156</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 156</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1112,7 +1162,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 17</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 17</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1176,7 +1229,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 146.5</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 146.5</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1240,7 +1296,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 33</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 33</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1304,7 +1363,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1368,7 +1430,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 132</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 132</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1432,7 +1497,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 91</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 91</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1496,7 +1564,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 82.5</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 82.5</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1560,7 +1631,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 82.5</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 82.5</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1624,7 +1698,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 91</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 91</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1688,7 +1765,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 110</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 110</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1752,7 +1832,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 110</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 110</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1816,7 +1899,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 200</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 200</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1880,7 +1966,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 160</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 160</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -1944,7 +2033,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 155</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 155</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2008,7 +2100,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 308</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 308</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2072,7 +2167,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 99</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 99</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2136,7 +2234,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 99</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 99</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2200,7 +2301,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 220</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 220</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2264,7 +2368,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 72.5</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 72.5</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2328,7 +2435,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 220</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 220</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2392,7 +2502,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 30</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 30</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2456,7 +2569,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 40.5</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 40.5</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2520,7 +2636,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 195</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 195</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2584,7 +2703,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 25</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 25</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2648,7 +2770,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 90</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 90</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2712,7 +2837,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 32</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 32</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2776,7 +2904,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 86</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 86</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2840,7 +2971,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 156</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 156</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2904,7 +3038,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 68</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 68</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -2968,7 +3105,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 11</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 11</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3032,7 +3172,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 65</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 65</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3096,7 +3239,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 11</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 11</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3160,7 +3306,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 65</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 65</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3224,7 +3373,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 65</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 65</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3288,7 +3440,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 11</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 11</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3352,7 +3507,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 20</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 20</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3416,7 +3574,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 65</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 65</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3480,7 +3641,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 260</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 260</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3544,7 +3708,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 175</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 175</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3608,7 +3775,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 160</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 160</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3672,7 +3842,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3736,7 +3909,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 175</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 175</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3800,7 +3976,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 70</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 70</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3864,7 +4043,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 35</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 35</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3928,7 +4110,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 75</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 75</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -3992,7 +4177,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 50</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 50</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4056,7 +4244,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     <span class="text-neutral-secondary text-sm line-through latin">EGP 525</span>
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 485</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 485</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4120,7 +4311,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 35</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 35</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4184,7 +4378,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 40</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 40</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4248,7 +4445,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 30</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 30</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4312,7 +4512,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 17</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 17</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4376,7 +4579,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 35</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 35</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4440,7 +4646,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 35</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 35</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4504,7 +4713,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4568,7 +4780,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 55</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 55</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4632,7 +4847,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 40</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 40</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4696,7 +4914,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 40</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 40</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4760,7 +4981,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 1750</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 1750</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4824,7 +5048,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 1000</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 1000</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4888,7 +5115,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 750</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 750</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -4952,7 +5182,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 870</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 870</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5016,7 +5249,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 650</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 650</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5080,7 +5316,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 550</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 550</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5144,7 +5383,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 400</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 400</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5208,7 +5450,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 3500</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 3500</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5272,7 +5517,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 530</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 530</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5336,7 +5584,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 250</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 250</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5400,7 +5651,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 6000</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 6000</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5464,7 +5718,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 20</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 20</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5528,7 +5785,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 20</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 20</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5592,7 +5852,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 90</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 90</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5656,7 +5919,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5720,7 +5986,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 25</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 25</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5784,7 +6053,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 25</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 25</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5848,7 +6120,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5912,7 +6187,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 30</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 30</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -5976,7 +6254,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 30</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 30</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -6040,7 +6321,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 75</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 75</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -6104,7 +6388,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 27</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 27</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -6168,7 +6455,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 11</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 11</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -6232,7 +6522,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 20</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 20</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -6296,7 +6589,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 20</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 20</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -6360,7 +6656,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 30</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 30</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
@@ -6424,7 +6723,10 @@
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 8</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 8</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is

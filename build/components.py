@@ -1498,7 +1498,10 @@ def product_card(p, slide=True):
                   </h3>
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
                     {old}
-                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP {money(p['price'])}</span>
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP {money(p['price'])}</span>
                   </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is

@@ -5350,6 +5350,26 @@
       // Trigger label + selected marks, read from the (already translated)
       // rows. Runs on every kInit, so a language switch and a pick made through
       // the native mobile control both land here.
+      // Size the native select to its CURRENT value's text (Ahmed, 2026-08-02).
+      // A native <select> is otherwise as wide as its LONGEST option, so on
+      // mobile — where the native control is what shows — the chevron sat after
+      // the width of "السعر: من الأعلى" even while "الأكثر مبيعاً" was picked,
+      // leaving a gap. Measuring the selected option lets the field hug its word
+      // with the chevron a fixed gap away, on the phone as on desktop.
+      const sizeNative = () => {
+        const opt = select.options[select.selectedIndex];
+        if (!opt) return;
+        const cs = getComputedStyle(select);
+        const probe = document.createElement("span");
+        probe.style.cssText = "position:absolute;visibility:hidden;white-space:nowrap";
+        probe.style.fontSize = cs.fontSize;
+        probe.style.fontFamily = cs.fontFamily;
+        probe.style.fontWeight = cs.fontWeight;
+        probe.textContent = opt.text;
+        document.body.appendChild(probe);
+        select.style.width = Math.ceil(probe.getBoundingClientRect().width) + 2 + "px";
+        probe.remove();
+      };
       const sync = () => {
         const active =
           items.find((li) => li.dataset.value === select.value) || items[0];
@@ -5357,6 +5377,7 @@
         items.forEach((li) =>
           li.setAttribute("aria-selected", li === active ? "true" : "false"),
         );
+        sizeNative();
       };
 
       if (box.dataset.fancyReady) {
@@ -5371,6 +5392,10 @@
       ui.classList.add("xl:block");
       select.setAttribute("aria-hidden", "true");
       select.tabIndex = -1;
+      // Re-hug the native select on every pick (including the mobile OS picker),
+      // and once now on init.
+      select.addEventListener("change", sizeNative);
+      sizeNative();
 
       const isOpen = () => !pop.classList.contains("hidden");
       function onOutside(e) {
