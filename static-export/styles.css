@@ -542,6 +542,57 @@ select {
   transform: translateX(0);
 }
 
+/* Cart-drawer close button, floated OUTSIDE the panel on its inner edge (the
+   one facing the page, away from the screen edge the drawer is docked to) in a
+   white circle (Ahmed, 2026-08-02). It is a child of the drawer, so it slides
+   in and out with it and only shows while open. The drawer sets no overflow,
+   so the negative inline offset is free to spill over the backdrop. On a very
+   narrow screen the offset tucks the circle onto the panel's own corner so it
+   never leaves the viewport. */
+.side-drawer .drawer-close {
+  position: absolute;
+  top: 14px;
+  z-index: 2;
+  /* Only visible while the drawer is open — the button sits OUTSIDE the panel,
+     so without this it leaked onto the screen edge when the panel was off-screen
+     (Ahmed, 2026-08-02). */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.side-drawer.is-open .drawer-close {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* On the panel's INNER edge (the side facing the page). Which physical side
+   that is depends on where the drawer docks: the cart (--right, docked at the
+   inline-end / left in RTL) floats its X on the inline-start / right; the order
+   drawer (--left, docked at the inline-start / right in RTL) floats its X on the
+   inline-end / left — so the two open from opposite sides with the X always
+   over the backdrop, never on the screen edge behind the panel. */
+.side-drawer--right .drawer-close {
+  inset-inline-start: -44px;
+}
+.side-drawer--left .drawer-close {
+  inset-inline-end: -44px;
+}
+/* The order drawer is a wide detail panel, not the 340px menu the --left
+   variant is sized for. */
+[data-drawer="order"] {
+  width: min(420px, 90vw);
+}
+@media (max-width: 380px) {
+  .side-drawer .drawer-close {
+    top: 12px;
+  }
+  .side-drawer--right .drawer-close {
+    inset-inline-start: 8px;
+  }
+  .side-drawer--left .drawer-close {
+    inset-inline-end: 8px;
+  }
+}
+
 /* Filter chips, inactive state.
    The mobile Collection frame (350:17805) fills these with interaction-base
    and drops the outline; desktop keeps white-on-outline. Expressed here rather
@@ -1117,6 +1168,15 @@ fieldset {
     opacity: 1;
     transform: translateY(0);
   }
+}
+/* Once the actions park on scroll, the count badge sheds its masthead-green
+   ring (Ahmed, 2026-08-02). The ring existed to blend the badge INTO the green
+   masthead; on the parked pill — white on desktop, green on mobile — a green
+   ring instead reads as a hard outline cropped into the button corner. Drop it
+   only while stuck; in the navbar the ring stays. */
+[data-sticky-actions][data-stuck="true"] [data-cart-count] {
+  box-shadow: none;
+  --tw-ring-shadow: 0 0 #0000;
 }
 
 /* --- Buttons -------------------------------------------------------------

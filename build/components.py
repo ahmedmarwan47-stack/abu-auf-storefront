@@ -285,7 +285,7 @@ def sort_select(options, label="ترتيب حسب"):
                    the custom trigger; a pick there writes back here + fires
                    change, so the listing sort (which reads this value) is
                    untouched. -->
-              <label class="inline-flex items-center gap-2 xl:bg-white px-0 xl:px-4 py-2 border border-transparent xl:border-neutral-divider rounded-full" aria-label="{e(label)}" data-fancy-fallback>
+              <label class="inline-flex items-center gap-2 xl:bg-white px-0 xl:px-4 py-2 rounded-full" aria-label="{e(label)}" data-fancy-fallback>
                 <span class="text-cta shrink-0">{_SORT_ICON}</span>
                 <select class="select-sort bg-transparent font-semibold text-[#062A1C] text-sm outline-none cursor-pointer appearance-none border-0">{opts}</select>
                 <span class="text-neutral-secondary w-3.5 h-3.5 shrink-0 pointer-events-none">{_SORT_CHEVRON}</span>
@@ -295,7 +295,7 @@ def sort_select(options, label="ترتيب حسب"):
                    the native select; JS switches it to `hidden xl:block`. -->
               <div class="hidden" data-fancy-ui>
                 <button type="button" data-fancy-trigger aria-haspopup="listbox" aria-expanded="false" aria-label="{e(label)}"
-                        class="inline-flex items-center gap-2 bg-white hover:border-cta px-4 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors shadow-custom4">
+                        class="inline-flex items-center gap-2 bg-interaction-base hover:bg-interaction-tertiary-hover px-4 py-2 rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
                   <span class="text-cta shrink-0">{_SORT_ICON}</span>
                   <span data-fancy-label class="whitespace-nowrap">{first_text}</span>
                   <span class="text-neutral-secondary w-3.5 h-3.5 shrink-0 pointer-events-none">{_SORT_CHEVRON}</span>
@@ -689,23 +689,17 @@ def best_seller_badge(p):
     # child of a flex-col, where the default align-items is stretch and
     # inline-flex does nothing to stop it.
     #
-    # The glyph wrapper is `grid place-items-center` and the label gets
-    # `leading-none`, the same treatment the header icons needed. Without it
-    # the star sits on the text baseline rather than on the text's optical
-    # centre, and rides visibly low in the pill — Arabic ascenders make the
-    # line box taller than the glyph, so "align to the line" and "align to the
-    # letters" are not the same thing here.
+    # No glyph any more — the star was removed at Ahmed's request (2026-08-02),
+    # so the label alone fills the pill.
     #
-    # top-[2px]: Baloo Bhaijaan 2 carries a very deep descent (8px per 12px
-    # em against an ink descent of ~3px for this label), so a vertically
-    # centred line box paints the letters ~2px above the pill's optical
-    # centre — Ahmed read the text as hugging the top. Measured with canvas
-    # actualBoundingBox metrics, not eyeballed; the ink centre sits 1.9px
-    # above the box centre at text-xs. `relative`, because transforms do not
-    # apply to inline boxes.
-    return ('<span data-best-seller class="inline-flex self-start items-center gap-1.5 bg-accent-yellow px-3 py-1.5 '
+    # top-[2px]: Baloo Bhaijaan 2 carries a very deep descent (8px per 12px em
+    # against an ink descent of ~3px for this label), so a vertically centred
+    # line box paints the letters ~2px above the pill's optical centre — Ahmed
+    # read the text as hugging the top. Measured with canvas actualBoundingBox
+    # metrics, not eyeballed. `relative`, because transforms do not apply to
+    # inline boxes.
+    return ('<span data-best-seller class="inline-flex self-start items-center bg-accent-yellow px-3 py-1.5 '
             'rounded-full font-bold text-[#062A1C] text-xs">'
-            f'<span class="place-items-center grid w-3.5 h-3.5 shrink-0">{ICON["star"]}</span>'
             f'<span class="relative top-[2px] leading-none">{e(label)}</span></span>')
 
 
@@ -904,6 +898,43 @@ def product_benefits(p, fallback, renderer=trust_row):
     return renderer([(_BENEFIT_ICONS[i], b, "") for i, b in enumerate(bullets)])
 
 
+def specs_block(tagline, desc, points):
+    """
+    The product "specs" strip, redrawn to Ahmed's 2026-08-02 brief.
+
+    A leaf-marked TAGLINE with a one-line description, then three leaf BULLETS —
+    full sentences, not the one-word labels the old icon/label tiles inherited
+    from whatever benefit lines each product happened to carry — all sitting on
+    a subtle rounded surface.
+
+    Every mark is the SAME leaf glyph, not the old leaf/bolt/shield trio: the
+    leaf is the brand's own mark and asserts nothing on its own, so repeating it
+    reads as decoration rather than three competing promises. The copy is
+    uniform across all 99 pages (see SPECS_* in product.py) so the strip is one
+    component a developer meets once, not a section that changes shape per
+    product — brand-level reassurance only, still OUR unsigned Arabic pending
+    client sign-off (flagged in DESIGN-NOTES, same footing as the hero copy).
+    """
+    # The 3D leaf PNG marks each statement (Ahmed, 2026-08-02) — the same
+    # pre-rendered asset the old 3D spec row used. The tagline no longer carries
+    # its own icon; the copy leads.
+    leaf3d = "images/abuauf/icons/spec-leaf.png"
+    bullets = "".join(f"""
+                <li class="flex items-start gap-2.5">
+                  <img src="{leaf3d}" alt="" class="mt-0.5 w-7 h-7 object-contain shrink-0" loading="lazy" />
+                  <span class="text-[#062A1C] text-sm leading-6">{e(point)}</span>
+                </li>""" for point in points)
+    return f"""
+            <div class="flex flex-col gap-4 bg-interaction-base p-5 rounded-2xl">
+              <div class="flex flex-col gap-0.5">
+                <h2 class="font-bold text-[#062A1C] text-base xl:text-lg">{e(tagline)}</h2>
+                <p class="text-neutral-secondary text-sm leading-6">{e(desc)}</p>
+              </div>
+              <ul class="flex flex-col gap-2.5">{bullets}
+              </ul>
+            </div>"""
+
+
 # --------------------------------------------------------------------------
 # Forms — Figma 'Input Field' section (150:4622)
 # --------------------------------------------------------------------------
@@ -1080,9 +1111,11 @@ def checkout_summary(lines_html, subtotal, total, delivery_fee):
     """
     return f"""
           <aside class="lg:top-4 lg:sticky flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px] order-2 lg:order-none min-w-0">
+            <!-- No "تعديل" link here any more (Ahmed, 2026-08-02): the order is
+                 locked once the checkout flow starts, so the summary is a
+                 read-only receipt with no invitation to go back and edit. -->
             <div class="flex justify-between items-center">
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
-              <a href="cart.html" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">تعديل</a>
             </div>
             <div class="flex flex-col gap-4" data-cart-lines>{lines_html}
             </div>
@@ -1091,7 +1124,7 @@ def checkout_summary(lines_html, subtotal, total, delivery_fee):
             <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
               <div class="flex justify-between">
                 <span class="text-neutral-secondary">مصاريف التوصيل</span>
-                <span class="font-semibold text-[#062A1C] latin">EGP {money(delivery_fee)}</span>
+                <span class="font-semibold text-[#062A1C] latin" data-cart-delivery>EGP {money(delivery_fee)}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-neutral-secondary">الإجمالي</span>
@@ -1183,6 +1216,36 @@ def promo_field():
                             class="bg-cta hover:bg-cta-hover px-4 rounded-full min-h-11 font-semibold text-white text-sm whitespace-nowrap transition-colors">تطبيق</button>
                   </div>
                   <p data-promo-msg hidden class="text-xs leading-5"></p>
+                </div>
+                <!-- Applied state (Ahmed, 2026-08-02): the code as a removable
+                     chip. renderCart -> syncPromoUI swaps between the trigger,
+                     the input box and this on every change, so it is right on
+                     load, after apply, and across cart -> checkout. -->
+                <div data-promo-applied hidden class="flex justify-between items-center gap-2 bg-[#E9F3E6] px-3 py-2 rounded-xl">
+                  <span class="flex items-center gap-2 min-w-0 text-[#163300] text-sm">
+                    <span class="w-4 h-4 text-accent-green shrink-0">{ICON['check']}</span>
+                    <span class="truncate">تم تطبيق <span class="font-bold latin" data-promo-applied-code></span></span>
+                  </span>
+                  <button type="button" data-promo-remove class="shrink-0 font-semibold text-accent-error text-xs underline">إلغاء</button>
+                </div>
+              </div>"""
+
+
+def freeship_bar():
+    """
+    "Add X more for free delivery" progress bar (Ahmed, 2026-08-02).
+
+    Static shell only — scripts.js renderCart fills it from the LIVE basket and
+    flips the copy to the success line at the FREE_SHIP threshold, then zeroes
+    the delivery fee so the incentive actually pays out rather than just
+    counting up to nothing. Hidden until the store paints, so an empty basket
+    shows nothing to progress toward.
+    """
+    return """
+              <div data-freeship hidden class="flex flex-col gap-1.5">
+                <p class="text-[#062A1C] text-xs leading-5" data-freeship-msg></p>
+                <div class="bg-interaction-base rounded-full w-full h-2 overflow-hidden">
+                  <div data-freeship-fill class="bg-cta rounded-full h-full transition-[width] duration-500" style="width:0%"></div>
                 </div>
               </div>"""
 
@@ -1350,7 +1413,7 @@ def wallet_toggle(balance=WALLET_BALANCE):
                      signal. -->
                 <span class="grid">
                   <span class="col-start-1 row-start-1 text-[#062A1C]/80 text-xs leading-5" data-wallet-idle>
-                    رصيدك <span class="font-bold text-accent-green latin">EGP {balance}</span>
+                    رصيدك <span class="font-bold text-accent-green latin" data-wallet-amount>EGP {balance}</span>
                   </span>
                   <span class="col-start-1 row-start-1 font-semibold text-accent-green text-xs leading-5 invisible" data-wallet-used>
                     تم الخصم من رصيدك
@@ -1420,23 +1483,29 @@ def product_card(p, slide=True):
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-{p.get('id', 0)}.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="{e(p['image'])}" alt="{e(title(p))}"
-                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
                 <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
                       aria-hidden="true">{ICON['expand']}</span>
               </a>
-              <div class="flex flex-col flex-1 gap-1.5 p-4">
-                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product-{p.get('id', 0)}.html" data-product-title class="hover:text-primary transition-colors">{e(title(p))}</a>
-                </h3>
-                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
-                  {old}
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP {money(p['price'])}</span>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-{p.get('id', 0)}.html" data-product-title class="hover:text-primary transition-colors">{e(title(p))}</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    {old}
+                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP {money(p['price'])}</span>
+                  </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
                      gone (Ahmed, 2026-07-29). The stepper that replaces it is
                      also w-full, so swapping one for the other never changes
                      the card's height. -->
-                <div class="pt-2">
+                <div class="mt-auto pt-1">
                   <button type="button" data-add-to-cart
                           class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in

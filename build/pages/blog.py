@@ -34,7 +34,7 @@ def build():
     body = f"""{page_header("", [("الرئيسية", "index.html"), ("البلوج", "blogs.html"), (heading, None)])}
 
       <article class="py-6">
-        <div class="flex flex-col gap-6 mx-auto px-4 xl:px-[190px] max-w-[900px]">
+        <div class="flex flex-col gap-6 mx-auto px-4 xl:px-10 max-w-[880px]">
           <div class="flex flex-wrap items-center gap-3">
             <span class="bg-interaction-base px-3 py-1 rounded-full font-semibold text-primary text-xs">{e(tag)}</span>
             <span class="text-neutral-secondary text-xs">قراءة {e(read)}</span>

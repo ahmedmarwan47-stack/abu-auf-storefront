@@ -168,7 +168,7 @@
                data-product data-record-view data-id="16499" data-name="بافس بالجبنة 40 جرام"
                data-price="11.0" data-image="images/abuauf/products/6223011438028.webp">
             <div class="flex flex-col gap-3">
-              <span data-best-seller class="inline-flex self-start items-center gap-1.5 bg-accent-yellow px-3 py-1.5 rounded-full font-bold text-[#062A1C] text-xs"><span class="place-items-center grid w-3.5 h-3.5 shrink-0"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="relative top-[2px] leading-none">الأكثر مبيعاً</span></span>
+              <span data-best-seller class="inline-flex self-start items-center bg-accent-yellow px-3 py-1.5 rounded-full font-bold text-[#062A1C] text-xs"><span class="relative top-[2px] leading-none">الأكثر مبيعاً</span></span>
               <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">بافس بالجبنة 40 جرام</h1>
               <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <div class="flex items-center gap-1.5"><span class="rating-marks flex items-center" role="img" aria-label="4.8 من 5"><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg><span class="rating-mark__fill" style="width:80%"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span></span></span><span class="font-semibold text-[#062A1C] text-sm latin">4.8</span><span class="text-neutral-secondary text-sm">(<span class="latin">126</span> تقييم)</span></div>
@@ -179,17 +179,18 @@
 
             
 
-            <!-- Price responds to both controls above it: the size chips
-                 repoint it at that SKU's real price, and the quantity stepper
-                 multiplies. data-unit-price is the current SIZE's price, kept
-                 separate from the displayed total so the multiply never
-                 compounds on itself. -->
+            <!-- The yellow is a marker BAND shorter than the digits, not a tall
+                 pill around them (Ahmed, 2026-08-02): the inline line-height
+                 pulls the highlight in from the glyph tops/bottoms, so the price
+                 size is untouched and only the rectangle shrinks. The size chips
+                 repoint data-unit-price at the chosen SKU's real price; quantity
+                 no longer multiplies this — it is the UNIT price, and the running
+                 order total lives in the cart drawer and summary. -->
             <div class="flex flex-wrap items-center gap-3">
               
               <span data-price-display data-unit-price="11.0"
-                    class="bg-accent-yellow px-4 py-1.5 rounded-lg font-bold text-[#062A1C] text-2xl latin">EGP 11</span>
-              <span data-price-breakdown hidden
-                    class="text-neutral-secondary text-sm latin"></span>
+                    style="line-height:.6"
+                    class="bg-accent-yellow px-3 rounded font-bold text-[#062A1C] text-2xl latin">EGP 11</span>
             </div>
 
             <!-- The stepper IS the add control (Ahmed, 2026-07-26). There is
@@ -228,19 +229,25 @@
             <div class="border-neutral-divider border-t" role="separator"></div>
 
             
-            <div class="gap-4 grid grid-cols-1 sm:grid-cols-2 pt-1">
-              <div class="flex items-center gap-1">
-                <img src="images/abuauf/icons/spec-leaf.png" alt="" class="w-12 xl:w-14 h-12 xl:h-14 shrink-0 object-contain" loading="lazy" />
-                <span class="flex flex-col min-w-0">
-                  <span class="font-semibold text-[#062A1C] text-sm text-balance leading-5">مخبوزة</span>
-                </span>
+            <div class="flex flex-col gap-4 bg-interaction-base p-5 rounded-2xl">
+              <div class="flex flex-col gap-0.5">
+                <h2 class="font-bold text-[#062A1C] text-base xl:text-lg">جودة أبو عوف في كل قضمة</h2>
+                <p class="text-neutral-secondary text-sm leading-6">منتجات نختارها بعناية ونقدّمها لك بالطزاجة والجودة اللي تستاهلها.</p>
               </div>
-              <div class="flex items-center gap-1">
-                <img src="images/abuauf/icons/spec-bolt.png" alt="" class="w-12 xl:w-14 h-12 xl:h-14 shrink-0 object-contain" loading="lazy" />
-                <span class="flex flex-col min-w-0">
-                  <span class="font-semibold text-[#062A1C] text-sm text-balance leading-5">الجبنة</span>
-                </span>
-              </div>
+              <ul class="flex flex-col gap-2.5">
+                <li class="flex items-start gap-2.5">
+                  <img src="images/abuauf/icons/spec-leaf.png" alt="" class="mt-0.5 w-7 h-7 object-contain shrink-0" loading="lazy" />
+                  <span class="text-[#062A1C] text-sm leading-6">مكوّنات مختارة بعناية من مصادر موثوقة لضمان أفضل مذاق.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <img src="images/abuauf/icons/spec-leaf.png" alt="" class="mt-0.5 w-7 h-7 object-contain shrink-0" loading="lazy" />
+                  <span class="text-[#062A1C] text-sm leading-6">معايير جودة ثابتة من التحضير حتى التغليف للحفاظ على الطزاجة.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <img src="images/abuauf/icons/spec-leaf.png" alt="" class="mt-0.5 w-7 h-7 object-contain shrink-0" loading="lazy" />
+                  <span class="text-[#062A1C] text-sm leading-6">مثالي للتسالي اليومية أو للمشاركة مع العائلة والأصحاب.</span>
+                </li>
+              </ul>
             </div>
 
             <div class="flex flex-wrap justify-between items-center gap-3 bg-interaction-base px-4 py-3 rounded-xl">
@@ -258,20 +265,27 @@
                     <span class="accordion-chevron text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                   </button>
                   <div class="accordion-panel">
-                    <div class="pb-4 text-neutral-800 text-sm leading-7"><div class="desc-rich"><strong>نوع مقرمشات بافس:</strong>
-<ul>
- <li>مخبوزة</li>
-</ul>
-
-<strong>نكهة المقرمشات:</strong>
-<ul>
- <li>الجبنة</li>
-</ul>
-
-<strong>حجم المقرمشات:</strong>
-<ul>
- <li>40 جرام </li>
-</ul></div></div>
+                    <div class="pb-4 text-neutral-800 text-sm leading-7">
+                      <ul class="flex flex-col gap-2 ps-5 list-disc">
+                        <li>مكوّنات مختارة بعناية من مصادر موثوقة دون إضافات غير ضرورية</li>
+                        <li>غني بالنكهة ومثالي للتسالي في أي وقت من اليوم</li>
+                        <li>خيار رائع للضيافة والمشاركة مع العائلة والأصحاب</li>
+                        <li>يصلك طازجاً بتغليف يحافظ على جودته حتى آخر قضمة</li>
+                      </ul></div>
+                  </div>
+                </div>
+                <div class="accordion-item border-neutral-divider border-b">
+                  <button type="button" class="accordion-trigger flex justify-between items-center gap-4 py-4 w-full text-start">
+                    <span class="font-bold text-[#062A1C] text-base">طريقة الحفظ</span>
+                    <span class="accordion-chevron text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  </button>
+                  <div class="accordion-panel">
+                    <div class="pb-4 text-neutral-800 text-sm leading-7">
+                      <ul class="flex flex-col gap-2 ps-5 list-disc">
+                        <li>يحفظ في عبوة محكمة الغلق بعيداً عن الرطوبة</li>
+                        <li>بعيداً عن أشعة الشمس المباشرة ومصادر الحرارة</li>
+                        <li>يفضل استهلاكه خلال فترة قصيرة بعد الفتح للحفاظ على الطزاجة</li>
+                      </ul></div>
                   </div>
                 </div>
               </div>
@@ -431,23 +445,29 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1320.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000208000000.webp" alt="فول سوداني بالشيكولاتة - 100 جم"
-                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
                 <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
                       aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
-              <div class="flex flex-col flex-1 gap-1.5 p-4">
-                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product-1320.html" data-product-title class="hover:text-primary transition-colors">فول سوداني بالشيكولاتة - 100 جم</a>
-                </h3>
-                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
-                  
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 35.5</span>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-1320.html" data-product-title class="hover:text-primary transition-colors">فول سوداني بالشيكولاتة - 100 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 35.5</span>
+                  </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
                      gone (Ahmed, 2026-07-29). The stepper that replaces it is
                      also w-full, so swapping one for the other never changes
                      the card's height. -->
-                <div class="pt-2">
+                <div class="mt-auto pt-1">
                   <button type="button" data-add-to-cart
                           class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
@@ -489,23 +509,29 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1280.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000079000000.webp" alt="عين جمل مقشر - 100 جم"
-                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
                 <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
                       aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
-              <div class="flex flex-col flex-1 gap-1.5 p-4">
-                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product-1280.html" data-product-title class="hover:text-primary transition-colors">عين جمل مقشر - 100 جم</a>
-                </h3>
-                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
-                  
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 121</span>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-1280.html" data-product-title class="hover:text-primary transition-colors">عين جمل مقشر - 100 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 121</span>
+                  </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
                      gone (Ahmed, 2026-07-29). The stepper that replaces it is
                      also w-full, so swapping one for the other never changes
                      the card's height. -->
-                <div class="pt-2">
+                <div class="mt-auto pt-1">
                   <button type="button" data-add-to-cart
                           class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
@@ -547,23 +573,29 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1287.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000404000000.webp" alt="كاجو محمص ملح جامبو - 100 جم"
-                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
                 <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
                       aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
-              <div class="flex flex-col flex-1 gap-1.5 p-4">
-                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product-1287.html" data-product-title class="hover:text-primary transition-colors">كاجو محمص ملح جامبو - 100 جم</a>
-                </h3>
-                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
-                  
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 156</span>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-1287.html" data-product-title class="hover:text-primary transition-colors">كاجو محمص ملح جامبو - 100 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 156</span>
+                  </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
                      gone (Ahmed, 2026-07-29). The stepper that replaces it is
                      also w-full, so swapping one for the other never changes
                      the card's height. -->
-                <div class="pt-2">
+                <div class="mt-auto pt-1">
                   <button type="button" data-add-to-cart
                           class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
@@ -605,23 +637,29 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-10573.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011434013-6.webp" alt="سودانى كرى كرى بطعم الجبنة -45 جم"
-                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
                 <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
                       aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
-              <div class="flex flex-col flex-1 gap-1.5 p-4">
-                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product-10573.html" data-product-title class="hover:text-primary transition-colors">سودانى كرى كرى بطعم الجبنة -45 جم</a>
-                </h3>
-                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
-                  
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 17</span>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-10573.html" data-product-title class="hover:text-primary transition-colors">سودانى كرى كرى بطعم الجبنة -45 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 17</span>
+                  </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
                      gone (Ahmed, 2026-07-29). The stepper that replaces it is
                      also w-full, so swapping one for the other never changes
                      the card's height. -->
-                <div class="pt-2">
+                <div class="mt-auto pt-1">
                   <button type="button" data-add-to-cart
                           class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
@@ -663,23 +701,29 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1288.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000197000000.webp" alt="فستق امريكى ملح - 100 جم"
-                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
                 <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
                       aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
-              <div class="flex flex-col flex-1 gap-1.5 p-4">
-                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product-1288.html" data-product-title class="hover:text-primary transition-colors">فستق امريكى ملح - 100 جم</a>
-                </h3>
-                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
-                  
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 146.5</span>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-1288.html" data-product-title class="hover:text-primary transition-colors">فستق امريكى ملح - 100 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 146.5</span>
+                  </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
                      gone (Ahmed, 2026-07-29). The stepper that replaces it is
                      also w-full, so swapping one for the other never changes
                      the card's height. -->
-                <div class="pt-2">
+                <div class="mt-auto pt-1">
                   <button type="button" data-add-to-cart
                           class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
@@ -721,23 +765,29 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1319.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Thumb-2000150000000.webp" alt="فول سودانى بطعم الجبنه - 100 جم"
-                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
                 <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
                       aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
-              <div class="flex flex-col flex-1 gap-1.5 p-4">
-                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product-1319.html" data-product-title class="hover:text-primary transition-colors">فول سودانى بطعم الجبنه - 100 جم</a>
-                </h3>
-                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
-                  
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 33</span>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-1319.html" data-product-title class="hover:text-primary transition-colors">فول سودانى بطعم الجبنه - 100 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 33</span>
+                  </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
                      gone (Ahmed, 2026-07-29). The stepper that replaces it is
                      also w-full, so swapping one for the other never changes
                      the card's height. -->
-                <div class="pt-2">
+                <div class="mt-auto pt-1">
                   <button type="button" data-add-to-cart
                           class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
@@ -779,23 +829,29 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1343.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000048000000.webp" alt="مقرمشات صينية - 100 جم"
-                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
                 <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
                       aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
-              <div class="flex flex-col flex-1 gap-1.5 p-4">
-                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product-1343.html" data-product-title class="hover:text-primary transition-colors">مقرمشات صينية - 100 جم</a>
-                </h3>
-                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
-                  
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-1343.html" data-product-title class="hover:text-primary transition-colors">مقرمشات صينية - 100 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
+                  </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
                      gone (Ahmed, 2026-07-29). The stepper that replaces it is
                      also w-full, so swapping one for the other never changes
                      the card's height. -->
-                <div class="pt-2">
+                <div class="mt-auto pt-1">
                   <button type="button" data-add-to-cart
                           class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
@@ -837,23 +893,29 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1282.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000065000000.webp" alt="لوز نىء - 100 جم"
-                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
                 <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
                       aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
-              <div class="flex flex-col flex-1 gap-1.5 p-4">
-                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product-1282.html" data-product-title class="hover:text-primary transition-colors">لوز نىء - 100 جم</a>
-                </h3>
-                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
-                  
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 132</span>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-1282.html" data-product-title class="hover:text-primary transition-colors">لوز نىء - 100 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 132</span>
+                  </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
                      gone (Ahmed, 2026-07-29). The stepper that replaces it is
                      also w-full, so swapping one for the other never changes
                      the card's height. -->
-                <div class="pt-2">
+                <div class="mt-auto pt-1">
                   <button type="button" data-add-to-cart
                           class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
@@ -895,23 +957,29 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1358.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000466000000.webp" alt="بن أبو عوف ساده فاتح - 100 جم"
-                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
                 <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
                       aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
-              <div class="flex flex-col flex-1 gap-1.5 p-4">
-                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product-1358.html" data-product-title class="hover:text-primary transition-colors">بن أبو عوف ساده فاتح - 100 جم</a>
-                </h3>
-                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
-                  
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 91</span>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-1358.html" data-product-title class="hover:text-primary transition-colors">بن أبو عوف ساده فاتح - 100 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 91</span>
+                  </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
                      gone (Ahmed, 2026-07-29). The stepper that replaces it is
                      also w-full, so swapping one for the other never changes
                      the card's height. -->
-                <div class="pt-2">
+                <div class="mt-auto pt-1">
                   <button type="button" data-add-to-cart
                           class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in
@@ -953,23 +1021,29 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-8560.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000463000000.webp" alt="قهوة بن برازيلى سادة فاتح - 100 جم"
-                     class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
                 <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
                       aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
-              <div class="flex flex-col flex-1 gap-1.5 p-4">
-                <h3 class="font-semibold text-[#062A1C] text-base leading-6 line-clamp-2">
-                  <a href="product-8560.html" data-product-title class="hover:text-primary transition-colors">قهوة بن برازيلى سادة فاتح - 100 جم</a>
-                </h3>
-                <div class="flex flex-wrap items-center gap-2 mt-auto pt-2">
-                  
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 82.5</span>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-8560.html" data-product-title class="hover:text-primary transition-colors">قهوة بن برازيلى سادة فاتح - 100 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">EGP 82.5</span>
+                  </div>
                 </div>
                 <!-- Add button is full width now that the favourites heart is
                      gone (Ahmed, 2026-07-29). The stepper that replaces it is
                      also w-full, so swapping one for the other never changes
                      the card's height. -->
-                <div class="pt-2">
+                <div class="mt-auto pt-1">
                   <button type="button" data-add-to-cart
                           class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
                   <!-- Shown by scripts.js once the product is in the cart, in

@@ -27,19 +27,25 @@ from catalog import PRODUCTS, e, in_category, money, rail_products, title
 from components import (
     ICON, accordion, best_seller_badge, button, carousel, page, page_header,
     product_card, product_gallery, qty_stepper, rating, recipe_card,
-    size_chips, sold_proof, trust_row, trust_row_3d, product_benefits,
-    bundle_item, section_heading,
+    size_chips, sold_proof, specs_block, bundle_item, section_heading,
 )
 
 SLUG = "product.html"
 
-# Which spec-strip treatment to render under the CTA (Ahmed, 2026-07-29):
-#   "default" — the flat icon-over-text tiles (trust_row)
-#   "3d"      — horizontal [3D icon | text] cells, right-aligned (trust_row_3d)
-# One flag drives both the hero and the per-product path below; flip it back to
-# "default" to revert the whole site with no other change.
-SPECS_VARIANT = "3d"
-_SPECS_ROW = trust_row_3d if SPECS_VARIANT == "3d" else trust_row
+# Uniform product "specs" copy (Ahmed, 2026-08-02) — the SAME tagline,
+# description and three leaf-marked sentences on ALL 99 product pages, drawn by
+# specs_block(). It replaces the old per-product icon/label tiles, which varied
+# with whatever benefit lines each product carried (some were single words like
+# "مخبوزة"), so the strip now reads identically for the handoff. Brand-level
+# reassurance only — no auditable product claim — and still OUR unsigned Arabic
+# pending client sign-off, flagged in DESIGN-NOTES like every in-house string.
+SPECS_TAGLINE = "جودة أبو عوف في كل قضمة"
+SPECS_DESC = "منتجات نختارها بعناية ونقدّمها لك بالطزاجة والجودة اللي تستاهلها."
+SPECS_POINTS = [
+    "مكوّنات مختارة بعناية من مصادر موثوقة لضمان أفضل مذاق.",
+    "معايير جودة ثابتة من التحضير حتى التغليف للحفاظ على الطزاجة.",
+    "مثالي للتسالي اليومية أو للمشاركة مع العائلة والأصحاب.",
+]
 
 
 def product_slug(p):
@@ -93,31 +99,19 @@ DESCRIPTION = (
     "مذاق ناعم ومنعش، مثالي لمن يفضلون التحميص الفاتح في فنجانهم اليومي."
 )
 
-BENEFIT_ITEMS = [
-    ("leaf", "تحميص فاتح", "نكهة خفيفة ومشرقة"),
-    ("bolt", "بن برازيلي", "حبوب مختارة بعناية"),
-    ("shield", "مذاق ناعم", "مناسب للتحضير اليومي"),
-]
-
-# Generic benefit trio, shown on the products the client never wrote benefit
-# copy for (35 of 99). It used to be the site-service strip (delivery / returns
-# / branch count), which read as a delivery notice sitting where every other
-# product shows benefits — a developer opening two pages saw two different
-# spec rows (Ahmed, 2026-07-29: "make it generic for consistency and developer
-# hand-off, I don't want to confuse them"). Now the spec row is product benefits
-# on all 99: the client's own lines where they exist, this generic set where
-# they don't.
-#
-# Brand-level reassurance only — no auditable supply-chain claim (nothing like
-# "third-party tested"), same restraint as the hero copy. Still OUR unsigned
-# Arabic; flagged in DESIGN-NOTES pending client sign-off like every other
-# in-house string in this build. Single-line tiles (empty subtitle) so they
-# match the shape of the client-benefit tiles beside them.
-GENERIC_BENEFITS = [
-    ("leaf", "منتج مختار بعناية", ""),
-    ("bolt", "طازج وعالي الجودة", ""),
-    ("shield", "جودة أبو عوف المضمونة", ""),
-]
+# The SINGLE uniform "الفوائد" list, shown on EVERY product (Ahmed,
+# 2026-08-02). The client's own benefit copy varies in count and layout
+# product-to-product (some labelled, some plain bullets, some absent), so the
+# only way to give the section the same density and layout everywhere is one
+# fixed list. Brand-level reassurance, no auditable SKU claim; in-house Arabic
+# pending sign-off (flagged in DESIGN-NOTES).
+BENEFITS_UNIFORM = """
+                      <ul class="flex flex-col gap-2 ps-5 list-disc">
+                        <li>مكوّنات مختارة بعناية من مصادر موثوقة دون إضافات غير ضرورية</li>
+                        <li>غني بالنكهة ومثالي للتسالي في أي وقت من اليوم</li>
+                        <li>خيار رائع للضيافة والمشاركة مع العائلة والأصحاب</li>
+                        <li>يصلك طازجاً بتغليف يحافظ على جودته حتى آخر قضمة</li>
+                      </ul>"""
 
 BENEFITS = """
                       <ul class="flex flex-col gap-2 ps-5 list-disc">
@@ -130,7 +124,7 @@ STORAGE = """
                       <ul class="flex flex-col gap-2 ps-5 list-disc">
                         <li>يحفظ في عبوة محكمة الغلق بعيداً عن الرطوبة</li>
                         <li>بعيداً عن أشعة الشمس المباشرة ومصادر الحرارة</li>
-                        <li>يفضل الطحن قبل التحضير مباشرة للحفاظ على النكهة</li>
+                        <li>يفضل استهلاكه خلال فترة قصيرة بعد الفتح للحفاظ على الطزاجة</li>
                       </ul>"""
 
 RECIPES = [
@@ -220,28 +214,21 @@ def _render(p):
         f'<p class="text-neutral-800 text-base leading-8">{e(desc)}</p>' if desc else ""
     )
 
-    # Accordion: hero keeps its two curated sections; everything else shows
-    # the client's own benefits HTML when they wrote one, nothing otherwise.
-    if hero:
-        acc_items = [("الفوائد", BENEFITS), ("طريقة الحفظ", STORAGE)]
-    elif p.get("descHtmlAr"):
-        acc_items = [("الفوائد", _clean_client_html(p["descHtmlAr"]))]
-    else:
-        acc_items = []
-    acc_html = accordion(acc_items) if acc_items else ""
+    # Accordion: IDENTICAL on every product now (Ahmed, 2026-08-02) — the same
+    # الفوائد list and the same طريقة الحفظ, so the section's density and layout
+    # never change from one product to the next. The client's per-product
+    # benefit HTML varied in count and shape (2/1/0 sections, labelled vs plain),
+    # which is exactly the inconsistency being removed; it is set aside in favour
+    # of one uniform list. The uniform FAQ follows below.
+    acc_items = [("الفوائد", BENEFITS_UNIFORM), ("طريقة الحفظ", STORAGE)]
+    acc_html = accordion(acc_items)
 
-    # Every page carries the strip, and every page that CAN now shows the
-    # product's own benefits rather than delivery notes.
-    #
-    # The hero keeps its hand-written tiles: its own benefits list in
-    # catalog.json is a single line reading "100جرام", which is the pack
-    # weight the size chips already show, so deriving from it would be a
-    # downgrade. Everything else derives from the client's `descHtmlAr`, and
-    # falls back to GENERIC_BENEFITS — a generic PRODUCT-benefit trio, not the
-    # old service strip — only where the client wrote no benefits at all (35 of
-    # 99), so the spec row reads as benefits on every page.
-    trust_html = (_SPECS_ROW(BENEFIT_ITEMS) if hero
-                  else product_benefits(p, GENERIC_BENEFITS, renderer=_SPECS_ROW))
+    # The spec strip is uniform on all 99 pages now (Ahmed, 2026-08-02): one
+    # tagline, one description and three leaf-marked sentences, drawn by
+    # specs_block from the SPECS_* copy above. It replaced the per-product
+    # icon/label tiles, whose text came from the client's benefit lines and so
+    # ranged from full sentences to single words like "مخبوزة".
+    trust_html = specs_block(SPECS_TAGLINE, SPECS_DESC, SPECS_POINTS)
 
     # Related products — an INTERACTIVE "you may also like" widget in the sticky
     # media column (Ahmed, 2026-07-29): each row a checkbox, a running total and
@@ -343,17 +330,18 @@ def _render(p):
 
             {size_chips(p)}
 
-            <!-- Price responds to both controls above it: the size chips
-                 repoint it at that SKU's real price, and the quantity stepper
-                 multiplies. data-unit-price is the current SIZE's price, kept
-                 separate from the displayed total so the multiply never
-                 compounds on itself. -->
+            <!-- The yellow is a marker BAND shorter than the digits, not a tall
+                 pill around them (Ahmed, 2026-08-02): the inline line-height
+                 pulls the highlight in from the glyph tops/bottoms, so the price
+                 size is untouched and only the rectangle shrinks. The size chips
+                 repoint data-unit-price at the chosen SKU's real price; quantity
+                 no longer multiplies this — it is the UNIT price, and the running
+                 order total lives in the cart drawer and summary. -->
             <div class="flex flex-wrap items-center gap-3">
               {old_price}
               <span data-price-display data-unit-price="{p.get('sale') or p.get('price') or 0}"
-                    class="bg-accent-yellow px-4 py-1.5 rounded-lg font-bold text-[#062A1C] text-2xl latin">EGP {money(p['price'])}</span>
-              <span data-price-breakdown hidden
-                    class="text-neutral-secondary text-sm latin"></span>
+                    style="line-height:.6"
+                    class="bg-accent-yellow px-3 rounded font-bold text-[#062A1C] text-2xl latin">EGP {money(p['price'])}</span>
             </div>
 
             <!-- The stepper IS the add control (Ahmed, 2026-07-26). There is
