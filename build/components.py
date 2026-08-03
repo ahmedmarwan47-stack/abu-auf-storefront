@@ -1132,12 +1132,19 @@ def checkout_summary(lines_html, subtotal, total, delivery_fee):
               </div>
               <div class="flex justify-between items-center" data-cart-discount-row hidden>
                 <span class="text-neutral-secondary">خصم المحفظة</span>
-                <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
+                <span class="inline-flex items-center h-[13px] -me-2 bg-[#E9F3E6] px-2 rounded font-bold text-[#163300] text-sm latin" data-cart-discount></span>
+              </div>
+              <div class="flex justify-between items-center" data-cart-promo-row hidden>
+                <span class="text-neutral-secondary">خصم كود الخصم</span>
+                <span class="inline-flex items-center h-[13px] -me-2 bg-[#E9F3E6] px-2 rounded font-bold text-[#163300] text-sm latin" data-cart-promo-discount></span>
               </div>
             </div>
             <div class="flex justify-between items-center pt-3 border-neutral-divider border-t">
               <span class="font-bold text-[#062A1C] text-base">الإجمالي</span>
               <span class="font-bold text-[#062A1C] text-2xl latin" data-cart-total>EGP {money(total)}</span>
+            </div>
+            <div class="pt-3 border-neutral-divider border-t">
+              {order_notes_accordion()}
             </div>
           </aside>"""
 
@@ -1223,12 +1230,46 @@ def promo_field():
                      load, after apply, and across cart -> checkout. -->
                 <div data-promo-applied hidden class="flex justify-between items-center gap-2 bg-[#E9F3E6] px-3 py-2 rounded-xl">
                   <span class="flex items-center gap-2 min-w-0 text-[#163300] text-sm">
-                    <span class="w-4 h-4 text-accent-green shrink-0">{ICON['check']}</span>
+                    <img src="images/abuauf/icons/discount-tag-3d.png" alt="" class="w-auto h-8 shrink-0" />
                     <span class="truncate">تم تطبيق <span class="font-bold latin" data-promo-applied-code></span></span>
                   </span>
                   <button type="button" data-promo-remove class="shrink-0 font-semibold text-accent-error text-xs underline">إلغاء</button>
                 </div>
               </div>"""
+
+
+def order_notes_accordion():
+    """
+    "Special instructions" note accordion — shared by cart and checkout so a
+    note carries between them the same way the promo code already does,
+    rather than being cart-only. Live control: scripts.js persists it under
+    abuauf:orderNote and prefills it on the way back (initOrderNotes ->
+    syncNoteUI), with a real edit view (textarea + save) and an applied view
+    (the saved note, with edit / remove) rather than a plain always-open box.
+
+    Returns bare `accordion(...)` markup, not a card — callers wrap it in
+    whatever container fits their layout (cart gives it its own card;
+    checkout drops it straight into the existing summary card).
+    """
+    panel = """
+                      <div data-note class="flex flex-col gap-3">
+                        <div data-note-edit class="flex flex-col gap-3">
+                          <!-- aria-label, not placeholder alone: a placeholder
+                               disappears the moment you type, so it cannot be
+                               the field's accessible name. -->
+                          <textarea rows="3" placeholder="أضف ملاحظة" aria-label="ملاحظات على الطلب" data-order-note
+                                    class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-sm transition-colors"></textarea>
+                          <button type="button" data-order-note-save class="bg-cta hover:bg-cta-hover px-6 py-2 rounded-full font-semibold text-white text-sm transition-colors self-end">حفظ الملاحظة</button>
+                        </div>
+                        <div data-note-view hidden class="flex flex-col gap-2 bg-interaction-base p-3 rounded-xl">
+                          <p class="text-[#062A1C] text-sm leading-6 whitespace-pre-line" data-note-text></p>
+                          <div class="flex items-center gap-4">
+                            <button type="button" data-note-edit-btn class="font-semibold text-cta text-xs underline">تعديل</button>
+                            <button type="button" data-note-remove class="font-semibold text-accent-error text-xs underline">حذف</button>
+                          </div>
+                        </div>
+                      </div>"""
+    return accordion([("أضف ملاحظات على الطلب", panel)])
 
 
 def freeship_bar():

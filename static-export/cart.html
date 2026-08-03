@@ -122,13 +122,21 @@
                   <span class="text-neutral-secondary">الإجمالي</span>
                   <span class="font-semibold text-[#062A1C] latin" data-cart-subtotal>EGP 512.5</span>
                 </div>
-                <!-- Points discount — hidden until the banner below applies
-                     it; renderCart owns both the visibility and the figure. -->
+                <!-- Wallet and promo discounts, each its own row — hidden
+                     until applied; renderCart owns both the visibility and
+                     the figure for each, and a promo applied together with
+                     the wallet must show both amounts rather than one
+                     combined figure that hides what the code itself took
+                     off. -->
                 <div class="flex justify-between items-center" data-cart-discount-row hidden>
                   <span class="text-neutral-secondary">خصم المحفظة</span>
                   <!-- The green counterpart of the yellow price chip: a saving
                        is good news and should read as one at a glance. -->
-                  <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
+                  <span class="inline-flex items-center h-[13px] -me-2 bg-[#E9F3E6] px-2 rounded font-bold text-[#163300] text-sm latin" data-cart-discount></span>
+                </div>
+                <div class="flex justify-between items-center" data-cart-promo-row hidden>
+                  <span class="text-neutral-secondary">خصم كود الخصم</span>
+                  <span class="inline-flex items-center h-[13px] -me-2 bg-[#E9F3E6] px-2 rounded font-bold text-[#163300] text-sm latin" data-cart-promo-discount></span>
                 </div>
               </div>
 
@@ -152,7 +160,7 @@
                      load, after apply, and across cart -> checkout. -->
                 <div data-promo-applied hidden class="flex justify-between items-center gap-2 bg-[#E9F3E6] px-3 py-2 rounded-xl">
                   <span class="flex items-center gap-2 min-w-0 text-[#163300] text-sm">
-                    <span class="w-4 h-4 text-accent-green shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    <img src="images/abuauf/icons/discount-tag-3d.png" alt="" class="w-auto h-8 shrink-0" />
                     <span class="truncate">تم تطبيق <span class="font-bold latin" data-promo-applied-code></span></span>
                   </span>
                   <button type="button" data-promo-remove class="shrink-0 font-semibold text-accent-error text-xs underline">إلغاء</button>

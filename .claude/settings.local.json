@@ -11,7 +11,10 @@
       "Bash(git push *)",
       "Bash(git remote *)",
       "Bash(git checkout *)",
-      "Bash(git pull *)"
+      "Bash(git pull *)",
+      "Bash(lsof -i :8000 -sTCP:LISTEN -t)",
+      "Bash(git add *)",
+      "Bash(git commit -q -m ' *)"
     ]
   }
 }

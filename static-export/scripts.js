@@ -403,6 +403,7 @@
     "مصاريف التوصيل": "Delivery fee",
     "الإجمالي": "Total",
     "خصم المحفظة": "Wallet discount",
+    "خصم كود الخصم": "Promo code discount",
     "الدفع من المحفظة": "Pay from wallet",
     "تم الخصم من رصيدك": "Deducted from your balance",
     // locale popup + addresses
@@ -1236,6 +1237,44 @@
       </div>`,
     ).join("");
 
+    /* Mobile-only accordion (Ahmed, 2026-08-03): below md the 3 groups above
+       become 3 full-width collapsible rows with a chevron, all closed by
+       default — the whole point of an accordion on a phone is the vertical
+       space it gives back versus every link printed at once. Reuses the
+       SAME .accordion-item/.accordion-trigger/.accordion-chevron/
+       .accordion-panel contract the FAQ page and product page already use
+       (styles.css owns the open/close transition and the chevron rotation,
+       initAccordions() in this file wires the click), rather than a second
+       accordion implementation. data-accordion-multi so a shopper can have
+       more than one group open — nothing here makes them mutually exclusive.
+       The chevron SVG is inlined because this file's own ICON object has no
+       chevron entry (that one lives only in build/components.py's
+       build-time ICON dict). Border is white/10, not the light-grey
+       neutral-divider the same component uses on white cards elsewhere —
+       that grey barely shows against this footer's dark green. */
+    const columnsMobile = `
+      <div data-accordion data-accordion-multi class="md:hidden flex flex-col">
+        ${FOOTER_COLUMNS.map(
+          (col) => `
+        <div class="accordion-item border-white/10 border-b">
+          <button type="button" class="accordion-trigger flex justify-between items-center gap-4 py-4 w-full text-start">
+            <span class="font-bold text-white text-base leading-[22px]">${esc(t(col.name))}</span>
+            <span class="accordion-chevron text-white shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="accordion-panel">
+            <ul class="flex flex-col gap-2 pb-4">
+              ${col.links
+                .map(
+                  (l) =>
+                    `<li><a href="${pageHref(l.url)}" class="font-normal text-white hover:text-accent-yellow text-base leading-6 transition-colors">${esc(t(l.title))}</a></li>`,
+                )
+                .join("")}
+            </ul>
+          </div>
+        </div>`,
+        ).join("")}
+      </div>`;
+
     const socials = SOCIALS.map(
       (s) =>
         `<li><a href="${s.href}" target="_blank" rel="noopener noreferrer" aria-label="${esc(s.title)}" class="block opacity-90 hover:opacity-100 transition-opacity">
@@ -1282,8 +1321,10 @@
             <p class="max-w-[277px] font-semibold text-onDarkGreen text-sm xl:text-base leading-relaxed">${esc(CONTACT.address)}</p>
             <ul class="flex items-center gap-6 mt-1">${socials}</ul>
           </div>
-          <!-- link columns -->
-          <div class="flex flex-wrap gap-8 xl:gap-6 xl:flex-[3]">${columns}</div>
+          <!-- link columns: 3-row accordion below md, the original always-
+               expanded multi-column layout from md up. -->
+          ${columnsMobile}
+          <div class="hidden md:flex flex-wrap gap-8 xl:gap-6 xl:flex-[3]">${columns}</div>
         </div>
 
         <div class="bg-black">
@@ -1406,12 +1447,20 @@
           <span class="text-neutral-secondary">${esc(t("مصاريف التوصيل"))}</span>
           <span class="font-semibold text-[#062A1C] latin" data-cart-delivery>${egp(DELIVERY_FEE)}</span>
         </div>
-        <!-- Wallet discount, when applied on the cart or checkout page. The
-             drawer must show WHY its total is lower than items + delivery,
-             or the smaller number reads as a bug. -->
+        <!-- Wallet discount and promo-code discount, each in their own row
+             when applied on the cart or checkout page. These used to be
+             added together into this one row — a shopper with both a promo
+             AND the wallet applied saw a single "wallet discount" figure
+             that silently included money the wallet never touched, with no
+             line anywhere naming what the code itself took off. Two rows,
+             two labels, each showing only its own amount. -->
         <div class="flex justify-between items-center text-sm" data-cart-discount-row hidden>
           <span class="text-neutral-secondary">${esc(t("خصم المحفظة"))}</span>
-          <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
+          <span class="inline-flex items-center h-[13px] -me-2 bg-[#E9F3E6] px-2 rounded font-bold text-[#163300] text-sm latin" data-cart-discount></span>
+        </div>
+        <div class="flex justify-between items-center text-sm" data-cart-promo-row hidden>
+          <span class="text-neutral-secondary">${esc(t("خصم كود الخصم"))}</span>
+          <span class="inline-flex items-center h-[13px] -me-2 bg-[#E9F3E6] px-2 rounded font-bold text-[#163300] text-sm latin" data-cart-promo-discount></span>
         </div>
         <!-- Promo code — same [data-promo*] contract as the cart-page field, so
              renderCart's syncPromoUI keeps the drawer and the page in step and a
@@ -1433,7 +1482,7 @@
           </div>
           <div data-promo-applied hidden class="flex justify-between items-center gap-2 bg-[#E9F3E6] px-3 py-2 rounded-xl">
             <span class="flex items-center gap-2 min-w-0 text-[#163300] text-sm">
-              <span class="w-4 h-4 text-accent-green shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <img src="images/abuauf/icons/discount-tag-3d.png" alt="" class="w-auto h-8 shrink-0" />
               <span class="truncate">${esc(t("تم تطبيق"))} <span class="font-bold latin" data-promo-applied-code></span></span>
             </span>
             <button type="button" data-promo-remove class="shrink-0 font-semibold text-accent-error text-xs underline">${esc(t("إلغاء"))}</button>
@@ -2354,6 +2403,81 @@
       );
       start();
     }
+  }
+
+  /* Plain drag-to-scroll for a horizontal overflow row that ISN'T a carousel
+     (no slides, no snap, no arrows) — the category filter-chip row on shop
+     listing pages. A mouse drag needs this the same way the carousel does
+     (browsers only turn a mouse drag into a scroll for the resident
+     scrollbar, and this row hides its scrollbar like the rails do) — but the
+     bigger find testing this: on a touch/trackpad pointer, the drag was
+     getting cut short by a `pointercancel` PARTWAY through the gesture,
+     exactly the failure initCarousel's own comments already describe. Cause
+     is the same one documented there: with no `touch-action` override, the
+     browser's own gesture disambiguation can claim the drag as a native pan
+     and cancel our pointer mid-track. `pan-y pinch-zoom` hands vertical
+     panning and zoom back to the browser and keeps horizontal for us to
+     drive via scrollLeft, so the cancel stops happening. Kept separate from
+     initCarousel rather than forcing the chip row to become a one-slide
+     carousel it doesn't need. */
+  function initDragScroll(el) {
+    // Set here, not in CSS, for the same reason initCarousel does it in JS:
+    // if this script never runs, the CSS pan-x fallback (styles.css) still
+    // gives native horizontal scrolling rather than a row that cannot move.
+    el.style.touchAction = "pan-y pinch-zoom";
+
+    let active = false;
+    let dragging = false;
+    let startX = 0, startSL = 0, moved = 0, id = null;
+
+    el.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      // Nothing to drag once xl wraps the chips instead of scrolling them —
+      // bail before arming, so a jittery click near the tap-slop threshold
+      // never eats a chip's own click on desktop.
+      if (el.scrollWidth <= el.clientWidth) return;
+      active = true;
+      dragging = false;
+      moved = 0;
+      startX = e.clientX;
+      startSL = el.scrollLeft;
+      id = e.pointerId;
+    });
+
+    el.addEventListener("pointermove", (e) => {
+      if (!active || e.pointerId !== id) return;
+      const dx = e.clientX - startX;
+      if (!dragging && Math.abs(dx) > 4) {
+        dragging = true;
+        try { el.setPointerCapture(id); } catch (_) {}
+      }
+      if (dragging) {
+        moved = dx;
+        el.scrollLeft = startSL - dx;
+        e.preventDefault();
+      }
+    });
+
+    const endDrag = () => {
+      active = false;
+      dragging = false;
+    };
+    el.addEventListener("pointerup", endDrag);
+    el.addEventListener("pointercancel", endDrag);
+
+    /* Same guard as the carousel: a real drag must not also fire the chip's
+       own click/navigation underneath it. */
+    el.addEventListener(
+      "click",
+      (e) => {
+        if (Math.abs(moved) > 4) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        moved = 0;
+      },
+      true,
+    );
   }
 
   /* ---------------------------------------------------------------
@@ -4367,10 +4491,6 @@
     const promo = empty ? 0 : Math.min(promoDiscount(sub), gross);
     const afterPromo = Math.max(0, gross - promo);
     const walletUsed = empty ? 0 : Math.min(walletApplied(), afterPromo);
-    // One row shows both deductions — the summary has a single "discount"
-    // line, so a promo and a wallet applied together must add up in it rather
-    // than one quietly replacing the other.
-    const discount = promo + walletUsed;
 
     /* Badge — every cart button on the page.
        While a ghost is mid-flight the badge is held at its old value, so the
@@ -4441,8 +4561,10 @@
     /* Totals + checkout gating, drawer and cart page alike. */
     document.querySelectorAll("[data-cart-subtotal]").forEach((el) => (el.textContent = egp(sub)));
     document.querySelectorAll("[data-cart-total]").forEach((el) => (el.textContent = egp(Math.max(0, afterPromo - walletUsed))));
-    document.querySelectorAll("[data-cart-discount-row]").forEach((el) => (el.hidden = !discount));
-    document.querySelectorAll("[data-cart-discount]").forEach((el) => (el.textContent = "− " + egp(discount)));
+    document.querySelectorAll("[data-cart-discount-row]").forEach((el) => (el.hidden = !walletUsed));
+    document.querySelectorAll("[data-cart-discount]").forEach((el) => (el.textContent = "− " + egp(walletUsed)));
+    document.querySelectorAll("[data-cart-promo-row]").forEach((el) => (el.hidden = !promo));
+    document.querySelectorAll("[data-cart-promo-discount]").forEach((el) => (el.textContent = "− " + egp(promo)));
     document.querySelectorAll("[data-cart-shortfall]").forEach((el) => (el.textContent = egp(shortfall)));
     document.querySelectorAll("[data-cart-warning]").forEach((el) => (el.hidden = !belowMin || empty));
     document.querySelectorAll("[data-cart-checkout]").forEach((el) => {
@@ -5850,6 +5972,7 @@
   window.kInit = function (scope) {
     scope = scope || document;
     scope.querySelectorAll(".carousel").forEach(initCarousel);
+    scope.querySelectorAll("[data-drag-scroll]").forEach(initDragScroll);
     initAccordions(scope);
     initTabs(scope);
     initGallery(scope);

@@ -1,8 +1,8 @@
 """Shopping cart — Figma 'Cart' (4231:22875)."""
 from catalog import in_category, money, rail_products
 from components import (
-    accordion, cart_line, carousel, freeship_bar, page, page_header, promo_field,
-    wallet_toggle, product_card, section_heading,
+    cart_line, carousel, freeship_bar, order_notes_accordion, page, page_header,
+    promo_field, wallet_toggle, product_card, section_heading,
 )
 
 SLUG = "cart.html"
@@ -21,31 +21,6 @@ def build():
 
     lines = "".join(cart_line(p, q) for p, q in items)
     more = rail_products("Nuts | Seeds & Crackers", "Snacks", limit=10)
-
-    # Live control: scripts.js persists the note under abuauf:orderNote and
-    # prefills it on the way back — the button used to do nothing at all.
-    # Note has real states now (Ahmed, 2026-08-02): an edit view (textarea +
-    # save) and an applied view (the saved note, with edit / remove). scripts.js
-    # initOrderNotes -> syncNoteUI swaps between them off abuauf:orderNote, so a
-    # saved note comes back on reload already applied.
-    note_panel = """
-                      <div data-note class="flex flex-col gap-3">
-                        <div data-note-edit class="flex flex-col gap-3">
-                          <!-- aria-label, not placeholder alone: a placeholder
-                               disappears the moment you type, so it cannot be
-                               the field's accessible name. -->
-                          <textarea rows="3" placeholder="أضف ملاحظة" aria-label="ملاحظات على الطلب" data-order-note
-                                    class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-sm transition-colors"></textarea>
-                          <button type="button" data-order-note-save class="bg-cta hover:bg-cta-hover px-6 py-2 rounded-full font-semibold text-white text-sm transition-colors self-end">حفظ الملاحظة</button>
-                        </div>
-                        <div data-note-view hidden class="flex flex-col gap-2 bg-interaction-base p-3 rounded-xl">
-                          <p class="text-[#062A1C] text-sm leading-6 whitespace-pre-line" data-note-text></p>
-                          <div class="flex items-center gap-4">
-                            <button type="button" data-note-edit-btn class="font-semibold text-cta text-xs underline">تعديل</button>
-                            <button type="button" data-note-remove class="font-semibold text-accent-error text-xs underline">حذف</button>
-                          </div>
-                        </div>
-                      </div>"""
 
     # The basket is client state, so whether this button is usable cannot be
     # decided here. It used to pick between a disabled <button> and a live <a>
@@ -93,13 +68,21 @@ def build():
                   <span class="text-neutral-secondary">الإجمالي</span>
                   <span class="font-semibold text-[#062A1C] latin" data-cart-subtotal>EGP {money(subtotal)}</span>
                 </div>
-                <!-- Points discount — hidden until the banner below applies
-                     it; renderCart owns both the visibility and the figure. -->
+                <!-- Wallet and promo discounts, each its own row — hidden
+                     until applied; renderCart owns both the visibility and
+                     the figure for each, and a promo applied together with
+                     the wallet must show both amounts rather than one
+                     combined figure that hides what the code itself took
+                     off. -->
                 <div class="flex justify-between items-center" data-cart-discount-row hidden>
                   <span class="text-neutral-secondary">خصم المحفظة</span>
                   <!-- The green counterpart of the yellow price chip: a saving
                        is good news and should read as one at a glance. -->
-                  <span class="bg-[#E9F3E6] px-2 py-0.5 rounded font-bold text-[#163300] latin" data-cart-discount></span>
+                  <span class="inline-flex items-center h-[13px] -me-2 bg-[#E9F3E6] px-2 rounded font-bold text-[#163300] text-sm latin" data-cart-discount></span>
+                </div>
+                <div class="flex justify-between items-center" data-cart-promo-row hidden>
+                  <span class="text-neutral-secondary">خصم كود الخصم</span>
+                  <span class="inline-flex items-center h-[13px] -me-2 bg-[#E9F3E6] px-2 rounded font-bold text-[#163300] text-sm latin" data-cart-promo-discount></span>
                 </div>
               </div>
 {promo_field()}
@@ -112,7 +95,7 @@ def build():
             </div>
 
             <div class="bg-white shadow-custom4 px-6 py-2 rounded-[20px]">
-              {accordion([("أضف ملاحظات على الطلب", note_panel)])}
+              {order_notes_accordion()}
             </div>
           </aside>
 

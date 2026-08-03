@@ -51,7 +51,7 @@ def listing(title_text, description, heading, trail, chips, products,
                  the row reaches both screen edges and the last chip crops at the
                  edge (signalling more) rather than 32px short of it. Reset on xl,
                  where the row wraps instead of scrolling. -->
-            <div class="flex gap-2 -mx-4 px-4 xl:mx-0 xl:px-0 w-[calc(100%_+_2rem)] xl:w-full min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible">{chip_html}
+            <div data-drag-scroll class="flex gap-2 -mx-4 px-4 xl:mx-0 xl:px-0 w-[calc(100%_+_2rem)] xl:w-full min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible">{chip_html}
             </div>
 {sort_select(SORT_OPTIONS)}
           </div>

@@ -206,6 +206,20 @@ select {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Plain horizontal drag-to-scroll rows that are NOT a carousel (the shop
+   listing's category filter chips) — see initDragScroll in scripts.js for
+   the full story. Same no-JS fallback as .carousel-track below: `pan-x`
+   gives native horizontal scrolling if this script never runs, and
+   initDragScroll overrides it to `pan-y` once it does, because leaving the
+   browser to disambiguate a drag on an element with no touch-action override
+   let it claim the gesture as its own pan and `pointercancel` our tracking
+   mid-drag — the row simply stopped moving partway through the gesture. */
+[data-drag-scroll] {
+  touch-action: pan-x pinch-zoom;
+  overscroll-behavior-x: contain;
+}
+
 .styled-scrollbar::-webkit-scrollbar {
   width: 4px;
   margin-top: 1rem;
@@ -2093,12 +2107,37 @@ input:checked + .radio-card-accent {
 
    The outline is kept as the outline (not folded into the box-shadow) because
    an `overflow: hidden` ancestor clips box-shadows but never outlines — worst
-   case the halo is lost and a legible dark ring survives. */
+   case the halo is lost and a legible dark ring survives.
+
+   NO border-radius here (Ahmed, 2026-08-03: a forced 6px used to sit here,
+   overriding every focused element's OWN radius — a rounded-full pill button
+   visibly squared off to a 6px rectangle the instant it was focused, and a
+   rounded-xl field did the same. Outline follows the element's own
+   border-radius automatically in every current browser, so leaving this
+   property out keeps a pill a pill and a 12px field a 12px field, focused or
+   not, without hand-listing every radius in use across the site. */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid #163300;
   outline-offset: 2px;
-  border-radius: 6px;
   box-shadow: 0 0 0 2px #ffffff;
+}
+
+/* Bordered text fields (inputs, textareas, selects carrying focus:border-cta)
+   darken their OWN resting border on focus instead of ALSO drawing the global
+   ring above — with both active a field showed two borders: its own (turned
+   cta-green) plus the ring's 2px-offset outline and white halo sitting just
+   outside it. The colour change alone (#D9D9D9 -> #163300) already satisfies
+   1.4.11 non-text contrast, so the ring is redundant here and reads as a
+   second border. Matched on the shared `focus:border-cta` utility rather than
+   a new class, so every field using that utility is covered without touching
+   markup in the half-dozen files that define one; specificity (0,2,0) beats
+   both `.outline-none` (0,1,0) and the global :where(...):focus-visible
+   (0,1,0), the same margin the search-row exception below uses. Toggle
+   controls with no border box of their own (radio, checkbox, the switch) are
+   untouched and keep the ring — they have nothing to darken. */
+[class*="focus:border-cta"]:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 /* Re-arm the newsletter field whose `outline-none` silently removed the ring.
@@ -2107,7 +2146,6 @@ input:checked + .radio-card-accent {
 .newsletter-row:focus-within {
   outline: 2px solid #163300;
   outline-offset: 2px;
-  border-radius: 6px;
   box-shadow: 0 0 0 2px #ffffff;
 }
 
@@ -2154,7 +2192,6 @@ input:checked + .radio-card-accent {
 select.select-sort:focus-visible {
   outline: 2px solid #163300;
   outline-offset: 2px;
-  border-radius: 6px;
   box-shadow: 0 0 0 2px #ffffff;
 }
 

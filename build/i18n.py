@@ -266,6 +266,7 @@ UI = {
     "خصم على طلب #30942": "Discount on order #30942",
     "مكافأة تسجيل": "Sign-up bonus",
     "خصم المحفظة": "Wallet discount",
+    "خصم كود الخصم": "Promo code discount",
     "خصم المبلغ": "Apply discount",
     "إلغاء الخصم": "Remove discount",
     "الدفع من المحفظة": "Pay from wallet",
