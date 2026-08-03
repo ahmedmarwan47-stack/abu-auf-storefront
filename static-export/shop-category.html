@@ -61,7 +61,7 @@
           <!-- Sort sits BELOW the category filters, not beside them (Ahmed,
                2026-08-02). The two share one column now; the sort pill drops to
                its own row under the chips and aligns to the inline-start. -->
-          <div class="flex flex-col items-start gap-4">
+          <div class="flex flex-col items-start gap-4" data-listing>
             <!-- Mobile: one scrolling row (swipe). Desktop: WRAP instead — a
                  no-scrollbar horizontal scroll clipped the last chip mid-word,
                  which read as a collision. Wrapping shows every category. -->
@@ -70,7 +70,7 @@
                  the row reaches both screen edges and the last chip crops at the
                  edge (signalling more) rather than 32px short of it. Reset on xl,
                  where the row wraps instead of scrolling. -->
-            <div data-drag-scroll class="flex gap-2 -mx-4 px-4 xl:mx-0 xl:px-0 w-[calc(100%_+_2rem)] xl:w-full min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible"><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors bg-cta text-white border-cta">القهوة</a><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة تركي</a><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة برازيلي</a><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة مطحونة طازجة</a><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">إسبريسو</a><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة سريعة التحضير</a><a href="shop-category.html" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">مشروبات ساخنة</a>
+            <div data-drag-scroll class="flex gap-2 -mx-4 px-4 xl:mx-0 xl:px-0 w-[calc(100%_+_2rem)] xl:w-full min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible"><a href="shop-category.html" data-filter="all" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors bg-cta text-white border-cta">القهوة</a><a href="shop-category.html" data-filter="turkish-coffee" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة تركي</a><a href="shop-category.html" data-filter="brazilian-coffee" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة برازيلي</a><a href="shop-category.html" data-filter="fresh-grounded-coffee" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة مطحونة طازجة</a><a href="shop-category.html" data-filter="instant-coffee" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة سريعة التحضير</a><a href="shop-category.html" data-filter="hot-drinks" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">مشروبات ساخنة</a>
             </div>
 
             <div class="relative shrink-0 text-start" data-fancy-select>
@@ -138,7 +138,7 @@
             لا توجد منتجات في هذا القسم حالياً.
           </p>
           <div data-product-grid class="gap-4 xl:gap-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-          <article class="product-card w-full" data-product data-cat="coffee-beverage" data-price="91.0" data-id="1358" data-name="بن أبو عوف ساده فاتح - 100 جم" data-name-en="Light roasted plain Abu Auf Coffee – 100 gm" data-image="images/abuauf/products/2000466000000.webp">
+          <article class="product-card w-full" data-product data-cat="fresh-grounded-coffee" data-price="91.0" data-id="1358" data-name="بن أبو عوف ساده فاتح - 100 جم" data-name-en="Light roasted plain Abu Auf Coffee – 100 gm" data-image="images/abuauf/products/2000466000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1358.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000466000000.webp" alt="بن أبو عوف ساده فاتح - 100 جم"
@@ -205,7 +205,7 @@
               </div>
             </div>
           </article>
-          <article class="product-card w-full" data-product data-cat="coffee-beverage" data-price="82.5" data-id="8560" data-name="قهوة بن برازيلى سادة فاتح - 100 جم" data-name-en="Light roasted plain Brazilian Coffee – 100 gm" data-image="images/abuauf/products/2000463000000.webp">
+          <article class="product-card w-full" data-product data-cat="brazilian-coffee" data-price="82.5" data-id="8560" data-name="قهوة بن برازيلى سادة فاتح - 100 جم" data-name-en="Light roasted plain Brazilian Coffee – 100 gm" data-image="images/abuauf/products/2000463000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-8560.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000463000000.webp" alt="قهوة بن برازيلى سادة فاتح - 100 جم"
@@ -272,7 +272,7 @@
               </div>
             </div>
           </article>
-          <article class="product-card w-full" data-product data-cat="coffee-beverage" data-price="82.5" data-id="8561" data-name="قهوة بن برازيلى سادة وسط - 100 جم" data-name-en="Medium roasted plain Brazilian Coffee – 100 gm" data-image="images/abuauf/products/2000464000000.webp">
+          <article class="product-card w-full" data-product data-cat="brazilian-coffee" data-price="82.5" data-id="8561" data-name="قهوة بن برازيلى سادة وسط - 100 جم" data-name-en="Medium roasted plain Brazilian Coffee – 100 gm" data-image="images/abuauf/products/2000464000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-8561.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000464000000.webp" alt="قهوة بن برازيلى سادة وسط - 100 جم"
@@ -339,7 +339,7 @@
               </div>
             </div>
           </article>
-          <article class="product-card w-full" data-product data-cat="coffee-beverage" data-price="91.0" data-id="1359" data-name="بن أبو عوف ساده وسط - 100 جم" data-name-en="Medium roasted plain Abu Auf Coffee – 100 gm" data-image="images/abuauf/products/2000467000000.webp">
+          <article class="product-card w-full" data-product data-cat="fresh-grounded-coffee" data-price="91.0" data-id="1359" data-name="بن أبو عوف ساده وسط - 100 جم" data-name-en="Medium roasted plain Abu Auf Coffee – 100 gm" data-image="images/abuauf/products/2000467000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1359.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000467000000.webp" alt="بن أبو عوف ساده وسط - 100 جم"
@@ -406,7 +406,7 @@
               </div>
             </div>
           </article>
-          <article class="product-card w-full" data-product data-cat="coffee-beverage" data-price="110.0" data-id="1361" data-name="بن ابوعوف محوج فاتح - 100 جم" data-name-en="Light Roasted Blended Abu Auf Coffee – 100 gm" data-image="images/abuauf/products/2000505000000.webp">
+          <article class="product-card w-full" data-product data-cat="fresh-grounded-coffee" data-price="110.0" data-id="1361" data-name="بن ابوعوف محوج فاتح - 100 جم" data-name-en="Light Roasted Blended Abu Auf Coffee – 100 gm" data-image="images/abuauf/products/2000505000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1361.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000505000000.webp" alt="بن ابوعوف محوج فاتح - 100 جم"
@@ -473,7 +473,7 @@
               </div>
             </div>
           </article>
-          <article class="product-card w-full" data-product data-cat="coffee-beverage" data-price="110.0" data-id="1362" data-name="بن ابوعوف محوج وسط - 100 جم" data-name-en="Medium roasted blended Abu Auf Coffee – 100 gm" data-image="images/abuauf/products/2000506000000.webp">
+          <article class="product-card w-full" data-product data-cat="fresh-grounded-coffee" data-price="110.0" data-id="1362" data-name="بن ابوعوف محوج وسط - 100 جم" data-name-en="Medium roasted blended Abu Auf Coffee – 100 gm" data-image="images/abuauf/products/2000506000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1362.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000506000000.webp" alt="بن ابوعوف محوج وسط - 100 جم"
@@ -540,7 +540,7 @@
               </div>
             </div>
           </article>
-          <article class="product-card w-full" data-product data-cat="coffee-beverage" data-price="200.0" data-id="7482" data-name="قهوة سريعة التحضير جولد - 85 جرام" data-name-en="Instant Coffee Gold – 85 gm" data-image="images/abuauf/products/6223004760198.webp">
+          <article class="product-card w-full" data-product data-cat="instant-coffee" data-price="200.0" data-id="7482" data-name="قهوة سريعة التحضير جولد - 85 جرام" data-name-en="Instant Coffee Gold – 85 gm" data-image="images/abuauf/products/6223004760198.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-7482.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004760198.webp" alt="قهوة سريعة التحضير جولد - 85 جرام"
@@ -607,7 +607,7 @@
               </div>
             </div>
           </article>
-          <article class="product-card w-full" data-product data-cat="coffee-beverage" data-price="160.0" data-id="7481" data-name="قهوة سريعة التحضير كلاسيك(برطمان) - 100 جرام" data-name-en="Instant Coffee Classic (Jar) – 100 gm" data-image="images/abuauf/products/6223004760181.webp">
+          <article class="product-card w-full" data-product data-cat="instant-coffee" data-price="160.0" data-id="7481" data-name="قهوة سريعة التحضير كلاسيك(برطمان) - 100 جرام" data-name-en="Instant Coffee Classic (Jar) – 100 gm" data-image="images/abuauf/products/6223004760181.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-7481.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004760181.webp" alt="قهوة سريعة التحضير كلاسيك(برطمان) - 100 جرام"
@@ -674,7 +674,7 @@
               </div>
             </div>
           </article>
-          <article class="product-card w-full" data-product data-cat="coffee-beverage" data-price="155.0" data-id="10509" data-name="قهوة عربى - 100 جم" data-name-en="Arabic Coffee -100 gm" data-image="images/abuauf/products/6223011434167-6.webp">
+          <article class="product-card w-full" data-product data-cat="hot-drinks" data-price="155.0" data-id="10509" data-name="قهوة عربى - 100 جم" data-name-en="Arabic Coffee -100 gm" data-image="images/abuauf/products/6223011434167-6.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-10509.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011434167-6.webp" alt="قهوة عربى - 100 جم"
@@ -741,7 +741,7 @@
               </div>
             </div>
           </article>
-          <article class="product-card w-full" data-product data-cat="coffee-beverage" data-price="308.0" data-id="10502" data-name="بن أبو عوف تركي ساده فاتح 200 جم" data-name-en="Light Roasted Plain Turkish Coffee 200 gm" data-image="images/abuauf/products/6223004765353-2-1.webp">
+          <article class="product-card w-full" data-product data-cat="turkish-coffee" data-price="308.0" data-id="10502" data-name="بن أبو عوف تركي ساده فاتح 200 جم" data-name-en="Light Roasted Plain Turkish Coffee 200 gm" data-image="images/abuauf/products/6223004765353-2-1.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-10502.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004765353-2-1.webp" alt="بن أبو عوف تركي ساده فاتح 200 جم"
@@ -808,7 +808,7 @@
               </div>
             </div>
           </article>
-          <article class="product-card w-full" data-product data-cat="coffee-beverage" data-price="99.0" data-id="8558" data-name="بن برازيلى فاتح محوج - 100 جم" data-name-en="Light roasted blended Brazilian Coffee – 100 gm" data-image="images/abuauf/products/2000502000000.webp">
+          <article class="product-card w-full" data-product data-cat="brazilian-coffee" data-price="99.0" data-id="8558" data-name="بن برازيلى فاتح محوج - 100 جم" data-name-en="Light roasted blended Brazilian Coffee – 100 gm" data-image="images/abuauf/products/2000502000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-8558.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000502000000.webp" alt="بن برازيلى فاتح محوج - 100 جم"
@@ -875,7 +875,7 @@
               </div>
             </div>
           </article>
-          <article class="product-card w-full" data-product data-cat="coffee-beverage" data-price="99.0" data-id="6264" data-name="بن برازيلي محوج وسط - 100 جم" data-name-en="Medium Roasted blended Brazilian Coffee – 100gm" data-image="images/abuauf/products/2000503000000.webp">
+          <article class="product-card w-full" data-product data-cat="brazilian-coffee" data-price="99.0" data-id="6264" data-name="بن برازيلي محوج وسط - 100 جم" data-name-en="Medium Roasted blended Brazilian Coffee – 100gm" data-image="images/abuauf/products/2000503000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-6264.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000503000000.webp" alt="بن برازيلي محوج وسط - 100 جم"

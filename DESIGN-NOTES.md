@@ -75,13 +75,22 @@ wording would otherwise lead a reader to assume the opposite.
 
 ### Sub-category filtering — `shop-category.html`
 
-The seven sub-category chips do not filter, deliberately. `catalog.json` has
-`category`/`categorySlug` and **no sub-category field**, and the labels come from
-the Figma rather than the data. Checked against the 12 real coffee products:
-`القهوة`, `قهوة مطحونة طازجة`, `إسبريسو` and `مشروبات ساخنة` match **zero**
-products each. Wiring them would empty the grid on four of seven taps.
+The sub-category chips now filter live (Ahmed, 2026-08-03). `catalog.json` still
+has **no sub-category field** — every coffee SKU is just `categorySlug`
+`coffee-beverage` — so the sub-category is **derived from the product's Arabic
+name by keyword** in `shop_category.py::_subcat` (priority-ordered: تركي →
+برازيلي → سريعة التحضير → إسبريسو → عرب → else fresh-ground). `product_card(cat=…)`
+lets the page write that derived slug into each card's `data-cat`, which
+`initListing` already filters on; making the chips live also turns the Sort
+dropdown on (it shares `initListing`).
 
-**Needs:** the client's sub-category taxonomy.
+This is **derived, not real, data.** Chips that match zero products are dropped
+so none reads as broken — with the 12-product sample that removes **إسبريسو**
+(6 chips ship, not 7). Current split: fresh-ground 4, برازيلي 4, سريعة التحضير 2,
+تركي 1, مشروبات ساخنة 1 (`قهوة عربى`).
+
+**Needs:** the client's real sub-category taxonomy — then replace `_subcat` with
+a lookup and restore the dropped chip(s).
 
 ### Sort options that aren't what their label claims
 
@@ -91,14 +100,14 @@ products each. Wiring them would empty the grid on four of seven taps.
 | `وصل حديثاً` | sorts by product **id** descending. Ids rise over time so it approximates recency, but there is **no publish date** in the catalogue |
 | `الأكثر مبيعاً` | **does nothing** — restores catalogue order. There is no sales data anywhere in the scrape |
 
-The `الاكثر مبيعا` rail in the products mega-panel is four real catalogue
-items, hard-coded, for the same reason.
-
-It used to be hard-coded *also* because `scripts.js` had no runtime access to
-`catalog.json`. That is no longer true — site search fetches it (§3) — so the
-rail **could** now be driven by real `popularityRank`, which every product
-already carries. Worth doing; it was left alone in the search pass to keep
-that change reviewable on its own.
+The `الاكثر مبيعا` rail that used to sit in the products mega-panel (four
+hard-coded catalogue items) was **removed in the 2026-08-03 mega-menu redesign**
+(see that section below). It showed the *same* four products under every
+category, which reads as incoherent in a per-category preview. If a best-seller
+strip returns, it should be **per-category**, driven by the `popularityRank`
+every product already carries — `scripts.js` can reach `catalog.json` at runtime
+now that site search fetches it (§3), so the data is no longer the blocker; the
+coherence question is.
 
 **Needs:** `date_created` and a sales/popularity figure in the scrape.
 
@@ -231,9 +240,11 @@ sales feed. `sold_proof()` in `components.py` is the single place to change.
 
 `build_many()` in `build/pages/product.py` generates `product-<id>.html` for
 all 99 catalogue products (Ahmed reported every card opening the same coffee
-page). Card links in `components.py` and the mega-panel featured tiles carry
-the id; `product.html` remains as the hero's page so nothing that linked to it
-breaks. Per-page content is only what we genuinely have per product:
+page). Card links in `components.py` carry the id; `product.html` remains as the
+hero's page so nothing that linked to it breaks. (The mega-panel's own featured
+tiles carried ids too, but were dropped in the 2026-08-03 mega-menu redesign —
+see that section below.) Per-page content is only what we genuinely have per
+product:
 
 - **Description and the "الفوائد" accordion are the client's own Arabic**,
   fetched by `build/fetch_descriptions.py` from the storefront's flight
@@ -401,6 +412,76 @@ standing accessibility deviation.
 ---
 
 ## 3. Deliberate deviations from the Figma
+
+### Mega-menu redesign — rail + live preview (Ahmed, 2026-08-03)
+
+Ahmed reported the products mega-panel forced him to "travel with the mouse to
+the left to choose from the products." Two causes, both structural:
+
+1. **Distance.** The old layout was three columns (RTL: categories →
+   sub-categories → a best-seller rail). Reaching a sub-category or product
+   meant dragging the pointer across almost the full panel width.
+2. **Diagonal re-trigger.** Categories switched on `mouseenter`, so any vertical
+   drift on that journey crossed a *sibling* row and swapped the whole panel out
+   from under the cursor.
+
+**New shape — a rail + a preview stage.** The rail (RTL start / right) is one
+**link per category**, each carrying its own **photo thumbnail** (Ahmed asked
+for the category photos to stay, restyled — they now live in the filters
+themselves). Hovering or focusing a row opens that category's preview in the
+stage to its left, **in place**; clicking the row shops the whole category in
+one hit, so the commonest goal needs no reach at all. The stage puts the
+**sub-category tiles nearest the rail** (shortest move) and a **branded photo
+hero** — the category image at full size with a `تسوّق الكل` CTA over a
+deep-green scrim — on the far side. Categories with no sub-categories (offers,
+drinks, spices, gifts) get a single wide hero instead of an empty tile grid.
+
+**The actual fix is hover-intent** (`initMegaMenu`). A category switch is delayed
+~110ms, and every fresh `mouseenter` cancels the pending one, so only the row the
+pointer **settles** on — the last entered before it dives into the stage — wins;
+rows merely brushed in transit never fire. The pending switch is deliberately
+**not** cancelled when the pointer leaves a row *toward the stage* (a fast dive
+would otherwise drop the very category being aimed at) — only when it leaves the
+whole panel. Verified with a synthetic rapid-cross test: brushing rows 2→3→4 at
+40ms intervals kept the panel on row 1, and it switched to 4 only once the
+pointer settled. Keyboard focus activates immediately; ↑/↓ move between rail
+rows; Esc closes; all motion is gated on `prefers-reduced-motion`.
+
+**Selected ≠ hover is preserved** (hard rule 8, reported four times on this very
+column). Selection is carried by the leading brand bar, ink, and a leaf-green
+**ring on the thumbnail** — persistent, structural marks; hover is only a faint
+transient wash. A row that is both shows both; a row that is merely selected
+never looks stuck under a pointer that has left.
+
+**Sub-tiles** are a two-up grid of quiet beige targets (≥52px). The `جميع X`
+tile spans both columns (it is the primary action and holds the longest string).
+Long names **wrap** rather than truncate — two lines fit inside the tile — so
+`مكسرات محمصة ومملحة` stays whole at the tightest supported width. The hero track
+narrows 300→260 at `lg` to keep the tiles breathing where the container is
+tightest; below `lg` the panel is hidden and phones keep the drawer, untouched.
+
+**What was dropped:** the four-item `الاكثر مبيعا` rail (see §2). It was the same
+four products under every category, incoherent in a per-category preview.
+
+**Image assignments** (all 8 categories now have one; `MAIN_MENU` in
+`scripts.js`):
+
+- Offers → `image-48.png` (a product spread). It is portrait with transparent
+  margins, so a centred square crop read as blank; `.mega-cat__thumb img` uses
+  `object-position: center 78%` to crop to its products. Square photos ignore
+  this, so it is a safe global rule, not a special case.
+- Nuts/coffee/dates/healthy/spices → their own webp shots; gifts → the gift-box
+  photo (moved off offers, where it belongs).
+- **المشروبات (drinks) reuses the coffee photo** — no dedicated hot-drinks image
+  exists, and it is a warm beverage either way. A distinct photo would stop the
+  rail showing two coffee thumbnails. Same absence-over-invention rule as the
+  branch phones; flagged for the client.
+- **Perf:** three category images are heavy PNGs (`image-48` 749KB,
+  `Healthy_Snaks2` 755KB, `gifts` 650KB). They load lazily on first panel open,
+  but resized thumbnails would cut ~2MB off that first open. Worth a pass.
+
+Lives in `megaPanelHTML()` + `initMegaMenu()` (`scripts.js`) and the `.mega-*`
+block in `styles.css`.
 
 ### Search field focus: a single darkened divider, not the offset ring
 

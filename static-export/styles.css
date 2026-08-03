@@ -1011,63 +1011,133 @@ fieldset {
   transform: rotate(180deg);
 }
 
-/* --- Mega-panel category rows -------------------------------------------
-   Selected and hovered were both #EDEFEB, so you could not tell which
-   category was actually chosen — and since hovering also selects, the column
-   read as stuck in a hover state. Hover is now a faint wash; selected is a
-   tinted surface with a brand bar on the leading edge. */
+/* --- Products mega-panel: rail + preview stage --------------------------
+   Redesign (2026-08-03). A rail of category LINKS (each with a photo) on the
+   right opens a preview stage on the left, in place. The old three-column reach
+   is gone, and initMegaMenu's hover-intent stops a sibling row from stealing
+   the panel while the pointer crosses toward the stage.
+
+   Selected vs hover MUST stay different (rule 8 — reported four times on this
+   very column). Selection carries a leading brand bar, ink, and a ring on the
+   thumbnail — persistent, structural marks. Hover is a faint, transient wash
+   meaning only "the pointer is here now". A row that is both shows both; a row
+   that is merely selected never looks stuck under a pointer that has left. */
 .mega-cat {
   position: relative;
   background: transparent;
   transition: background-color 0.18s var(--ease-out), color 0.18s var(--ease-out);
 }
-.mega-cat::before {
-  content: "";
-  position: absolute;
-  inset-inline-start: 0;
-  top: 50%;
-  width: 3px;
-  height: 0;
-  border-radius: 3px;
-  background: #4aa948;
-  transform: translateY(-50%);
-  transition: height 0.22s var(--ease-out);
-}
-/*
- * Round two. The selected category still carried a FILLED background
- * (#EDEFEB), and because pointing at a category also selects it, that fill
- * stayed behind after the pointer left — so the column always had one row
- * looking hovered, including the moment the panel opens and nothing has been
- * touched at all. Ahmed reported it twice.
- *
- * The fix is to stop expressing selection with a fill. A background wash now
- * means exactly one thing — "the pointer is here, right now" — and selection
- * is carried by the leading brand bar, the ink colour and the arrow, none of
- * which read as a hover. The two states are still told apart, and nothing is
- * painted when the pointer is elsewhere.
- */
+/* Hover and selection both speak the masthead's dark green (Ahmed): a faint
+   green wash, an ink shift, and a dark-green ring on the thumbnail. The old
+   leading marker bar (.mega-cat::before) and the brighter leaf-green ring were
+   removed at his request — no stroke on the start edge, and the accent is the
+   brand green, not a lighter one. */
 .mega-cat:hover {
-  background: rgba(6, 42, 28, 0.045);
+  background: rgba(24, 80, 57, 0.06);
 }
+.mega-cat:hover,
 .mega-cat[data-active="true"] {
-  background: transparent;
   color: #163300;
 }
-.mega-cat[data-active="true"]::before {
-  height: 58%;
+.mega-cat__thumb {
+  transition: box-shadow 0.2s var(--ease-out);
 }
+.mega-cat__thumb img {
+  /* Square photos fill the square thumb and ignore this; the one portrait
+     montage (العروض) has its products low, so a lower focus crops to them
+     instead of the transparent top that read as a blank tile. */
+  object-position: center 78%;
+  transition: transform 0.35s var(--ease-out);
+}
+.mega-cat:hover .mega-cat__thumb,
+.mega-cat[data-active="true"] .mega-cat__thumb {
+  box-shadow: 0 0 0 2px #185039;
+}
+.mega-cat:hover .mega-cat__thumb img,
+.mega-cat[data-active="true"] .mega-cat__thumb img {
+  transform: scale(1.06);
+}
+/* Opacity only: the glyph carries rtl:scale-flip (a Tailwind scale transform),
+   so a competing CSS translate here would fight it — the exact transform clash
+   this repo has been bitten by. A fade is enough to reveal it. */
 .mega-cat__arrow {
   opacity: 0;
-  transform: translateX(-4px);
-  transition: opacity 0.18s var(--ease-out), transform 0.18s var(--ease-out);
-}
-[dir="rtl"] .mega-cat__arrow {
-  transform: translateX(4px);
+  transition: opacity 0.18s var(--ease-out);
 }
 .mega-cat:hover .mega-cat__arrow,
 .mega-cat[data-active="true"] .mega-cat__arrow {
   opacity: 1;
-  transform: translateX(0);
+}
+
+/* The panel drops in on open; each incoming category settles up as it is
+   shown. Both animations run off display:none→block, so switching category
+   replays only the stage, not the whole panel. */
+@media (min-width: 1024px) {
+  #mega-panel {
+    animation: megaPanelIn 0.2s var(--ease-out);
+  }
+}
+@keyframes megaPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.mega-stage {
+  animation: megaStageIn 0.22s var(--ease-out);
+}
+@keyframes megaStageIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Sub-category tiles — big, quiet targets set right beside the rail so the
+   likeliest next click barely moves. Hover lifts and brightens; the "all" tile
+   carries the CTA ink so "shop everything here" stays one glance away. */
+.mega-tile {
+  background: #f6f2ea; /* beige-100 */
+  border: 1px solid transparent;
+  transition: background-color 0.18s var(--ease-out), border-color 0.18s var(--ease-out),
+    transform 0.18s var(--ease-out);
+}
+.mega-tile:hover {
+  background: #fff;
+  border-color: rgba(6, 42, 28, 0.12);
+  transform: translateY(-1px);
+}
+.mega-tile--all {
+  background: #edefeb; /* interaction-base */
+}
+.mega-tile--all:hover {
+  background: #e4e9e2;
+}
+.mega-tile__arrow {
+  opacity: 0;
+  transition: opacity 0.18s var(--ease-out);
+}
+.mega-tile:hover .mega-tile__arrow {
+  opacity: 1;
+}
+
+/* Photo hero: a deep-green gradient floor so white text keeps AA over any
+   photograph, however light. */
+.mega-hero__scrim {
+  background: linear-gradient(
+    to top,
+    rgba(6, 42, 28, 0.86) 0%,
+    rgba(6, 42, 28, 0.5) 28%,
+    rgba(6, 42, 28, 0) 60%
+  );
 }
 
 /* --- المنتجات (products/categories) pill in the masthead ------------------
@@ -1344,6 +1414,10 @@ fieldset {
   .mega-cat,
   .mega-cat::before,
   .mega-cat__arrow,
+  .mega-cat__thumb,
+  .mega-cat__thumb img,
+  .mega-tile,
+  .mega-tile__arrow,
   .btn-elevate,
   .product-card__frame,
   .product-card__media img,
@@ -1352,8 +1426,14 @@ fieldset {
   .link-sweep::after {
     transition: none;
   }
+  #mega-panel,
+  .mega-stage,
   [data-sticky-actions][data-stuck="true"] {
     animation: none;
+  }
+  .mega-cat__thumb img,
+  .mega-tile:hover {
+    transform: none;
   }
   .product-card:hover .product-card__frame,
   .btn-elevate:hover {
@@ -1473,6 +1553,15 @@ select.select-control {
 }
 [dir="ltr"] select.select-control {
   background-position: right 16px center;
+}
+
+/* Telephone inputs render `direction: ltr` under Chromium even inside an RTL
+   document, so the phone field's digits sat start-aligned to the LEFT while
+   every other field aligned right (Ahmed, 2026-08-03). Force rtl to match:
+   European digits are still an LTR run, so the number reads correctly — it
+   just aligns to the start (right) like the name and email fields beside it. */
+input[type="tel"] {
+  direction: rtl;
 }
 
 /* --- Radio cards and radio rows ------------------------------------------
@@ -2079,11 +2168,11 @@ input:checked + .radio-card-accent {
 
    NOTE the :where() is deliberately zero-specificity so components can opt
    out — but that also means Tailwind's `outline-none` (0,1,0) beats it, and
-   three controls carried outline-none with no focus style of their own: the
-   search box, the footer newsletter input and the listing sort select. Those
-   are re-armed below on selectors that outrank a single utility class. Any
-   new `outline-none` needs the same treatment or it is invisible to a
-   keyboard. */
+   two controls carry outline-none re-armed below on selectors that outrank a
+   single utility class: the search box and the listing sort select. Any new
+   `outline-none` needs the same treatment or it is invisible to a keyboard —
+   unless the control keeps a permanent visible border of its own and opts out
+   deliberately, as the footer newsletter field does (see its note below). */
 /* The ring is the brand's own ink (#163300), not the #4aa948 it used to be —
    a bright mid-green that appears NOWHERE in the Abu Auf palette (not in
    tailwind.config.js, not in ABUAUF-BRAND-STYLES.md) and was left over from
@@ -2140,13 +2229,27 @@ input:checked + .radio-card-accent {
   box-shadow: none;
 }
 
-/* Re-arm the newsletter field whose `outline-none` silently removed the ring.
-   Specificity 0,2,0 beats the utility; the ring goes on the row via
-   :focus-within and the inner input keeps its own outline suppressed. */
-.newsletter-row:focus-within {
-  outline: 2px solid #163300;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 2px #ffffff;
+/* The footer newsletter field shows only its own default border in the active
+   state — no focus ring, on either the form or the input inside it (Ahmed,
+   2026-08-03: the active state was drawing TWO rings, an outer one on the form
+   and an inner one hugging the placeholder text; both had to go).
+
+   The OUTER ring was `.newsletter-row:focus-within` (now deleted). The INNER
+   one is subtler: the input carries Tailwind's `outline-none`, but that is
+   `outline: 2px solid transparent` at specificity (0,1,0) and the global
+   :where(...):focus-visible ring below is ALSO (0,1,0) — the `:focus-visible`
+   pseudo-class carries the weight, `:where()` zeroes its own contents — so
+   they TIE and the global rule, emitted later, wins. On a real focus-visible
+   focus (a click or Tab, NOT a programmatic .focus()) the input therefore drew
+   the #163300 outline + white halo INSIDE the field's border. `outline-none`
+   silently lost that tie; this rule wins it back at (0,1,1) and kills the
+   box-shadow too, the same move [class*="focus:border-cta"] and the search
+   field make. The field keeps its permanent `border-2`, so it is never
+   unbordered — only the on-focus ring is dropped. */
+[data-newsletter] input:focus,
+[data-newsletter] input:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 /* The search field shows NO border or focus ring when activated (Ahmed,
@@ -2189,10 +2292,21 @@ input:checked + .radio-card-accent {
   opacity: 1;
 }
 
-select.select-sort:focus-visible {
-  outline: 2px solid #163300;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 2px #ffffff;
+/* The sort control shows no focus ring in its active state — the same call as
+   the newsletter and search fields (Ahmed, 2026-08-03: the ring read as a
+   border around the sort label). Covers both the native <select> (the mobile
+   control + no-JS fallback) and the desktop custom trigger button, so the
+   control is ring-free at every width. The specificity (0,3,0) clears the
+   global :where(...):focus-visible ring (0,1,0) that the trigger would
+   otherwise inherit. NOTE: this drops the keyboard focus indicator on the
+   sort control; the open dropdown and the hover wash carry the interaction,
+   matching the two fields above. */
+[data-fancy-select] select.select-sort:focus,
+[data-fancy-select] select.select-sort:focus-visible,
+[data-fancy-select] [data-fancy-trigger]:focus,
+[data-fancy-select] [data-fancy-trigger]:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

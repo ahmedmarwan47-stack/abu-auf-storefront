@@ -49,10 +49,15 @@ def check_assets(name, html):
     for src in set(re.findall(r'(?:src|srcset|href)="([^"]+)"', html)):
         if src.startswith(("http", "data:", "#", "mailto:", "tel:")):
             continue
-        if src.endswith((".html", ".css", ".js")):
+        # A URL fragment or query is not part of the file path — shop.html#slug
+        # is a link to shop.html (the nav uses exactly this form to open the
+        # listing pre-filtered by category). Resolve the file part alone, or the
+        # whole "file.html#slug" string is read as a filename that never exists.
+        path = src.split("#", 1)[0].split("?", 1)[0]
+        if not path or path.endswith((".html", ".css", ".js")):
             continue
-        if not os.path.exists(os.path.join(EXPORT, src)):
-            missing.append(src)
+        if not os.path.exists(os.path.join(EXPORT, path)):
+            missing.append(path)
     for m in sorted(missing):
         print(f"    ! missing asset: {m}")
     return len(missing)

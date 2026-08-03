@@ -45,7 +45,12 @@
       name: "العروض و الخصومات",
       url: "/shop/offers-promotions",
       icon: "images/abuauf/icons/icon-coupon.svg",
-      image: "images/abuauf/categories/gifts.png",
+      // A mixed spread (dates, nuts, dried fruit, coffee) reads as "offers across
+      // the store". offers.png replaces the old flattened montage (offers.webp)
+      // with a shot framed to match the rest of the set: cream textured ground,
+      // speckled bowls + wooden tray, leaf garnish, product margin on every side
+      // so it survives any crop.
+      image: "images/abuauf/categories/offers.png",
     },
     {
       // The seasonal Christmas-tree badge that used to sit here was removed at
@@ -94,10 +99,11 @@
       ],
     },
     // Distinct from القهوة above: sharing a slug made both tabs read as the
-    // active page at once.
-    { name: "المشروبات", url: "/shop/hot-drinks" },
-    { name: "البهارات والزيوت", url: "/shop/spices-kitchen-baking" },
-    { name: "الهدايا", url: "/shop/gifting-seasonal" },
+    // active page at once. No dedicated hot-drinks photo exists, so it borrows
+    // the coffee shot — a warm beverage either way. Flagged in DESIGN-NOTES.
+    { name: "المشروبات", url: "/shop/hot-drinks", image: "images/abuauf/categories/Drinks-1.webp" },
+    { name: "البهارات والزيوت", url: "/shop/spices-kitchen-baking", image: "images/abuauf/categories/Spices-Category-1.webp" },
+    { name: "الهدايا", url: "/shop/gifting-seasonal", image: "images/abuauf/categories/gifts.png" },
   ];
 
   /* Column order is RTL reading order: rightmost column first. */
@@ -862,8 +868,14 @@
               <span class="w-5 h-5 rtl:scale-flip">${ICON.arrowRight}</span>
             </a>
           </div>
-          <div class="bg-interaction-base shrink-0 rounded-xl w-[180px] overflow-hidden">
-            <img src="${item.image}" alt="${esc(t(item.name))}" class="w-full h-[160px] object-cover" loading="lazy" />
+          <!-- SQUARE frame, not 180x160. Every category shot is a square
+               600x600 bowl; a non-square box made object-cover slice the bowl
+               off (worst on the full-frame nuts/coffee shots). A square box
+               shows the whole photo — square source into a square box never
+               crops. self-center keeps it square if the sub-category column is
+               taller. -->
+          <div class="bg-interaction-base self-center shrink-0 rounded-xl overflow-hidden">
+            <img src="${item.image}" alt="${esc(t(item.name))}" class="block w-[190px] h-[190px] object-cover" loading="lazy" />
           </div>
         </div>
       </div>
@@ -871,98 +883,134 @@
   }
 
   /*
-   * Products mega-panel — matches the live site, which opens a full-width
-   * dropdown under المنتجات on desktop. This used to open the mobile side
-   * drawer at every width, which is a phone pattern on a 1440px window.
+   * Products mega-panel (desktop) — the full-width dropdown under المنتجات.
    *
-   * Three columns, RTL order: categories, the active category's
-   * sub-categories, then a product rail. Phones are untouched — the drawer is
-   * still the right control there.
+   * REDESIGN (Ahmed, 2026-08-03). The old three-column layout (categories →
+   * sub-categories → a product rail, RTL) forced the pointer to travel almost
+   * the full panel width to reach anything, and because categories switch on
+   * hover, any vertical drift on that journey crossed a sibling row and swapped
+   * the whole panel out from under the cursor — the "I have to travel to the
+   * left to choose" complaint.
+   *
+   * It is a RAIL + STAGE. The rail (RTL start / right) is one LINK per category,
+   * each carrying its own photo. Hovering a row opens that category's tiles in
+   * the stage beside it; clicking the row shops the whole category in one hit,
+   * so the commonest goal needs no reach at all. initMegaMenu adds the
+   * hover-intent that makes crossing rows safe.
+   *
+   * PART 2 (same day). Two changes that finish off the reach:
+   *   - The branded photo used to sit on the FAR side of the stage — the very
+   *     end of the reach. It is now a COMPACT PROMO card docked UNDER the rail,
+   *     so the stage is sub-category tiles alone, sitting immediately beside the
+   *     rail (shortest possible move).
+   *   - The visible card is capped (~980) and hugged to the start edge with
+   *     me-auto, instead of spanning the full 1536 container, so it opens BESIDE
+   *     the categories rather than stretching the tiles across the whole width.
+   *     The full-bleed #mega-panel stays (sticky nav untouched) but is now a
+   *     pointer-transparent positioning layer only.
+   * Phones are untouched — the drawer is still the right control there.
    */
-  /* `id` is each product's catalog.json id, so the tile can link to that
-     product's own generated page instead of the bare product.html every
-     product link on the site used to share. */
-  const MEGA_FEATURED = [
-    { id: 10576, name: "عرض سناكس بروتين بزبدة الفول السودانى 35 جم", price: 51, img: "images/abuauf/products/PR000085.webp" },
-    { id: 46238, name: "بسكويت محشو تمر - 12 قطعة", price: 65, img: "images/abuauf/products/image-600x600-1.png" },
-    { id: 10502, name: "بن أبو عوف تركي ساده فاتح 200 جم", price: 308, img: "images/abuauf/products/6223004765353-2-1.webp" },
-    { id: 1571, name: "عرض معمول سادة وقرفة وشيكولاتة", price: 250, img: "images/abuauf/products/330-thumb.webp" },
-  ];
-
-  /* No onerror handler. This previously carried onerror="this.style.display
-     ='none'", and the file it points at did not exist — so all 8 mega-panel
-     category bullets failed silently on every page and nothing surfaced it.
-     A missing asset should be visible, not swallowed. */
-  const LEAF = `<img src="images/abuauf/icons/icon-leaf.svg" alt="" class="w-5 h-5 shrink-0" />`;
-
   function megaPanelHTML() {
-    const cats = MAIN_MENU.map((item, i) => {
-      const slug = (item.url || "").replace("/shop/", "");
+    // RAIL — one link per category, carrying its photo. The row is a real <a>
+    // to the category page: hover/focus opens its preview (initMegaMenu), a
+    // click shops the whole category with no reach into the stage. Selected and
+    // hover stay DIFFERENT treatments (styles.css, rule 8): selected = brand
+    // bar + ink + a ring on the thumb; hover = a faint transient wash.
+    const rail = MAIN_MENU.map((item, i) => {
+      const thumb = item.image
+        ? `<img src="${item.image}" alt="" class="w-full h-full object-cover" loading="lazy" decoding="async" />`
+        : `<span class="grid place-items-center w-full h-full text-primary-300"><span class="w-5 h-5">${ICON.arrowRight}</span></span>`;
       return `<li>
-        <!-- Selected and hovered used to paint the identical #EDEFEB, so the
-             chosen category was indistinguishable from one under the cursor —
-             and because hovering also *activates* a category, the whole column
-             read as permanently hovered. .mega-cat in styles.css gives the
-             two states different treatments: hover is a faint wash, selected
-             is a tinted surface with a brand bar on the leading edge. -->
-        <button type="button" data-mega-cat="${i}" class="mega-cat flex items-center gap-3 px-4 rounded-xl w-full min-h-11 font-semibold text-[#062A1C] text-base text-start" data-active="${i === 0}">
-          ${LEAF}
-          <span class="flex-1 min-w-0 truncate">${esc(t(item.name))}</span>
-          <span class="mega-cat__arrow w-4 h-4 text-neutral-secondary rtl:scale-flip shrink-0">${ICON.arrowRight}</span>
-        </button>
+        <a href="${pageHref(item.url)}" data-mega-cat="${i}" data-active="${i === 0}"
+           class="mega-cat flex items-center gap-3 ps-2 pe-3 py-2 rounded-2xl w-full min-h-[60px] text-start">
+          <span class="mega-cat__thumb place-items-center grid bg-interaction-base rounded-xl w-12 h-12 overflow-hidden shrink-0">${thumb}</span>
+          <span class="flex-1 min-w-0 font-semibold text-[#062A1C] text-[15px] leading-tight truncate">${esc(t(item.name))}</span>
+          <span class="mega-cat__arrow place-items-center grid w-5 h-5 text-primary rtl:scale-flip shrink-0">${ICON.arrowRight}</span>
+        </a>
       </li>`;
     }).join("");
 
-    const subPanels = MAIN_MENU.map((item, i) => {
+    // PROMO — the resized category "widget", docked UNDER the sub-category tiles
+    // (Ahmed, 2026-08-03 part 2). It lives INSIDE each stage, so it shows and
+    // hides with the stage it belongs to — no separate toggling.
+    //
+    // The photo sits in a SQUARE frame, not a wide banner. Every category shot
+    // is a square 600×600 bowl; a wide banner cropped them to a thin strip and
+    // cut the bowl off — worst for the many-sub-category rows (nuts, coffee),
+    // whose tiles left the banner shortest. A square frame shows the whole shot
+    // for every category (square source into a square box never crops). Text and
+    // CTA sit beside it. It links to the whole category (same target as the rail
+    // row); the photo reinforces which category the pointer has settled on.
+    const promoCard = (item) => {
+      const name = esc(t(item.name));
+      return `
+        <a href="${pageHref(item.url)}" class="group/promo flex items-center gap-4 tile-lift mt-4 p-3 bg-interaction-base rounded-2xl overflow-hidden">
+          <span class="flex flex-col flex-1 gap-1.5 min-w-0 ps-3">
+            <span class="block font-bold text-[#062A1C] text-xl leading-tight">${name}</span>
+            <span class="text-neutral-secondary text-[13px] leading-snug">اكتشف تشكيلة ${name} كاملة من أبو عوف.</span>
+            <span class="inline-flex items-center gap-1.5 mt-1 font-semibold text-[#163300] text-sm">
+              تسوّق الكل
+              <span class="w-4 h-4 rtl:scale-flip">${ICON.arrowRight}</span>
+            </span>
+          </span>
+          <span class="block shrink-0 w-40 aspect-square rounded-xl overflow-hidden">
+            <img src="${item.image}" alt="" class="w-full h-full object-cover" loading="lazy" decoding="async" />
+          </span>
+        </a>`;
+    };
+
+    // STAGE — sub-category tiles, then the promo beneath them. With the photo
+    // gone from the far side, the tiles sit immediately beside the rail and the
+    // pointer no longer crosses a wide panel to reach them. Categories with no
+    // sub-categories get a single prominent "shop all" tile above the promo so
+    // the stage is never empty.
+    const stages = MAIN_MENU.map((item, i) => {
       const href = pageHref(item.url);
-      const kids = (item.children || [])
-        .map(
-          (c) => `<li>
-            <a href="${pageHref(c.url)}" class="flex items-center gap-3 px-4 rounded-xl min-h-11 text-[#062A1C] text-base transition-colors hover:bg-interaction-base">
-              <span class="flex-1 min-w-0 truncate">${esc(t(c.name))}</span>
-              <span class="w-4 h-4 text-neutral-secondary rtl:scale-flip shrink-0">${ICON.arrowRight}</span>
-            </a>
-          </li>`,
-        )
-        .join("");
-      return `<ul data-mega-sub="${i}" ${i === 0 ? "" : "hidden"} class="flex flex-col gap-1">
-        <li>
-          <a href="${href}" class="flex items-center gap-3 px-4 rounded-xl min-h-11 font-semibold text-cta text-base transition-colors hover:bg-interaction-base">
-            <span class="flex-1 min-w-0 truncate">جميع ${esc(t(item.name))}</span>
-            <span class="w-4 h-4 rtl:scale-flip shrink-0">${ICON.arrowRight}</span>
-          </a>
-        </li>
-        ${kids}
-      </ul>`;
+      const name = esc(t(item.name));
+      const kids = item.children || [];
+      const shown = i === 0 ? "" : "hidden";
+
+      // No sub-categories: the promo banner IS the whole stage — its "تسوّق
+      // الكل" is the shop-everything action, so no separate tile is needed.
+      if (!kids.length) {
+        return `<div data-mega-sub="${i}" ${shown} class="flex flex-col flex-1 mega-stage">
+          ${promoCard(item)}
+        </div>`;
+      }
+
+      // No truncate: two lines fit inside the 52px tile, so a long name wraps
+      // and stays whole rather than losing its tail.
+      const tiles = kids.map((c) => `<a href="${pageHref(c.url)}" class="mega-tile group/tile flex justify-between items-center gap-2 px-4 py-2 rounded-xl min-h-[52px] text-[#062A1C]">
+            <span class="min-w-0 leading-tight">${esc(t(c.name))}</span>
+            <span class="w-4 h-4 text-neutral-secondary rtl:scale-flip shrink-0 mega-tile__arrow">${ICON.arrowRight}</span>
+          </a>`).join("");
+
+      return `<div data-mega-sub="${i}" ${shown} class="flex flex-col flex-1 mega-stage">
+        <!-- No uppercase/tracking: both are Latin-centric and letter-spacing
+             breaks Arabic's cursive joining. -->
+        <h3 class="mb-3 font-bold text-neutral-secondary text-[13px]">تصفّح ${name}</h3>
+        <div class="content-start gap-2 grid grid-cols-2">${tiles}</div>
+        ${promoCard(item)}
+      </div>`;
     }).join("");
 
-    const featured = MEGA_FEATURED.map(
-      (p) => `<a href="product-${p.id}.html" class="flex items-center gap-3 bg-white hover:shadow-custom4 p-3 rounded-2xl transition-shadow">
-        <span class="flex-1 min-w-0">
-          <span class="block font-medium text-[#062A1C] text-sm leading-5 line-clamp-2">${esc(p.name)}</span>
-          <span class="inline-block bg-accent-yellow mt-1.5 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">EGP ${p.price}.00</span>
-        </span>
-        <img src="${p.img}" alt="" class="bg-interaction-base p-1 rounded-lg w-14 h-14 object-contain shrink-0" loading="lazy" />
-      </a>`,
-    ).join("");
-
     return `
-      <!-- start-0 end-0, NOT inset-inline-0: the latter is not a Tailwind
-           class and never has been, so it compiled to nothing and the panel
-           sat at its static position — 1126px inside a 1425px container,
-           ~300px short of the full-width panel this is meant to be. It looked
-           close enough in RTL to go unnoticed because the static position
-           already pins it to the right edge. -->
-      <div id="mega-panel" data-megamenu hidden class="hidden lg:block top-full start-0 end-0 z-40 absolute bg-white shadow-custom3 rounded-b-2xl">
-        <!-- 1536 to match the nav above it. The panel is now full-bleed (its
-             positioning parent lost its padding), so a 1600 cap would have
-             left the panel 64px wider than the nav it hangs off. -->
-        <div class="gap-6 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.15fr)] mx-auto p-6 max-w-[1536px]">
-          <ul class="flex flex-col gap-1 pe-6 border-neutral-divider border-e">${cats}</ul>
-          <div class="pe-6 border-neutral-divider border-e">${subPanels}</div>
-          <div class="flex flex-col gap-3">
-            <h3 class="font-bold text-[#062A1C] text-lg">${esc(t("الاكثر مبيعا"))}</h3>
-            <div class="flex flex-col gap-2 bg-interaction-base p-3 rounded-2xl">${featured}</div>
+      <!-- The panel stays full-bleed (start-0 end-0) so the sticky nav is
+           untouched, but it is now a POINTER-TRANSPARENT layer: the visible
+           card is capped and hugged to the start edge with me-auto, so it opens
+           beside the categories instead of spanning the whole 1536 container.
+           The cap is deliberately tight (800) — the tiles then sit right next to
+           the rail, so choosing a sub-category is a short move, not a trek to
+           the far edge.
+           start-0 end-0, NOT inset-inline-0: the latter is not a real Tailwind
+           class and compiled to nothing. -->
+      <div id="mega-panel" data-megamenu hidden class="hidden lg:block top-full start-0 end-0 z-40 absolute pointer-events-none">
+        <div class="mx-auto px-4 max-w-[1536px]">
+          <!-- Rail is a fixed 300; the stage (tiles + promo) takes the rest, up
+               to the 800 cap, so the tiles stay right beside the rail. -->
+          <div class="pointer-events-auto gap-6 grid grid-cols-[300px_minmax(0,1fr)] bg-white shadow-custom3 p-5 rounded-b-2xl max-w-[800px] me-auto">
+            <ul data-mega-rail class="flex flex-col gap-0.5 pe-5 border-neutral-divider border-e">${rail}</ul>
+            <div data-mega-stages class="relative flex flex-col min-w-0">${stages}</div>
           </div>
         </div>
       </div>`;
@@ -1299,7 +1347,7 @@
               <h2 class="font-bold text-[#062A1C] text-2xl md:text-3xl xl:text-4xl leading-tight xl:leading-[48px]">اشترك لتعرف على أجدد العروض والخصومات</h2>
               <p class="font-semibold text-primary text-sm xl:text-xl leading-relaxed">كن أول من يعرف كل ما هو جديد في ابو عوف</p>
             </div>
-            <form data-newsletter class="newsletter-row flex flex-row-reverse items-center gap-2 bg-transparent py-2 xl:py-[9px] pe-5 ps-2.5 border-2 border-neutral-outline rounded-2xl w-full">
+            <form data-newsletter class="flex flex-row-reverse items-center gap-2 bg-transparent py-2 xl:py-[9px] pe-5 ps-2.5 border-2 border-neutral-outline rounded-2xl w-full">
               <span class="text-neutral-secondary shrink-0" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="m3 7 8.4 5.6a1 1 0 0 0 1.2 0L21 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
               <input type="email" required aria-label="البريد الالكتروني"
                      placeholder="أدخل عنوان البريد الالكتروني"
@@ -2844,10 +2892,13 @@
      --------------------------------------------------------------- */
   /* Password reveal toggles on the auth forms. */
   function initPasswordReveals(scope) {
-    scope.querySelectorAll("[data-reveal]").forEach((btn) => {
+    // [data-pw-toggle], not [data-reveal]: the latter is the section entrance-
+    // animation hook (initReveal), and sharing it swept the eye buttons into
+    // that system — see the note in _auth.py password_field.
+    scope.querySelectorAll("[data-pw-toggle]").forEach((btn) => {
       const input = scope.getElementById
-        ? scope.getElementById(btn.getAttribute("data-reveal"))
-        : document.getElementById(btn.getAttribute("data-reveal"));
+        ? scope.getElementById(btn.getAttribute("data-pw-toggle"))
+        : document.getElementById(btn.getAttribute("data-pw-toggle"));
       if (!input) return;
       btn.addEventListener("click", () => {
         const shown = input.type === "text";
@@ -5328,39 +5379,67 @@
     const panel = document.getElementById("mega-panel");
     if (!toggle || !panel) return;
     const caret = toggle.querySelector("[data-megamenu-caret]");
+    const cats = [...panel.querySelectorAll("[data-mega-cat]")];
+    const subs = [...panel.querySelectorAll("[data-mega-sub]")];
 
-    /* The caret flip is a class, not an inline transform. As an inline style
-       it fought the `transition-transform` utility and snapped rather than
-       eased; `.chevron` in styles.css owns both the transition and the
-       rotation now, and every chevron on the site shares it. */
+    /* The caret flip is a class, not an inline transform, so it eases with the
+       shared `.chevron` rule rather than snapping. */
     const setOpen = (open) => {
       panel.hidden = !open;
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
       if (caret) caret.classList.toggle("chevron--open", open);
     };
 
+    const activate = (idx) => {
+      idx = String(idx);
+      cats.forEach((b) => (b.dataset.active = b.dataset.megaCat === idx));
+      subs.forEach((u) => (u.hidden = u.dataset.megaSub !== idx));
+    };
+
+    /* Hover-intent — the fix for "travelling to the left". Crossing sibling
+       rows to reach the stage must not swap the panel, so a switch is delayed
+       and each fresh mouseenter cancels the pending one: only the row the
+       pointer SETTLES on — the last entered before it dives into the stage —
+       actually wins. ~110ms is under the notice threshold for a deliberate
+       hover yet long enough to skip rows merely brushed in transit. The pending
+       switch is deliberately NOT cancelled when the pointer leaves a row toward
+       the stage (a fast dive would otherwise drop the category being aimed at)
+       — only when it leaves the whole panel. Keyboard focus activates at once. */
+    let timer = null;
+    const clearPending = () => {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    };
+    cats.forEach((b) => {
+      const idx = b.dataset.megaCat;
+      b.addEventListener("mouseenter", () => {
+        clearPending();
+        timer = setTimeout(() => activate(idx), 110);
+      });
+      b.addEventListener("focus", () => {
+        clearPending();
+        activate(idx);
+      });
+      // A row is a link: click navigates to the category — no activate() here.
+    });
+    panel.addEventListener("mouseleave", clearPending);
+
+    // Up/Down move between rail rows for parity with hover.
+    panel.addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+      const i = cats.indexOf(document.activeElement);
+      if (i === -1) return;
+      e.preventDefault();
+      const next = e.key === "ArrowDown" ? i + 1 : i - 1;
+      cats[(next + cats.length) % cats.length].focus();
+    });
+
     toggle.addEventListener("click", (e) => {
       e.stopPropagation();
       setOpen(panel.hidden);
     });
-
-    // Switching category is hover on the live site; keep click too so the
-    // panel is reachable without a pointer.
-    const activate = (idx) => {
-      panel.querySelectorAll("[data-mega-cat]").forEach((b) => {
-        b.dataset.active = b.dataset.megaCat === String(idx);
-      });
-      panel.querySelectorAll("[data-mega-sub]").forEach((u) => {
-        u.hidden = u.dataset.megaSub !== String(idx);
-      });
-    };
-    panel.querySelectorAll("[data-mega-cat]").forEach((b) => {
-      const idx = b.dataset.megaCat;
-      b.addEventListener("mouseenter", () => activate(idx));
-      b.addEventListener("focus", () => activate(idx));
-      b.addEventListener("click", () => activate(idx));
-    });
-
     document.addEventListener("click", (e) => {
       if (!panel.hidden && !panel.contains(e.target) && !toggle.contains(e.target))
         setOpen(false);
@@ -5891,7 +5970,7 @@
           <span>${esc(a.line1)}</span><span>${esc(a.line2)}</span>
         </div>
         ${a.main ? `<span class="bg-interaction-base px-3 py-1 rounded-full font-semibold text-primary text-xs self-start">${esc(t("العنوان الرئيسي"))}</span>` : ""}
-        <div class="flex gap-2">
+        <div class="flex gap-2 mt-auto">
           <button type="button" data-address-edit class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">${esc(t("تعديل"))}</button>
           <button type="button" data-address-remove class="px-4 py-1.5 font-semibold text-accent-error text-xs">${esc(t("حذف"))}</button>
         </div>

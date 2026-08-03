@@ -17,7 +17,7 @@ SORT_OPTIONS = [
 
 
 def listing(title_text, description, heading, trail, chips, products,
-            page_id, path, intro=None, active_chip=None):
+            page_id, path, intro=None, active_chip=None, cat_of=None):
     # A chip may be (label, href) or (label, href, filter_slug). Only the
     # three-item form becomes a live filter; the two-item form stays a link,
     # which is what the sub-category chips are until the client's taxonomy
@@ -71,7 +71,7 @@ def listing(title_text, description, heading, trail, chips, products,
           <p data-empty-state hidden class="py-10 text-neutral-secondary text-base text-center">
             لا توجد منتجات في هذا القسم حالياً.
           </p>
-          {product_grid(products)}
+          {product_grid(products, cat_of=cat_of)}
           <div class="flex justify-center mt-12">
             <button type="button" class="hover:bg-interaction-base px-10 py-3 border border-cta rounded-full font-semibold text-cta text-base transition-colors">
               عرض المزيد

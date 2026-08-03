@@ -241,30 +241,10 @@
               <span class="switch shrink-0" aria-hidden="true"><span class="switch__knob"></span></span>
             </label>
 
-              <div data-promo class="flex flex-col gap-2">
-                <button type="button" data-promo-open class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
-                  هل لديك برومو كود؟
-                </button>
-                <div data-promo-box hidden class="flex flex-col gap-2">
-                  <div class="flex items-center gap-2">
-                    <input type="text" data-promo-input inputmode="latin" autocomplete="off"
-                           placeholder="أدخل كود الخصم"
-                           class="flex-1 bg-white px-3 py-2 border border-neutral-divider focus:border-cta rounded-xl outline-none min-w-0 text-[#062A1C] text-sm transition-colors latin" />
-                    <button type="button" data-promo-apply
-                            class="bg-cta hover:bg-cta-hover px-4 rounded-full min-h-11 font-semibold text-white text-sm whitespace-nowrap transition-colors">تطبيق</button>
-                  </div>
-                  <p data-promo-msg hidden class="text-xs leading-5"></p>
-                </div>
-                <!-- Applied state (Ahmed, 2026-08-02): the code as a removable
-                     chip. renderCart -> syncPromoUI swaps between the trigger,
-                     the input box and this on every change, so it is right on
-                     load, after apply, and across cart -> checkout. -->
-                <div data-promo-applied hidden class="flex justify-between items-center gap-2 bg-[#E9F3E6] px-3 py-2 rounded-xl">
-                  <span class="flex items-center gap-2 min-w-0 text-[#163300] text-sm">
-                    <img src="images/abuauf/icons/discount-tag-3d.png" alt="" class="w-auto h-8 shrink-0" />
-                    <span class="truncate">تم تطبيق <span class="font-bold latin" data-promo-applied-code></span></span>
-                  </span>
-                  <button type="button" data-promo-remove class="shrink-0 font-semibold text-accent-error text-xs underline">إلغاء</button>
+              <div data-promo class="contents">
+                <div data-promo-applied hidden class="flex items-center gap-2 bg-[#E9F3E6] px-3 py-2 rounded-xl">
+                  <img src="images/abuauf/icons/discount-tag-3d.png" alt="" class="w-auto h-8 shrink-0" />
+                  <span class="min-w-0 text-[#163300] text-sm truncate">تم تطبيق <span class="font-bold latin" data-promo-applied-code></span></span>
                 </div>
               </div>
             <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">

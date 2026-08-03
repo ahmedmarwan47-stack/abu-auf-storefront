@@ -330,10 +330,18 @@ def page_header(heading, trail=None):
       </section>"""
 
 
-def product_grid(products, cols="grid-cols-2 md:grid-cols-3 xl:grid-cols-4", attrs=""):
+def product_grid(products, cols="grid-cols-2 md:grid-cols-3 xl:grid-cols-4", attrs="",
+                 cat_of=None):
     """`attrs` lets a caller tag the grid (e.g. the favourites page marks its
-    own with data-favs-grid) without duplicating the card markup."""
-    cards = "".join(product_card(p, slide=False) for p in products)
+    own with data-favs-grid) without duplicating the card markup.
+
+    `cat_of(product) -> slug` overrides each card's `data-cat` — used by a
+    category page to filter on a DERIVED sub-category instead of the top-level
+    categorySlug (see shop_category.py)."""
+    cards = "".join(
+        product_card(p, slide=False, cat=(cat_of(p) if cat_of else None))
+        for p in products
+    )
     extra = (" " + attrs) if attrs else ""
     return f'<div data-product-grid{extra} class="gap-4 xl:gap-6 grid {cols}">{cards}\n          </div>'
 
@@ -1095,7 +1103,7 @@ def gift_toggle():
               </div>"""
 
 
-def checkout_summary(lines_html, subtotal, total, delivery_fee):
+def checkout_summary(lines_html, subtotal, total, delivery_fee, promo_readonly=False):
     """
     The order summary shared by checkout and payment.
 
@@ -1108,6 +1116,11 @@ def checkout_summary(lines_html, subtotal, total, delivery_fee):
 
     The build-time figures are a pre-boot placeholder only: `data-cart-static`
     rows are dropped and every total is overwritten on the first `cart:change`.
+
+    `promo_readonly=True` is the payment step (Ahmed, 2026-08-03): a code is
+    entered earlier, so payment shows an applied code as a read-only chip with
+    no way to edit or remove it, and shows nothing when none was applied. See
+    promo_field(readonly=...).
     """
     return f"""
           <aside class="lg:top-4 lg:sticky flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px] order-2 lg:order-none min-w-0">
@@ -1120,7 +1133,7 @@ def checkout_summary(lines_html, subtotal, total, delivery_fee):
             <div class="flex flex-col gap-4" data-cart-lines>{lines_html}
             </div>
 {wallet_toggle()}
-{promo_field()}
+{promo_field(readonly=promo_readonly)}
             <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
               <div class="flex justify-between">
                 <span class="text-neutral-secondary">مصاريف التوصيل</span>
@@ -1191,24 +1204,36 @@ def checkout_steps(current):
 CHECKOUT_STEPS = ["سلة التسوق", "بيانات العميل", "طريقة الدفع", "تأكيد عملية الشراء"]
 
 
-def promo_field():
+def promo_field(readonly=False):
     """
     Promo code — the control that replaced a dead link.
 
-    `هل لديك برومو كود؟` was a <button> with no handler on both the cart and
-    checkout: it looked live and did nothing, which is the exact failure class
-    this project has shipped four times already (HANDOFF §4 items 10, 11, 14,
-    15). It now opens a field and applies a real discount through renderCart.
-
-    NOT a <form>. On checkout this sits inside the place-order form, and a
-    nested form is invalid HTML that browsers silently un-nest — the Apply
-    button would submit the order. A button plus a keydown handler for Enter
-    gives the same feel with none of that.
-
-    The only code is DISCOUNT10, because that is the one the site's own
-    announcement bar advertises. Inventing a second would be inventing an
-    offer on the client's behalf.
+    `readonly=True` is the payment step (Ahmed, 2026-08-03): a code is entered
+    earlier, so payment must SHOW an applied code but never let you edit or
+    remove it — and show nothing at all when none was applied. That is exactly
+    the `data-promo-applied` chip with no trigger, no input and no إلغاء button.
+    syncPromoUI already drives it (it only touches whichever of open/box/applied
+    it finds), so the read-only wrapper just carries the chip. `contents` on the
+    wrapper keeps it out of the summary's flex flow, so the whole block
+    collapses to zero height — no stray gap — until a code is actually applied.
     """
+    if readonly:
+        return f"""
+              <div data-promo class="contents">
+                <div data-promo-applied hidden class="flex items-center gap-2 bg-[#E9F3E6] px-3 py-2 rounded-xl">
+                  <img src="images/abuauf/icons/discount-tag-3d.png" alt="" class="w-auto h-8 shrink-0" />
+                  <span class="min-w-0 text-[#163300] text-sm truncate">تم تطبيق <span class="font-bold latin" data-promo-applied-code></span></span>
+                </div>
+              </div>"""
+
+    # Full (editable) promo control below — used by the cart and checkout.
+    # `هل لديك برومو كود؟` was once a dead <button>; it now opens a field and
+    # applies a real discount through renderCart. NOT a <form>: on checkout it
+    # sits inside the place-order form, where a nested form is invalid HTML that
+    # browsers un-nest (the Apply button would submit the order) — a button plus
+    # an Enter keydown handler gives the same feel. The only code is DISCOUNT10,
+    # the one the site's announcement bar advertises; inventing a second would
+    # invent an offer on the client's behalf.
     return f"""
               <div data-promo class="flex flex-col gap-2">
                 <button type="button" data-promo-open class="flex items-center gap-2 font-semibold text-cta text-sm underline self-start">
@@ -1495,11 +1520,15 @@ def bundle_item(p, checked=True):
 # --------------------------------------------------------------------------
 # Commerce
 # --------------------------------------------------------------------------
-def product_card(p, slide=True):
+def product_card(p, slide=True, cat=None):
     """
     Product card — Figma 'Stack/ Web' (763:35266).
     Used by home rails, shop grid, category pages, cart upsells and the
     product page's related rail. Change it here, rebuild, it changes everywhere.
+
+    `cat` overrides the card's `data-cat` (the listing filter key). Defaults to
+    the product's own categorySlug; a category page passes a derived
+    sub-category so its chips can filter within one category.
     """
     on_sale = p.get("sale") and p["sale"] < p["regular"]
     old = (f'<span class="text-neutral-secondary text-sm line-through latin">EGP {money(p["regular"])}</span>'
@@ -1511,7 +1540,8 @@ def product_card(p, slide=True):
     # data-product marks this as something the cart can read; the cart store
     # reads name/price/image straight off the card, so adding to the cart needs
     # no lookup table and still works from file://.
-    keys = (f'data-product data-cat="{e(p.get("categorySlug", ""))}" '
+    cat_slug = cat if cat is not None else p.get("categorySlug", "")
+    keys = (f'data-product data-cat="{e(cat_slug)}" '
             f'data-price="{p.get("sale") or p.get("price") or 0}" '
             f'data-id="{p.get("id", 0)}" '
             f'data-name="{e(title(p))}" '

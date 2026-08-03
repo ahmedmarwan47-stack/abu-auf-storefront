@@ -20,11 +20,18 @@ SLUG = "index.html"
 # tailored for phones (Ahmed, 2026-08-02) — the client's own artwork, matched by
 # product. The mobile files are 3:4 so they fill the phone frame edge to edge
 # without the desktop banner being letterboxed into a thin strip.
+#
+# Each hero links to ITS OWN category, not the all-products page (Ahmed,
+# 2026-08-03): coffee to its dedicated worked-example page, the rest to the
+# listing pre-filtered by category hash — the same routing the nav uses
+# (CATEGORY_PAGE / shop.html#<slug> in scripts.js). Pistachio is a nut, so it
+# shares the nuts landing with the mixed-nuts banner. HERO is
+# (desktop_img, mobile_img, alt, href).
 HERO = [
-    ("hero-coffee.webp", "hero-coffee-mob.webp", "قهوة طازجة تُطحن لك"),
-    ("hero-pistachio.webp", "hero-pistachio-mob.webp", "فستق أمريكي محمص ومملح"),
-    ("hero-dates.webp", "hero-dates-mob.webp", "تمور صحراوية فاخرة وطبيعية"),
-    ("hero-nuts-mix.webp", "hero-nuts-mix-mob.webp", "مكسرات مشكلة فاخرة وطبيعية"),
+    ("hero-coffee.webp", "hero-coffee-mob.webp", "قهوة طازجة تُطحن لك", "shop-category.html"),
+    ("hero-pistachio.webp", "hero-pistachio-mob.webp", "فستق أمريكي محمص ومملح", "shop.html#nuts-crackers"),
+    ("hero-dates.webp", "hero-dates-mob.webp", "تمور صحراوية فاخرة وطبيعية", "shop.html#dates-dried-fruits"),
+    ("hero-nuts-mix.webp", "hero-nuts-mix-mob.webp", "مكسرات مشكلة فاخرة وطبيعية", "shop.html#nuts-crackers"),
 ]
 
 CATEGORY_ORDER = [
@@ -82,7 +89,7 @@ def build():
     hero_slides = "".join(
         f"""
               <div class="carousel-slide w-full">
-                <a href="shop.html" class="block relative rounded-[20px] w-full overflow-hidden">
+                <a href="{href}" class="block relative rounded-[20px] w-full overflow-hidden">
                   <picture>
                     <source media="(min-width: 768px)" srcset="images/abuauf/site/{d}" />
                     <img src="images/abuauf/site/{m}" alt="{e(alt)}"
@@ -90,7 +97,7 @@ def build():
                   </picture>
                 </a>
               </div>"""
-        for i, (d, m, alt) in enumerate(HERO)
+        for i, (d, m, alt, href) in enumerate(HERO)
     )
 
     tiles = "".join(

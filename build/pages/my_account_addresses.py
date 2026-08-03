@@ -21,7 +21,12 @@ def build():
               <span>{line1}</span><span>{line2}</span>
             </div>
             {'<span class="bg-interaction-base px-3 py-1 rounded-full font-semibold text-primary text-xs self-start">العنوان الرئيسي</span>' if default else ''}
-            <div class="flex gap-2">
+            <!-- mt-auto pins the actions to the card bottom so تعديل/حذف line up
+                 across cards: without it, a card that lacks the main-address
+                 badge floats its actions up under the address while the badged
+                 card's sit a row lower. Grid rows already stretch to equal
+                 height, so the shorter card just distributes the slack above. -->
+            <div class="flex gap-2 mt-auto">
               <button type="button" class="hover:bg-interaction-base px-4 py-1.5 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">تعديل</button>
               <button type="button" class="px-4 py-1.5 font-semibold text-accent-error text-xs">حذف</button>
             </div>''')
