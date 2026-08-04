@@ -1324,15 +1324,6 @@ fieldset {
 .product-card__media img {
   transition: transform 0.35s var(--ease-out);
 }
-.product-card__peek {
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
-}
-.product-card:focus-within .product-card__peek {
-  opacity: 1;
-  transform: translateY(0);
-}
 @media (hover: hover) and (pointer: fine) {
   .product-card:hover .product-card__frame {
     transform: translateY(-4px);
@@ -1340,10 +1331,6 @@ fieldset {
   }
   .product-card:hover .product-card__media img {
     transform: scale(1.05);
-  }
-  .product-card:hover .product-card__peek {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -1421,7 +1408,6 @@ fieldset {
   .btn-elevate,
   .product-card__frame,
   .product-card__media img,
-  .product-card__peek,
   .tile-lift,
   .link-sweep::after {
     transition: none;
@@ -1625,8 +1611,12 @@ input:checked + .radio-card-accent {
    colour; the on-state is solid #163300, the same "active" ink the rest of the
    site uses, and NOT a green — next to a green card and a green balance, a
    green switch would stop reading as state and start reading as decoration. */
+/* Minimised to a single row (Ahmed, 2026-08-04): title + balance on one line.
+   min-height, not a fixed height, so the row can grow if the balance wraps
+   under the title on a very narrow card instead of clipping. The idle/used
+   captions still share one grid cell, so a toggle never changes the height. */
 .wallet-toggle {
-  height: 72px;
+  min-height: 56px;
 }
 
 /* --- The switch, shared -----------------------------------------------------
@@ -2349,5 +2339,338 @@ input:checked + .radio-card-accent {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+}
+
+/* ===============================================================
+   Membership tier badge — an actively shining metallic pill
+   (Ahmed, 2026-08-04). Silver / gold / platinum; a gloss sweeps
+   across on a loop, and each metal keeps a legible AA ink.
+   =============================================================== */
+.tier-badge {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35), 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+.tier-badge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.7) 48%,
+    rgba(255, 255, 255, 0.15) 56%,
+    transparent 70%
+  );
+  transform: translateX(-130%);
+  animation: tierShine 3.6s var(--ease-out) infinite;
+}
+[dir="rtl"] .tier-badge::after {
+  animation-name: tierShineRtl;
+}
+@keyframes tierShine {
+  0% { transform: translateX(-130%); }
+  55%, 100% { transform: translateX(130%); }
+}
+@keyframes tierShineRtl {
+  0% { transform: translateX(130%); }
+  55%, 100% { transform: translateX(-130%); }
+}
+.tier-badge--gold {
+  background: linear-gradient(135deg, #f6e6a6 0%, #edc843 45%, #d4a72c 100%);
+  color: #4a3708;
+}
+.tier-badge--silver {
+  background: linear-gradient(135deg, #eef1f5 0%, #cbd2db 48%, #a7b0bd 100%);
+  color: #343a44;
+}
+.tier-badge--platinum {
+  background: linear-gradient(135deg, #f7f9fc 0%, #dfe6ef 45%, #c3cdda 100%);
+  color: #2b3442;
+  box-shadow: inset 0 0 0 1px rgba(120, 140, 170, 0.4), 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* Wallet balance "pop" — a soft bounce while the number counts up after a
+   voucher activation or points redemption (Ahmed, 2026-08-04). inline-block so
+   the scale takes; skipped under reduced motion (JS also bails). */
+.wallet-pop {
+  display: inline-block;
+  animation: walletPop 0.6s var(--ease-out);
+  transform-origin: center;
+}
+@keyframes walletPop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.18); }
+  60% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wallet-pop { animation: none; }
+}
+
+/* Membership tier cards (points page). The current tier is inked + ringed; the
+   rest muted. `data-current` is toggled by scripts.js as the balance changes,
+   so a selected state never reads like a hover (CLAUDE.md). */
+.tier-card {
+  background: #fff;
+  border-color: #e5e7e0;
+  color: #6b6b6b;
+}
+.tier-card[data-current] {
+  background: #edefeb;
+  border-color: #163300;
+  box-shadow: inset 0 0 0 1px #163300;
+  color: #062a1c;
+}
+.tier-card__dot {
+  background: #cfd3cb;
+}
+.tier-card[data-current] .tier-card__dot {
+  background: #163300;
+}
+
+/* ===============================================================
+   Order tracker — animated stepper (Ahmed, 2026-08-04). Each step
+   carries a visual; the connector up to the reached step fills, the
+   one entering the current step flows, and the current bubble pulses
+   and bobs so the status reads as live.
+   =============================================================== */
+.order-track {
+  display: flex;
+  align-items: flex-start;
+}
+.track-step {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+/* Connector between two bubbles. Three SEPARATE segments (one per gap, not one
+   line threading through the circles) with a clear gap at each end so the line
+   never touches a circle (Ahmed, 2026-08-04): it spans center→center then insets
+   40px each side (circle radius 34 + ~6 breathing room). `top` centres it on the
+   68px bubble; taller (6px) so the flow/shimmer reads. */
+.track-step__conn {
+  position: absolute;
+  top: 31px;
+  inset-inline-start: calc(-50% + 40px);
+  width: calc(100% - 80px);
+  height: 6px;
+  border-radius: 9999px;
+  background: #e5e7e0;
+  z-index: 0;
+}
+.track-step__conn.is-filled {
+  background: #163300;
+}
+.track-step__conn.is-active {
+  background: linear-gradient(90deg, #163300 0%, #163300 38%, #4c9a2a 50%, #163300 62%, #163300 100%);
+  background-size: 250% 100%;
+  animation: trackFlow 1.4s linear infinite;
+}
+.track-step__art {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 9999px;
+  line-height: 1;
+  background: #f1f1ee;
+  box-shadow: inset 0 0 0 2px #e5e7e0;
+  transition: box-shadow 0.2s var(--ease-out), background 0.2s var(--ease-out);
+}
+.track-step.is-todo .track-step__art {
+  filter: grayscale(0.5);
+  opacity: 0.7;
+}
+.track-step.is-done .track-step__art {
+  background: #e9f3e6;
+  box-shadow: inset 0 0 0 2px #bfe0b8;
+}
+.track-step.is-now .track-step__art {
+  background: #e9f3e6;
+  box-shadow: inset 0 0 0 2px #bfe0b8;
+}
+/* Spinning loader ring around the CURRENT step (Ahmed, 2026-08-04). A masked
+   conic gradient is the arc — only the outer band shows, so the bubble face
+   stays clean — and it rotates to read as "in progress / loading". */
+.track-step.is-now .track-step__art::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  background: conic-gradient(from 0deg, rgba(22, 51, 0, 0) 0deg 200deg, #4c9a2a 320deg, #163300 360deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+  animation: trackSpin 0.9s linear infinite;
+}
+/* The 3D icon sways gently left↔right inside the spinner so the live step
+   feels alive without bobbing the whole bubble. */
+.track-step.is-now .track-step__art img {
+  animation: trackSway 1.9s ease-in-out infinite;
+}
+.track-step__check {
+  position: absolute;
+  inset-block-start: -2px;
+  inset-inline-end: -2px;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  padding: 3px;
+  border-radius: 9999px;
+  background: #163300;
+  color: #fff;
+  box-shadow: 0 0 0 2px #fff;
+}
+.track-step__label {
+  font-size: 11px;
+  line-height: 1.3;
+  color: #062a1c;
+}
+.track-step.is-todo .track-step__label {
+  color: #6b6b6b;
+}
+.track-step.is-now .track-step__label {
+  font-weight: 700;
+}
+/* Optional per-step subtitle (thank-you page). Hidden on mobile so a 4-step
+   horizontal row does not cramp; shown from 640px up. */
+.track-step__sub {
+  display: none;
+  max-width: 16ch;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #6b6b6b;
+}
+@media (min-width: 640px) {
+  .track-step__sub {
+    display: block;
+  }
+}
+@keyframes trackFlow {
+  0% { background-position: 150% 0; }
+  100% { background-position: -150% 0; }
+}
+@keyframes trackSpin {
+  to { transform: rotate(360deg); }
+}
+@keyframes trackSway {
+  0%, 100% { transform: translateX(-2.5px); }
+  50% { transform: translateX(2.5px); }
+}
+
+/* Small chevrons that flow along the ACTIVE connector toward the current step,
+   fading in and out (Ahmed, 2026-08-04). They live inside the connector, which
+   in RTL runs from the previous step (start/right) to the current one, so the
+   travel is toward the inline END. Three of them, staggered, read as motion
+   heading into the spinner. */
+.track-conn__arrows {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  pointer-events: none;
+}
+.track-conn__arrows b {
+  width: 5px;
+  height: 5px;
+  /* physical left+bottom borders rotated 45° → a chevron pointing LEFT, i.e.
+     toward the current step (which sits to the connector's left in RTL). */
+  border-left: 2px solid #eafbe3;
+  border-bottom: 2px solid #eafbe3;
+  transform: rotate(45deg);
+  opacity: 0;
+  animation: trackArrow 1.4s ease-in-out infinite;
+}
+.track-conn__arrows b:nth-child(2) { animation-delay: 0.18s; }
+.track-conn__arrows b:nth-child(3) { animation-delay: 0.36s; }
+@keyframes trackArrow {
+  0% { opacity: 0; transform: translateX(5px) rotate(45deg); }
+  45% { opacity: 0.95; }
+  100% { opacity: 0; transform: translateX(-6px) rotate(45deg); }
+}
+/* Worst case is a plain, correct stepper: kill the spinner, sway, shimmer and
+   arrows, and leave the current step's ring static. */
+@media (prefers-reduced-motion: reduce) {
+  .track-step.is-now .track-step__art::before,
+  .track-step.is-now .track-step__art img,
+  .track-step__conn.is-active,
+  .track-conn__arrows b {
+    animation: none;
+  }
+  .track-conn__arrows { display: none; }
+}
+
+/* Live status dot — a pulsing ripple for an in-progress order. currentColor,
+   so it takes the badge's own ink. */
+.status-live-dot {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.status-live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: statusPing 1.6s var(--ease-out) infinite;
+}
+@keyframes statusPing {
+  0% { transform: scale(1); opacity: 0.55; }
+  70%, 100% { transform: scale(2.6); opacity: 0; }
+}
+
+/* Filled order note reads as editable: hover arms the border + a faint wash,
+   so a shopper knows clicking it reopens the editor (Ahmed, 2026-08-04). */
+.note-filled {
+  cursor: pointer;
+}
+.note-filled:hover {
+  border-color: #163300;
+  background: #fafcf9;
+}
+
+/* OTP boxes — an EMPTY box reads inactive (greyed); focus or a filled digit
+   turns it active (white + brand border). `.is-filled` is toggled by the OTP
+   handler in scripts.js (more reliable than :placeholder-shown with the demo
+   autofill, which sets values programmatically). */
+.otp-box {
+  background: #f4f5f2;
+  border: 2px solid #e5e7e0;
+  outline: none;
+  transition: background 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
+}
+.otp-box:focus,
+.otp-box.is-filled {
+  background: #fff;
+  border-color: #163300;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tier-badge::after,
+  .track-step__conn.is-active,
+  .track-step.is-now .track-step__art,
+  .status-live-dot::after {
+    animation: none;
+  }
+  .track-step.is-now .track-step__art {
+    transform: none;
+    box-shadow: inset 0 0 0 2px #163300;
   }
 }

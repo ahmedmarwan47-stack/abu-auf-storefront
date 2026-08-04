@@ -1,5 +1,5 @@
 """Addresses — Figma 'Account > Addresses' (312:16654)."""
-from _account import account_page, card
+from _account import account_page, account_title, card
 
 SLUG = "my-account-addresses.html"
 
@@ -34,7 +34,7 @@ def build():
 
     content = f"""
             <div class="flex flex-wrap justify-between items-center gap-3">
-              <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">عناويني</h1>
+              {account_title("my-account-addresses.html", "عناويني")}
               <button type="button" data-address-add class="bg-cta hover:bg-cta-hover px-6 py-2.5 rounded-full font-semibold text-white text-sm transition-colors">اضف عنوان</button>
             </div>
             <div class="gap-6 grid md:grid-cols-2" data-addresses-grid>{cards}</div>"""

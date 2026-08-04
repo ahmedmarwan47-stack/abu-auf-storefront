@@ -14,7 +14,13 @@
       "Bash(git pull *)",
       "Bash(lsof -i :8000 -sTCP:LISTEN -t)",
       "Bash(git add *)",
-      "Bash(git commit -q -m ' *)"
+      "Bash(git commit -q -m ' *)",
+      "Bash(wc -l \"/Users/ahmed/Downloads/orderbase-landing \\(1\\).html\")",
+      "Bash(awk '{print length, NR}' \"/Users/ahmed/Downloads/orderbase-landing \\(1\\).html\")",
+      "Bash(awk 'NR==733{print substr\\($0,1,300\\)}' \"/Users/ahmed/Downloads/orderbase-landing \\(1\\).html\")",
+      "Bash(awk 'NR==615{print substr\\($0,1,300\\)}' \"/Users/ahmed/Downloads/orderbase-landing \\(1\\).html\")",
+      "Bash(python3 -)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000)"
     ]
   }
 }

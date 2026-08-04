@@ -1,4 +1,5 @@
 """Order confirmation — Figma 'Thanks' (268:11025)."""
+from _account import order_tracker
 from catalog import e, in_category, money, rail_products
 from components import carousel, page, product_card, section_heading
 
@@ -7,11 +8,16 @@ SLUG = "thank-you.html"
 DELIVERY_FEE = 30.0
 ORDER_NO = "304585"
 
-STEPS = [
-    ("تم الطلب", "بأنتظار تأكيد متجر", True),
-    ("جاري تجهيز الطلب", "سيتم تجهيز الطلب قريباً", True),
-    ("جاري تجهيز الطلب", "طلبك في الطريق إليك", False),
-    ("تم تسليم الطلب", "سعدنا بخدمتك ونود أن تراك مرة أخرى", False),
+# The shared animated tracker (Ahmed, 2026-08-04) — unified with the dashboard
+# and order drawer. Right after placing an order the current step is "جاري
+# التحضير" (index 1: order placed, now being prepared); these subtitles ride
+# under each step (shown from sm up).
+TRACKER_STEP = 1
+TRACKER_SUBS = [
+    "بأنتظار تأكيد المتجر",
+    "سيتم تجهيز الطلب قريباً",
+    "طلبك في الطريق إليك",
+    "سعدنا بخدمتك ونود أن تراك مرة أخرى",
 ]
 
 CUSTOMER = [
@@ -47,15 +53,6 @@ def build():
     total = subtotal + DELIVERY_FEE
     more = rail_products("Nuts | Seeds & Crackers", "Snacks", limit=10)
 
-    steps_html = "".join(f"""
-              <li class="flex flex-col flex-1 items-center gap-2 text-center">
-                <span class="place-items-center grid rounded-full size-8 {'bg-primary text-white' if done else 'bg-interaction-base text-neutral-secondary'}">
-                  {CHECK if done else f'<span class="font-semibold text-sm latin">{i + 1}</span>'}
-                </span>
-                <span class="font-semibold text-[#062A1C] text-sm">{e(heading)}</span>
-                <span class="max-w-[160px] text-neutral-secondary text-xs leading-5">{e(sub)}</span>
-              </li>""" for i, (heading, sub, done) in enumerate(STEPS))
-
     lines = "".join(f"""
                 <div class="flex items-center gap-3 py-3 border-neutral-divider border-b last:border-0">
                   <img src="{e(p['image'])}" alt="" class="bg-interaction-base p-1.5 rounded-lg w-16 h-16 object-contain shrink-0" loading="lazy" />
@@ -84,10 +81,13 @@ def build():
       </section>
 
       <!-- ========================== ORDER TRACKER ========================== -->
+      <!-- The SAME animated tracker as the dashboard and order drawer (Ahmed,
+           2026-08-04), so the progress is one unified thing across the site. -->
       <section class="pb-8">
         <div class="mx-auto px-4 max-w-[1200px]">
-          <ol class="flex md:flex-row flex-col gap-6 md:gap-2 bg-white shadow-custom4 p-6 rounded-[20px]">{steps_html}
-          </ol>
+          <div class="bg-white shadow-custom4 p-6 xl:px-10 rounded-[20px]">
+            {order_tracker(TRACKER_STEP, TRACKER_SUBS)}
+          </div>
         </div>
       </section>
 

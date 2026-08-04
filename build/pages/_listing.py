@@ -39,19 +39,24 @@ def listing(title_text, description, heading, trail, chips, products,
       <section class="pt-6">
         <div class="flex flex-col gap-6 mx-auto px-4 max-w-[1536px]">
           {intro_html}
-          <!-- Sort sits BELOW the category filters, not beside them (Ahmed,
-               2026-08-02). The two share one column now; the sort pill drops to
-               its own row under the chips and aligns to the inline-start. -->
-          <div class="flex flex-col items-start gap-4"{' data-listing' if filterable else ''}>
+          <!-- Chips and sort share ONE row again on desktop (Ahmed,
+               2026-08-04). They are a flex ROW at xl: the chips wrap inside a
+               flex-1 area and the sort pill is pinned to the inline end with a
+               gap between them, so the two can never overlap — a flex row lays
+               its children out side by side, it does not stack them — and the
+               chips are a touch smaller at xl (see chip()) so the whole set
+               fits. Below xl the column stacks: the chips scroll on one line
+               and the sort drops beneath them, aligned to the inline start. -->
+          <div class="flex flex-col items-start gap-4 xl:flex-row xl:items-start xl:justify-between xl:gap-6"{' data-listing' if filterable else ''}>
             <!-- Mobile: one scrolling row (swipe). Desktop: WRAP instead — a
                  no-scrollbar horizontal scroll clipped the last chip mid-word,
                  which read as a collision. Wrapping shows every category. -->
             <!-- Full-bleed to the viewport edge on mobile: the width is the
                  parent content PLUS the 2rem the negative margins pull out, so
                  the row reaches both screen edges and the last chip crops at the
-                 edge (signalling more) rather than 32px short of it. Reset on xl,
-                 where the row wraps instead of scrolling. -->
-            <div data-drag-scroll class="flex gap-2 -mx-4 px-4 xl:mx-0 xl:px-0 w-[calc(100%_+_2rem)] xl:w-full min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible">{chip_html}
+                 edge (signalling more) rather than 32px short of it. At xl it
+                 becomes flex-1 so it shares the row with the sort pill. -->
+            <div data-drag-scroll class="flex gap-2 -mx-4 px-4 xl:mx-0 xl:px-0 w-[calc(100%_+_2rem)] xl:w-auto xl:flex-1 min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible">{chip_html}
             </div>
 {sort_select(SORT_OPTIONS)}
           </div>

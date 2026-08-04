@@ -1,43 +1,35 @@
-"""Sign in — Figma 'Account Sign In/ Create Account' (205:10427)."""
-from _auth import auth_page, password_field
-from components import field
+"""Sign in — passwordless (mobile + OTP). Figma 'Account Sign In' (205:10427).
+
+Ahmed, 2026-08-04: sign-in is now a mobile number only. Submitting it hands off
+to the shared OTP page (verify.html), which is the real gate; there is no
+password. The demo OTP is printed on the verify page, the way the old demo
+credentials used to be printed here.
+"""
+from _auth import SOCIAL, auth_page
+from components import phone_field
 
 SLUG = "login.html"
 
-# Kept in step with DEMO_USER in static-export/scripts.js. Printed on the page
-# on purpose: this is a static export with no backend, and the credentials are
-# hard-coded in client-side JS anyway, so there is nothing to protect. It
-# exists so the signed-in chrome and the favourites flow can be walked end to
-# end. Both must go with the demo auth before launch — see DESIGN-NOTES.
-DEMO_EMAIL = "demo@abuauf.com"
-DEMO_PASSWORD = "AbuAuf2026"
-
-DEMO_CALLOUT = f"""
-              <div class="flex flex-col gap-2 bg-interaction-base p-4 border border-neutral-divider rounded-xl">
-                <p class="font-bold text-[#062A1C] text-sm">حساب تجريبي للاختبار</p>
-                <p class="text-neutral-secondary text-xs leading-5">استخدم البيانات دي لتجربة تسجيل الدخول والمفضلة:</p>
-                <dl class="flex flex-col gap-1 text-sm">
-                  <div class="flex items-center gap-2">
-                    <dt class="text-neutral-secondary">Email</dt>
-                    <dd class="font-semibold text-[#062A1C] latin">{DEMO_EMAIL}</dd>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <dt class="text-neutral-secondary">Password</dt>
-                    <dd class="font-semibold text-[#062A1C] latin">{DEMO_PASSWORD}</dd>
-                  </div>
-                </dl>
-                <button type="button" data-demo-fill
-                        class="btn-elevate self-start bg-white hover:bg-interaction-tertiary-hover mt-1 px-4 border border-cta rounded-full min-h-11 font-semibold text-cta text-sm">املأ البيانات تلقائياً</button>
-              </div>"""
-
 
 def build():
-    form = f"""{DEMO_CALLOUT}
-{field("البريد الالكتروني", "email", "email", required=True)}
-{password_field()}
-              <button type="submit" class="btn-elevate bg-cta hover:bg-cta-hover py-4 rounded-full font-semibold text-white text-base">تسجيل الدخول</button>
-              <a href="forget-password.html" class="link-sweep self-center font-semibold text-cta text-sm">نسيت كلمة المرور الخاصة بي</a>"""
+    # Distributed layout (Ahmed, 2026-08-04): the mobile field sits in a flex-1
+    # region CENTRED between the title and the CTA, the CTA sits between two equal
+    # flex-1 regions so it lands on the same line as the create-account button,
+    # and the "new account" link + social buttons fill the flex-1 region below.
+    # form_contents=True makes the <form> a display:contents box so these three
+    # blocks become direct flex children of the card.
+    form = f"""
+              <div class="flex flex-1 flex-col justify-center">
+{phone_field("رقم الموبايل", "mobile", help_text="هنبعتلك كود تأكيد من 6 أرقام على رقمك — من غير كلمة مرور.")}
+              </div>
+              <button type="submit" class="btn-elevate bg-cta hover:bg-cta-hover py-4 rounded-full font-semibold text-white text-base">متابعة</button>
+              <div class="flex flex-1 flex-col justify-center gap-5">
+                <p class="text-neutral-secondary text-sm text-center">
+                  لسه معندكش حساب؟ <a href="register.html" class="font-semibold text-cta underline">أنشئ حساب جديد</a>
+                </p>
+                {SOCIAL}
+              </div>"""
     return auth_page("تسجيل الدخول | أبو عوف",
-                     "سجل الدخول إلى حسابك في أبو عوف لمتابعة طلباتك ونقاط محفظتك.",
+                     "سجّل الدخول برقم موبايلك في أبو عوف — رمز تحقق سريع بدون كلمة مرور.",
                      "تسجيل الدخول", form, "login", "/login", "تسجيل الدخول",
-                     form_attrs="data-login-form")
+                     form_attrs="data-login-form", social=False, form_contents=True)

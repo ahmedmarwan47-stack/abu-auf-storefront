@@ -49,7 +49,7 @@
     <main id="main" tabindex="-1" class="overflow-x-clip">
       <section data-reveal class="pt-6">
         <div class="flex flex-col gap-4 mx-auto px-4 max-w-[1536px]">
-          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><a href="shop.html" class="text-neutral-secondary hover:text-primary transition-colors">المنتجات</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">القهوة</span></nav>
+          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="link-sweep text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><a href="shop.html" class="link-sweep text-neutral-secondary hover:text-primary transition-colors">المنتجات</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">القهوة</span></nav>
           <h1 class="font-bold text-[#062A1C] text-3xl xl:text-5xl">القهوة</h1>
         </div>
       </section>
@@ -58,19 +58,24 @@
       <section data-reveal class="pt-6">
         <div class="flex flex-col gap-6 mx-auto px-4 max-w-[1536px]">
           <p class="max-w-[720px] text-neutral-secondary text-base xl:text-lg leading-8">أكثر من 30 نكهة قهوة لذيذة تنعش الحواس — من التركي والبرازيلي للإسبريسو والقهوة المطحونة طازة، محمصة على أصولها ومعبأة تحافظ على الريحة لآخر فنجان.</p>
-          <!-- Sort sits BELOW the category filters, not beside them (Ahmed,
-               2026-08-02). The two share one column now; the sort pill drops to
-               its own row under the chips and aligns to the inline-start. -->
-          <div class="flex flex-col items-start gap-4" data-listing>
+          <!-- Chips and sort share ONE row again on desktop (Ahmed,
+               2026-08-04). They are a flex ROW at xl: the chips wrap inside a
+               flex-1 area and the sort pill is pinned to the inline end with a
+               gap between them, so the two can never overlap — a flex row lays
+               its children out side by side, it does not stack them — and the
+               chips are a touch smaller at xl (see chip()) so the whole set
+               fits. Below xl the column stacks: the chips scroll on one line
+               and the sort drops beneath them, aligned to the inline start. -->
+          <div class="flex flex-col items-start gap-4 xl:flex-row xl:items-start xl:justify-between xl:gap-6" data-listing>
             <!-- Mobile: one scrolling row (swipe). Desktop: WRAP instead — a
                  no-scrollbar horizontal scroll clipped the last chip mid-word,
                  which read as a collision. Wrapping shows every category. -->
             <!-- Full-bleed to the viewport edge on mobile: the width is the
                  parent content PLUS the 2rem the negative margins pull out, so
                  the row reaches both screen edges and the last chip crops at the
-                 edge (signalling more) rather than 32px short of it. Reset on xl,
-                 where the row wraps instead of scrolling. -->
-            <div data-drag-scroll class="flex gap-2 -mx-4 px-4 xl:mx-0 xl:px-0 w-[calc(100%_+_2rem)] xl:w-full min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible"><a href="shop-category.html" data-filter="all" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors bg-cta text-white border-cta">القهوة</a><a href="shop-category.html" data-filter="turkish-coffee" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة تركي</a><a href="shop-category.html" data-filter="brazilian-coffee" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة برازيلي</a><a href="shop-category.html" data-filter="fresh-grounded-coffee" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة مطحونة طازجة</a><a href="shop-category.html" data-filter="instant-coffee" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة سريعة التحضير</a><a href="shop-category.html" data-filter="hot-drinks" class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full font-semibold text-sm whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">مشروبات ساخنة</a>
+                 edge (signalling more) rather than 32px short of it. At xl it
+                 becomes flex-1 so it shares the row with the sort pill. -->
+            <div data-drag-scroll class="flex gap-2 -mx-4 px-4 xl:mx-0 xl:px-0 w-[calc(100%_+_2rem)] xl:w-auto xl:flex-1 min-w-0 overflow-x-auto no-scrollbar xl:flex-wrap xl:overflow-visible"><a href="shop-category.html" data-filter="all" class="inline-flex items-center min-h-11 xl:min-h-9 px-5 xl:px-4 py-2 xl:py-1.5 border rounded-full font-semibold text-sm xl:text-[13px] whitespace-nowrap transition-colors bg-cta text-white border-cta">القهوة</a><a href="shop-category.html" data-filter="turkish-coffee" class="inline-flex items-center min-h-11 xl:min-h-9 px-5 xl:px-4 py-2 xl:py-1.5 border rounded-full font-semibold text-sm xl:text-[13px] whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة تركي</a><a href="shop-category.html" data-filter="brazilian-coffee" class="inline-flex items-center min-h-11 xl:min-h-9 px-5 xl:px-4 py-2 xl:py-1.5 border rounded-full font-semibold text-sm xl:text-[13px] whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة برازيلي</a><a href="shop-category.html" data-filter="fresh-grounded-coffee" class="inline-flex items-center min-h-11 xl:min-h-9 px-5 xl:px-4 py-2 xl:py-1.5 border rounded-full font-semibold text-sm xl:text-[13px] whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة مطحونة طازجة</a><a href="shop-category.html" data-filter="instant-coffee" class="inline-flex items-center min-h-11 xl:min-h-9 px-5 xl:px-4 py-2 xl:py-1.5 border rounded-full font-semibold text-sm xl:text-[13px] whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">قهوة سريعة التحضير</a><a href="shop-category.html" data-filter="hot-drinks" class="inline-flex items-center min-h-11 xl:min-h-9 px-5 xl:px-4 py-2 xl:py-1.5 border rounded-full font-semibold text-sm xl:text-[13px] whitespace-nowrap transition-colors chip-filter bg-white text-[#062A1C] border-neutral-divider hover:border-cta">مشروبات ساخنة</a>
             </div>
 
             <div class="relative shrink-0 text-start" data-fancy-select>
@@ -143,8 +148,6 @@
               <a href="product-1358.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000466000000.webp" alt="بن أبو عوف ساده فاتح - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -210,8 +213,6 @@
               <a href="product-8560.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000463000000.webp" alt="قهوة بن برازيلى سادة فاتح - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -277,8 +278,6 @@
               <a href="product-8561.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000464000000.webp" alt="قهوة بن برازيلى سادة وسط - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -344,8 +343,6 @@
               <a href="product-1359.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000467000000.webp" alt="بن أبو عوف ساده وسط - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -411,8 +408,6 @@
               <a href="product-1361.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000505000000.webp" alt="بن ابوعوف محوج فاتح - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -478,8 +473,6 @@
               <a href="product-1362.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000506000000.webp" alt="بن ابوعوف محوج وسط - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -545,8 +538,6 @@
               <a href="product-7482.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004760198.webp" alt="قهوة سريعة التحضير جولد - 85 جرام"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -612,8 +603,6 @@
               <a href="product-7481.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004760181.webp" alt="قهوة سريعة التحضير كلاسيك(برطمان) - 100 جرام"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -679,8 +668,6 @@
               <a href="product-10509.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011434167-6.webp" alt="قهوة عربى - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -746,8 +733,6 @@
               <a href="product-10502.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223004765353-2-1.webp" alt="بن أبو عوف تركي ساده فاتح 200 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -813,8 +798,6 @@
               <a href="product-8558.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000502000000.webp" alt="بن برازيلى فاتح محوج - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -880,8 +863,6 @@
               <a href="product-6264.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000503000000.webp" alt="بن برازيلي محوج وسط - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the

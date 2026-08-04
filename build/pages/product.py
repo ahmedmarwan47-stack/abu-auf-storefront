@@ -26,8 +26,8 @@ from html import unescape
 from catalog import PRODUCTS, e, in_category, money, rail_products, title
 from components import (
     ICON, accordion, best_seller_badge, button, carousel, page, page_header,
-    product_card, product_gallery, qty_stepper, rating, recipe_card,
-    size_chips, sold_proof, specs_block, bundle_item, section_heading,
+    points_callout, product_card, product_gallery, qty_stepper, rating,
+    recipe_card, size_chips, sold_proof, specs_block, bundle_item, section_heading,
 )
 
 SLUG = "product.html"
@@ -336,9 +336,14 @@ def _render(p):
             <div class="flex flex-col gap-3">
               {best_seller_badge(p)}
               <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">{e(title(p))}</h1>
+              <!-- Points callout sits with the rating + social-proof line, right
+                   beside the red "best seller" proof text (Ahmed, 2026-08-04) —
+                   not up by the yellow best-seller badge. Wraps on a narrow
+                   column instead of colliding. -->
               <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
                 {rating("4.8", 126)}
                 {sold_proof(p)}
+                {points_callout(p)}
               </div>
             </div>
             {desc_html}

@@ -63,26 +63,37 @@ SIDE_CARD = f"""
             <!-- DOM-first so RTL puts it in the right column at lg. The Figma
                  auth frame (368:21314) leads with the sign-in form on mobile
                  and drops this beneath it, so below lg it moves to the end. -->
+            <!-- Layout mirrors the sign-in card so the two primary buttons land
+                 on the same line (Ahmed, 2026-08-04): heading, then a flex-1
+                 region for the blurb, the CTA, then a flex-1 region for the
+                 notes. The CTA sits between two equal-growing regions, so it
+                 centres at the same offset as the sign-in card's button (both
+                 cards are equal height). -->
             <aside class="flex flex-col gap-6 bg-interaction-base p-8 xl:p-10 rounded-[20px] order-last lg:order-none min-w-0">
               <h2 class="font-bold text-[#062A1C] text-2xl xl:text-3xl text-center">إنشاء حساب جديد</h2>
-              <div class="flex justify-center items-center gap-3">
-                <span class="place-items-center grid bg-white rounded-full text-cta size-11">{ICON_HOME}</span>
-                <span class="place-items-center grid bg-white rounded-full text-cta size-11">{ICON_BAG2}</span>
-                <span class="place-items-center grid bg-white rounded-full text-cta size-11">{ICON_MAIL}</span>
+              <div class="flex flex-1 flex-col justify-center gap-6">
+                <div class="flex justify-center items-center gap-3">
+                  <span class="place-items-center grid bg-white rounded-full text-cta size-11">{ICON_HOME}</span>
+                  <span class="place-items-center grid bg-white rounded-full text-cta size-11">{ICON_BAG2}</span>
+                  <span class="place-items-center grid bg-white rounded-full text-cta size-11">{ICON_MAIL}</span>
+                </div>
+                <p class="text-neutral-800 text-base text-center leading-8">
+                  عند إنشاء حساب، هتكسب نقاط خصم في محفظتك ويمكنك الدفع بشكل أسرع
+                  والاحتفاظ بأكثر من عنوان وتتبع الطلبات والمزيد.
+                </p>
               </div>
-              <p class="text-neutral-800 text-base text-center leading-8">
-                عند إنشاء حساب، هتكسب نقاط خصم في محفظتك ويمكنك الدفع بشكل أسرع
-                والاحتفاظ بأكثر من عنوان وتتبع الطلبات والمزيد.
-              </p>
-              <a href="register.html" class="bg-cta hover:bg-cta-hover py-4 rounded-full font-semibold text-white text-base text-center transition-colors">إنشاء حساب</a>
-              <div class="flex flex-col gap-4 pt-6 border-neutral-divider border-t">
+              <!-- Secondary to the sign-in CTA (Ahmed, 2026-08-04): sign-in is
+                   the primary action, so create-account is an outline button —
+                   same size (py-4) so it aligns with متابعة, lighter weight. -->
+              <a href="register.html" class="bg-transparent hover:bg-white py-4 border-2 border-cta rounded-full font-semibold text-cta text-base text-center transition-colors">إنشاء حساب</a>
+              <div class="flex flex-1 flex-col justify-center gap-4 pt-6 border-neutral-divider border-t">
                 <p class="flex items-start gap-3 text-neutral-secondary text-sm leading-6">
                   <span class="mt-0.5 text-cta shrink-0">{ICON_MAIL}</span>
                   في حالة عمل طلب من قبل كضيف (بدون حساب)، الرجاء عمل حساب الآن بنفس الإيميل المستخدم في الطلب لمتابعة حالة الشحن.
                 </p>
                 <p class="flex items-start gap-3 text-neutral-secondary text-sm leading-6">
                   <span class="mt-0.5 text-cta shrink-0">{ICON_BAG2}</span>
-                  إذا كان لديك حساب على موقعنا السابق، فبرجاء إنشاء اسم مستخدم وكلمة مرور جديدين على هذا الموقع الجديد.
+                  الدخول بقى برقم موبايلك ورمز تحقق سريع — من غير كلمة مرور. لو عندك حساب قديم، سجّل الدخول بنفس رقم موبايلك المسجّل.
                 </p>
               </div>
             </aside>"""
@@ -101,19 +112,33 @@ SOCIAL = f"""
 
 
 def auth_page(title_text, description, heading, form_html, page_id, path,
-              crumb, side=True, social=True, form_attrs=""):
+              crumb, side=True, social=True, form_attrs="", hero="",
+              form_contents=False):
     # `form_attrs` lets a page tag its form for a specific handler — the
     # sign-in page uses data-login-form, which runs a real (demo) credential
     # check rather than the generic data-demo-form success toast.
+    # `hero` is an optional visual rendered ABOVE the heading (the verify page
+    # puts its 3D icon there, sitting bare over the title — no tinted disc).
+    # `form_contents` makes the <form> a `display:contents` box so its children
+    # become direct flex items of the card — the sign-in page uses this to place
+    # its own flex-1 regions and centre the CTA in line with the create-account
+    # card's button (see login.py).
     attrs = (" " + form_attrs) if form_attrs else ""
+    form_class = "contents" if form_contents else "flex flex-col gap-5"
+    hero_html = f'<div class="flex justify-center">{hero}</div>' if hero else ""
     body = f"""{page_header("", [("الرئيسية", "index.html"), (crumb, None)])}
 
       <section class="py-8 xl:py-12">
-        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 {'lg:grid-cols-2' if side else 'max-w-[560px] mx-auto'} mx-auto px-4 max-w-[1536px]">
+        <div class="items-stretch gap-6 xl:gap-8 grid grid-cols-1 {'lg:grid-cols-2' if side else 'max-w-[560px] mx-auto'} mx-auto px-4 max-w-[1536px]">
           {SIDE_CARD if side else ''}
+          <!-- The two auth cards are equal-height (items-stretch on the grid).
+               Titles pin to the top (aligned); the sign-in page passes
+               form_contents=True and its own flex-1 regions so the CTA centres
+               on the same line as the create-account button (Ahmed, 2026-08-04). -->
           <div class="flex flex-col gap-6 bg-white shadow-custom4 p-8 xl:p-10 rounded-[20px] min-w-0">
+            {hero_html}
             <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl text-center">{e(heading)}</h1>
-            <form class="flex flex-col gap-5"{attrs}>{form_html}
+            <form class="{form_class}"{attrs}>{form_html}
             </form>
             {SOCIAL if social else ''}
           </div>

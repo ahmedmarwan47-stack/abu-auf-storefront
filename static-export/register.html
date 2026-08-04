@@ -4,11 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>إنشاء حساب | أبو عوف</title>
-    <meta name="description" content="أنشئ حساب في أبو عوف واكسب نقاط في محفظتك مع كل طلب." />
+    <meta name="description" content="أنشئ حساب في أبو عوف برقم موبايلك واكسب نقاط في محفظتك مع كل طلب." />
     <meta name="theme-color" content="#163300" />
     <meta name="robots" content="noindex, nofollow" />
     <meta property="og:title" content="إنشاء حساب | أبو عوف" />
-    <meta property="og:description" content="أنشئ حساب في أبو عوف واكسب نقاط في محفظتك مع كل طلب." />
+    <meta property="og:description" content="أنشئ حساب في أبو عوف برقم موبايلك واكسب نقاط في محفظتك مع كل طلب." />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="أبو عوف" />
     <meta property="og:locale" content="ar_EG" />
@@ -49,16 +49,21 @@
     <main id="main" tabindex="-1" class="overflow-x-clip">
       <section data-reveal class="pt-6">
         <div class="flex flex-col gap-4 mx-auto px-4 max-w-[1536px]">
-          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">إنشاء حساب</span></nav>
+          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="link-sweep text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">إنشاء حساب</span></nav>
         </div>
       </section>
 
       <section data-reveal class="py-8 xl:py-12">
-        <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 max-w-[560px] mx-auto mx-auto px-4 max-w-[1536px]">
+        <div class="items-stretch gap-6 xl:gap-8 grid grid-cols-1 max-w-[560px] mx-auto mx-auto px-4 max-w-[1536px]">
           
+          <!-- The two auth cards are equal-height (items-stretch on the grid).
+               Titles pin to the top (aligned); the sign-in page passes
+               form_contents=True and its own flex-1 regions so the CTA centres
+               on the same line as the create-account button (Ahmed, 2026-08-04). -->
           <div class="flex flex-col gap-6 bg-white shadow-custom4 p-8 xl:p-10 rounded-[20px] min-w-0">
+            
             <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl text-center">إنشاء حساب جديد</h1>
-            <form class="flex flex-col gap-5">
+            <form class="flex flex-col gap-5" data-register-form>
               <div class="gap-4 grid sm:grid-cols-2">
 
                 <div class="flex flex-col gap-1.5 ">
@@ -76,62 +81,37 @@
                 </div>
               </div>
 
+                <div class="flex flex-col gap-1.5">
+                  <label for="phone" class="font-medium text-neutral-secondary text-sm">رقم الموبايل<span class="text-accent-error">*</span></label>
+                  <div dir="ltr" class="flex items-stretch bg-white border-2 border-neutral-divider focus-within:border-cta rounded-xl overflow-hidden transition-colors">
+                    <!-- Prefix sits on the SAME white as the number, NOT a filled
+                         (bg-interaction-base) cell: the tinted chip read as a
+                         nested compartment, and against the green focus border it
+                         looked like an inner border box (Ahmed, 2026-08-04). The
+                         only separator is the short divider below. -->
+                    <span class="flex items-center gap-1.5 ps-3.5 pe-3 shrink-0 font-semibold text-[#062A1C] text-sm">
+                      <span class="text-base leading-none" aria-hidden="true">🇪🇬</span>
+                      <span class="latin">+20</span>
+                    </span>
+                    <!-- The prefix/number divider is a standalone rule, NOT a
+                         border on the chip: `my-2.5` insets it top and bottom so
+                         it stops short of the field's rounded edges. It stays
+                         CONSTANT in every state — same colour, same width — while
+                         ONLY the outer field border darkens on focus (Ahmed,
+                         2026-08-04). -->
+                    <span aria-hidden="true" class="self-stretch bg-neutral-divider my-2.5 w-px shrink-0"></span>
+                    <input type="tel" id="phone" name="phone" required autocomplete="tel" dir="ltr" value=""
+                           placeholder="100 123 4567"
+                           class="flex-1 bg-transparent px-3 py-3 outline-none min-w-0 text-[#062A1C] text-base latin" />
+                  </div>
+                  
+                </div>
+
                 <div class="flex flex-col gap-1.5 ">
                   <label for="email" class="font-medium text-neutral-secondary text-sm">البريد الالكتروني<span class="text-accent-error">*</span></label>
                   <input type="email" id="email" name="email" required autocomplete="email"
                          value="" placeholder=""
                          class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
-                </div>
-
-                <div class="flex flex-col gap-1.5 ">
-                  <label for="phone" class="font-medium text-neutral-secondary text-sm">رقم الهاتف<span class="text-accent-error">*</span></label>
-                  <input type="tel" id="phone" name="phone" required autocomplete="tel"
-                         value="" placeholder=""
-                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
-                </div>
-
-                <div class="flex flex-col gap-1.5">
-                  <label for="password" class="font-medium text-neutral-secondary text-sm">كلمة السر</label>
-                  <div class="relative">
-                    <input type="password" id="password" name="password" required autocomplete="new-password"
-                           class="bg-white px-4 py-3 pe-12 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
-                    <!-- data-pw-toggle, NOT data-reveal: the site-wide entrance
-                         animation keys off [data-reveal] on sections, and an eye
-                         button that also carried data-reveal got swept into it —
-                         initReveal rewrote its attribute to "in" (breaking the
-                         toggle's input lookup) and the reveal transform overrode
-                         the button's -translate-y-1/2, dropping the icon to the
-                         field's bottom edge (Ahmed, 2026-08-03). -->
-                    <button type="button" data-pw-toggle="password" aria-label="إظهار كلمة السر"
-                            class="top-1/2 end-1 absolute place-items-center grid w-11 h-11 text-neutral-secondary hover:text-cta -translate-y-1/2 transition-colors">
-                      <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">
-                        <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.7"/>
-                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
-                <div class="flex flex-col gap-1.5">
-                  <label for="password-confirm" class="font-medium text-neutral-secondary text-sm">تأكيد كلمة السر</label>
-                  <div class="relative">
-                    <input type="password" id="password-confirm" name="password-confirm" required autocomplete="new-password"
-                           class="bg-white px-4 py-3 pe-12 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
-                    <!-- data-pw-toggle, NOT data-reveal: the site-wide entrance
-                         animation keys off [data-reveal] on sections, and an eye
-                         button that also carried data-reveal got swept into it —
-                         initReveal rewrote its attribute to "in" (breaking the
-                         toggle's input lookup) and the reveal transform overrode
-                         the button's -translate-y-1/2, dropping the icon to the
-                         field's bottom edge (Ahmed, 2026-08-03). -->
-                    <button type="button" data-pw-toggle="password-confirm" aria-label="إظهار كلمة السر"
-                            class="top-1/2 end-1 absolute place-items-center grid w-11 h-11 text-neutral-secondary hover:text-cta -translate-y-1/2 transition-colors">
-                      <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">
-                        <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.7"/>
-                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/>
-                      </svg>
-                    </button>
-                  </div>
                 </div>
               <label class="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" required class="mt-1 accent-[#163300] w-4 h-4" />

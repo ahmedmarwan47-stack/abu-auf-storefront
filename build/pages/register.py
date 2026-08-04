@@ -1,6 +1,13 @@
-"""Create account — Figma 'Create Account' (206:9768)."""
-from _auth import auth_page, password_field
-from components import field
+"""Create account — passwordless (mobile + OTP). Figma 'Create Account' (206:9768).
+
+Ahmed, 2026-08-04: registration collects the name, mobile and email — no
+password. Submitting hands off to the shared OTP page (verify.html) to verify
+the MOBILE; once verified the account is created and signed in. The email is
+NOT verified here — that is deferred to a prompt on the dashboard, since it is
+not required to start ordering.
+"""
+from _auth import auth_page
+from components import field, phone_field
 
 SLUG = "register.html"
 
@@ -11,10 +18,8 @@ def build():
 {field("الاسم الأول", "first-name", required=True)}
 {field("الاسم الاخير", "last-name", required=True)}
               </div>
+{phone_field("رقم الموبايل", "phone")}
 {field("البريد الالكتروني", "email", "email", required=True)}
-{field("رقم الهاتف", "phone", "tel", required=True)}
-{password_field(autocomplete="new-password")}
-{password_field("تأكيد كلمة السر", "password-confirm", autocomplete="new-password")}
               <label class="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" required class="mt-1 accent-[#163300] w-4 h-4" />
                 <span class="text-neutral-secondary text-sm leading-6">
@@ -26,6 +31,6 @@ def build():
                 لديك حساب بالفعل؟ <a href="login.html" class="font-semibold text-cta underline">تسجيل الدخول</a>
               </p>"""
     return auth_page("إنشاء حساب | أبو عوف",
-                     "أنشئ حساب في أبو عوف واكسب نقاط في محفظتك مع كل طلب.",
+                     "أنشئ حساب في أبو عوف برقم موبايلك واكسب نقاط في محفظتك مع كل طلب.",
                      "إنشاء حساب جديد", form, "register", "/register",
-                     "إنشاء حساب", side=False)
+                     "إنشاء حساب", side=False, form_attrs="data-register-form")

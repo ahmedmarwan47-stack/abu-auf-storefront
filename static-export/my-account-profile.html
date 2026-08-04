@@ -4,11 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>بيانات الحساب | أبو عوف</title>
-    <meta name="description" content="عدّل بياناتك الشخصية وكلمة المرور." />
+    <meta name="description" content="عدّل بياناتك الشخصية." />
     <meta name="theme-color" content="#163300" />
     <meta name="robots" content="noindex, nofollow" />
     <meta property="og:title" content="بيانات الحساب | أبو عوف" />
-    <meta property="og:description" content="عدّل بياناتك الشخصية وكلمة المرور." />
+    <meta property="og:description" content="عدّل بياناتك الشخصية." />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="أبو عوف" />
     <meta property="og:locale" content="ar_EG" />
@@ -49,7 +49,7 @@
     <main id="main" tabindex="-1" class="overflow-x-clip">
       <section data-reveal class="pt-6">
         <div class="flex flex-col gap-4 mx-auto px-4 max-w-[1536px]">
-          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><a href="my-account.html" class="text-neutral-secondary hover:text-primary transition-colors">حسابي</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">بيانات الحساب</span></nav>
+          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="link-sweep text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><a href="my-account.html" class="link-sweep text-neutral-secondary hover:text-primary transition-colors">حسابي</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">بيانات الحساب</span></nav>
         </div>
       </section>
 
@@ -57,7 +57,7 @@
         <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 lg:grid-cols-[300px_1fr] mx-auto px-4 max-w-[1536px]">
 
           <div class="lg:hidden flex flex-col gap-3 min-w-0">
-            <span class="bg-accent-yellow px-3 py-1 rounded-full font-semibold text-[#062A1C] text-xs self-start">عضوية ذهبية</span>
+            <span class="tier-badge tier-badge--gold inline-flex items-center self-start px-3 py-1 rounded-full font-bold text-xs "><span class="relative z-10">عضوية ذهبية</span></span>
             <h2 class="font-bold text-[#062A1C] text-xl">مرحبا محمد</h2>
             <button type="button" data-open="accountMenu" class="flex justify-between items-center gap-3 bg-white px-5 py-3.5 border border-neutral-divider rounded-full w-full font-semibold text-[#062A1C] text-base">
               <span class="flex items-center gap-3 min-w-0">
@@ -76,38 +76,59 @@
             </div>
             <nav class="flex flex-col">
               <a href="my-account.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">الرئيسية</span>
+                <img src="images/abuauf/icons/home-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">الرئيسية</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <a href="my-account-orders.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6ZM3 6h18M16 10a4 4 0 0 1-8 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">طلباتي</span>
+                <img src="images/abuauf/icons/orders-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">طلباتي</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <a href="my-account-favorites.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">المفضلة</span>
+                <img src="images/abuauf/icons/favorites-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">المفضلة</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-favs-count>0</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <a href="my-account-addresses.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">عناويني</span>
+                <img src="images/abuauf/icons/addresses-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">عناويني</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <a href="my-account-wallet.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7"/><path d="M16 12h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">محفظتي</span>
+                <img src="images/abuauf/icons/wallet-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">محفظتي</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-wallet-amount>EGP 1200</span>
+                </span>
+                <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <a href="my-account-vouchers.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
+                <img src="images/abuauf/icons/voucher-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">القسائم</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-vouchers-count>3</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <a href="my-account-point.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">نقاطي</span>
+                <img src="images/abuauf/icons/points-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">نقاطي</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-points-badge>3200</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <a href="my-account-profile.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-cta">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4 21a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">بيانات الحساب</span>
+                <img src="images/abuauf/icons/profile-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">بيانات الحساب</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
             </nav>
@@ -115,46 +136,78 @@
           </div>
 
           <aside class="hidden lg:flex flex-col gap-1 bg-white shadow-custom4 p-5 rounded-[20px] lg:sticky lg:top-4 min-w-0 h-max">
-            <span class="bg-accent-yellow px-3 py-1 rounded-full font-semibold text-[#062A1C] text-xs self-start">عضوية ذهبية</span>
+            <span class="tier-badge tier-badge--gold inline-flex items-center self-start px-3 py-1 rounded-full font-bold text-xs "><span class="relative z-10">عضوية ذهبية</span></span>
             <h2 class="mt-2 mb-3 font-bold text-[#062A1C] text-xl">مرحبا محمد</h2>
             
               <a href="my-account.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>الرئيسية
+                <img src="images/abuauf/icons/home-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">الرئيسية</span>
+                </span>
               </a>
               <a href="my-account-orders.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6ZM3 6h18M16 10a4 4 0 0 1-8 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>طلباتي
+                <img src="images/abuauf/icons/orders-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">طلباتي</span>
+                </span>
               </a>
               <a href="my-account-favorites.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>المفضلة
+                <img src="images/abuauf/icons/favorites-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">المفضلة</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-favs-count>0</span>
+                </span>
               </a>
               <a href="my-account-addresses.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>عناويني
+                <img src="images/abuauf/icons/addresses-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">عناويني</span>
+                </span>
               </a>
               <a href="my-account-wallet.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7"/><path d="M16 12h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>محفظتي
+                <img src="images/abuauf/icons/wallet-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">محفظتي</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-wallet-amount>EGP 1200</span>
+                </span>
+              </a>
+              <a href="my-account-vouchers.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
+                <img src="images/abuauf/icons/voucher-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">القسائم</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-vouchers-count>3</span>
+                </span>
               </a>
               <a href="my-account-point.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>نقاطي
+                <img src="images/abuauf/icons/points-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">نقاطي</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-points-badge>3200</span>
+                </span>
               </a>
               <a href="my-account-profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors bg-interaction-base text-[#062A1C]">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4 21a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>بيانات الحساب
+                <img src="images/abuauf/icons/profile-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">بيانات الحساب</span>
+                </span>
               </a>
             <div class="flex flex-col gap-2 mt-4 pt-4 border-neutral-divider border-t">
               <span class="font-semibold text-neutral-secondary text-sm">تحتاج مساعدة؟</span>
               <a href="faqs.html" class="link-sweep self-start font-semibold text-cta text-sm">الأسئلة المتداولة</a>
               <a href="contact-us.html" class="link-sweep self-start font-semibold text-cta text-sm">تواصل معنا</a>
-              <!-- Only meaningful while the demo session is active, so it is
-                   hidden for signed-out visitors by [data-authed-only]. -->
-              <button type="button" data-logout data-authed-only hidden
-                      class="flex items-center gap-2 mt-2 font-semibold text-accent-error text-sm text-start min-h-11">تسجيل الخروج</button>
             </div>
-            <a href="index.html" class="flex justify-center items-center gap-2 mt-4 py-3 border border-neutral-divider hover:border-cta rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
+            <!-- One logout only (Ahmed, 2026-08-04): a real data-logout button.
+                 The old red "تسجيل الخروج" text button AND this one shipped
+                 together — and the second merely linked home without logging
+                 out, so there were two controls, one of them lying. -->
+            <button type="button" data-logout class="flex justify-center items-center gap-2 mt-4 py-3 border border-neutral-divider hover:border-cta rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
               <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M15 17l5-5-5-5M20 12H9M12 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg> تسجيل الخروج
-            </a>
+            </button>
           </aside>
           <div class="flex flex-col gap-6 min-w-0">
-            <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">بيانات الحساب</h1>
-            <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]"><div class="flex justify-between items-center gap-3"><h2 class="font-bold text-[#062A1C] text-base">المعلومات الشخصية</h2></div>
+            <div class="flex items-center gap-3"><span class="place-items-center grid bg-interaction-base rounded-xl size-11 shrink-0"><img src="images/abuauf/icons/profile-3d.png" alt="" class="w-8 h-8 object-contain shrink-0" /></span><h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">بيانات الحساب</h1></div>
+            <!-- Capped and hugged to the inline START (right in RTL) with
+                 me-auto, so the form sits directly under the title rather than
+                 floating in the centre of the column (Ahmed, 2026-08-04). The
+                 cap keeps the inputs a comfortable width. -->
+            <div class="me-auto w-full max-w-[600px]">
+              <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]"><div class="flex justify-between items-center gap-3"><h2 class="font-bold text-[#062A1C] text-base">المعلومات الشخصية</h2></div>
               <form class="flex flex-col gap-5">
                 <div class="gap-4 grid sm:grid-cols-2">
 
@@ -173,12 +226,23 @@
                 </div>
                 </div>
 
-                <div class="flex flex-col gap-1.5 ">
-                  <label for="email" class="font-medium text-neutral-secondary text-sm">البريد الالكتروني<span class="text-accent-error">*</span></label>
-                  <input type="email" id="email" name="email" required autocomplete="email"
-                         value="mosawabi15@gmail.com" placeholder=""
-                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
+                <!-- Email is read-only here: it is verified separately (the
+                     dashboard shows a verify prompt), not edited on this form.
+                     A span, not an input — read-only text truncates cleanly
+                     rather than scrolling inside a fixed-width field. -->
+                <div class="flex flex-col gap-1.5">
+                  <span class="font-medium text-neutral-secondary text-sm">البريد الالكتروني</span>
+                  <div class="flex items-center gap-2 bg-interaction-base px-4 py-3 border-2 border-transparent rounded-xl">
+                    <span class="flex-1 min-w-0 truncate text-neutral-secondary text-base latin">mosawabi15@gmail.com</span>
+                    <!-- Opaque tint, NOT bg-accent-error/10: an alpha tint reads
+                         ~1:1 to the contrast sweep (ink on its own colour); the
+                         opaque blend (#F6E9E7 ≈ error at 10% over white) is
+                         legible to both the eye and the checker — the same trap
+                         the checkout stepper's #E9F3E6 documents. -->
+                    <span class="inline-flex items-center shrink-0 bg-[#F6E9E7] px-2 py-0.5 rounded-full font-semibold text-accent-error text-[11px]">غير مؤكد</span>
+                  </div>
                 </div>
+
 
                 <div class="flex flex-col gap-1.5 ">
                   <label for="phone" class="font-medium text-neutral-secondary text-sm">رقم الهاتف<span class="text-accent-error">*</span></label>
@@ -186,13 +250,41 @@
                          value="0109809839" placeholder=""
                          class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
                 </div>
-                <button type="submit" class="bg-cta hover:bg-cta-hover py-3.5 rounded-full font-semibold text-white text-sm transition-colors self-start px-10">حفظ التعديلات</button>
+
+                <div class="flex flex-col gap-1.5">
+                  <span class="font-medium text-neutral-secondary text-sm">تاريخ الميلاد</span>
+                  <div class="gap-3 grid grid-cols-3">
+                    <select class="select-control bg-white px-3 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option selected>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option></select>
+                    <select class="select-control bg-white px-3 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors"><option>يناير</option><option>فبراير</option><option>مارس</option><option selected>أبريل</option><option>مايو</option><option>يونيو</option><option>يوليو</option><option>أغسطس</option><option>سبتمبر</option><option>أكتوبر</option><option>نوفمبر</option><option>ديسمبر</option></select>
+                    <select class="select-control bg-white px-3 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors"><option>2010</option><option>2009</option><option>2008</option><option>2007</option><option>2006</option><option>2005</option><option>2004</option><option>2003</option><option>2002</option><option>2001</option><option>2000</option><option>1999</option><option>1998</option><option>1997</option><option selected>1996</option><option>1995</option><option>1994</option><option>1993</option><option>1992</option><option>1991</option><option>1990</option><option>1989</option><option>1988</option><option>1987</option><option>1986</option><option>1985</option><option>1984</option><option>1983</option><option>1982</option><option>1981</option><option>1980</option><option>1979</option><option>1978</option><option>1977</option><option>1976</option><option>1975</option><option>1974</option><option>1973</option><option>1972</option><option>1971</option><option>1970</option><option>1969</option><option>1968</option><option>1967</option><option>1966</option><option>1965</option><option>1964</option><option>1963</option><option>1962</option><option>1961</option><option>1960</option><option>1959</option><option>1958</option><option>1957</option><option>1956</option><option>1955</option><option>1954</option><option>1953</option><option>1952</option><option>1951</option><option>1950</option></select>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                  <span class="font-medium text-neutral-secondary text-sm">النوع</span>
+                  <div class="gap-3 grid grid-cols-2">
+
+                  <label class="cursor-pointer">
+                    <input type="radio" name="gender" value="female" checked class="peer sr-only" />
+                    <span class="flex items-center gap-2.5 bg-white px-4 py-3 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors">
+                      <span class="radio-dot shrink-0"></span>
+                      <span class="font-medium text-[#062A1C] text-sm">أنثى</span>
+                    </span>
+                  </label>
+
+                  <label class="cursor-pointer">
+                    <input type="radio" name="gender" value="male" class="peer sr-only" />
+                    <span class="flex items-center gap-2.5 bg-white px-4 py-3 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors">
+                      <span class="radio-dot shrink-0"></span>
+                      <span class="font-medium text-[#062A1C] text-sm">ذكر</span>
+                    </span>
+                  </label>
+                  </div>
+                </div>
+
+                <button type="submit" class="bg-cta hover:bg-cta-hover mt-1 py-3.5 rounded-full w-full font-semibold text-white text-sm transition-colors">حفظ التعديلات</button>
               </form></div>
-            <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]"><div class="flex justify-between items-center gap-3"><h2 class="font-bold text-[#062A1C] text-base">كلمة المرور</h2></div>
-              <form class="flex flex-col gap-5">
-                <p class="text-neutral-secondary text-sm">لتغيير كلمة المرور، أدخل كلمة المرور الحالية ثم الجديدة.</p>
-                <a href="reset-password.html" class="px-10 py-3.5 border border-cta rounded-full font-semibold text-cta text-sm text-center hover:bg-interaction-base transition-colors self-start">تغيير كلمة المرور</a>
-              </form></div>
+            </div>
           </div>
         </div>
       </section>

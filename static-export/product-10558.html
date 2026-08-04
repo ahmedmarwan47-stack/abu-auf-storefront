@@ -49,7 +49,7 @@
     <main id="main" tabindex="-1" class="overflow-x-clip">
       <section data-reveal class="pt-6">
         <div class="flex flex-col gap-4 mx-auto px-4 max-w-[1536px]">
-          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><a href="shop-category.html" class="text-neutral-secondary hover:text-primary transition-colors">البهارات والزيوت</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">فلفل اسود ناعم - 35جم</span></nav>
+          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="link-sweep text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><a href="shop-category.html" class="link-sweep text-neutral-secondary hover:text-primary transition-colors">البهارات والزيوت</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">فلفل اسود ناعم - 35جم</span></nav>
         </div>
       </section>
 
@@ -204,9 +204,14 @@
             <div class="flex flex-col gap-3">
               <span data-best-seller class="inline-flex self-start items-center bg-accent-yellow px-3 py-1.5 rounded-full font-bold text-[#062A1C] text-xs"><span class="relative top-[2px] leading-none">الأكثر مبيعاً في البهارات والزيوت</span></span>
               <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">فلفل اسود ناعم - 35جم</h1>
+              <!-- Points callout sits with the rating + social-proof line, right
+                   beside the red "best seller" proof text (Ahmed, 2026-08-04) —
+                   not up by the yellow best-seller badge. Wraps on a narrow
+                   column instead of colliding. -->
               <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <div class="flex items-center gap-1.5"><span class="rating-marks flex items-center" role="img" aria-label="4.8 من 5"><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark is-full"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span><span class="rating-mark"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg><span class="rating-mark__fill" style="width:80%"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg></span></span></span><span class="font-semibold text-[#062A1C] text-sm latin">4.8</span><span class="text-neutral-secondary text-sm">(<span class="latin">126</span> تقييم)</span></div>
                 <span data-sold-proof class="inline-flex items-start gap-1.5 font-semibold text-accent-error text-sm"><span aria-hidden="true" class="bg-neutral-divider mt-0.5 me-0.5 w-px h-4 self-stretch"></span><span class="mt-0.5 w-4 h-4 shrink-0"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12.9 2.3c.26 2.2-.53 3.63-1.86 4.9-1.3 1.24-2.9 2.4-3.7 4.6a6.9 6.9 0 0 0 2.03 7.7c-.5-1.5-.3-3.1.86-4.2.9-.86 1.5-1.7 1.8-2.8.9 1 1.5 2 1.7 3.2.2 1.2 0 2.4-.5 3.6a6.9 6.9 0 0 0 3.6-6.2c-.05-3.6-2.3-5.9-3.94-10.8Z"/></svg></span><span>ضمن أفضل <span class="latin">3</span> مبيعاً في البهارات والزيوت</span></span>
+                <span class="inline-flex items-center gap-2"><span aria-hidden="true" class="bg-neutral-divider w-px h-4"></span><span class="inline-flex items-center gap-1 bg-[#E9F3E6] px-2.5 py-0.5 rounded-full font-bold text-[#163300] text-xs"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span>اكسب <span class="latin">30</span> نقطة بشرائك</span></span></span>
               </div>
             </div>
             <p class="text-neutral-800 text-base leading-8">بودر الفلفل الأسود الناعم، أساسي في جميع وصفاتك سواء سلطة، تتبيل ، شوي وغيرهم ، لأضافة نكهة فريدة مميزة تجعل وصفاتك أكثر تميز ولذاذة</p>
@@ -503,8 +508,6 @@
               <a href="product-1320.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000208000000.webp" alt="فول سوداني بالشيكولاتة - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -570,8 +573,6 @@
               <a href="product-1280.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000079000000.webp" alt="عين جمل مقشر - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -637,8 +638,6 @@
               <a href="product-1287.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000404000000.webp" alt="كاجو محمص ملح جامبو - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -704,8 +703,6 @@
               <a href="product-10573.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/6223011434013-6.webp" alt="سودانى كرى كرى بطعم الجبنة -45 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -771,8 +768,6 @@
               <a href="product-1288.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000197000000.webp" alt="فستق امريكى ملح - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -838,8 +833,6 @@
               <a href="product-1319.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/Thumb-2000150000000.webp" alt="فول سودانى بطعم الجبنه - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -905,8 +898,6 @@
               <a href="product-1343.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000048000000.webp" alt="مقرمشات صينية - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -972,8 +963,6 @@
               <a href="product-1282.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000065000000.webp" alt="لوز نىء - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -1039,8 +1028,6 @@
               <a href="product-1358.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000466000000.webp" alt="بن أبو عوف ساده فاتح - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -1106,8 +1093,6 @@
               <a href="product-8560.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="images/abuauf/products/2000463000000.webp" alt="قهوة بن برازيلى سادة فاتح - 100 جم"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the

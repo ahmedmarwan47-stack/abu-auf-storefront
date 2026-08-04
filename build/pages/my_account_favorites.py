@@ -1,5 +1,5 @@
 """Favourites — Figma 'Account > Favorites > Products' (978:48796)."""
-from _account import account_page
+from _account import account_page, account_title
 from catalog import PRODUCTS
 from components import product_grid
 
@@ -18,10 +18,7 @@ def build():
     # reached it anyway. Those same six are now the first-visit seed in
     # scripts.js (FAVS_SEED), so a fresh browser still sees this design.
     content = f"""
-            <div class="flex items-baseline gap-2">
-              <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">المفضلة</h1>
-              <span class="text-neutral-secondary text-sm">(<span class="latin" data-favs-count>0</span> منتج)</span>
-            </div>
+            {account_title("my-account-favorites.html", "المفضلة")}
             <!-- Same reason as the listing pages: the cards' h3 followed the
                  h1 directly with no level in between. -->
             <h2 class="sr-only">المنتجات المحفوظة</h2>

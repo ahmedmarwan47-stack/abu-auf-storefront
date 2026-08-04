@@ -28,11 +28,11 @@ PAGES = [
     # commerce
     "home", "shop", "shop_category", "product", "cart", "checkout", "payment", "thank_you",
     # auth
-    "login", "register", "forget_password", "reset_password",
+    "login", "register", "verify", "forget_password", "reset_password",
     # account
     "my_account", "my_account_orders", "my_account_order",
     "my_account_favorites", "my_account_addresses", "my_account_wallet",
-    "my_account_point", "my_account_profile",
+    "my_account_vouchers", "my_account_point", "my_account_profile",
     # content
     "about", "contact_us", "faqs", "branches", "blogs", "blog",
     "export", "rewards",

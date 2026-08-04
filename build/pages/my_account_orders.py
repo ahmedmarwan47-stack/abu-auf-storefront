@@ -1,5 +1,5 @@
 """Orders list — Figma 'Account > Orders' (312:27084)."""
-from _account import ORDERS, account_page, card, order_drawer, order_rows
+from _account import ORDERS, account_page, account_title, card, order_drawer, order_rows
 
 SLUG = "my-account-orders.html"
 
@@ -26,7 +26,7 @@ def build():
               </div>"""
 
     content = f"""
-            <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">طلباتي</h1>
+            {account_title("my-account-orders.html", "طلباتي")}
             {card("", table)}
             {order_drawer(ORDERS)}"""
 

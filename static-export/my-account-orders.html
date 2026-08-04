@@ -49,7 +49,7 @@
     <main id="main" tabindex="-1" class="overflow-x-clip">
       <section data-reveal class="pt-6">
         <div class="flex flex-col gap-4 mx-auto px-4 max-w-[1536px]">
-          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><a href="my-account.html" class="text-neutral-secondary hover:text-primary transition-colors">حسابي</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">طلباتي</span></nav>
+          <nav aria-label="مسار التنقل" class="flex flex-wrap items-center gap-2 text-sm"><a href="index.html" class="link-sweep text-neutral-secondary hover:text-primary transition-colors">الرئيسية</a><span aria-hidden="true" class="text-neutral-outline">/</span><a href="my-account.html" class="link-sweep text-neutral-secondary hover:text-primary transition-colors">حسابي</a><span aria-hidden="true" class="text-neutral-outline">/</span><span class="font-semibold text-[#062A1C]">طلباتي</span></nav>
         </div>
       </section>
 
@@ -57,7 +57,7 @@
         <div class="items-start gap-6 xl:gap-8 grid grid-cols-1 lg:grid-cols-[300px_1fr] mx-auto px-4 max-w-[1536px]">
 
           <div class="lg:hidden flex flex-col gap-3 min-w-0">
-            <span class="bg-accent-yellow px-3 py-1 rounded-full font-semibold text-[#062A1C] text-xs self-start">عضوية ذهبية</span>
+            <span class="tier-badge tier-badge--gold inline-flex items-center self-start px-3 py-1 rounded-full font-bold text-xs "><span class="relative z-10">عضوية ذهبية</span></span>
             <h2 class="font-bold text-[#062A1C] text-xl">مرحبا محمد</h2>
             <button type="button" data-open="accountMenu" class="flex justify-between items-center gap-3 bg-white px-5 py-3.5 border border-neutral-divider rounded-full w-full font-semibold text-[#062A1C] text-base">
               <span class="flex items-center gap-3 min-w-0">
@@ -76,38 +76,59 @@
             </div>
             <nav class="flex flex-col">
               <a href="my-account.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">الرئيسية</span>
+                <img src="images/abuauf/icons/home-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">الرئيسية</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <a href="my-account-orders.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-cta">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6ZM3 6h18M16 10a4 4 0 0 1-8 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">طلباتي</span>
+                <img src="images/abuauf/icons/orders-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">طلباتي</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <a href="my-account-favorites.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">المفضلة</span>
+                <img src="images/abuauf/icons/favorites-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">المفضلة</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-favs-count>0</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <a href="my-account-addresses.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">عناويني</span>
+                <img src="images/abuauf/icons/addresses-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">عناويني</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <a href="my-account-wallet.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7"/><path d="M16 12h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">محفظتي</span>
+                <img src="images/abuauf/icons/wallet-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">محفظتي</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-wallet-amount>EGP 1200</span>
+                </span>
+                <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </a>
+              <a href="my-account-vouchers.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
+                <img src="images/abuauf/icons/voucher-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">القسائم</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-vouchers-count>3</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <a href="my-account-point.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">نقاطي</span>
+                <img src="images/abuauf/icons/points-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">نقاطي</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-points-badge>3200</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
               <a href="my-account-profile.html" class="flex items-center gap-3 px-1 py-4 border-neutral-divider border-b font-semibold text-base text-[#062A1C]">
-                <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4 21a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-                <span class="flex-1 min-w-0 truncate">بيانات الحساب</span>
+                <img src="images/abuauf/icons/profile-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex flex-1 items-center gap-2 min-w-0">
+                  <span class="truncate">بيانات الحساب</span>
+                </span>
                 <span class="text-neutral-secondary shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </a>
             </nav>
@@ -115,45 +136,72 @@
           </div>
 
           <aside class="hidden lg:flex flex-col gap-1 bg-white shadow-custom4 p-5 rounded-[20px] lg:sticky lg:top-4 min-w-0 h-max">
-            <span class="bg-accent-yellow px-3 py-1 rounded-full font-semibold text-[#062A1C] text-xs self-start">عضوية ذهبية</span>
+            <span class="tier-badge tier-badge--gold inline-flex items-center self-start px-3 py-1 rounded-full font-bold text-xs "><span class="relative z-10">عضوية ذهبية</span></span>
             <h2 class="mt-2 mb-3 font-bold text-[#062A1C] text-xl">مرحبا محمد</h2>
             
               <a href="my-account.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>الرئيسية
+                <img src="images/abuauf/icons/home-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">الرئيسية</span>
+                </span>
               </a>
               <a href="my-account-orders.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors bg-interaction-base text-[#062A1C]">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6ZM3 6h18M16 10a4 4 0 0 1-8 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>طلباتي
+                <img src="images/abuauf/icons/orders-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">طلباتي</span>
+                </span>
               </a>
               <a href="my-account-favorites.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>المفضلة
+                <img src="images/abuauf/icons/favorites-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">المفضلة</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-favs-count>0</span>
+                </span>
               </a>
               <a href="my-account-addresses.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.7"/></svg></span>عناويني
+                <img src="images/abuauf/icons/addresses-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">عناويني</span>
+                </span>
               </a>
               <a href="my-account-wallet.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7"/><path d="M16 12h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>محفظتي
+                <img src="images/abuauf/icons/wallet-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">محفظتي</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-wallet-amount>EGP 1200</span>
+                </span>
+              </a>
+              <a href="my-account-vouchers.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
+                <img src="images/abuauf/icons/voucher-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">القسائم</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-vouchers-count>3</span>
+                </span>
               </a>
               <a href="my-account-point.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>نقاطي
+                <img src="images/abuauf/icons/points-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">نقاطي</span><span class="inline-flex items-center justify-center shrink-0 bg-[#E9F3E6] rounded-full px-2 min-w-[26px] h-6 font-bold text-[#163300] text-xs latin" data-points-badge>3200</span>
+                </span>
               </a>
               <a href="my-account-profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-base transition-colors text-neutral-800 hover:bg-interaction-base">
-                <span class="text-cta"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4 21a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>بيانات الحساب
+                <img src="images/abuauf/icons/profile-3d.png" alt="" class="w-7 h-7 object-contain shrink-0" />
+                <span class="flex items-center gap-2 min-w-0">
+                  <span class="truncate">بيانات الحساب</span>
+                </span>
               </a>
             <div class="flex flex-col gap-2 mt-4 pt-4 border-neutral-divider border-t">
               <span class="font-semibold text-neutral-secondary text-sm">تحتاج مساعدة؟</span>
               <a href="faqs.html" class="link-sweep self-start font-semibold text-cta text-sm">الأسئلة المتداولة</a>
               <a href="contact-us.html" class="link-sweep self-start font-semibold text-cta text-sm">تواصل معنا</a>
-              <!-- Only meaningful while the demo session is active, so it is
-                   hidden for signed-out visitors by [data-authed-only]. -->
-              <button type="button" data-logout data-authed-only hidden
-                      class="flex items-center gap-2 mt-2 font-semibold text-accent-error text-sm text-start min-h-11">تسجيل الخروج</button>
             </div>
-            <a href="index.html" class="flex justify-center items-center gap-2 mt-4 py-3 border border-neutral-divider hover:border-cta rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
+            <!-- One logout only (Ahmed, 2026-08-04): a real data-logout button.
+                 The old red "تسجيل الخروج" text button AND this one shipped
+                 together — and the second merely linked home without logging
+                 out, so there were two controls, one of them lying. -->
+            <button type="button" data-logout class="flex justify-center items-center gap-2 mt-4 py-3 border border-neutral-divider hover:border-cta rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
               <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M15 17l5-5-5-5M20 12H9M12 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg> تسجيل الخروج
-            </a>
+            </button>
           </aside>
           <div class="flex flex-col gap-6 min-w-0">
-            <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">طلباتي</h1>
+            <div class="flex items-center gap-3"><span class="place-items-center grid bg-interaction-base rounded-xl size-11 shrink-0"><img src="images/abuauf/icons/orders-3d.png" alt="" class="w-8 h-8 object-contain shrink-0" /></span><h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl">طلباتي</h1></div>
             <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
               <div class="overflow-x-auto">
                 <table class="w-full min-w-[560px]">
@@ -170,21 +218,21 @@
                   <tr data-order-open="#30941" tabindex="0" role="button" aria-label="عرض تفاصيل الطلب #30941" class="group border-neutral-divider border-b last:border-0 cursor-pointer hover:bg-interaction-base focus-visible:bg-interaction-base transition-colors">
                     <td class="py-4 ps-2 font-semibold text-[#062A1C] text-sm latin">#30941</td>
                     <td class="py-4 text-neutral-secondary text-sm">28 مارس 2026</td>
-                    <td class="py-4"><span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-accent-yellow text-[#062A1C]">تحت التحضير</span></td>
+                    <td class="py-4"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-accent-yellow text-[#062A1C]"><span class="status-live-dot" aria-hidden="true"></span>تحت التحضير</span></td>
                     <td class="py-4 font-semibold text-[#062A1C] text-sm latin">EGP 395</td>
                     <td class="py-4 pe-2 text-end"><span class="inline-flex justify-center items-center text-neutral-secondary group-hover:text-cta transition-colors size-8"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
                   </tr>
                   <tr data-order-open="#30942" tabindex="0" role="button" aria-label="عرض تفاصيل الطلب #30942" class="group border-neutral-divider border-b last:border-0 cursor-pointer hover:bg-interaction-base focus-visible:bg-interaction-base transition-colors">
                     <td class="py-4 ps-2 font-semibold text-[#062A1C] text-sm latin">#30942</td>
                     <td class="py-4 text-neutral-secondary text-sm">21 مارس 2026</td>
-                    <td class="py-4"><span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-accent-error text-white">ملغي</span></td>
+                    <td class="py-4"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-accent-error text-white">ملغي</span></td>
                     <td class="py-4 font-semibold text-[#062A1C] text-sm latin">EGP 222</td>
                     <td class="py-4 pe-2 text-end"><span class="inline-flex justify-center items-center text-neutral-secondary group-hover:text-cta transition-colors size-8"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
                   </tr>
                   <tr data-order-open="#30943" tabindex="0" role="button" aria-label="عرض تفاصيل الطلب #30943" class="group border-neutral-divider border-b last:border-0 cursor-pointer hover:bg-interaction-base focus-visible:bg-interaction-base transition-colors">
                     <td class="py-4 ps-2 font-semibold text-[#062A1C] text-sm latin">#30943</td>
                     <td class="py-4 text-neutral-secondary text-sm">14 مارس 2026</td>
-                    <td class="py-4"><span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-primary text-white">مكتمل</span></td>
+                    <td class="py-4"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-primary text-white">مكتمل</span></td>
                     <td class="py-4 font-semibold text-[#062A1C] text-sm latin">EGP 117</td>
                     <td class="py-4 pe-2 text-end"><span class="inline-flex justify-center items-center text-neutral-secondary group-hover:text-cta transition-colors size-8"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
                   </tr>
@@ -201,32 +249,24 @@
               <div data-order-panel data-order-id="#30941" hidden class="flex flex-col gap-4">
                 <div class="flex flex-wrap justify-between items-center gap-2">
                   <h3 class="font-bold text-[#062A1C] text-base">طلب رقم <span class="latin">#30941</span></h3>
-                  <span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-accent-yellow text-[#062A1C]">تحت التحضير</span>
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-accent-yellow text-[#062A1C]"><span class="status-live-dot" aria-hidden="true"></span>تحت التحضير</span>
                 </div>
-                <div class="pb-1"><ol class="flex gap-1">
-                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
-                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
-                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </span>
-                  <span class="text-[#062A1C] text-[11px] leading-4">تم الطلب</span>
+                <div class="pb-1"><ol class="order-track" data-order-tracker>
+                <li class="track-step is-done">
+                  <span class="track-step__art" aria-hidden="true"><img src="images/abuauf/icons/track-placed-3d.png" alt="" class="w-12 h-12 object-contain" /><span class="track-step__check"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                  <span class="track-step__label">تم الطلب</span>
                 </li>
-                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
-                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
-                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </span>
-                  <span class="text-[#062A1C] text-[11px] leading-4">جاري التحضير</span>
+                <li class="track-step is-now"><span class="track-step__conn is-filled is-active" aria-hidden="true"><span class="track-conn__arrows"><b></b><b></b><b></b></span></span>
+                  <span class="track-step__art" aria-hidden="true"><img src="images/abuauf/icons/track-preparing-3d.png" alt="" class="w-12 h-12 object-contain" /></span>
+                  <span class="track-step__label">جاري التحضير</span>
                 </li>
-                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
-                  <span class="place-items-center grid rounded-full size-7 bg-interaction-base text-neutral-secondary">
-                    <span class="font-semibold text-xs latin">3</span>
-                  </span>
-                  <span class="text-[#062A1C] text-[11px] leading-4">في الطريق إليك</span>
+                <li class="track-step is-todo"><span class="track-step__conn  " aria-hidden="true"></span>
+                  <span class="track-step__art" aria-hidden="true"><img src="images/abuauf/icons/track-transit-3d.png" alt="" class="w-12 h-12 object-contain" /></span>
+                  <span class="track-step__label">في الطريق إليك</span>
                 </li>
-                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
-                  <span class="place-items-center grid rounded-full size-7 bg-interaction-base text-neutral-secondary">
-                    <span class="font-semibold text-xs latin">4</span>
-                  </span>
-                  <span class="text-[#062A1C] text-[11px] leading-4">تم التسليم</span>
+                <li class="track-step is-todo"><span class="track-step__conn  " aria-hidden="true"></span>
+                  <span class="track-step__art" aria-hidden="true"><img src="images/abuauf/icons/track-delivered-3d.png" alt="" class="w-12 h-12 object-contain" /></span>
+                  <span class="track-step__label">تم التسليم</span>
                 </li>
               </ol></div>
                 <div class="flex flex-col">
@@ -261,7 +301,7 @@
               <div data-order-panel data-order-id="#30942" hidden class="flex flex-col gap-4">
                 <div class="flex flex-wrap justify-between items-center gap-2">
                   <h3 class="font-bold text-[#062A1C] text-base">طلب رقم <span class="latin">#30942</span></h3>
-                  <span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-accent-error text-white">ملغي</span>
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-accent-error text-white">ملغي</span>
                 </div>
                 
                 <div class="flex flex-col">
@@ -296,32 +336,24 @@
               <div data-order-panel data-order-id="#30943" hidden class="flex flex-col gap-4">
                 <div class="flex flex-wrap justify-between items-center gap-2">
                   <h3 class="font-bold text-[#062A1C] text-base">طلب رقم <span class="latin">#30943</span></h3>
-                  <span class="inline-flex px-3 py-1 rounded-full font-semibold text-xs bg-primary text-white">مكتمل</span>
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-primary text-white">مكتمل</span>
                 </div>
-                <div class="pb-1"><ol class="flex gap-1">
-                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
-                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
-                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </span>
-                  <span class="text-[#062A1C] text-[11px] leading-4">تم الطلب</span>
+                <div class="pb-1"><ol class="order-track" data-order-tracker>
+                <li class="track-step is-done">
+                  <span class="track-step__art" aria-hidden="true"><img src="images/abuauf/icons/track-placed-3d.png" alt="" class="w-12 h-12 object-contain" /><span class="track-step__check"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                  <span class="track-step__label">تم الطلب</span>
                 </li>
-                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
-                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
-                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </span>
-                  <span class="text-[#062A1C] text-[11px] leading-4">جاري التحضير</span>
+                <li class="track-step is-done"><span class="track-step__conn is-filled " aria-hidden="true"></span>
+                  <span class="track-step__art" aria-hidden="true"><img src="images/abuauf/icons/track-preparing-3d.png" alt="" class="w-12 h-12 object-contain" /><span class="track-step__check"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                  <span class="track-step__label">جاري التحضير</span>
                 </li>
-                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
-                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
-                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </span>
-                  <span class="text-[#062A1C] text-[11px] leading-4">في الطريق إليك</span>
+                <li class="track-step is-done"><span class="track-step__conn is-filled " aria-hidden="true"></span>
+                  <span class="track-step__art" aria-hidden="true"><img src="images/abuauf/icons/track-transit-3d.png" alt="" class="w-12 h-12 object-contain" /><span class="track-step__check"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                  <span class="track-step__label">في الطريق إليك</span>
                 </li>
-                <li class="flex flex-col flex-1 items-center gap-1.5 text-center">
-                  <span class="place-items-center grid rounded-full size-7 bg-primary text-white">
-                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </span>
-                  <span class="text-[#062A1C] text-[11px] leading-4">تم التسليم</span>
+                <li class="track-step is-done"><span class="track-step__conn is-filled " aria-hidden="true"></span>
+                  <span class="track-step__art" aria-hidden="true"><img src="images/abuauf/icons/track-delivered-3d.png" alt="" class="w-12 h-12 object-contain" /><span class="track-step__check"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                  <span class="track-step__label">تم التسليم</span>
                 </li>
               </ol></div>
                 <div class="flex flex-col">

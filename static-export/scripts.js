@@ -234,6 +234,7 @@
       "/thank-you": "thank-you.html",
       "/login": "login.html",
       "/register": "register.html",
+      "/verify": "verify.html",
       "/forget-password": "forget-password.html",
       "/reset-password": "reset-password.html",
       "/store-closed": "store-closed.html",
@@ -303,6 +304,10 @@
        path cannot drift. */
     plus: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
     minus: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    // Rounded warning triangle (Ahmed's alert-01.svg) — the below-minimum
+    // notice. currentColor so it inherits the error ink from its wrapper.
+    alert:
+      '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M5.32171 9.68293C7.73539 5.41199 8.94222 3.27651 10.5983 2.72681C11.5093 2.4244 12.4907 2.4244 13.4017 2.72681C15.0578 3.27651 16.2646 5.41199 18.6783 9.68293C21.092 13.9539 22.2988 16.0893 21.9368 17.8293C21.7376 18.7866 21.2469 19.6549 20.535 20.3097C19.241 21.5 16.8274 21.5 12 21.5C7.17265 21.5 4.75897 21.5 3.46496 20.3097C2.75308 19.6549 2.26239 18.7866 2.06322 17.8293C1.70119 16.0893 2.90803 13.9539 5.32171 9.68293Z" stroke="currentColor" stroke-width="1.5"/><path d="M12.2422 17V13C12.2422 12.5286 12.2422 12.2929 12.0957 12.1464C11.9493 12 11.7136 12 11.2422 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.992 9H12.001" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     close:
       '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     chevronDown:
@@ -848,10 +853,18 @@
       return `<li class="flex items-center gap-2.5 shrink-0">${label}</li>`;
     }
 
-    const cols = item.children
+    // Sub-categories as mega-tiles, matching the المنتجات mega-panel's stage
+    // (Ahmed, 2026-08-04). The old dropdown was a two-column list of bare text
+    // links beside a 190px image — cluttered, and a different visual language
+    // to the redesigned mega-panel right next to it. Reusing `.mega-tile` here
+    // makes every nav dropdown read as one system.
+    const tiles = item.children
       .map(
         (c) =>
-          `<li><a href="${pageHref(c.url)}" class="block py-1.5 font-medium text-textSecondary hover:text-primary text-base transition-colors">${esc(t(c.name))}</a></li>`,
+          `<a href="${pageHref(c.url)}" class="mega-tile group/tile flex justify-between items-center gap-2 px-3 py-2 rounded-xl min-h-[44px] text-[#062A1C]">
+            <span class="min-w-0 text-sm leading-tight">${esc(t(c.name))}</span>
+            <span class="w-4 h-4 text-neutral-secondary rtl:scale-flip shrink-0 mega-tile__arrow">${ICON.arrowRight}</span>
+          </a>`,
       )
       .join("");
 
@@ -859,24 +872,22 @@
       ${label}
       <!-- start-0, not inset-inline-start-0 — same non-existent-class bug. -->
       <div class="invisible group-hover/mega:visible top-full start-0 z-50 absolute opacity-0 group-hover/mega:opacity-100 pt-3 transition-all duration-200">
-        <div class="flex gap-6 bg-white shadow-custom3 p-6 rounded-2xl w-max min-w-[420px]">
-          <div class="flex-1">
-            <div class="mb-3 font-semibold text-primary text-lg">${esc(t(item.name))}</div>
-            <ul class="gap-x-8 grid grid-cols-2">${cols}</ul>
-            <a href="${href}" class="inline-flex items-center gap-1 mt-4 font-semibold text-cta hover:text-primary text-base transition-colors">
-              تسوق كل ${esc(t(item.name))}
-              <span class="w-5 h-5 rtl:scale-flip">${ICON.arrowRight}</span>
-            </a>
-          </div>
-          <!-- SQUARE frame, not 180x160. Every category shot is a square
-               600x600 bowl; a non-square box made object-cover slice the bowl
-               off (worst on the full-frame nuts/coffee shots). A square box
-               shows the whole photo — square source into a square box never
-               crops. self-center keeps it square if the sub-category column is
-               taller. -->
-          <div class="bg-interaction-base self-center shrink-0 rounded-xl overflow-hidden">
-            <img src="${item.image}" alt="${esc(t(item.name))}" class="block w-[190px] h-[190px] object-cover" loading="lazy" />
-          </div>
+        <div class="flex flex-col gap-3 bg-white shadow-custom3 p-4 rounded-2xl w-[440px]">
+          <!-- Compact header: the category thumb, its name, and a shop-all
+               link — the branded photo is a 48px thumb here, not a 190px slab. -->
+          <a href="${href}" class="group/head flex items-center gap-3">
+            <span class="block bg-interaction-base rounded-xl w-12 h-12 overflow-hidden shrink-0">
+              <img src="${item.image}" alt="" class="w-full h-full object-cover" loading="lazy" />
+            </span>
+            <span class="flex flex-col min-w-0">
+              <span class="font-bold text-[#062A1C] text-base leading-tight">${esc(t(item.name))}</span>
+              <span class="inline-flex items-center gap-1 font-semibold text-cta group-hover/head:text-primary text-xs transition-colors">
+                تسوق الكل
+                <span class="w-3.5 h-3.5 rtl:scale-flip">${ICON.arrowRight}</span>
+              </span>
+            </span>
+          </a>
+          <div class="content-start gap-1.5 grid grid-cols-2 pt-3 border-neutral-divider border-t">${tiles}</div>
         </div>
       </div>
     </li>`;
@@ -1058,7 +1069,10 @@
              on every page. On the live site the logo's outer edge lands
              exactly on the content container edge. -->
         <div class="relative z-40 bg-primary">
-          <div class="flex justify-between items-center mx-auto px-4 border-[#0F6140] border-b h-[79px] max-w-[1536px]">
+          <div class="flex ${checkout ? "justify-center" : "justify-between"} items-center mx-auto px-4 border-[#0F6140] border-b h-[79px] max-w-[1536px]">
+            <!-- Checkout centres the logo (Ahmed, 2026-08-04): the account/
+                 search/cart group is dropped on checkout, so justify-center puts
+                 the bare logo dead-centre instead of parked at the RTL start. -->
             <!-- RTL start (right edge): logo, products, delivery -->
             <div class="flex items-center gap-6 min-w-0">
               <!-- The client's own asset (abuauf.com/images/logo_white.webp,
@@ -1106,7 +1120,8 @@
                   <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-6 h-6" />
                 </span>
                 <span class="font-normal text-white text-[13px] leading-5" data-account-label>${esc(t("الحساب"))}</span>
-                <span class="w-[18px] h-[18px] text-white shrink-0 chevron">${ICON.chevronDown}</span>
+                <!-- No chevron (Ahmed, 2026-08-04): the link goes straight to the
+                     dashboard, so a caret promising a dropdown was misleading. -->
               </a>
               <!-- Search and cart ride along on scroll: parked out of flow by
                    [data-sticky-actions][data-stuck] in styles.css. gap-3 matches
@@ -1485,30 +1500,15 @@
         <!-- Free-delivery progress. renderCart fills the bar toward FREE_SHIP
              and flips the copy to the success line once earned; hidden on an
              empty basket. -->
+        <!-- Free-delivery progress: the "add X more" caption sits ABOVE the bar
+             (Ahmed, 2026-08-04). The discount rows that used to sit directly
+             UNDER the bar were moved down into the totals group, so nothing
+             clutters right below the bar. -->
         <div data-freeship hidden class="flex flex-col gap-1.5">
           <p class="text-[#062A1C] text-xs leading-5" data-freeship-msg></p>
           <div class="bg-interaction-base rounded-full w-full h-2 overflow-hidden">
             <div data-freeship-fill class="bg-cta rounded-full h-full transition-[width] duration-500" style="width:0%"></div>
           </div>
-        </div>
-        <div class="flex justify-between text-sm">
-          <span class="text-neutral-secondary">${esc(t("مصاريف التوصيل"))}</span>
-          <span class="font-semibold text-[#062A1C] latin" data-cart-delivery>${egp(DELIVERY_FEE)}</span>
-        </div>
-        <!-- Wallet discount and promo-code discount, each in their own row
-             when applied on the cart or checkout page. These used to be
-             added together into this one row — a shopper with both a promo
-             AND the wallet applied saw a single "wallet discount" figure
-             that silently included money the wallet never touched, with no
-             line anywhere naming what the code itself took off. Two rows,
-             two labels, each showing only its own amount. -->
-        <div class="flex justify-between items-center text-sm" data-cart-discount-row hidden>
-          <span class="text-neutral-secondary">${esc(t("خصم المحفظة"))}</span>
-          <span class="inline-flex items-center h-[13px] -me-2 bg-[#E9F3E6] px-2 rounded font-bold text-[#163300] text-sm latin" data-cart-discount></span>
-        </div>
-        <div class="flex justify-between items-center text-sm" data-cart-promo-row hidden>
-          <span class="text-neutral-secondary">${esc(t("خصم كود الخصم"))}</span>
-          <span class="inline-flex items-center h-[13px] -me-2 bg-[#E9F3E6] px-2 rounded font-bold text-[#163300] text-sm latin" data-cart-promo-discount></span>
         </div>
         <!-- Promo code — same [data-promo*] contract as the cart-page field, so
              renderCart's syncPromoUI keeps the drawer and the page in step and a
@@ -1537,15 +1537,36 @@
             <button type="button" data-promo-remove class="shrink-0 font-semibold text-accent-error text-xs underline">${esc(t("إلغاء"))}</button>
           </div>
         </div>
-        <div class="flex justify-between items-center">
-          <span class="text-neutral-secondary text-sm">${esc(t("الإجمالي"))}</span>
-          <span class="font-bold text-[#062A1C] text-lg latin" data-cart-total>${egp(0)}</span>
+        <!-- Delivery fee sits WITH the total now (Ahmed, 2026-08-04): free
+             delivery zeroes it here (renderCart writes "مجاني"), so the progress
+             bar completing is reflected right where the shopper reads the bill.
+             No top border — the promo field directly above already carries a
+             bottom border, and a second line here would read as a double rule. -->
+        <div class="flex flex-col gap-2 pt-1">
+          <!-- The wallet-discount row is intentionally NOT in the drawer (Ahmed,
+               2026-08-04): the drawer is a quick preview, so it shows only the
+               promo discount (a code the shopper actively entered) and the final
+               total. The full wallet breakdown lives on the cart/checkout pages.
+               The total below still reflects the wallet spend. -->
+          <div class="flex justify-between items-center text-sm" data-cart-promo-row hidden>
+            <span class="text-neutral-secondary">${esc(t("خصم كود الخصم"))}</span>
+            <span class="inline-flex items-center h-[13px] -me-2 bg-[#E9F3E6] px-2 rounded font-bold text-[#163300] text-sm latin" data-cart-promo-discount></span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-neutral-secondary">${esc(t("مصاريف التوصيل"))}</span>
+            <span class="font-semibold text-[#062A1C] latin" data-cart-delivery>${egp(DELIVERY_FEE)}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-neutral-secondary text-sm">${esc(t("الإجمالي"))}</span>
+            <span class="font-bold text-[#062A1C] text-lg latin" data-cart-total>${egp(0)}</span>
+          </div>
         </div>
         <!-- Two full-width buttons stacked, not side by side (Ahmed,
              2026-08-02). "عرض السلة" moved up to the header; its old slot here
-             is now "مواصلة التسوق", which browses all products. -->
+             is now "مواصلة التسوق", which browses all products. Primary label is
+             "إتمام الطلب" (Ahmed, 2026-08-04), matching the cart page. -->
         <div class="flex flex-col gap-2 mt-1">
-          <a href="checkout.html" data-cart-checkout class="flex justify-center items-center bg-cta hover:bg-cta-hover rounded-full w-full min-h-11 font-semibold text-white text-sm text-center transition-colors">${esc(t("اتمام الشراء"))}</a>
+          <a href="checkout.html" data-cart-checkout class="flex justify-center items-center bg-cta hover:bg-cta-hover rounded-full w-full min-h-11 font-semibold text-white text-sm text-center transition-colors">${esc(t("إتمام الطلب"))}</a>
           <a href="shop.html" class="flex justify-center items-center border-cta hover:bg-interaction-base border rounded-full w-full min-h-11 font-semibold text-cta text-sm transition-colors">${esc(t("مواصلة التسوق"))}</a>
         </div>
         <!-- One-line delivery note, no background box (Ahmed, 2026-08-02): the
@@ -1557,9 +1578,12 @@
             <span class="font-semibold text-[#062A1C]">${esc(t("توصيل خلال ساعتين"))}</span> ${esc(t("داخل القاهرة الكبرى"))}
           </p>
         </div>
-        <p data-cart-warning hidden class="flex items-start gap-2 mt-1 text-accent-error text-xs leading-5">
-          <span aria-hidden="true">⚠</span>
-          متبقي <span class="latin" data-cart-shortfall></span> لاستكمال الحد الأدنى للطلب
+        <!-- Same icon width (w-6) and items-center as the delivery note above,
+             so both lines' text starts at exactly the same point from the
+             inline start (Ahmed, 2026-08-04). -->
+        <p data-cart-warning hidden class="flex items-center gap-2 mt-1 text-accent-error text-xs leading-5">
+          <span class="w-6 h-6 shrink-0" aria-hidden="true">${ICON.alert}</span>
+          <span>متبقي <span class="latin" data-cart-shortfall></span> لاستكمال الحد الأدنى للطلب</span>
         </p>`;
 
     return `
@@ -1850,6 +1874,73 @@
       </div>
     </div>
 
+    <!-- Account modals (Ahmed, 2026-08-04): add/activate a voucher, redeem
+         points. All demo — activating a voucher or redeeming points lands the
+         value in the wallet (initVouchers / initPointsRedeem). -->
+    <div data-modal="voucherAdd" class="modal-shell">
+      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[400px] overflow-hidden" data-modal-box>
+        <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
+          <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("أضف كود قسيمة"))}</h2>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
+        </div>
+        <form data-voucher-add-form class="flex flex-col gap-3 p-5">
+          <label class="block">
+            <span class="label">${esc(t("الكود"))}</span>
+            <input type="text" name="code" required placeholder="مثال: ABUAUF150" dir="ltr"
+                   class="mt-1 px-3 border border-neutral-divider focus:border-cta rounded-lg outline-none w-full h-12 text-[#062A1C] text-sm text-start transition-colors latin" />
+          </label>
+          <p class="text-neutral-secondary text-xs">${esc(t("الكود صالح للاستخدام مرة واحدة فقط."))}</p>
+          <button type="submit" class="bg-cta hover:bg-cta-hover mt-1 py-3 rounded-full font-semibold text-white text-sm transition-colors">${esc(t("أضف القسيمة"))}</button>
+        </form>
+      </div>
+    </div>
+
+    <div data-modal="voucherActivate" class="modal-shell">
+      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[380px] overflow-hidden" data-modal-box>
+        <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
+          <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("تفعيل القسيمة"))}</h2>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
+        </div>
+        <div class="flex flex-col items-center gap-3 p-6 text-center">
+          <img src="images/abuauf/icons/discount-tag-3d.png" alt="" class="w-16 h-16 object-contain" />
+          <p class="text-[#062A1C] text-sm leading-6">${esc(t("سيتم إضافة"))} <span class="font-bold text-cta latin" data-voucher-activate-value></span> ${esc(t("إلى رصيد محفظتك"))}</p>
+          <button type="button" data-voucher-activate-confirm class="bg-cta hover:bg-cta-hover mt-1 py-3 rounded-full w-full font-semibold text-white text-sm transition-colors">${esc(t("تفعيل القسيمة"))}</button>
+        </div>
+      </div>
+    </div>
+
+    <div data-modal="pointsRedeem" class="modal-shell">
+      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[400px] overflow-hidden" data-modal-box>
+        <div class="flex justify-between items-start px-5 py-4 border-neutral-divider border-b">
+          <div class="flex flex-col">
+            <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("استبدال النقاط"))}</h2>
+            <span class="text-neutral-secondary text-xs">${esc(t("حوّل نقاطك إلى رصيد في محفظتك"))}</span>
+          </div>
+          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
+        </div>
+        <div class="flex flex-col gap-4 p-5">
+          <div class="flex items-center gap-2 bg-interaction-base px-3 py-2 rounded-xl">
+            <img src="images/abuauf/icons/points-3d.png" alt="" class="w-6 h-6 object-contain" />
+            <span class="text-[#062A1C] text-sm"><span class="font-bold latin" data-redeem-available>0</span> ${esc(t("نقطة متاحة"))}</span>
+          </div>
+          <div class="flex items-end gap-2">
+            <label class="flex flex-col flex-1 gap-1">
+              <span class="font-medium text-neutral-secondary text-xs">${esc(t("عدد النقاط"))}</span>
+              <input type="number" inputmode="numeric" data-redeem-input min="0" step="10"
+                     class="bg-white px-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full h-11 text-[#062A1C] text-base transition-colors latin" />
+            </label>
+            <button type="button" data-redeem-all class="bg-interaction-base hover:bg-interaction-tertiary-hover px-4 border border-neutral-divider rounded-xl h-11 font-semibold text-cta text-xs whitespace-nowrap transition-colors">${esc(t("كل النقاط"))}</button>
+          </div>
+          <p class="text-neutral-secondary text-sm">${esc(t("القيمة"))}: <span class="font-bold text-cta latin" data-redeem-egp>EGP 0</span></p>
+          <p data-redeem-msg hidden class="font-semibold text-accent-error text-xs"></p>
+          <div class="flex justify-end items-center gap-2 pt-1">
+            <button type="button" data-close class="px-4 py-2 font-semibold text-neutral-secondary text-sm">${esc(t("إلغاء"))}</button>
+            <button type="button" data-redeem-confirm class="bg-cta hover:bg-cta-hover px-6 py-2.5 rounded-full font-semibold text-white text-sm transition-colors">${esc(t("تأكيد الاستبدال"))}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="toast-container"></div>`;
   }
 
@@ -1867,6 +1958,9 @@
     address: '[data-modal="address"]',
     location: '[data-sheet="location"]',
     accountMenu: '[data-sheet="account-menu"]',
+    voucherAdd: '[data-modal="voucherAdd"]',
+    voucherActivate: '[data-modal="voucherActivate"]',
+    pointsRedeem: '[data-modal="pointsRedeem"]',
   };
   let openEl = null;
 
@@ -3270,11 +3364,17 @@
      with the real backend before launch** — see DESIGN-NOTES.
      --------------------------------------------------------------- */
   const AUTH_KEY = "abuauf:auth";
+  const PENDING_KEY = "abuauf:authPending";
+  // Passwordless now (Ahmed, 2026-08-04): sign-in is a mobile number then an
+  // OTP. This is still a static export with no SMS backend, so verification is
+  // a stand-in — any mobile is accepted and any well-formed 6-digit code passes
+  // (the on-screen "test code" hint was removed, Ahmed 2026-08-04). Rip this out
+  // with the rest of the demo auth before launch (DESIGN-NOTES).
   const DEMO_USER = {
     email: "demo@abuauf.com",
-    password: "AbuAuf2026",
     name: "محمد عادل",
     nameEn: "Mohamed Adel",
+    mobile: "01000000000",
   };
 
   const Auth = (function () {
@@ -3290,6 +3390,25 @@
       document.dispatchEvent(
         new CustomEvent("auth:change", { detail: { reason: reason, user: user } }),
       );
+    }
+
+    // A pending flow survives the hop to the OTP page (which is a separate
+    // document), so the verify page knows the mobile, the mode and where to
+    // return afterwards.
+    function readPending() {
+      try {
+        return JSON.parse(localStorage.getItem(PENDING_KEY) || "null");
+      } catch (e) {
+        return null;
+      }
+    }
+    function writePending(p) {
+      try {
+        if (p) localStorage.setItem(PENDING_KEY, JSON.stringify(p));
+        else localStorage.removeItem(PENDING_KEY);
+      } catch (e) {
+        /* ignore */
+      }
     }
 
     return {
@@ -3309,18 +3428,69 @@
       isAuthed: function () {
         return !!user;
       },
-      /* Returns true on success, false on bad credentials. */
-      login: function (email, password) {
-        const ok =
-          String(email || "").trim().toLowerCase() === DEMO_USER.email &&
-          String(password || "") === DEMO_USER.password;
-        if (!ok) return false;
-        user = { email: DEMO_USER.email, name: DEMO_USER.name, nameEn: DEMO_USER.nameEn };
+      pending: readPending,
+      /* Passwordless login: stash the mobile (and where to return afterwards)
+         and hand off to the OTP page, which is the real gate. */
+      startLogin: function (mobile, next) {
+        const p = { mode: "login", mobile: String(mobile || "").trim(), next: next || "" };
+        writePending(p);
+        return p;
+      },
+      startRegister: function (data, next) {
+        const p = {
+          mode: "register",
+          next: next || "",
+          firstName: String(data.firstName || "").trim(),
+          lastName: String(data.lastName || "").trim(),
+          mobile: String(data.mobile || "").trim(),
+          email: String(data.email || "").trim(),
+        };
+        writePending(p);
+        return p;
+      },
+      /* Verify the OTP against the pending flow. On success the user is signed
+         in — created from the pending record on register, with the email left
+         UNVERIFIED so the dashboard can prompt for it — and pending is cleared.
+         Returns { ok, next } / { ok:false, reason }. */
+      verifyOtp: function (code) {
+        const p = readPending();
+        if (!p) return { ok: false, reason: "no-pending" };
+        // No SMS backend: any well-formed 6-digit code passes (demo).
+        if (!/^\d{6}$/.test(String(code || "").trim())) return { ok: false, reason: "bad-otp" };
+        if (p.mode === "register") {
+          const full = [p.firstName, p.lastName].filter(Boolean).join(" ") || DEMO_USER.name;
+          user = {
+            name: p.firstName || DEMO_USER.name,
+            full: full,
+            nameEn: DEMO_USER.nameEn,
+            email: p.email || "",
+            mobile: p.mobile,
+            emailVerified: false,
+          };
+        } else {
+          user = {
+            name: DEMO_USER.name,
+            full: DEMO_USER.name,
+            nameEn: DEMO_USER.nameEn,
+            email: DEMO_USER.email,
+            mobile: p.mobile || DEMO_USER.mobile,
+            emailVerified: true,
+          };
+        }
+        writePending(null);
         emit("login");
+        return { ok: true, next: p.next || "" };
+      },
+      /* Mark the signed-in user's email verified — the dashboard banner. */
+      verifyEmail: function () {
+        if (!user) return false;
+        user.emailVerified = true;
+        emit("email-verified");
         return true;
       },
       logout: function () {
         user = null;
+        writePending(null);
         emit("logout");
         return this;
       },
@@ -4332,24 +4502,57 @@
   const WALLET_KEY = "abuauf:walletApplied";
   const walletApplied = () => Number(localStorage.getItem(WALLET_KEY)) || 0;
 
-  /* Wallet balance = a base plus loyalty points transferred in (Ahmed,
-     2026-08-02). Redeeming points on the points page converts them to EGP and
-     adds them here; every wallet display ([data-wallet-amount], and the
-     toggle's data-wallet-balance) reads the total. BASE_WALLET mirrors
-     components.WALLET_BALANCE. */
-  const WALLET_BONUS_KEY = "abuauf:pointsWallet";
+  /* Wallet balance = a base PLUS everything transferred in (Ahmed, 2026-08-04):
+     redeemed loyalty points AND activated vouchers both land here, so the wallet
+     is the single balance the whole account reflects. Every wallet display
+     ([data-wallet-amount], the toggle's data-wallet-balance) reads the total.
+     BASE_WALLET mirrors components.WALLET_BALANCE; POINTS_BASE mirrors
+     _account.CUSTOMER["points"]. Demo state — no live endpoint (DESIGN-NOTES). */
   const BASE_WALLET = 1200;
-  const POINTS_EGP = 12; // 120 points -> EGP 12, as the points page states
+  const POINTS_BASE = 3200;
+  const POINTS_PER_EGP = 10; // 10 points -> EGP 1
+  const POINTS_TIERS = [["فضية", 0], ["ذهبية", 2000], ["بلاتينية", 4000]];
+  const PT_SPENT_KEY = "abuauf:pointsSpent";
+  const VOUCHERS_KEY = "abuauf:vouchersWallet";
+  const V_USED_KEY = "abuauf:vouchersUsed";
+  const VOUCHERS_TOTAL = 3; // mirrors _account.VOUCHERS length
+  const vouchersUsed = () => { try { return JSON.parse(localStorage.getItem(V_USED_KEY) || "[]"); } catch (e) { return []; } };
+  const numKey = (k) => { try { return Number(localStorage.getItem(k)) || 0; } catch (e) { return 0; } };
+  const pointsSpent = () => numKey(PT_SPENT_KEY);
+  const pointsRemaining = () => Math.max(0, POINTS_BASE - pointsSpent());
+  const vouchersCredit = () => numKey(VOUCHERS_KEY);
   function walletBonus() {
-    try {
-      return Number(localStorage.getItem(WALLET_BONUS_KEY)) || 0;
-    } catch (e) {
-      return 0;
-    }
+    return Math.round(pointsSpent() / POINTS_PER_EGP) + vouchersCredit();
   }
-  function syncWalletBalance() {
+  /* Count a wallet display from its current value up to `to`, with a soft scale
+     "pop" (Ahmed, 2026-08-04) — so activating a voucher or redeeming points is
+     felt, not just shown. Smooth ease-out on the number, a CSS bounce on the
+     box; skipped under reduced motion. */
+  function walletCountUp(el, from, to) {
+    if (reduceMotion() || from === to) { el.textContent = "EGP " + to; return; }
+    const dur = 700, t0 = performance.now();
+    const ease = (p) => 1 - Math.pow(1 - p, 3);
+    el.classList.remove("wallet-pop");
+    void el.offsetWidth;
+    el.classList.add("wallet-pop");
+    const step = (now) => {
+      const p = Math.min(1, (now - t0) / dur);
+      el.textContent = "EGP " + Math.round(from + (to - from) * ease(p));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+    // rAF is throttled/paused in a hidden or backgrounded tab, so it may never
+    // reach the last frame; a timer (which still fires) guarantees the final
+    // value and cleanup regardless. Worst case: the number jumps, never sticks.
+    setTimeout(() => { el.textContent = "EGP " + to; el.classList.remove("wallet-pop"); }, dur + 120);
+  }
+  function syncWalletBalance(animate) {
     const total = BASE_WALLET + walletBonus();
-    document.querySelectorAll("[data-wallet-amount]").forEach((el) => (el.textContent = "EGP " + total));
+    document.querySelectorAll("[data-wallet-amount]").forEach((el) => {
+      const cur = parseInt((el.textContent || "").replace(/[^\d]/g, ""), 10) || 0;
+      if (animate && cur !== total) walletCountUp(el, cur, total);
+      else el.textContent = "EGP " + total;
+    });
     document.querySelectorAll("[data-wallet-toggle]").forEach((el) => (el.dataset.walletBalance = String(total)));
   }
 
@@ -4612,7 +4815,13 @@
 
     /* Totals + checkout gating, drawer and cart page alike. */
     document.querySelectorAll("[data-cart-subtotal]").forEach((el) => (el.textContent = egp(sub)));
-    document.querySelectorAll("[data-cart-total]").forEach((el) => (el.textContent = egp(Math.max(0, afterPromo - walletUsed))));
+    /* The drawer does NOT show or apply the wallet (Ahmed, 2026-08-04): its
+       total is the real order cost (after promo, before wallet). The wallet is
+       spent on the cart/checkout pages, whose total keeps subtracting it. */
+    document.querySelectorAll("[data-cart-total]").forEach((el) => {
+      const inDrawer = el.closest('[data-drawer="cart"]');
+      el.textContent = egp(Math.max(0, inDrawer ? afterPromo : afterPromo - walletUsed));
+    });
     document.querySelectorAll("[data-cart-discount-row]").forEach((el) => (el.hidden = !walletUsed));
     document.querySelectorAll("[data-cart-discount]").forEach((el) => (el.textContent = "− " + egp(walletUsed)));
     document.querySelectorAll("[data-cart-promo-row]").forEach((el) => (el.hidden = !promo));
@@ -5181,6 +5390,17 @@
   function initAuthUI() {
     Auth.init();
 
+    // Return-destination from ?next= — only a same-site .html filename is
+    // honoured, never an absolute URL from the query string (open-redirect).
+    const nextParam = () => {
+      try {
+        return new URLSearchParams(location.search).get("next") || "";
+      } catch (e) {
+        return "";
+      }
+    };
+    const safeNext = (n) => (/^[a-z0-9_-]+\.html$/i.test(String(n || "")) ? n : "");
+
     const paintAccountLinks = () => {
       const authed = Auth.isAuthed();
       const u = Auth.user();
@@ -5201,37 +5421,149 @@
       document.querySelectorAll("[data-anon-only]").forEach((el) => {
         el.hidden = authed;
       });
+      // Email-verify banner — only for a signed-in user whose email is
+      // EXPLICITLY unverified (a freshly registered account). Undefined counts
+      // as verified, so an older demo session never surfaces it.
+      document.querySelectorAll("[data-email-unverified]").forEach((el) => {
+        el.hidden = !(authed && u && u.emailVerified === false);
+      });
+      // The verify page shows the mobile the OTP was "sent" to.
+      const p = Auth.pending();
+      document.querySelectorAll("[data-otp-mobile]").forEach((el) => {
+        el.textContent = (p && p.mobile) || "—";
+      });
     };
 
     document.addEventListener("auth:change", paintAccountLinks);
     paintAccountLinks();
 
-    // Sign-in form. Beats initDemoForms to the submit because the login form
-    // is not tagged [data-demo-form] — it has a real (demo) credential check.
+    // Passwordless LOGIN — a mobile number, then hand off to the OTP page.
     document.querySelectorAll("[data-login-form]").forEach((form) => {
       form.addEventListener("submit", (e) => {
         e.preventDefault();
-        const email = (form.querySelector('[name="email"]') || {}).value;
-        const password = (form.querySelector('[name="password"]') || {}).value;
-        if (Auth.login(email, password)) {
-          toast(t("تم تسجيل الدخول بنجاح"));
-          setTimeout(() => (window.location.href = pageHref("/my-account")), 700);
-        } else {
-          toast(t("البريد الإلكتروني أو كلمة المرور غير صحيحة"), "error");
+        const mobile = (form.querySelector('[name="mobile"]') || {}).value || "";
+        if (String(mobile).replace(/\D/g, "").length < 6) {
+          toast(t("من فضلك أدخل رقم موبايل صحيح"), "error");
+          return;
         }
+        Auth.startLogin(mobile, safeNext(nextParam()));
+        window.location.href = pageHref("/verify");
       });
     });
 
-    // One-tap fill, so the demo credentials do not have to be retyped.
-    document.querySelectorAll("[data-demo-fill]").forEach((btn) => {
+    // REGISTER — capture the details, then hand off to the same OTP page.
+    document.querySelectorAll("[data-register-form]").forEach((form) => {
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const val = (n) => (form.querySelector('[name="' + n + '"]') || {}).value || "";
+        const mobile = val("phone") || val("mobile");
+        if (String(mobile).replace(/\D/g, "").length < 6) {
+          toast(t("من فضلك أدخل رقم موبايل صحيح"), "error");
+          return;
+        }
+        Auth.startRegister(
+          {
+            firstName: val("first-name"),
+            lastName: val("last-name"),
+            mobile: mobile,
+            email: val("email"),
+          },
+          safeNext(nextParam()),
+        );
+        window.location.href = pageHref("/verify");
+      });
+    });
+
+    // OTP verify page.
+    const otpForm = document.querySelector("[data-otp-form]");
+    if (otpForm) {
+      // No pending flow means there is nothing to verify — bounce to sign in.
+      if (!Auth.pending()) {
+        window.location.href = pageHref("/login");
+        return;
+      }
+      const boxes = [...otpForm.querySelectorAll("[data-otp-box]")];
+      const readCode = () => boxes.map((b) => b.value).join("").trim();
+      // Single-digit boxes with auto-advance and backspace between them.
+      boxes.forEach((box, i) => {
+        box.addEventListener("input", () => {
+          box.value = box.value.replace(/\D/g, "").slice(-1);
+          box.classList.toggle("is-filled", !!box.value);
+          if (box.value && i < boxes.length - 1) boxes[i + 1].focus();
+        });
+        box.addEventListener("keydown", (ev) => {
+          if (ev.key === "Backspace" && !box.value && i > 0) boxes[i - 1].focus();
+        });
+      });
+      const msg = otpForm.querySelector("[data-otp-msg]");
+      otpForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const res = Auth.verifyOtp(readCode());
+        if (res.ok) {
+          if (msg) msg.hidden = true;
+          // Flip the button to a "verified" state before the redirect so the
+          // shopper sees the success, not an instant page swap (Ahmed).
+          const submitBtn = otpForm.querySelector("[data-otp-submit]");
+          if (submitBtn) {
+            submitBtn.textContent = "✓ " + t("تم التحقق");
+            submitBtn.disabled = true;
+            submitBtn.classList.add("opacity-90", "pointer-events-none");
+          }
+          toast(t("تم تسجيل الدخول بنجاح"));
+          const dest = safeNext(res.next);
+          setTimeout(() => {
+            window.location.href = dest || pageHref("/my-account");
+          }, 1100);
+        } else if (msg) {
+          msg.textContent = t("رمز التحقق غير صحيح، حاول مرة أخرى");
+          msg.hidden = false;
+        } else {
+          toast(t("رمز التحقق غير صحيح، حاول مرة أخرى"), "error");
+        }
+      });
+      // Resend with a cooldown (Ahmed, 2026-08-04): after a "send" the button
+      // disables and counts down the seconds left before another send is
+      // allowed; it re-enables at zero. The cooldown also runs on load, since a
+      // code was just sent arriving here.
+      const RESEND_COOLDOWN = 30;
+      const resendBtn = otpForm.querySelector("[data-resend-otp]");
+      if (resendBtn) {
+        const baseLabel = resendBtn.textContent.trim();
+        let resendTimer = null;
+        const cooldown = (secs) => {
+          let left = secs;
+          resendBtn.disabled = true;
+          resendBtn.classList.add("opacity-50", "pointer-events-none");
+          const paint = () => {
+            if (left <= 0) {
+              clearInterval(resendTimer);
+              resendTimer = null;
+              resendBtn.disabled = false;
+              resendBtn.classList.remove("opacity-50", "pointer-events-none");
+              resendBtn.textContent = baseLabel;
+              return;
+            }
+            resendBtn.textContent =
+              t("إعادة الإرسال خلال") +
+              ' ' + left + ' ' + t("ثانية");
+            left -= 1;
+          };
+          paint();
+          resendTimer = setInterval(paint, 1000);
+        };
+        resendBtn.addEventListener("click", () => {
+          if (resendBtn.disabled) return;
+          toast(t("تم إرسال رمز جديد"));
+          cooldown(RESEND_COOLDOWN);
+        });
+        cooldown(RESEND_COOLDOWN);
+      }
+    }
+
+    // Verify-email button on the dashboard banner.
+    document.querySelectorAll("[data-verify-email]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const form = document.querySelector("[data-login-form]");
-        if (!form) return;
-        const email = form.querySelector('[name="email"]');
-        const password = form.querySelector('[name="password"]');
-        if (email) email.value = Auth.demo.email;
-        if (password) password.value = Auth.demo.password;
-        if (email) email.focus();
+        if (Auth.verifyEmail()) toast(t("تم تأكيد بريدك الإلكتروني بنجاح"));
       });
     });
 
@@ -5338,6 +5670,13 @@
     const refresh = () => {
       syncFavButtons();
       renderFavsPage();
+      // Keep every wishlist-count pill in step with the store — the account
+      // sidebar shows one on ALL its pages, not just the favourites page that
+      // renderFavsPage runs on (Ahmed, 2026-08-04).
+      const n = String(Favs.count());
+      document
+        .querySelectorAll("[data-favs-count]")
+        .forEach((el) => (el.textContent = n));
     };
     document.addEventListener("favs:change", refresh);
     refresh();
@@ -5683,20 +6022,37 @@
       return "";
     }
   }
+  /* Three resting states now (Ahmed, 2026-08-04): the TRIGGER
+     ([data-note-open]) when there is no note, the FILLED field
+     ([data-note-view]) when there is, and the EDITOR ([data-note-edit]) which
+     is only ever shown transiently by a click — never by sync — so this resets
+     to whichever resting state the stored note implies. */
   function syncNoteUI() {
     const note = readNote();
     document.querySelectorAll("[data-note]").forEach((wrap) => {
+      // Read-only note (payment step, Ahmed 2026-08-04): a note carried over
+      // from checkout is shown but NOT editable/removable. Hide the whole block
+      // when there is no note.
+      if (wrap.hasAttribute("data-note-readonly")) {
+        wrap.hidden = !note;
+        const roText = wrap.querySelector("[data-note-text]");
+        if (note && roText) roText.textContent = note;
+        return;
+      }
+      const open = wrap.querySelector("[data-note-open]");
       const edit = wrap.querySelector("[data-note-edit]");
       const view = wrap.querySelector("[data-note-view]");
       const text = wrap.querySelector("[data-note-text]");
       const ta = wrap.querySelector("[data-order-note]");
       if (note) {
         if (text) text.textContent = note;
-        if (view) view.hidden = false;
+        if (open) open.hidden = true;
         if (edit) edit.hidden = true;
+        if (view) view.hidden = false;
       } else {
+        if (open) open.hidden = false;
+        if (edit) edit.hidden = true;
         if (view) view.hidden = true;
-        if (edit) edit.hidden = false;
         if (ta) ta.value = "";
       }
     });
@@ -5704,7 +6060,36 @@
 
   function initOrderNotes() {
     syncNoteUI();
+
+    // Reveal the editor for one wrap, prefilled and focused.
+    const openEditor = (wrap, prefill) => {
+      const open = wrap.querySelector("[data-note-open]");
+      const edit = wrap.querySelector("[data-note-edit]");
+      const view = wrap.querySelector("[data-note-view]");
+      const ta = wrap.querySelector("[data-order-note]");
+      if (open) open.hidden = true;
+      if (view) view.hidden = true;
+      if (edit) edit.hidden = false;
+      if (ta) {
+        ta.value = prefill || "";
+        ta.focus();
+      }
+    };
+
     document.addEventListener("click", (e) => {
+      // Open the editor — from the trigger (empty) or by clicking a filled note
+      // (prefilled). Both read the stored note, which is "" before one exists.
+      const opener = e.target.closest("[data-note-open], [data-note-edit-btn]");
+      if (opener) {
+        openEditor(opener.closest("[data-note]") || document, readNote());
+        return;
+      }
+      // Cancel — drop back to the resting state (filled note if stored, else the
+      // trigger). Storage is untouched, so an in-progress edit is discarded.
+      if (e.target.closest("[data-note-cancel]")) {
+        syncNoteUI();
+        return;
+      }
       const save = e.target.closest("[data-order-note-save]");
       if (save) {
         const wrap = save.closest("[data-note]") || document;
@@ -5720,19 +6105,6 @@
         syncNoteUI();
         toast(note ? "تمت إضافة ملاحظتك على الطلب" : "تمت إزالة الملاحظات");
         pulse(save);
-        return;
-      }
-      // Edit an applied note — back to the textarea, prefilled.
-      const editBtn = e.target.closest("[data-note-edit-btn]");
-      if (editBtn) {
-        const wrap = editBtn.closest("[data-note]") || document;
-        const edit = wrap.querySelector("[data-note-edit]");
-        const view = wrap.querySelector("[data-note-view]");
-        const ta = wrap.querySelector("[data-order-note]");
-        if (ta) ta.value = readNote();
-        if (view) view.hidden = true;
-        if (edit) edit.hidden = false;
-        if (ta) ta.focus();
         return;
       }
       // Remove an applied note.
@@ -5826,45 +6198,176 @@
     });
   }
 
-  /* Loyalty points redeem (Ahmed, 2026-08-02). Points have no live endpoint
-     (DESIGN-NOTES §1), so this is a client-side demo: the button now visibly
-     redeems, zeroes the balance and persists the done state — it was a dead
-     button with no handler at all, the state the addresses page was in before
-     it was wired up. */
-  const POINTS_KEY = "abuauf:pointsRedeemed";
+  /* ---------------------------------------------------------------
+     Loyalty points redeem + vouchers (Ahmed, 2026-08-04). All demo, no live
+     endpoint (DESIGN-NOTES §1). Redeeming points AND activating vouchers both
+     add EGP to the wallet (walletBonus/syncWalletBalance above). The points
+     balance, its progress bar and the tier ladder update live.
+     --------------------------------------------------------------- */
+  const nfEn = (n) => Number(n).toLocaleString("en-US");
+  function tierInfo(pts) {
+    let idx = 0;
+    for (let i = 0; i < POINTS_TIERS.length; i++) if (pts >= POINTS_TIERS[i][1]) idx = i;
+    const cur = POINTS_TIERS[idx], nxt = POINTS_TIERS[idx + 1] || null;
+    let pct = 100, toNext = 0;
+    if (nxt) { const span = nxt[1] - cur[1]; pct = Math.max(0, Math.min(100, Math.round(((pts - cur[1]) / span) * 100))); toNext = Math.max(0, nxt[1] - pts); }
+    return { idx: idx, nxt: nxt, pct: pct, toNext: toNext };
+  }
   function syncPointsUI() {
-    let done = false;
-    try {
-      done = localStorage.getItem(POINTS_KEY) === "1";
-    } catch (e) {
-      /* ignore */
-    }
-    document.querySelectorAll("[data-points]").forEach((wrap) => {
-      const bal = wrap.querySelector("[data-points-balance]");
-      const hint = wrap.querySelector("[data-points-hint]");
-      const btn = wrap.querySelector("[data-redeem-points]");
-      const doneEl = wrap.querySelector("[data-points-done]");
-      if (done && bal) bal.textContent = "0";
-      if (hint) hint.hidden = done;
-      if (btn) btn.hidden = done;
-      if (doneEl) doneEl.hidden = !done;
+    const rem = pointsRemaining();
+    const ti = tierInfo(rem);
+    document.querySelectorAll("[data-points-balance]").forEach((el) => (el.textContent = nfEn(rem)));
+    document.querySelectorAll("[data-points-badge]").forEach((el) => (el.textContent = nfEn(rem)));
+    document.querySelectorAll("[data-points-progress]").forEach((el) => (el.style.width = ti.pct + "%"));
+    document.querySelectorAll("[data-points-tonext]").forEach((el) => {
+      el.innerHTML = ti.nxt
+        ? '<span class="latin">' + nfEn(ti.toNext) + "</span> " + esc(t("نقطة للوصول لعضوية")) + " " + esc(ti.nxt[0])
+        : esc(t("وصلت لأعلى مستوى عضوية")) + " 🎉";
+    });
+    document.querySelectorAll("[data-tier-cards]").forEach((wrap) => {
+      wrap.querySelectorAll("[data-tier]").forEach((c) => {
+        if (Number(c.dataset.tier) === ti.idx) c.setAttribute("data-current", "");
+        else c.removeAttribute("data-current");
+      });
     });
   }
-  function initPoints() {
-    if (!document.querySelector("[data-points]")) return;
+  function initPointsRedeem() {
     syncPointsUI();
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest("[data-redeem-points]")) return;
-      try {
-        localStorage.setItem(POINTS_KEY, "1");
-        // Transfer the points' EGP value into the wallet.
-        localStorage.setItem(WALLET_BONUS_KEY, String(POINTS_EGP));
-      } catch (err) {
-        /* ignore */
+    const modal = document.querySelector('[data-modal="pointsRedeem"]');
+    if (!modal) return;
+    const input = modal.querySelector("[data-redeem-input]");
+    const egpEl = modal.querySelector("[data-redeem-egp]");
+    const availEl = modal.querySelector("[data-redeem-available]");
+    const msg = modal.querySelector("[data-redeem-msg]");
+    const clampVal = () => {
+      let v = Math.floor(Number(input && input.value) || 0);
+      if (v < 0) v = 0;
+      if (v > pointsRemaining()) v = pointsRemaining();
+      return v;
+    };
+    const paint = () => {
+      const v = clampVal();
+      if (egpEl) egpEl.textContent = "EGP " + Math.round(v / POINTS_PER_EGP);
+      if (msg) msg.hidden = true;
+    };
+    document.querySelectorAll('[data-open="pointsRedeem"]').forEach((b) =>
+      b.addEventListener("click", () => {
+        if (availEl) availEl.textContent = nfEn(pointsRemaining());
+        if (input) { input.max = String(pointsRemaining()); input.value = String(Math.min(pointsRemaining(), 500)); }
+        paint();
+      }));
+    if (input) input.addEventListener("input", paint);
+    const allBtn = modal.querySelector("[data-redeem-all]");
+    if (allBtn) allBtn.addEventListener("click", () => { if (input) input.value = String(pointsRemaining()); paint(); });
+    const confirm = modal.querySelector("[data-redeem-confirm]");
+    if (confirm) confirm.addEventListener("click", () => {
+      const v = clampVal();
+      if (v < POINTS_PER_EGP) {
+        if (msg) { msg.textContent = t("أقل عدد للاستبدال هو") + " " + POINTS_PER_EGP + " " + t("نقاط"); msg.hidden = false; }
+        return;
       }
+      try { localStorage.setItem(PT_SPENT_KEY, String(pointsSpent() + v)); } catch (e) { /* ignore */ }
       syncPointsUI();
-      syncWalletBalance();
-      toast("تم تحويل نقاطك إلى رصيد محفظتك");
+      syncWalletBalance(true);
+      closeOverlay();
+      toast(t("تم تحويل") + " " + nfEn(v) + " " + t("نقطة إلى محفظتك"));
+    });
+  }
+  function syncVouchersCount() {
+    // Sidebar badge on EVERY account page reads the same remaining count, so an
+    // activation on the vouchers page shows up in the nav everywhere.
+    const remain = Math.max(0, VOUCHERS_TOTAL - vouchersUsed().length);
+    document.querySelectorAll("[data-vouchers-count]").forEach((el) => (el.textContent = remain));
+    const empty = document.querySelector("[data-vouchers-empty]");
+    if (empty) {
+      const list = document.querySelector("[data-vouchers-list]");
+      empty.hidden = !list || list.querySelectorAll("[data-voucher]").length > 0;
+    }
+  }
+  /* Voucher history ("القسائم السابقة") — activated vouchers are logged here so
+     they show as USED under the static expired ones, and survive reload (Ahmed,
+     2026-08-04). */
+  const V_HIST_KEY = "abuauf:vouchersHistory";
+  const AR_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+  const fmtDateAr = (d) => d.getDate() + " " + AR_MONTHS[d.getMonth()] + " " + d.getFullYear();
+  const vouchersHistory = () => { try { return JSON.parse(localStorage.getItem(V_HIST_KEY) || "[]"); } catch (e) { return []; } };
+  function voucherHistRow(label, dateStr) {
+    return '<div class="flex items-center gap-3 bg-white/70 p-4 border border-neutral-divider rounded-2xl">'
+      + '<img src="images/abuauf/icons/discount-tag-3d.png" alt="" class="w-11 h-11 object-contain shrink-0 opacity-60 grayscale" />'
+      + '<div class="flex flex-col flex-1 min-w-0"><span class="font-bold text-neutral-secondary text-sm">' + esc(label) + '</span>'
+      + '<span class="text-neutral-secondary text-xs">' + esc(t("تم الاستخدام")) + ' ' + esc(dateStr) + '</span></div>'
+      + '<span class="inline-flex items-center bg-[#E9F3E6] px-2.5 py-1 rounded-full font-semibold text-[#163300] text-xs shrink-0">' + esc(t("مستخدمة")) + '</span></div>';
+  }
+  function renderVoucherHistory() {
+    const host = document.querySelector("[data-vouchers-history-dynamic]");
+    if (!host) return;
+    host.innerHTML = vouchersHistory().slice().reverse().map((h) => voucherHistRow(h.label, h.date)).join("");
+  }
+  function addVoucherHistory(label, value) {
+    try {
+      const h = vouchersHistory();
+      h.push({ label: label, value: value, date: fmtDateAr(new Date()) });
+      localStorage.setItem(V_HIST_KEY, JSON.stringify(h));
+    } catch (e) { /* ignore */ }
+    renderVoucherHistory();
+  }
+  function initVouchers() {
+    renderVoucherHistory();
+    // Drop already-activated vouchers on load so they can't be claimed twice
+    // (the wallet credit is persisted separately in VOUCHERS_KEY).
+    const used = vouchersUsed();
+    document.querySelectorAll("[data-voucher]").forEach((v) => {
+      if (used.indexOf(v.dataset.voucherId) >= 0) v.remove();
+    });
+    syncVouchersCount();
+
+    const addForm = document.querySelector("[data-voucher-add-form]");
+    if (addForm) addForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const code = ((addForm.querySelector('[name="code"]') || {}).value || "").trim();
+      if (!code) return;
+      // Demo: any code adds EGP 50 to the wallet.
+      try { localStorage.setItem(VOUCHERS_KEY, String(vouchersCredit() + 50)); } catch (e2) { /* ignore */ }
+      addForm.reset();
+      addVoucherHistory(t("قسيمة كود"), 50);
+      syncWalletBalance(true);
+      closeOverlay();
+      toast(t("تم تفعيل القسيمة وإضافتها لمحفظتك"));
+    });
+
+    let pending = null;
+    document.querySelectorAll("[data-voucher-activate]").forEach((btn) =>
+      btn.addEventListener("click", () => {
+        pending = btn.closest("[data-voucher]");
+        const val = Number(btn.dataset.value) || 0;
+        const modal = document.querySelector('[data-modal="voucherActivate"]');
+        if (modal) {
+          modal.dataset.value = String(val);
+          const v = modal.querySelector("[data-voucher-activate-value]");
+          if (v) v.textContent = "EGP " + val;
+        }
+        openOverlay("voucherActivate");
+      }));
+    const vConfirm = document.querySelector("[data-voucher-activate-confirm]");
+    if (vConfirm) vConfirm.addEventListener("click", () => {
+      const modal = document.querySelector('[data-modal="voucherActivate"]');
+      const val = Number(modal && modal.dataset.value) || 0;
+      try {
+        localStorage.setItem(VOUCHERS_KEY, String(vouchersCredit() + val));
+        if (pending) {
+          const u = vouchersUsed();
+          u.push(pending.dataset.voucherId);
+          localStorage.setItem(V_USED_KEY, JSON.stringify(u));
+        }
+      } catch (e) { /* ignore */ }
+      const label = (pending && pending.querySelector("[data-voucher-activate]") && pending.querySelector("[data-voucher-activate]").dataset.label) || t("قسيمة خصم");
+      if (pending) pending.remove();
+      pending = null;
+      addVoucherHistory(label, val);
+      syncVouchersCount();
+      syncWalletBalance(true);
+      closeOverlay();
+      toast(t("تم تفعيل القسيمة وإضافتها لمحفظتك"));
     });
   }
 
@@ -6095,7 +6598,8 @@
     initOrderNotes();
     initReferralCopy();
     initAddresses();
-    initPoints();
+    initPointsRedeem();
+    initVouchers();
     initOrders();
     initReorder();
     // Must run after the chrome is in the DOM and after initFavsUI, so the

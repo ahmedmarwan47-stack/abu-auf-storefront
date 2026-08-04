@@ -30,9 +30,22 @@ ICON = {
              'stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
     "heart_full": '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">'
                   '<path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg>',
-    "expand": '<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4">'
-              '<path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6" stroke="currentColor" '
-              'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    # Note glyph — the order-note field's applied state. A clean lined card
+    # (rounded rect + three text lines) reads better at 16px than a
+    # folded-corner document. Wrapper-driven (w-full h-full + currentColor).
+    "note": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+            '<rect x="4" y="3.5" width="16" height="17" rx="3" stroke="currentColor" stroke-width="1.7"/>'
+            '<path d="M8 8.5h8M8 12h8M8 15.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+    # X — removes an applied note / promo. Wrapper-driven.
+    "close": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+             '<path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>',
+    # Rounded warning triangle (Ahmed's alert-01.svg, 2026-08-04) — the
+    # below-minimum-order notice. Recoloured to currentColor so it inherits the
+    # error ink from its wrapper instead of the export's hard-coded #141B34.
+    "alert": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+             '<path d="M5.32171 9.68293C7.73539 5.41199 8.94222 3.27651 10.5983 2.72681C11.5093 2.4244 12.4907 2.4244 13.4017 2.72681C15.0578 3.27651 16.2646 5.41199 18.6783 9.68293C21.092 13.9539 22.2988 16.0893 21.9368 17.8293C21.7376 18.7866 21.2469 19.6549 20.535 20.3097C19.241 21.5 16.8274 21.5 12 21.5C7.17265 21.5 4.75897 21.5 3.46496 20.3097C2.75308 19.6549 2.26239 18.7866 2.06322 17.8293C1.70119 16.0893 2.90803 13.9539 5.32171 9.68293Z" stroke="currentColor" stroke-width="1.5"/>'
+             '<path d="M12.2422 17V13C12.2422 12.5286 12.2422 12.2929 12.0957 12.1464C11.9493 12 11.7136 12 11.2422 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>'
+             '<path d="M11.992 9H12.001" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     # Opening double-quote — testimonial cards. Two filled "66" blobs; the
     # caller sizes and colours it (accent yellow on the dark card).
     "quote": '<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full">'
@@ -211,7 +224,12 @@ def breadcrumb(trail):
             parts.append(f'<span class="font-semibold text-[#062A1C]">{e(label)}</span>')
         else:
             parts.append(
-                f'<a href="{href}" class="text-neutral-secondary hover:text-primary transition-colors">{e(label)}</a>'
+                # link-sweep: on hover the crumb darkens to primary AND an
+                # underline sweeps in (RTL-aware ::after in styles.css), the same
+                # affordance the footer/account links already use — extend the
+                # shared interaction system rather than paint a one-off border
+                # (CLAUDE.md). self-start keeps the sweep tight to the text.
+                f'<a href="{href}" class="link-sweep text-neutral-secondary hover:text-primary transition-colors">{e(label)}</a>'
                 # Decorative separator: hidden from assistive tech, and
                 # toned up from #C6C6C6 (1.71:1) so it is still visible.
                 f'<span aria-hidden="true" class="text-neutral-outline">/</span>')
@@ -233,9 +251,13 @@ def chip(label, href="#", active=False, filter_slug=None):
     # still means something with JS off.
     attr = f' data-filter="{e(filter_slug)}"' if filter_slug else ""
     # min-h-11 = 44px: WCAG 2.5.5 / HIG minimum tap target. At px-5 py-2 these
-    # measured 38px, which is a miss on a phone.
-    return (f'<a href="{href}"{attr} class="inline-flex items-center min-h-11 px-5 py-2 border rounded-full '
-            f'font-semibold text-sm whitespace-nowrap transition-colors {style}">{e(label)}</a>')
+    # measured 38px, which is a miss on a phone. The 44px floor is kept on
+    # mobile (touch); on xl the chips shrink to min-h-9 / px-4 (Ahmed,
+    # 2026-08-04) so the whole row fits BESIDE the sort pill without crowding
+    # it — a mouse does not need 44px, and 36px clears the 24px WCAG 2.5.8 AA
+    # floor comfortably.
+    return (f'<a href="{href}"{attr} class="inline-flex items-center min-h-11 xl:min-h-9 px-5 xl:px-4 py-2 xl:py-1.5 border rounded-full '
+            f'font-semibold text-sm xl:text-[13px] whitespace-nowrap transition-colors {style}">{e(label)}</a>')
 
 
 _SORT_ICON = ('<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true">'
@@ -711,6 +733,34 @@ def best_seller_badge(p):
             f'<span class="relative top-[2px] leading-none">{e(label)}</span></span>')
 
 
+def points_callout(p):
+    """
+    "Earn N points" pill, shown beside the best-seller badge on every product
+    page (Ahmed, 2026-08-04).
+
+    The rate is the site's OWN, not invented: the points page states "اكسب نقطة
+    على كل جنيه" (1 EGP = 1 point) and redeems points 1:1 into the wallet, so N
+    is simply the price the shopper pays, rounded. Keeping one rate across the
+    product page, the points page and the wallet is the same discipline the
+    wallet balance already follows — see my_account_point.py and DESIGN-NOTES §1.
+    """
+    price = p.get("sale") or p.get("price") or 0
+    pts = int(round(price))
+    if pts <= 0:
+        return ""
+    # Green "good news" pill, the same family as the discount/wallet chips, so
+    # points read as a reward rather than as another price (which is yellow). A
+    # leading hairline divider (matching the one sold_proof folds in) separates
+    # it from the red proof line; the pill padding is trimmed and it centres in
+    # the row rather than sitting to the top (Ahmed, 2026-08-04).
+    return ('<span class="inline-flex items-center gap-2">'
+            '<span aria-hidden="true" class="bg-neutral-divider w-px h-4"></span>'
+            '<span class="inline-flex items-center gap-1 bg-[#E9F3E6] px-2.5 py-0.5 '
+            'rounded-full font-bold text-[#163300] text-xs">'
+            '<img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" />'
+            f'<span>اكسب <span class="latin">{pts}</span> نقطة بشرائك</span></span></span>')
+
+
 def _sold_proof_label(p):
     """
     The encouragement sentence (as inner HTML) for a product, or None.
@@ -1001,6 +1051,44 @@ def field(label, name, type_="text", required=False, value="", placeholder="",
                 </div>"""
 
 
+def phone_field(label="رقم الموبايل", name="mobile", required=True, value="", help_text=""):
+    """Mobile input with a fixed Egypt country prefix (Ahmed, 2026-08-04): a flag
+    + +20 chip on the leading side, then an LTR number field. Egypt-only, so the
+    prefix is fixed rather than a country picker. The whole control is `dir=ltr`
+    so the +20 sits on the visual left and the digits read left-to-right, like a
+    phone number, inside the RTL form."""
+    star = '<span class="text-accent-error">*</span>' if required else ""
+    hints = _field_hints(name, "tel")
+    help_html = (f'<p class="text-neutral-secondary text-xs">{e(help_text)}</p>'
+                 if help_text else "")
+    return f"""
+                <div class="flex flex-col gap-1.5">
+                  <label for="{e(name)}" class="font-medium text-neutral-secondary text-sm">{e(label)}{star}</label>
+                  <div dir="ltr" class="flex items-stretch bg-white border-2 border-neutral-divider focus-within:border-cta rounded-xl overflow-hidden transition-colors">
+                    <!-- Prefix sits on the SAME white as the number, NOT a filled
+                         (bg-interaction-base) cell: the tinted chip read as a
+                         nested compartment, and against the green focus border it
+                         looked like an inner border box (Ahmed, 2026-08-04). The
+                         only separator is the short divider below. -->
+                    <span class="flex items-center gap-1.5 ps-3.5 pe-3 shrink-0 font-semibold text-[#062A1C] text-sm">
+                      <span class="text-base leading-none" aria-hidden="true">🇪🇬</span>
+                      <span class="latin">+20</span>
+                    </span>
+                    <!-- The prefix/number divider is a standalone rule, NOT a
+                         border on the chip: `my-2.5` insets it top and bottom so
+                         it stops short of the field's rounded edges. It stays
+                         CONSTANT in every state — same colour, same width — while
+                         ONLY the outer field border darkens on focus (Ahmed,
+                         2026-08-04). -->
+                    <span aria-hidden="true" class="self-stretch bg-neutral-divider my-2.5 w-px shrink-0"></span>
+                    <input type="tel" id="{e(name)}" name="{e(name)}"{' required' if required else ''}{hints} dir="ltr" value="{e(value)}"
+                           placeholder="100 123 4567"
+                           class="flex-1 bg-transparent px-3 py-3 outline-none min-w-0 text-[#062A1C] text-base latin" />
+                  </div>
+                  {help_html}
+                </div>"""
+
+
 def select_field(label, name, options, required=False, wrap=""):
     star = '<span class="text-accent-error">*</span>' if required else ""
     opts = "".join(f'<option value="{e(o)}">{e(o)}</option>' for o in options)
@@ -1103,7 +1191,7 @@ def gift_toggle():
               </div>"""
 
 
-def checkout_summary(lines_html, subtotal, total, delivery_fee, promo_readonly=False):
+def checkout_summary(lines_html, subtotal, total, delivery_fee, interactive=True):
     """
     The order summary shared by checkout and payment.
 
@@ -1117,23 +1205,39 @@ def checkout_summary(lines_html, subtotal, total, delivery_fee, promo_readonly=F
     The build-time figures are a pre-boot placeholder only: `data-cart-static`
     rows are dropped and every total is overwritten on the first `cart:change`.
 
-    `promo_readonly=True` is the payment step (Ahmed, 2026-08-03): a code is
-    entered earlier, so payment shows an applied code as a read-only chip with
-    no way to edit or remove it, and shows nothing when none was applied. See
-    promo_field(readonly=...).
+    `interactive=False` is the payment step (Ahmed, 2026-08-04): the shopper
+    must not be able to change anything about the MONEY there, so the wallet
+    toggle and the promo field are dropped — each one's effect is already applied
+    and survives only as a figure in the totals below. The order note is NOT
+    money, so it stays on payment too (Ahmed, 2026-08-04): initOrderNotes reads
+    the same stored note, so a note added on checkout carries over and is still
+    editable up to confirmation. Checkout keeps all three (interactive=True),
+    grouped together, and both add a "تعديل" link back to the cart page.
     """
+    # #8 — a "تعديل" link back to the CART PAGE (not the drawer), on the title's
+    # own line. On BOTH checkout and payment (Ahmed, 2026-08-04): even at payment
+    # a shopper may want to jump back to the basket to change it.
+    edit_link = '<a href="cart.html" class="link-sweep font-semibold text-cta text-sm">تعديل</a>'
+    # #12 — wallet, promo and the note editor grouped together above the totals.
+    # The note editor is on BOTH steps; wallet and promo (the money controls) are
+    # checkout-only — on payment their result is shown as a figure in the totals.
+    # Checkout: full editor. Payment: read-only — the note from the previous
+    # step shows but can't be changed or removed (Ahmed, 2026-08-04).
+    note_block = f"""
+            <div class="pt-1">{order_notes(readonly=not interactive)}
+            </div>"""
+    controls = (f"""
+{wallet_toggle()}
+{promo_field()}{note_block}""" if interactive else note_block)
     return f"""
           <aside class="lg:top-4 lg:sticky flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px] order-2 lg:order-none min-w-0">
-            <!-- No "تعديل" link here any more (Ahmed, 2026-08-02): the order is
-                 locked once the checkout flow starts, so the summary is a
-                 read-only receipt with no invitation to go back and edit. -->
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center gap-3">
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
+              {edit_link}
             </div>
             <div class="flex flex-col gap-4" data-cart-lines>{lines_html}
             </div>
-{wallet_toggle()}
-{promo_field(readonly=promo_readonly)}
+            {controls}
             <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
               <div class="flex justify-between">
                 <span class="text-neutral-secondary">مصاريف التوصيل</span>
@@ -1156,9 +1260,6 @@ def checkout_summary(lines_html, subtotal, total, delivery_fee, promo_readonly=F
               <span class="font-bold text-[#062A1C] text-base">الإجمالي</span>
               <span class="font-bold text-[#062A1C] text-2xl latin" data-cart-total>EGP {money(total)}</span>
             </div>
-            <div class="pt-3 border-neutral-divider border-t">
-              {order_notes_accordion()}
-            </div>
           </aside>"""
 
 
@@ -1171,12 +1272,20 @@ def checkout_steps(current):
     copy is how a stepper ends up highlighting step 2 on the step-3 page.
     """
     sep = '<span aria-hidden="true" class="text-neutral-outline">/</span>'
+    # A completed step is a real link back to its own page, so a shopper on
+    # step 3 can return to step 1 from the stepper (Ahmed, 2026-08-04). Index-
+    # aligned with CHECKOUT_STEPS; the current step and any step ahead are NOT
+    # links — there is nothing to go forward to yet, and the active step is
+    # where you already are. The final confirmation step has no page to return
+    # to, so it stays None even when it is somehow "done".
+    hrefs = ["cart.html", "checkout.html", "payment.html", None]
     parts = []
     for i, s in enumerate(CHECKOUT_STEPS):
         is_now = i == current
         # Passed steps read as done rather than as inactive — a shopper on step
         # 3 should be able to see that 1 and 2 are behind them.
         done = i < current
+        can_go = done and hrefs[i]
         # #E9F3E6 opaque, NOT `bg-accent-green/15`. The alpha version renders
         # the same to the eye (#346853 on it measures ~5.4:1) but the sweep's
         # `bgOf()` treats any non-zero alpha as an opaque colour, so it compared
@@ -1193,11 +1302,19 @@ def checkout_steps(current):
                 else "text-neutral-secondary")
         tail = "" if i == len(CHECKOUT_STEPS) - 1 else sep
         mark = "✓" if done else str(i + 1)
-        parts.append(
-            f'<span class="flex items-center gap-2">'
+        # link-sweep gives a completed step the same hover underline as the
+        # breadcrumb, so it visibly reads as a way back rather than static text.
+        label_cls = f"{text} text-sm" + (" link-sweep" if can_go else "")
+        inner = (
             f'<span class="place-items-center grid rounded-full size-5 text-xs latin {dot}">{mark}</span>'
-            f'<span class="{text} text-sm">{e(s)}</span>{tail}</span>'
+            f'<span class="{label_cls}">{e(s)}</span>'
         )
+        if can_go:
+            parts.append(
+                f'<a href="{hrefs[i]}" class="flex items-center gap-2 rounded-md focus-visible:outline-none">{inner}</a>{tail}'
+            )
+        else:
+            parts.append(f'<span class="flex items-center gap-2">{inner}</span>{tail}')
     return "".join(parts)
 
 
@@ -1264,49 +1381,80 @@ def promo_field(readonly=False):
               </div>"""
 
 
-def order_notes_accordion():
+def order_notes(readonly=False):
     """
-    "Special instructions" note accordion — shared by cart and checkout so a
-    note carries between them the same way the promo code already does,
-    rather than being cart-only. Live control: scripts.js persists it under
-    abuauf:orderNote and prefills it on the way back (initOrderNotes ->
-    syncNoteUI), with a real edit view (textarea + save) and an applied view
-    (the saved note, with edit / remove) rather than a plain always-open box.
+    Order note — reworked from an accordion to the same trigger → input →
+    applied pattern as the promo field (Ahmed, 2026-08-04), so it groups with
+    the wallet and promo in the summary instead of standing apart. Shared by the
+    cart and checkout; scripts.js persists it under abuauf:orderNote and swaps
+    the three states off the stored note (initOrderNotes -> syncNoteUI).
 
-    Returns bare `accordion(...)` markup, not a card — callers wrap it in
-    whatever container fits their layout (cart gives it its own card;
-    checkout drops it straight into the existing summary card).
+    `readonly=True` is the PAYMENT step (Ahmed, 2026-08-04): a note added on the
+    previous step is shown but can't be edited or removed here — there is no
+    trigger, no editor and no remove X, and the whole block is hidden when no
+    note was left. syncNoteUI reveals it and fills the text.
+
+    Three states (interactive only):
+      - TRIGGER (default, closed): a "+ أضف ملاحظة على الطلب" button that opens
+        the editor, mirroring the promo trigger's affordance (a glyph chip then
+        the label).
+      - EDIT: a textarea + save (+ cancel).
+      - FILLED: the saved note drawn as a standard read-only field — a note glyph
+        at the start and an X at the end to remove it. Clicking the field
+        (anywhere but the X) reopens the editor; `.note-filled` (styles.css)
+        gives it a hover cue so a shopper knows the note is editable.
     """
-    panel = """
-                      <div data-note class="flex flex-col gap-3">
-                        <div data-note-edit class="flex flex-col gap-3">
-                          <!-- aria-label, not placeholder alone: a placeholder
-                               disappears the moment you type, so it cannot be
-                               the field's accessible name. -->
-                          <textarea rows="3" placeholder="أضف ملاحظة" aria-label="ملاحظات على الطلب" data-order-note
-                                    class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-sm transition-colors"></textarea>
-                          <button type="button" data-order-note-save class="bg-cta hover:bg-cta-hover px-6 py-2 rounded-full font-semibold text-white text-sm transition-colors self-end">حفظ الملاحظة</button>
-                        </div>
-                        <div data-note-view hidden class="flex flex-col gap-2 bg-interaction-base p-3 rounded-xl">
-                          <p class="text-[#062A1C] text-sm leading-6 whitespace-pre-line" data-note-text></p>
-                          <div class="flex items-center gap-4">
-                            <button type="button" data-note-edit-btn class="font-semibold text-cta text-xs underline">تعديل</button>
-                            <button type="button" data-note-remove class="font-semibold text-accent-error text-xs underline">حذف</button>
-                          </div>
-                        </div>
-                      </div>"""
-    return accordion([("أضف ملاحظات على الطلب", panel)])
+    if readonly:
+        # Locked view for the payment step: note glyph + text, no controls.
+        # Hidden until syncNoteUI finds a stored note.
+        return f"""
+              <div data-note data-note-readonly hidden class="flex flex-col gap-2">
+                <span class="font-semibold text-neutral-secondary text-xs">ملاحظة الطلب</span>
+                <div class="flex items-center gap-2 bg-interaction-base px-3 py-2.5 border border-neutral-divider rounded-xl">
+                  <span class="shrink-0 text-primary"><span class="block w-4 h-4">{ICON['note']}</span></span>
+                  <span class="flex-1 min-w-0 text-[#062A1C] text-sm" data-note-text></span>
+                </div>
+              </div>"""
+    return f"""
+              <div data-note class="flex flex-col gap-2">
+                <button type="button" data-note-open class="flex items-center gap-2 self-start min-h-11 font-semibold text-cta text-sm">
+                  <span class="place-items-center grid bg-interaction-base rounded-full size-6 shrink-0"><span class="w-3.5 h-3.5">{ICON['plus']}</span></span>
+                  أضف ملاحظة على الطلب
+                </button>
+                <div data-note-edit hidden class="flex flex-col gap-2">
+                  <!-- aria-label, not placeholder alone: a placeholder disappears
+                       the moment you type, so it cannot be the accessible name. -->
+                  <textarea rows="3" placeholder="أضف ملاحظة على طلبك" aria-label="ملاحظات على الطلب" data-order-note
+                            class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-sm transition-colors"></textarea>
+                  <!-- Compact buttons (Ahmed, 2026-08-04): the save was oversized
+                       for a note editor. Padding-based height (~34px) — still well
+                       above the 24px WCAG 2.5.8 floor. -->
+                  <div class="flex items-center gap-1 self-end">
+                    <button type="button" data-note-cancel class="px-3 py-1.5 font-semibold text-neutral-secondary text-xs">إلغاء</button>
+                    <button type="button" data-order-note-save class="bg-cta hover:bg-cta-hover px-4 py-1.5 rounded-full font-semibold text-white text-xs transition-colors">حفظ الملاحظة</button>
+                  </div>
+                </div>
+                <!-- Filled note: reads as a standard input. The flex-1 button is
+                     the edit trigger (clicking the note text reopens the editor);
+                     the X removes it. Hover cue lives on `.note-filled`. -->
+                <div data-note-view hidden class="note-filled flex items-center gap-2 bg-white px-3 py-2.5 border-2 border-neutral-divider rounded-xl transition-colors">
+                  <span class="shrink-0 text-primary"><span class="block w-4 h-4">{ICON['note']}</span></span>
+                  <button type="button" data-note-edit-btn class="flex-1 min-w-0 text-start text-[#062A1C] text-sm truncate" aria-label="تعديل الملاحظة"><span data-note-text></span></button>
+                  <button type="button" data-note-remove class="place-items-center grid shrink-0 rounded-full size-6 text-neutral-secondary hover:text-accent-error hover:bg-interaction-base transition-colors" aria-label="حذف الملاحظة"><span class="w-3.5 h-3.5">{ICON['close']}</span></button>
+                </div>
+              </div>"""
 
 
 def freeship_bar():
     """
-    "Add X more for free delivery" progress bar (Ahmed, 2026-08-02).
+    Free-delivery progress bar (Ahmed, 2026-08-02).
 
-    Static shell only — scripts.js renderCart fills it from the LIVE basket and
-    flips the copy to the success line at the FREE_SHIP threshold, then zeroes
-    the delivery fee so the incentive actually pays out rather than just
-    counting up to nothing. Hidden until the store paints, so an empty basket
-    shows nothing to progress toward.
+    The "add X more for free delivery" caption sits ABOVE the bar (Ahmed,
+    2026-08-04 — restored). Static shell only: scripts.js renderCart fills it
+    from the LIVE basket toward FREE_SHIP and flips the caption to the success
+    line at the threshold, where the delivery fee zeroes, so the incentive pays
+    out. Hidden until the store paints, so an empty basket shows nothing to
+    progress toward.
     """
     return """
               <div data-freeship hidden class="flex flex-col gap-1.5">
@@ -1460,31 +1608,28 @@ def wallet_toggle(balance=WALLET_BALANCE):
                  the same thought. Yellow is the PRICE colour here (every price
                  chip on the site is accent-yellow), which put the wallet in the
                  same visual family as the amounts it reduces. -->
+            <!-- Minimised to ONE line (Ahmed, 2026-08-04): the balance sits
+                 beside "الدفع من المحفظة" instead of stacked under it, so the
+                 widget is a compact row rather than a two-line card. -->
             <label data-wallet-toggle data-wallet-balance="{balance}"
-                   class="wallet-toggle flex items-center gap-3 bg-[#E9F3E6] p-4 rounded-xl cursor-pointer">
-              <span class="place-items-center grid bg-accent-green/10 rounded-full text-accent-green size-10 shrink-0">
+                   class="wallet-toggle flex items-center gap-3 bg-[#E9F3E6] px-4 py-3 rounded-xl cursor-pointer">
+              <span class="place-items-center grid bg-accent-green/10 rounded-full text-accent-green size-9 shrink-0">
                 <span class="w-5 h-5">{ICON['wallet']}</span>
               </span>
-              <span class="flex flex-col flex-1 gap-0.5 min-w-0">
+              <span class="flex flex-1 flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
                 <span class="font-semibold text-[#062A1C] text-sm">الدفع من المحفظة</span>
-                <!-- Two copies, one per state, stacked in a single grid cell so
-                     the taller one reserves the height and the card cannot
-                     resize on toggle. `invisible` rather than the `hidden`
-                     attribute keeps both in flow while keeping the inactive one
-                     out of the accessibility tree, so nothing reads both. -->
-                <!-- The balance carries `accent-green` (#346853), the design
-                     system's own "Green Text" token, and NOT `success`
-                     (#16BB55): the bright one measures about 2.2:1 on this
-                     tint and fails AA outright, where #346853 measures 5.9:1.
-                     Success-coloured text that cannot be read is not a success
-                     signal. -->
+                <!-- Idle balance and the "deducted" caption share ONE grid cell,
+                     so whichever shows, the row is the same height and a toggle
+                     cannot resize the summary column. `invisible` (not the
+                     `hidden` attribute) keeps both in flow while hiding the
+                     inactive one from assistive tech. The balance carries
+                     `accent-green` (#346853), the system's "Green Text" token,
+                     NOT bright `success` (#16BB55) which fails AA on this tint.
+                     data-wallet-amount stays so syncWalletBalance can update the
+                     figure when redeemed points top the wallet up. -->
                 <span class="grid">
-                  <span class="col-start-1 row-start-1 text-[#062A1C]/80 text-xs leading-5" data-wallet-idle>
-                    رصيدك <span class="font-bold text-accent-green latin" data-wallet-amount>EGP {balance}</span>
-                  </span>
-                  <span class="col-start-1 row-start-1 font-semibold text-accent-green text-xs leading-5 invisible" data-wallet-used>
-                    تم الخصم من رصيدك
-                  </span>
+                  <span class="col-start-1 row-start-1 inline-flex items-center self-start bg-white/70 px-2 rounded-full font-bold text-accent-green text-xs leading-5 latin" data-wallet-idle data-wallet-amount>EGP {balance}</span>
+                  <span class="col-start-1 row-start-1 inline-flex items-center self-start font-semibold text-accent-green text-xs leading-5 invisible" data-wallet-used>تم الخصم</span>
                 </span>
               </span>
               <!-- The real control. sr-only rather than display:none so it
@@ -1556,8 +1701,6 @@ def product_card(p, slide=True, cat=None):
               <a href="product-{p.get('id', 0)}.html" class="product-card__media block relative bg-interaction-base p-4">
                 <img src="{e(p['image'])}" alt="{e(title(p))}"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
-                <span class="product-card__peek bottom-3 start-3 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-[#062A1C] size-8"
-                      aria-hidden="true">{ICON['expand']}</span>
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the

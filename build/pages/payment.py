@@ -149,7 +149,7 @@ def build():
             </form>
           </div>
 
-{checkout_summary(summary_lines, subtotal, total, DELIVERY_FEE, promo_readonly=True)}
+{checkout_summary(summary_lines, subtotal, total, DELIVERY_FEE, interactive=False)}
         </div>
       </section>"""
 

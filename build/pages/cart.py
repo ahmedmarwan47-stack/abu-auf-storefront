@@ -1,7 +1,7 @@
 """Shopping cart — Figma 'Cart' (4231:22875)."""
 from catalog import in_category, money, rail_products
 from components import (
-    cart_line, carousel, freeship_bar, order_notes_accordion, page, page_header,
+    ICON, cart_line, carousel, freeship_bar, order_notes, page, page_header,
     promo_field, wallet_toggle, product_card, section_heading,
 )
 
@@ -33,15 +33,18 @@ def build():
     order_btn = (
         '<a href="checkout.html" data-cart-checkout class="block bg-cta hover:bg-cta-hover '
         'py-4 rounded-full w-full font-semibold text-white text-base text-center '
-        'transition-colors">أطلب الآن</a>'
+        'transition-colors">إتمام الطلب</a>'
     )
     # Same reasoning: always rendered, hidden by default, and shown with the
     # live shortfall by renderCart via data-cart-warning/data-cart-shortfall.
+    # Alert glyph (Ahmed's alert-01.svg) in an error-ink wrapper, replacing the
+    # bare ⚠ emoji so the notice matches the rest of the UI's iconography.
     warning = (
         '<p data-cart-warning hidden class="flex items-start gap-2 text-accent-error '
-        'text-xs leading-5"><span aria-hidden="true">⚠</span>'
-        'متبقي <span class="latin" data-cart-shortfall></span> '
-        'لاستكمال الحد الأدنى للطلب</p>'
+        'text-xs leading-5"><span class="w-4 h-4 shrink-0 mt-px" aria-hidden="true">'
+        f'{ICON["alert"]}</span>'
+        '<span>متبقي <span class="latin" data-cart-shortfall></span> '
+        'لاستكمال الحد الأدنى للطلب</span></p>'
     )
 
     body = f"""{page_header("سلة التسوق", [("الرئيسية", "index.html"), ("سلة التسوق", None)])}
@@ -58,8 +61,15 @@ def build():
             <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
 {freeship_bar()}
+              <!-- Wallet, promo and the note editor grouped together (Ahmed,
+                   2026-08-04), the same grouping the checkout summary uses, so
+                   the "extras" sit as one block above the totals rather than
+                   scattered around them. -->
 {wallet_toggle()}
-              <div class="flex flex-col gap-2 text-sm">
+{promo_field()}
+              <div class="pt-1">{order_notes()}
+              </div>
+              <div class="flex flex-col gap-2 pt-3 border-neutral-divider border-t text-sm">
                 <div class="flex justify-between">
                   <span class="text-neutral-secondary">مصاريف التوصيل</span>
                   <span class="font-semibold text-[#062A1C] latin" data-cart-delivery>EGP {money(DELIVERY_FEE)}</span>
@@ -85,17 +95,12 @@ def build():
                   <span class="inline-flex items-center h-[13px] -me-2 bg-[#E9F3E6] px-2 rounded font-bold text-[#163300] text-sm latin" data-cart-promo-discount></span>
                 </div>
               </div>
-{promo_field()}
               <div class="flex justify-between items-center pt-3 border-neutral-divider border-t">
                 <span class="font-bold text-[#062A1C] text-base">الإجمالي</span>
                 <span class="font-bold text-[#062A1C] text-2xl latin" data-cart-total>EGP {money(total)}</span>
               </div>
               {order_btn}
               {warning}
-            </div>
-
-            <div class="bg-white shadow-custom4 px-6 py-2 rounded-[20px]">
-              {order_notes_accordion()}
             </div>
           </aside>
 
