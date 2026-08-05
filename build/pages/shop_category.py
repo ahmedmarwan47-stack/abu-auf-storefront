@@ -2,14 +2,18 @@
 Category listing — Figma 'Collection' (173:17211).
 
 Stands in for every /shop/<category> route in the static export. Coffee is the
-worked example, matching the Figma; the chips are that category's real
-sub-categories.
+worked example, matching the Figma and the live abuauf.com coffee category; the
+chips are that category's REAL sub-categories.
 
-The sub-category chips are LIVE filters. There is no sub-category taxonomy on
-the products, though — every coffee SKU is just categorySlug "coffee-beverage" —
-so each product's sub-category is DERIVED from its Arabic name by keyword (see
-_subcat). Best effort, flagged in DESIGN-NOTES; when the client ships a real
-taxonomy this classifier is the one thing to replace.
+The sub-category chips are LIVE filters, keyed off each product's real
+membership. `fetch_subcategories.py` reads every product's `categories[]` from
+the Store API and writes the child-category slugs into `subCats`, so `_subcat`
+is now a lookup, not the old keyword guess. The slugs and Arabic labels below
+are Abu Auf's own (read off the live coffee category's filter bar).
+
+Because our catalogue is a 99-product subset, most coffee sub-categories hold
+none of our products; `build()` drops every empty chip, so only the
+sub-categories our sample actually covers are shown.
 """
 from _listing import listing
 from catalog import in_category
@@ -21,38 +25,37 @@ INTRO = ("أكثر من 30 نكهة قهوة لذيذة تنعش الحواس �
          "للإسبريسو والقهوة المطحونة طازة، محمصة على أصولها ومعبأة تحافظ على "
          "الريحة لآخر فنجان.")
 
-# Chip label → filter slug (the sub-category routes in MAIN_MENU). Figma order.
-# "all" is the "show everything" chip; the rest filter on the derived slug.
+# Chip label → real sub-category slug, in the live site's order. "all" shows
+# everything; every other slug is a real child of category 34 (Coffee &
+# Beverages) and matches the `subCats` written by fetch_subcategories.py.
 SUBCATEGORIES = [
     ("القهوة", "all"),
-    ("قهوة تركي", "turkish-coffee"),
-    ("قهوة برازيلي", "brazilian-coffee"),
-    ("قهوة مطحونة طازجة", "fresh-grounded-coffee"),
-    ("إسبريسو", "espresso"),
+    ("قهوة تركي معبأة", "turkish-coffee-packed"),
+    ("قهوة برازيلي معبأة", "brazilian-coffee-packed"),
+    ("قهوة مطحونة فريش", "fresh-grounded-coffee"),
     ("قهوة سريعة التحضير", "instant-coffee"),
-    ("مشروبات ساخنة", "hot-drinks"),
+    ("إسبريسو", "espresso"),
+    ("قهوة بالنكهات", "flavored-coffee"),
+    ("قهوة فرنسية", "french-coffee"),
+    ("مشروبات ساخنه", "hot-drinks"),
+    ("قهوة خضراء", "green-coffee"),
+    ("قهوة عربي", "arabic-coffee"),
+    ("عصائر", "juices"),
 ]
 
-# Name-keyword → slug, in PRIORITY order: a product is assigned to the first
-# slug whose keyword its name carries, so "برازيلى محوج" is brazilian, not the
-# spiced/ground default. Anything unmatched (plain/spiced أبو عوف beans) is
-# fresh-ground, the sensible catch-all for whole/ground coffee.
-_SUBCAT_RULES = [
-    ("turkish-coffee",   ("تركي",)),
-    ("brazilian-coffee", ("برازيل",)),
-    ("instant-coffee",   ("سريعة التحضير", "سريعه", "سريعة التحضير")),
-    ("espresso",         ("إسبريسو", "اسبريسو", "اسبرسو", "espresso")),
-    ("hot-drinks",       ("عرب",)),
-]
-_DEFAULT_SUBCAT = "fresh-grounded-coffee"
+# The real child slugs of Coffee & Beverages, so a product's coffee
+# sub-category is picked out of its full `subCats` (which can also list
+# cross-listed parents like offers/ramadan). A coffee SKU carries exactly one
+# of these in our data; the first is its chip. Anything with none falls back to
+# the parent slug, so it shows only under "all", never under a wrong chip.
+_COFFEE_SUBS = {slug for _, slug in SUBCATEGORIES if slug != "all"}
 
 
 def _subcat(p):
-    name = p.get("nameAr", "") or ""
-    for slug, keywords in _SUBCAT_RULES:
-        if any(k in name for k in keywords):
+    for slug in p.get("subCats", []):
+        if slug in _COFFEE_SUBS:
             return slug
-    return _DEFAULT_SUBCAT
+    return "coffee-beverage"
 
 
 def build():

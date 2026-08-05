@@ -50,7 +50,7 @@
       // with a shot framed to match the rest of the set: cream textured ground,
       // speckled bowls + wooden tray, leaf garnish, product margin on every side
       // so it survives any crop.
-      image: "images/abuauf/categories/offers.png",
+      image: "images/abuauf/categories/offers.webp",
     },
     {
       // The seasonal Christmas-tree badge that used to sit here was removed at
@@ -70,13 +70,17 @@
       name: "القهوة",
       url: "/shop/coffee-beverage",
       image: "images/abuauf/categories/Drinks-1.webp",
+      // Real coffee sub-categories (slug + Arabic label off the live abuauf.com
+      // coffee filter bar), limited to the ones our 99-product sample actually
+      // covers — the others (brazilian-packed, espresso, hot-drinks, …) hold
+      // none of our products, so a tile for them would land on an empty filter.
+      // These slugs match the chips shop_category.py builds, so a click opens
+      // shop-category.html#<slug> with that sub-category already applied.
       children: [
-        { name: "قهوة تركي", url: "/shop/turkish-coffee" },
-        { name: "قهوة برازيلي", url: "/shop/brazilian-coffee" },
-        { name: "قهوة مطحونة طازجة", url: "/shop/fresh-grounded-coffee" },
-        { name: "إسبريسو", url: "/shop/espresso" },
+        { name: "قهوة تركي معبأة", url: "/shop/turkish-coffee-packed" },
+        { name: "قهوة مطحونة فريش", url: "/shop/fresh-grounded-coffee" },
         { name: "قهوة سريعة التحضير", url: "/shop/instant-coffee" },
-        { name: "مشروبات ساخنة", url: "/shop/hot-drinks" },
+        { name: "قهوة عربي", url: "/shop/arabic-coffee" },
       ],
     },
     {
@@ -91,7 +95,7 @@
     {
       name: "الوجبات صحية",
       url: "/shop/healthy-snacks",
-      image: "images/abuauf/categories/Healthy_Snaks2.png",
+      image: "images/abuauf/categories/Healthy_Snaks2.webp",
       children: [
         { name: "ألواح صحية", url: "/shop/healthy-bars" },
         { name: "سناكس بروتين", url: "/shop/protein-snacks" },
@@ -103,7 +107,7 @@
     // the coffee shot — a warm beverage either way. Flagged in DESIGN-NOTES.
     { name: "المشروبات", url: "/shop/hot-drinks", image: "images/abuauf/categories/Drinks-1.webp" },
     { name: "البهارات والزيوت", url: "/shop/spices-kitchen-baking", image: "images/abuauf/categories/Spices-Category-1.webp" },
-    { name: "الهدايا", url: "/shop/gifting-seasonal", image: "images/abuauf/categories/gifts.png" },
+    { name: "الهدايا", url: "/shop/gifting-seasonal", image: "images/abuauf/categories/gifts.webp" },
   ];
 
   /* Column order is RTL reading order: rightmost column first. */
@@ -193,6 +197,28 @@
         m[(c.url || "").replace("/shop/", "")] = parent;
       });
     });
+    // المشروبات rides on /shop/hot-drinks but hot-drinks is no longer a listed
+    // coffee child (our sample has none), so alias it to the coffee category so
+    // that tab still lands on the coffee page rather than an unfiltered shop.
+    m["hot-drinks"] = "coffee-beverage";
+    return m;
+  })();
+
+  /* Children of a category that has its OWN listing page (CATEGORY_PAGE) route
+     to that page with the child slug as a hash, so the page's sub-category chip
+     is applied on arrival — this is what makes the coffee sub-categories filter
+     from the mega menu. Children of every other category have no dedicated page,
+     so they fall through to CHILD_TO_PARENT and filter their parent on shop.html
+     (the same path التمور / المكسرات already take). */
+  const CHILD_PAGE_HASH = (function () {
+    const m = {};
+    MAIN_MENU.forEach(function (i) {
+      const page = CATEGORY_PAGE[(i.url || "").replace("/shop/", "")];
+      if (!page) return;
+      (i.children || []).forEach(function (c) {
+        m[(c.url || "").replace("/shop/", "")] = page;
+      });
+    });
     return m;
   })();
 
@@ -250,9 +276,12 @@
      * their parent, which MAIN_MENU already records.
      */
     if (clean.startsWith("/shop/")) {
-      let slug = clean.slice("/shop/".length);
-      if (CHILD_TO_PARENT[slug]) slug = CHILD_TO_PARENT[slug];
-      return CATEGORY_PAGE[slug] || "shop.html#" + slug;
+      const slug = clean.slice("/shop/".length);
+      // A sub-category of a category that has its own page (coffee) opens that
+      // page with its chip pre-applied; everything else filters its parent.
+      if (CHILD_PAGE_HASH[slug]) return CHILD_PAGE_HASH[slug] + "#" + slug;
+      const cat = CHILD_TO_PARENT[slug] || slug;
+      return CATEGORY_PAGE[cat] || "shop.html#" + cat;
     }
     if (clean.startsWith("/products/")) return "product.html";
     if (clean.startsWith("/blogs/")) return "blog.html";
@@ -463,6 +492,10 @@
     "العروض والخصومات": "Offers & Promotions",
     "مكسرات وحبوب ومقرمشات": "Nuts | Seeds & Crackers",
     "قهوة ومشروبات": "Coffee & Beverages",
+    "قهوة تركي معبأة": "Packed Turkish coffee",
+    "قهوة مطحونة فريش": "Freshly ground coffee",
+    "قهوة سريعة التحضير": "Instant coffee",
+    "قهوة عربي": "Arabic coffee",
     "تمور وفواكه مجففة": "Dates & Dried Fruits",
     "سناكس صحية": "Snacks",
     "اساسيات المطبخ": "Kitchen & Baking",
@@ -849,48 +882,14 @@
         <span class="nav-underline h-1 w-full rounded-full origin-center${isActive ? " is-current" : ""}"></span>
       </a>`;
 
-    if (!item.children || !item.children.length) {
-      return `<li class="flex items-center gap-2.5 shrink-0">${label}</li>`;
-    }
-
-    // Sub-categories as mega-tiles, matching the المنتجات mega-panel's stage
-    // (Ahmed, 2026-08-04). The old dropdown was a two-column list of bare text
-    // links beside a 190px image — cluttered, and a different visual language
-    // to the redesigned mega-panel right next to it. Reusing `.mega-tile` here
-    // makes every nav dropdown read as one system.
-    const tiles = item.children
-      .map(
-        (c) =>
-          `<a href="${pageHref(c.url)}" class="mega-tile group/tile flex justify-between items-center gap-2 px-3 py-2 rounded-xl min-h-[44px] text-[#062A1C]">
-            <span class="min-w-0 text-sm leading-tight">${esc(t(c.name))}</span>
-            <span class="w-4 h-4 text-neutral-secondary rtl:scale-flip shrink-0 mega-tile__arrow">${ICON.arrowRight}</span>
-          </a>`,
-      )
-      .join("");
-
-    return `<li class="group/mega relative flex items-center gap-2 shrink-0">
-      ${label}
-      <!-- start-0, not inset-inline-start-0 — same non-existent-class bug. -->
-      <div class="invisible group-hover/mega:visible top-full start-0 z-50 absolute opacity-0 group-hover/mega:opacity-100 pt-3 transition-all duration-200">
-        <div class="flex flex-col gap-3 bg-white shadow-custom3 p-4 rounded-2xl w-[440px]">
-          <!-- Compact header: the category thumb, its name, and a shop-all
-               link — the branded photo is a 48px thumb here, not a 190px slab. -->
-          <a href="${href}" class="group/head flex items-center gap-3">
-            <span class="block bg-interaction-base rounded-xl w-12 h-12 overflow-hidden shrink-0">
-              <img src="${item.image}" alt="" class="w-full h-full object-cover" loading="lazy" />
-            </span>
-            <span class="flex flex-col min-w-0">
-              <span class="font-bold text-[#062A1C] text-base leading-tight">${esc(t(item.name))}</span>
-              <span class="inline-flex items-center gap-1 font-semibold text-cta group-hover/head:text-primary text-xs transition-colors">
-                تسوق الكل
-                <span class="w-3.5 h-3.5 rtl:scale-flip">${ICON.arrowRight}</span>
-              </span>
-            </span>
-          </a>
-          <div class="content-start gap-1.5 grid grid-cols-2 pt-3 border-neutral-divider border-t">${tiles}</div>
-        </div>
-      </div>
-    </li>`;
+    // Every nav tab is now a PLAIN LINK to its category page — the per-tab
+    // hover dropdown was removed at Ahmed's request (2026-08-05). The big
+    // "المنتجات" mega-panel (data-megamenu-toggle) already lists every main
+    // category AND its sub-categories in one place, so a second per-tab
+    // dropdown repeating the same sub-categories was redundant. `item.children`
+    // is still consumed by megaPanelHTML and CHILD_TO_PARENT; it is
+    // intentionally ignored here so a tab is only ever a route to its category.
+    return `<li class="flex items-center gap-2.5 shrink-0">${label}</li>`;
   }
 
   /*

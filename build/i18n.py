@@ -397,6 +397,16 @@ UI = {
     "إسبريسو": "Espresso",
     "قهوة سريعة التحضير": "Instant coffee",
     "مشروبات ساخنة": "Hot drinks",
+    # Real coffee sub-category labels off the live abuauf.com filter bar.
+    "قهوة تركي معبأة": "Packed Turkish coffee",
+    "قهوة برازيلي معبأة": "Packed Brazilian coffee",
+    "قهوة مطحونة فريش": "Freshly ground coffee",
+    "قهوة بالنكهات": "Flavoured coffee",
+    "قهوة فرنسية": "French coffee",
+    "مشروبات ساخنه": "Hot drinks",
+    "قهوة خضراء": "Green coffee",
+    "قهوة عربي": "Arabic coffee",
+    "عصائر": "Juices",
 
     # --- reviews (in-house placeholder personas)
     "التمور والمكسرات دايماً طازة وجودتها ثابتة، وبيوصلوا بسرعة. أبو عوف بقى جزء أساسي من تسوق البيت عندنا.":
