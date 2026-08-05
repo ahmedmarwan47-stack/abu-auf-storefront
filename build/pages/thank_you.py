@@ -20,9 +20,12 @@ TRACKER_SUBS = [
     "سعدنا بخدمتك ونود أن تراك مرة أخرى",
 ]
 
+# A trailing True on a pair spans it across BOTH columns of the 2-up grid
+# below — used for the email, whose long latin address would otherwise wrap
+# every few characters inside a half-width cell on a phone.
 CUSTOMER = [
     ("الاسم الأول", "محمد"), ("اسم العائلة", "عادل"),
-    ("البريد الالكتروني", "MOSAWABI15@GMAIL.COM"),
+    ("البريد الالكتروني", "MOSAWABI15@GMAIL.COM", True),
     ("رقم الهاتف", "01148822922"),
 ]
 
@@ -39,12 +42,16 @@ CHECK = ('<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4">'
 
 
 def _rows(pairs):
-    return "".join(
-        f'<div class="flex flex-col gap-0.5">'
-        f'<span class="text-neutral-secondary text-xs">{e(k)}</span>'
-        f'<span class="font-semibold text-[#062A1C] text-sm break-words">{e(v)}</span></div>'
-        for k, v in pairs
-    )
+    out = []
+    for pair in pairs:
+        k, v = pair[0], pair[1]
+        span = " col-span-2" if len(pair) > 2 and pair[2] else ""
+        out.append(
+            f'<div class="flex flex-col gap-0.5{span}">'
+            f'<span class="text-neutral-secondary text-xs">{e(k)}</span>'
+            f'<span class="font-semibold text-[#062A1C] text-sm break-words">{e(v)}</span></div>'
+        )
+    return "".join(out)
 
 
 def build():
@@ -125,15 +132,23 @@ def build():
           <div class="flex flex-col gap-5 bg-interaction-base p-6 rounded-[20px]">
             <div class="flex flex-col gap-3">
               <h2 class="font-bold text-[#062A1C] text-base">بيانات العميل</h2>
-              <div class="gap-4 grid sm:grid-cols-2">{_rows(CUSTOMER)}
+              <!-- Two columns at EVERY width (Ahmed, 2026-08-05): stacked in a
+                   single column on a phone, this info left half the card empty
+                   down its side. The values are short (the long email spans both
+                   columns), so 2-up fills the width from 320 up. -->
+              <div class="gap-x-4 gap-y-4 grid grid-cols-2">{_rows(CUSTOMER)}
               </div>
             </div>
             <div class="flex flex-col gap-3 pt-5 border-neutral-divider border-t">
               <h2 class="font-bold text-[#062A1C] text-base">بيانات التوصيل</h2>
-              <div class="gap-4 grid sm:grid-cols-2">{_rows(DELIVERY)}
+              <div class="gap-x-4 gap-y-4 grid grid-cols-2">{_rows(DELIVERY)}
               </div>
             </div>
-            <a href="my-account-orders.html" class="bg-cta hover:bg-cta-hover px-8 py-3 rounded-full font-semibold text-white text-sm transition-colors self-end">حالة الطلب</a>
+            <!-- "Continue shopping", secondary (Ahmed, 2026-08-05): after an
+                 order is placed the natural next step is back to the store, not
+                 a second solid-green CTA competing with the confirmation. Full
+                 width on mobile, content-width aligned to the end from sm up. -->
+            <a href="shop.html" class="bg-white hover:bg-interaction-base px-8 py-3 border border-cta rounded-full w-full sm:w-auto sm:self-end font-semibold text-cta text-sm text-center transition-colors">متابعة التسوق</a>
           </div>
         </div>
       </section>

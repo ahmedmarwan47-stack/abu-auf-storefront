@@ -20,7 +20,8 @@
       "Bash(awk 'NR==733{print substr\\($0,1,300\\)}' \"/Users/ahmed/Downloads/orderbase-landing \\(1\\).html\")",
       "Bash(awk 'NR==615{print substr\\($0,1,300\\)}' \"/Users/ahmed/Downloads/orderbase-landing \\(1\\).html\")",
       "Bash(python3 -)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000)",
+      "Bash(git commit -q -m 'Cart: secondary promo-apply button; drop redundant redeem-sheet cancel *)"
     ]
   }
 }

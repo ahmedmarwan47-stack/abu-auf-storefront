@@ -1525,7 +1525,7 @@
                      placeholder="${esc(t("أدخل كود الخصم"))}"
                      class="flex-1 bg-white px-3 py-2 border border-neutral-divider focus:border-cta rounded-xl outline-none min-w-0 text-[#062A1C] text-sm transition-colors latin" />
               <button type="button" data-promo-apply
-                      class="bg-cta hover:bg-cta-hover px-4 rounded-full min-h-11 font-semibold text-white text-sm whitespace-nowrap transition-colors">${esc(t("تطبيق"))}</button>
+                      class="bg-white hover:bg-interaction-base px-4 border border-cta rounded-full min-h-11 font-semibold text-cta text-sm whitespace-nowrap transition-colors">${esc(t("تطبيق"))}</button>
             </div>
             <p data-promo-msg hidden class="text-xs leading-5"></p>
           </div>
@@ -1639,16 +1639,29 @@
         <img src="images/abuauf/brand/logo-abuauf-white.webp" alt="أبو عوف" class="w-[110px] h-[28px] object-contain" />
         <button type="button" data-close class="place-items-center grid size-11 -me-2 text-white">${ICON.close}</button>
       </div>
+      <!-- Only the category/support links scroll; the account + language row is
+           pulled OUT into the sticky footer below so it stays reachable no matter
+           how long the menu grows (Ahmed, 2026-08-05). -->
       <div class="flex-1 px-5 py-4 overflow-y-auto">
         <ul>${menuLinks}</ul>
         <div class="mt-6">
           <p class="mb-1 text-neutral-secondary text-xs">${esc(t("روابط أخرى"))}</p>
           <ul>${supportLinks}</ul>
         </div>
-        <div class="flex flex-col gap-3 mt-6">
-          <a href="login.html" class="flex justify-center items-center min-h-11 py-2.5 border border-cta rounded-full font-medium text-cta text-sm text-center">تسجيل الدخول</a>
-          <div class="flex justify-center">${countryButton()}</div>
-        </div>
+      </div>
+      <!-- Sticky footer: pinned to the bottom of the drawer (the aside is a
+           flex column, this is shrink-0), opaque so the scrolling list passes
+           behind it. Account access on mobile (Ahmed, 2026-08-05): the utility-
+           bar account link is desktop-only (hidden lg:flex), so paintAccountLinks
+           toggles this anon/authed pair here — sign-in out, dashboard in — the
+           same mechanism the header already uses, always within thumb reach. -->
+      <div class="flex flex-col gap-3 bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.06)] px-5 pt-4 pb-5 border-neutral-divider border-t shrink-0">
+        <a href="login.html" data-anon-only class="flex justify-center items-center min-h-11 py-2.5 border border-cta rounded-full font-medium text-cta text-sm text-center">تسجيل الدخول</a>
+        <a href="my-account.html" data-authed-only hidden class="flex justify-center items-center gap-2 min-h-11 py-2.5 bg-cta rounded-full font-medium text-white text-sm text-center">
+          <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-5 h-5" />
+          <span>حسابي</span>
+        </a>
+        <div class="flex justify-center">${countryButton()}</div>
       </div>
     </aside>
 
@@ -1753,13 +1766,16 @@
     </div>
 
     <!-- Address form: add and edit share it; data-address-id says which. -->
-    <div data-modal="address" class="modal-shell">
-      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[440px] overflow-hidden" data-modal-box>
-        <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
-          <h2 class="font-bold text-[#062A1C] text-lg" data-address-form-title>${esc(t("اضف عنوان"))}</h2>
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
-        </div>
-        <form data-address-form data-address-id="" class="flex flex-col gap-3 p-5">
+    <!-- Bottom sheet on phones, centred dialog from xl (Ahmed, 2026-08-05) —
+         the account popups all use the same sheet pattern as the location/locale
+         pickers so a thumb reaches them from the bottom edge on mobile. -->
+    <div data-sheet="address" class="bottom-sheet bottom-sheet--modal" role="dialog" aria-modal="true" aria-labelledby="address-sheet-title">
+      <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 id="address-sheet-title" class="font-bold text-[#062A1C] text-lg" data-address-form-title>${esc(t("اضف عنوان"))}</h2>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
+      </div>
+      <form data-address-form data-address-id="" class="flex flex-col gap-3">
           <label class="block">
             <span class="label">${esc(t("اسم العنوان"))}</span>
             <input type="text" name="label" required placeholder="المنزل، العمل…"
@@ -1781,7 +1797,6 @@
           </label>
           <button type="submit" class="bg-cta hover:bg-cta-hover mt-1 py-3 rounded-full font-semibold text-white text-sm transition-colors">${esc(t("حفظ العنوان"))}</button>
         </form>
-      </div>
     </div>
 
     <!-- Location bottom sheet -->
@@ -1877,66 +1892,62 @@
     <!-- Account modals (Ahmed, 2026-08-04): add/activate a voucher, redeem
          points. All demo — activating a voucher or redeeming points lands the
          value in the wallet (initVouchers / initPointsRedeem). -->
-    <div data-modal="voucherAdd" class="modal-shell">
-      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[400px] overflow-hidden" data-modal-box>
-        <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
-          <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("أضف كود قسيمة"))}</h2>
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
+    <div data-sheet="voucherAdd" class="bottom-sheet bottom-sheet--modal" role="dialog" aria-modal="true" aria-labelledby="voucherAdd-sheet-title">
+      <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 id="voucherAdd-sheet-title" class="font-bold text-[#062A1C] text-lg">${esc(t("أضف كود قسيمة"))}</h2>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
+      </div>
+      <form data-voucher-add-form class="flex flex-col gap-3">
+        <label class="block">
+          <span class="label">${esc(t("الكود"))}</span>
+          <input type="text" name="code" required placeholder="مثال: ABUAUF150" dir="ltr"
+                 class="mt-1 px-3 border border-neutral-divider focus:border-cta rounded-lg outline-none w-full h-12 text-[#062A1C] text-sm text-start transition-colors latin" />
+        </label>
+        <p class="text-neutral-secondary text-xs">${esc(t("الكود صالح للاستخدام مرة واحدة فقط."))}</p>
+        <button type="submit" class="bg-cta hover:bg-cta-hover mt-1 py-3 rounded-full font-semibold text-white text-sm transition-colors">${esc(t("أضف القسيمة"))}</button>
+      </form>
+    </div>
+
+    <div data-sheet="voucherActivate" class="bottom-sheet bottom-sheet--modal" role="dialog" aria-modal="true" aria-labelledby="voucherActivate-sheet-title">
+      <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 id="voucherActivate-sheet-title" class="font-bold text-[#062A1C] text-lg">${esc(t("تفعيل القسيمة"))}</h2>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
+      </div>
+      <div class="flex flex-col items-center gap-3 text-center">
+        <img src="images/abuauf/icons/discount-tag-3d.png" alt="" class="w-16 h-16 object-contain" />
+        <p class="text-[#062A1C] text-sm leading-6">${esc(t("سيتم إضافة"))} <span class="font-bold text-cta latin" data-voucher-activate-value></span> ${esc(t("إلى رصيد محفظتك"))}</p>
+        <button type="button" data-voucher-activate-confirm class="bg-cta hover:bg-cta-hover mt-1 py-3 rounded-full w-full font-semibold text-white text-sm transition-colors">${esc(t("تفعيل القسيمة"))}</button>
+      </div>
+    </div>
+
+    <div data-sheet="pointsRedeem" class="bottom-sheet bottom-sheet--modal" role="dialog" aria-modal="true" aria-labelledby="pointsRedeem-sheet-title">
+      <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+      <div class="flex justify-between items-start mb-4">
+        <div class="flex flex-col">
+          <h2 id="pointsRedeem-sheet-title" class="font-bold text-[#062A1C] text-lg">${esc(t("استبدال النقاط"))}</h2>
+          <span class="text-neutral-secondary text-xs">${esc(t("حوّل نقاطك إلى رصيد في محفظتك"))}</span>
         </div>
-        <form data-voucher-add-form class="flex flex-col gap-3 p-5">
-          <label class="block">
-            <span class="label">${esc(t("الكود"))}</span>
-            <input type="text" name="code" required placeholder="مثال: ABUAUF150" dir="ltr"
-                   class="mt-1 px-3 border border-neutral-divider focus:border-cta rounded-lg outline-none w-full h-12 text-[#062A1C] text-sm text-start transition-colors latin" />
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
+      </div>
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-2 bg-interaction-base px-3 py-2 rounded-xl">
+          <img src="images/abuauf/icons/points-3d.png" alt="" class="w-6 h-6 object-contain" />
+          <span class="text-[#062A1C] text-sm"><span class="font-bold latin" data-redeem-available>0</span> ${esc(t("نقطة متاحة"))}</span>
+        </div>
+        <div class="flex items-end gap-2">
+          <label class="flex flex-col flex-1 gap-1">
+            <span class="font-medium text-neutral-secondary text-xs">${esc(t("عدد النقاط"))}</span>
+            <input type="number" inputmode="numeric" data-redeem-input min="0" step="10"
+                   class="bg-white px-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full h-11 text-[#062A1C] text-base transition-colors latin" />
           </label>
-          <p class="text-neutral-secondary text-xs">${esc(t("الكود صالح للاستخدام مرة واحدة فقط."))}</p>
-          <button type="submit" class="bg-cta hover:bg-cta-hover mt-1 py-3 rounded-full font-semibold text-white text-sm transition-colors">${esc(t("أضف القسيمة"))}</button>
-        </form>
-      </div>
-    </div>
-
-    <div data-modal="voucherActivate" class="modal-shell">
-      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[380px] overflow-hidden" data-modal-box>
-        <div class="flex justify-between items-center px-5 py-4 border-neutral-divider border-b">
-          <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("تفعيل القسيمة"))}</h2>
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
+          <button type="button" data-redeem-all class="bg-interaction-base hover:bg-interaction-tertiary-hover px-4 border border-neutral-divider rounded-xl h-11 font-semibold text-cta text-xs whitespace-nowrap transition-colors">${esc(t("كل النقاط"))}</button>
         </div>
-        <div class="flex flex-col items-center gap-3 p-6 text-center">
-          <img src="images/abuauf/icons/discount-tag-3d.png" alt="" class="w-16 h-16 object-contain" />
-          <p class="text-[#062A1C] text-sm leading-6">${esc(t("سيتم إضافة"))} <span class="font-bold text-cta latin" data-voucher-activate-value></span> ${esc(t("إلى رصيد محفظتك"))}</p>
-          <button type="button" data-voucher-activate-confirm class="bg-cta hover:bg-cta-hover mt-1 py-3 rounded-full w-full font-semibold text-white text-sm transition-colors">${esc(t("تفعيل القسيمة"))}</button>
-        </div>
-      </div>
-    </div>
-
-    <div data-modal="pointsRedeem" class="modal-shell">
-      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[400px] overflow-hidden" data-modal-box>
-        <div class="flex justify-between items-start px-5 py-4 border-neutral-divider border-b">
-          <div class="flex flex-col">
-            <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("استبدال النقاط"))}</h2>
-            <span class="text-neutral-secondary text-xs">${esc(t("حوّل نقاطك إلى رصيد في محفظتك"))}</span>
-          </div>
-          <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
-        </div>
-        <div class="flex flex-col gap-4 p-5">
-          <div class="flex items-center gap-2 bg-interaction-base px-3 py-2 rounded-xl">
-            <img src="images/abuauf/icons/points-3d.png" alt="" class="w-6 h-6 object-contain" />
-            <span class="text-[#062A1C] text-sm"><span class="font-bold latin" data-redeem-available>0</span> ${esc(t("نقطة متاحة"))}</span>
-          </div>
-          <div class="flex items-end gap-2">
-            <label class="flex flex-col flex-1 gap-1">
-              <span class="font-medium text-neutral-secondary text-xs">${esc(t("عدد النقاط"))}</span>
-              <input type="number" inputmode="numeric" data-redeem-input min="0" step="10"
-                     class="bg-white px-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full h-11 text-[#062A1C] text-base transition-colors latin" />
-            </label>
-            <button type="button" data-redeem-all class="bg-interaction-base hover:bg-interaction-tertiary-hover px-4 border border-neutral-divider rounded-xl h-11 font-semibold text-cta text-xs whitespace-nowrap transition-colors">${esc(t("كل النقاط"))}</button>
-          </div>
-          <p class="text-neutral-secondary text-sm">${esc(t("القيمة"))}: <span class="font-bold text-cta latin" data-redeem-egp>EGP 0</span></p>
-          <p data-redeem-msg hidden class="font-semibold text-accent-error text-xs"></p>
-          <div class="flex justify-end items-center gap-2 pt-1">
-            <button type="button" data-close class="px-4 py-2 font-semibold text-neutral-secondary text-sm">${esc(t("إلغاء"))}</button>
-            <button type="button" data-redeem-confirm class="bg-cta hover:bg-cta-hover px-6 py-2.5 rounded-full font-semibold text-white text-sm transition-colors">${esc(t("تأكيد الاستبدال"))}</button>
-          </div>
+        <p class="text-neutral-secondary text-sm">${esc(t("القيمة"))}: <span class="font-bold text-cta latin" data-redeem-egp>EGP 0</span></p>
+        <p data-redeem-msg hidden class="font-semibold text-accent-error text-xs"></p>
+        <div class="pt-1">
+          <button type="button" data-redeem-confirm class="bg-cta hover:bg-cta-hover px-6 py-3 rounded-full w-full font-semibold text-white text-sm transition-colors">${esc(t("تأكيد الاستبدال"))}</button>
         </div>
       </div>
     </div>
@@ -1955,12 +1966,12 @@
     menu: '[data-drawer="menu"]',
     search: '[data-modal="search"]',
     locale: '[data-sheet="locale"]',
-    address: '[data-modal="address"]',
+    address: '[data-sheet="address"]',
     location: '[data-sheet="location"]',
     accountMenu: '[data-sheet="account-menu"]',
-    voucherAdd: '[data-modal="voucherAdd"]',
-    voucherActivate: '[data-modal="voucherActivate"]',
-    pointsRedeem: '[data-modal="pointsRedeem"]',
+    voucherAdd: '[data-sheet="voucherAdd"]',
+    voucherActivate: '[data-sheet="voucherActivate"]',
+    pointsRedeem: '[data-sheet="pointsRedeem"]',
   };
   let openEl = null;
 
@@ -2153,12 +2164,35 @@
   /* ---------------------------------------------------------------
      Toast
      --------------------------------------------------------------- */
+  /* Toasts carry a glyph and an accent keyed to the ACTION, not just a generic
+     "done" (Ahmed, 2026-08-05). A credit to the wallet, a spend against it and
+     an undo of that spend used to read as three identical green bars; now the
+     icon and the ink say which one happened at a glance. `type` is one of
+     success | error | info | wallet | spend | cart; anything else falls back to
+     success, and the old `"error"` call sites keep working unchanged. */
+  const TOAST_ICONS = {
+    success: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    error: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 8v5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1.3" fill="currentColor"/><path d="M10.3 3.9 2.5 18a1.9 1.9 0 0 0 1.7 2.8h15.6A1.9 1.9 0 0 0 21.5 18L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
+    info: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 11v5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="7.8" r="1.2" fill="currentColor"/></svg>',
+    wallet: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H18a1 1 0 0 1 1 1v1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 7.5v9A2.5 2.5 0 0 0 5.5 19H19a1 1 0 0 0 1-1v-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 10.5h-4a2 2 0 0 0 0 4h4a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
+    spend: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H18a1 1 0 0 1 1 1v1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 7.5v9A2.5 2.5 0 0 0 5.5 19H19a1 1 0 0 0 1-1v-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 12.5h6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    cart: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M4 5h2l1.6 10.2a1.5 1.5 0 0 0 1.5 1.3h7.8a1.5 1.5 0 0 0 1.5-1.2L20 8H6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="20" r="1.4" fill="currentColor"/><circle cx="18" cy="20" r="1.4" fill="currentColor"/></svg>',
+  };
   function toast(msg, type) {
     const c = document.getElementById("toast-container");
     if (!c) return;
+    const kind = TOAST_ICONS[type] ? type : "success";
     const el = document.createElement("div");
-    el.className = "toast" + (type === "error" ? " toast--error" : "");
-    el.textContent = msg;
+    el.className = "toast toast--" + kind;
+    el.setAttribute("role", kind === "error" ? "alert" : "status");
+    const icon = document.createElement("span");
+    icon.className = "toast__icon";
+    icon.setAttribute("aria-hidden", "true");
+    icon.innerHTML = TOAST_ICONS[kind];
+    const text = document.createElement("span");
+    text.className = "toast__msg";
+    text.textContent = msg;
+    el.append(icon, text);
     c.appendChild(el);
     setTimeout(() => {
       el.style.opacity = "0";
@@ -2417,34 +2451,37 @@
     update();
 
     /* ---------------------------------------------------------------
-       Drag-to-scroll — and why the rail hands the vertical axis back.
+       Touch scrolls the rail NATIVELY; the pointer-drag below is MOUSE-only.
 
-       Reported on iPhone/Brave, i.e. WebKit (every iOS browser is WebKit): a
-       vertical swipe that STARTS on a rail did not scroll the page — it just
-       sat there. `touch-action: pan-x` (styles.css) is the textbook fix and it
-       holds on Blink, but WebKit does not reliably hand a vertical gesture
-       back to the page once a finger is inside a horizontal scroll-snap
-       container. The requirement — vertical always scrolls — cannot be met by
-       any touch-action value that leaves the browser to disambiguate the axis.
+       History: a vertical swipe STARTING on a rail once failed to scroll the
+       page on iOS/WebKit, and the fix was `touch-action: pan-x` plus a
+       JS pointer-drag that drove scrollLeft by hand. That fixed the freeze but
+       traded away native touch scrolling — the finger-drag had no momentum, no
+       fling, and a slightly-diagonal thumb swipe would stall — so the rails
+       "swiped oddly" next to the home-page review row, which is a plain native
+       scroller and always felt right (Ahmed, 2026-08-05).
 
-       So the browser is handed the vertical axis outright: `pan-y` means it
-       owns vertical (the page scrolls, every time) and never starts a
-       horizontal scroll on the track — we drive that from pointer events, the
-       way Swiper did. A vertical drag fires `pointercancel` here (the browser
-       took it) and we bail; a horizontal drag never becomes a browser scroll,
-       so we translate it into scrollLeft.
+       The review row is the proof that native is the answer: it is a
+       `touch-action: auto` scroll-snap container and it neither stalls nor
+       traps a vertical swipe. The earlier WebKit trap was specific to `pan-x`,
+       which forbids vertical panning ON the element — `auto` lets the browser
+       disambiguate the axis and hand vertical straight to the page. So the
+       rails now scroll natively on touch too (styles.css sets the track's
+       `touch-action`, and `overscroll-behavior-x: contain` keeps a fling from
+       chaining into a back-navigation).
 
-       Set HERE, not in the CSS, on purpose: if this script never runs the CSS
-       `pan-x` still gives native horizontal scrolling, so a JS-off page
-       degrades to the old behaviour, not to a rail that cannot move at all. */
-    track.style.touchAction = "pan-y pinch-zoom";
+       The pointer-drag stays, but only for a MOUSE: a desktop click-drag is the
+       one gesture the browser will NOT turn into a scroll on a scrollbar-hidden
+       rail, so we still drive that by hand. Touch and pen fall through to the
+       native scroller above. */
 
     let dragActive = false; // a pointer is down and being tracked
     let dragScroll = false; // it has crossed the slop into a real drag
     let dragStartX = 0, dragStartSL = 0, dragMoved = 0, dragId = null;
 
     track.addEventListener("pointerdown", (e) => {
-      if (e.pointerType === "mouse" && e.button !== 0) return;
+      if (e.pointerType !== "mouse") return; // touch/pen scroll natively
+      if (e.button !== 0) return;
       dragActive = true;
       dragScroll = false;
       dragMoved = 0;
@@ -2550,31 +2587,21 @@
 
   /* Plain drag-to-scroll for a horizontal overflow row that ISN'T a carousel
      (no slides, no snap, no arrows) — the category filter-chip row on shop
-     listing pages. A mouse drag needs this the same way the carousel does
-     (browsers only turn a mouse drag into a scroll for the resident
-     scrollbar, and this row hides its scrollbar like the rails do) — but the
-     bigger find testing this: on a touch/trackpad pointer, the drag was
-     getting cut short by a `pointercancel` PARTWAY through the gesture,
-     exactly the failure initCarousel's own comments already describe. Cause
-     is the same one documented there: with no `touch-action` override, the
-     browser's own gesture disambiguation can claim the drag as a native pan
-     and cancel our pointer mid-track. `pan-y pinch-zoom` hands vertical
-     panning and zoom back to the browser and keeps horizontal for us to
-     drive via scrollLeft, so the cancel stops happening. Kept separate from
-     initCarousel rather than forcing the chip row to become a one-slide
-     carousel it doesn't need. */
+     listing pages. MOUSE-only, exactly like the carousel: a desktop click-drag
+     is the one gesture the browser won't turn into a scroll on a
+     scrollbar-hidden row, so we drive it by hand. Touch and pen scroll the row
+     natively (styles.css leaves it a native `touch-action` scroller), which is
+     smoother and never stalls a slightly-diagonal swipe — the same move the
+     carousel made (Ahmed, 2026-08-05). Kept separate from initCarousel rather
+     than forcing the chip row to become a one-slide carousel it doesn't need. */
   function initDragScroll(el) {
-    // Set here, not in CSS, for the same reason initCarousel does it in JS:
-    // if this script never runs, the CSS pan-x fallback (styles.css) still
-    // gives native horizontal scrolling rather than a row that cannot move.
-    el.style.touchAction = "pan-y pinch-zoom";
-
     let active = false;
     let dragging = false;
     let startX = 0, startSL = 0, moved = 0, id = null;
 
     el.addEventListener("pointerdown", (e) => {
-      if (e.pointerType === "mouse" && e.button !== 0) return;
+      if (e.pointerType !== "mouse") return; // touch/pen scroll natively
+      if (e.button !== 0) return;
       // Nothing to drag once xl wraps the chips instead of scrolling them —
       // bail before arming, so a jittery click near the tap-slop threshold
       // never eats a chip's own click on desktop.
@@ -4515,8 +4542,15 @@
   const PT_SPENT_KEY = "abuauf:pointsSpent";
   const VOUCHERS_KEY = "abuauf:vouchersWallet";
   const V_USED_KEY = "abuauf:vouchersUsed";
+  // Vouchers a shopper added by code (Ahmed, 2026-08-05): each is stored as
+  // {id,label,validity,value} and lands in the AVAILABLE list — it is NOT
+  // credited to the wallet until the shopper activates it, exactly like the
+  // seeded vouchers. Kept apart from V_USED_KEY (which records activations of
+  // either kind) so a reload re-renders the ones still waiting to be activated.
+  const V_ADDED_KEY = "abuauf:vouchersAdded";
   const VOUCHERS_TOTAL = 3; // mirrors _account.VOUCHERS length
   const vouchersUsed = () => { try { return JSON.parse(localStorage.getItem(V_USED_KEY) || "[]"); } catch (e) { return []; } };
+  const vouchersAdded = () => { try { return JSON.parse(localStorage.getItem(V_ADDED_KEY) || "[]"); } catch (e) { return []; } };
   const numKey = (k) => { try { return Number(localStorage.getItem(k)) || 0; } catch (e) { return 0; } };
   const pointsSpent = () => numKey(PT_SPENT_KEY);
   const pointsRemaining = () => Math.max(0, POINTS_BASE - pointsSpent());
@@ -4530,7 +4564,7 @@
      box; skipped under reduced motion. */
   function walletCountUp(el, from, to) {
     if (reduceMotion() || from === to) { el.textContent = "EGP " + to; return; }
-    const dur = 700, t0 = performance.now();
+    const dur = 900, t0 = performance.now();
     const ease = (p) => 1 - Math.pow(1 - p, 3);
     el.classList.remove("wallet-pop");
     void el.offsetWidth;
@@ -4546,12 +4580,55 @@
     // value and cleanup regardless. Worst case: the number jumps, never sticks.
     setTimeout(() => { el.textContent = "EGP " + to; el.classList.remove("wallet-pop"); }, dur + 120);
   }
+
+  /* The "money just landed in your wallet" beat (Ahmed, 2026-08-05). On top of
+     the count-up, three layered cues so a credit is unmissable:
+       - the wallet CARD glows and lifts (a green ring pulse), so the eye is
+         pulled to the whole balance panel, not just the digits;
+       - a "+EGP N" chip rises off the balance and fades, naming the amount that
+         arrived;
+       - the celebrate() burst already used on the cart wallet toggle.
+     All are decoration: each is guarded by reduceMotion() and Element.animate,
+     and the number itself is always set correctly by walletCountUp regardless. */
+  function walletCreditFX(el, delta) {
+    if (!el || delta <= 0 || reduceMotion()) return;
+    const card = el.closest("[data-wallet-card]");
+    if (card) {
+      card.classList.remove("wallet-card-glow");
+      void card.offsetWidth;
+      card.classList.add("wallet-card-glow");
+      setTimeout(() => card.classList.remove("wallet-card-glow"), 1400);
+    }
+    if (el.animate) {
+      const r = el.getBoundingClientRect();
+      const chip = document.createElement("div");
+      chip.className = "wallet-delta-chip";
+      chip.textContent = "+EGP " + delta;
+      chip.style.left = r.left + r.width / 2 + "px";
+      chip.style.top = r.top + "px";
+      document.body.appendChild(chip);
+      chip.animate(
+        [
+          { transform: "translate(-50%, 0) scale(0.8)", opacity: 0 },
+          { transform: "translate(-50%, -12px) scale(1)", opacity: 1, offset: 0.25 },
+          { transform: "translate(-50%, -44px) scale(1)", opacity: 0 },
+        ],
+        { duration: 1200, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" },
+      ).onfinish = () => chip.remove();
+    }
+    celebrate(el);
+  }
+
   function syncWalletBalance(animate) {
     const total = BASE_WALLET + walletBonus();
     document.querySelectorAll("[data-wallet-amount]").forEach((el) => {
       const cur = parseInt((el.textContent || "").replace(/[^\d]/g, ""), 10) || 0;
-      if (animate && cur !== total) walletCountUp(el, cur, total);
-      else el.textContent = "EGP " + total;
+      if (animate && cur !== total) {
+        walletCountUp(el, cur, total);
+        if (total > cur) walletCreditFX(el, total - cur);
+      } else {
+        el.textContent = "EGP " + total;
+      }
     });
     document.querySelectorAll("[data-wallet-toggle]").forEach((el) => (el.dataset.walletBalance = String(total)));
   }
@@ -5027,13 +5104,13 @@
           renderCart();
           syncWalletUI();
           const used = Math.min(balance, Cart.subtotal() + DELIVERY_FEE);
-          toast("تم خصم " + egp(used) + " من الإجمالي");
+          toast("تم خصم " + egp(used) + " من الإجمالي", "spend");
           celebrate(card);
         } else {
           localStorage.removeItem(WALLET_KEY);
           renderCart();
           syncWalletUI();
-          toast("تم إلغاء خصم المحفظة");
+          toast("تم إلغاء خصم المحفظة", "info");
         }
         return;
       }
@@ -5203,7 +5280,7 @@
           onLand: () => openOverlay("cart"),
         });
         Cart.add(product, 1);
-        toast("تمت الإضافة إلى السلة");
+        toast("تمت الإضافة إلى السلة", "cart");
         return;
       }
 
@@ -5237,7 +5314,7 @@
         }
         const next = line.qty + delta;
         Cart.setQty(product.id, next);
-        if (next < 1) toast("تمت الإزالة من السلة");
+        if (next < 1) toast("تمت الإزالة من السلة", "info");
         return; // syncBuyBlock repaints the digit off the store
       }
 
@@ -5259,7 +5336,7 @@
         throwToCart(img, { card: true, tag: "+" + qty });
 
         Cart.add(product, qty);
-        toast("تمت الإضافة إلى السلة");
+        toast("تمت الإضافة إلى السلة", "cart");
         return;
       }
 
@@ -5304,7 +5381,7 @@
 
         if (next < 1) {
           Cart.remove(product.id);
-          toast("تمت الإزالة من السلة");
+          toast("تمت الإزالة من السلة", "info");
           return;
         }
         if (delta > 0) throwToCart(card && card.querySelector("img"), { card: true, quick: true, tag: "+1" });
@@ -5332,7 +5409,7 @@
         if (!it) return;
         const next = it.qty + parseInt(step.dataset.cartStep, 10);
         Cart.setQty(it.id, next);
-        if (next < 1) toast("تمت الإزالة من السلة");
+        if (next < 1) toast("تمت الإزالة من السلة", "info");
         return;
       }
     });
@@ -6233,7 +6310,7 @@
   }
   function initPointsRedeem() {
     syncPointsUI();
-    const modal = document.querySelector('[data-modal="pointsRedeem"]');
+    const modal = document.querySelector('[data-sheet="pointsRedeem"]');
     if (!modal) return;
     const input = modal.querySelector("[data-redeem-input]");
     const egpEl = modal.querySelector("[data-redeem-egp]");
@@ -6270,13 +6347,20 @@
       syncPointsUI();
       syncWalletBalance(true);
       closeOverlay();
-      toast(t("تم تحويل") + " " + nfEn(v) + " " + t("نقطة إلى محفظتك"));
+      toast(t("تم تحويل") + " " + nfEn(v) + " " + t("نقطة إلى محفظتك"), "wallet");
     });
   }
   function syncVouchersCount() {
     // Sidebar badge on EVERY account page reads the same remaining count, so an
-    // activation on the vouchers page shows up in the nav everywhere.
-    const remain = Math.max(0, VOUCHERS_TOTAL - vouchersUsed().length);
+    // activation (or a newly added code) on the vouchers page shows up in the
+    // nav everywhere. Counted from localStorage, not the DOM, because the list
+    // only exists on the vouchers page: seeded vouchers still waiting +
+    // code-added vouchers still waiting, each minus the ones already activated.
+    const used = vouchersUsed();
+    const staticUsed = used.filter((id) => String(id).indexOf("added-") !== 0).length;
+    const staticRemain = Math.max(0, VOUCHERS_TOTAL - staticUsed);
+    const addedRemain = vouchersAdded().filter((v) => used.indexOf(v.id) < 0).length;
+    const remain = staticRemain + addedRemain;
     document.querySelectorAll("[data-vouchers-count]").forEach((el) => (el.textContent = remain));
     const empty = document.querySelector("[data-vouchers-empty]");
     if (empty) {
@@ -6311,63 +6395,101 @@
     } catch (e) { /* ignore */ }
     renderVoucherHistory();
   }
+  // Markup for an available-voucher card, matching the seeded ones the vouchers
+  // page renders (build/pages/my_account_vouchers.py) so a code-added voucher is
+  // indistinguishable from a seeded one — same activate (+) control, same hooks.
+  const V_PLUS = '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  function voucherCardHTML(v) {
+    return '<div data-voucher data-voucher-id="' + esc(v.id) + '" class="flex items-center gap-3 bg-white shadow-custom4 p-4 rounded-2xl">'
+      + '<img src="images/abuauf/icons/discount-tag-3d.png" alt="" class="w-11 h-11 object-contain shrink-0" />'
+      + '<div class="flex flex-col flex-1 min-w-0"><span class="font-bold text-cta text-sm">' + esc(v.label) + '</span>'
+      + '<span class="text-neutral-secondary text-xs">' + esc(v.validity) + '</span></div>'
+      + '<button type="button" data-voucher-activate data-value="' + esc(String(v.value)) + '" data-label="' + esc(v.label) + '" aria-label="' + esc("تفعيل " + v.label) + '" '
+      + 'class="place-items-center grid bg-interaction-base hover:bg-cta hover:text-white border border-neutral-divider rounded-full size-10 text-cta shrink-0 transition-colors"><span class="w-4 h-4">' + V_PLUS + '</span></button>'
+      + '</div>';
+  }
   function initVouchers() {
     renderVoucherHistory();
-    // Drop already-activated vouchers on load so they can't be claimed twice
-    // (the wallet credit is persisted separately in VOUCHERS_KEY).
+    const list = document.querySelector("[data-vouchers-list]");
     const used = vouchersUsed();
+    // Drop already-activated seeded cards on load so they can't be claimed twice
+    // (the wallet credit is persisted separately in VOUCHERS_KEY).
     document.querySelectorAll("[data-voucher]").forEach((v) => {
       if (used.indexOf(v.dataset.voucherId) >= 0) v.remove();
     });
+    // Re-render code-added vouchers that are still waiting to be activated,
+    // newest first — they live in the available list exactly like seeded ones.
+    if (list) vouchersAdded().forEach((v) => {
+      if (used.indexOf(v.id) >= 0) return;
+      if (list.querySelector('[data-voucher-id="' + v.id + '"]')) return;
+      list.insertAdjacentHTML("afterbegin", voucherCardHTML(v));
+    });
     syncVouchersCount();
 
+    // Add a voucher BY CODE — it joins the AVAILABLE list with its value and an
+    // expiry, and is NOT credited to the wallet here (Ahmed, 2026-08-05): the
+    // shopper still chooses to activate it, the same two-step the seeded
+    // vouchers already use. The value is read off the code's trailing digits
+    // (ABUAUF150 -> 150), else a default; expiry is 90 days out. Demo — there is
+    // no live voucher endpoint (DESIGN-NOTES §1).
     const addForm = document.querySelector("[data-voucher-add-form]");
     if (addForm) addForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const code = ((addForm.querySelector('[name="code"]') || {}).value || "").trim();
       if (!code) return;
-      // Demo: any code adds EGP 50 to the wallet.
-      try { localStorage.setItem(VOUCHERS_KEY, String(vouchersCredit() + 50)); } catch (e2) { /* ignore */ }
+      const m = code.match(/(\d{2,4})/);
+      const value = m ? Number(m[1]) : 50;
+      const exp = new Date(); exp.setDate(exp.getDate() + 90);
+      const v = {
+        id: "added-" + Date.now(),
+        label: t("خصم") + " " + value + " " + t("جنيه"),
+        validity: t("صالحة حتى") + " " + fmtDateAr(exp),
+        value: value,
+      };
+      try {
+        const arr = vouchersAdded(); arr.push(v);
+        localStorage.setItem(V_ADDED_KEY, JSON.stringify(arr));
+      } catch (e2) { /* ignore */ }
+      if (list) list.insertAdjacentHTML("afterbegin", voucherCardHTML(v));
       addForm.reset();
-      addVoucherHistory(t("قسيمة كود"), 50);
-      syncWalletBalance(true);
+      syncVouchersCount();
       closeOverlay();
-      toast(t("تم تفعيل القسيمة وإضافتها لمحفظتك"));
+      toast(t("تمت إضافة القسيمة إلى قائمتك"), "success");
     });
 
+    // Activate (+) — DELEGATED on the list so code-added cards (built after load)
+    // work the same as the seeded ones. Opens the confirm sheet with the value.
     let pending = null;
-    document.querySelectorAll("[data-voucher-activate]").forEach((btn) =>
-      btn.addEventListener("click", () => {
-        pending = btn.closest("[data-voucher]");
-        const val = Number(btn.dataset.value) || 0;
-        const modal = document.querySelector('[data-modal="voucherActivate"]');
-        if (modal) {
-          modal.dataset.value = String(val);
-          const v = modal.querySelector("[data-voucher-activate-value]");
-          if (v) v.textContent = "EGP " + val;
-        }
-        openOverlay("voucherActivate");
-      }));
+    if (list) list.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-voucher-activate]");
+      if (!btn) return;
+      pending = btn.closest("[data-voucher]");
+      const val = Number(btn.dataset.value) || 0;
+      const sheet = document.querySelector('[data-sheet="voucherActivate"]');
+      if (sheet) {
+        sheet.dataset.value = String(val);
+        const vEl = sheet.querySelector("[data-voucher-activate-value]");
+        if (vEl) vEl.textContent = "EGP " + val;
+      }
+      openOverlay("voucherActivate");
+    });
     const vConfirm = document.querySelector("[data-voucher-activate-confirm]");
-    if (vConfirm) vConfirm.addEventListener("click", () => {
-      const modal = document.querySelector('[data-modal="voucherActivate"]');
-      const val = Number(modal && modal.dataset.value) || 0;
+    if (vConfirm && list) vConfirm.addEventListener("click", () => {
+      const sheet = document.querySelector('[data-sheet="voucherActivate"]');
+      const val = Number(sheet && sheet.dataset.value) || 0;
+      const id = pending && pending.dataset.voucherId;
       try {
         localStorage.setItem(VOUCHERS_KEY, String(vouchersCredit() + val));
-        if (pending) {
-          const u = vouchersUsed();
-          u.push(pending.dataset.voucherId);
-          localStorage.setItem(V_USED_KEY, JSON.stringify(u));
-        }
+        if (id) { const u = vouchersUsed(); u.push(id); localStorage.setItem(V_USED_KEY, JSON.stringify(u)); }
       } catch (e) { /* ignore */ }
       const label = (pending && pending.querySelector("[data-voucher-activate]") && pending.querySelector("[data-voucher-activate]").dataset.label) || t("قسيمة خصم");
       if (pending) pending.remove();
       pending = null;
       addVoucherHistory(label, val);
       syncVouchersCount();
-      syncWalletBalance(true);
       closeOverlay();
-      toast(t("تم تفعيل القسيمة وإضافتها لمحفظتك"));
+      syncWalletBalance(true);
+      toast(t("تم تفعيل القسيمة وإضافتها لمحفظتك"), "wallet");
     });
   }
 

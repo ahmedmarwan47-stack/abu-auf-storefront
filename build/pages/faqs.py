@@ -51,7 +51,7 @@ def build():
           <div class="flex flex-col items-center gap-3 bg-interaction-base p-8 rounded-[20px] text-center">
             <h2 class="font-bold text-[#062A1C] text-xl">لسه عندك سؤال؟</h2>
             <p class="text-neutral-secondary text-sm">فريق خدمة العملاء جاهز يساعدك</p>
-            <a href="contact-us.html" class="bg-cta hover:bg-cta-hover mt-2 px-8 py-3 rounded-full font-semibold text-white text-sm transition-colors">تواصل معنا</a>
+            <a href="contact-us.html" class="bg-cta hover:bg-cta-hover mt-2 px-8 py-3 rounded-full w-full sm:w-auto font-semibold text-white text-sm text-center transition-colors">تواصل معنا</a>
           </div>
         </div>
       </section>"""

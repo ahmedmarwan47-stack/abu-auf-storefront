@@ -161,8 +161,16 @@ WALLET_BALANCE = 1200
 # --------------------------------------------------------------------------
 # Primitives
 # --------------------------------------------------------------------------
-def button(label, href="#", variant="primary", size="md", extra=""):
-    """variant: primary | secondary | ghost"""
+def button(label, href="#", variant="primary", size="md", extra="", full_mobile=True):
+    """variant: primary | secondary | ghost
+
+    `full_mobile` (default True): the button fills its container's width below
+    `sm` and returns to content-width from 640px up (Ahmed, 2026-08-05) — the
+    mobile pattern where a standalone CTA spans the column rather than sitting as
+    a small pill against an empty gutter. Pass `full_mobile=False` for a button
+    that must stay inline on a phone (the section-heading "view more" link, which
+    rides on the heading's own row).
+    """
     sizes = {
         "sm": "px-6 py-2.5 text-sm",
         "md": "px-8 py-3 text-base",
@@ -173,8 +181,9 @@ def button(label, href="#", variant="primary", size="md", extra=""):
         "secondary": "border border-cta text-cta hover:bg-interaction-base",
         "accent": "bg-accent-yellow hover:bg-accent-500 text-[#062A1C]",
     }
+    width = "w-full sm:w-auto " if full_mobile else ""
     return (f'<a href="{href}" class="inline-flex justify-center items-center rounded-full '
-            f'font-semibold transition-colors {sizes[size]} {variants[variant]} {extra}">{e(label)}</a>')
+            f'font-semibold transition-colors {width}{sizes[size]} {variants[variant]} {extra}">{e(label)}</a>')
 
 
 def section_heading(heading, cta_label=None, cta_href="#", centered=False):
@@ -182,7 +191,7 @@ def section_heading(heading, cta_label=None, cta_href="#", centered=False):
     if centered:
         return (f'<h2 class="mb-10 xl:mb-12 font-bold text-[#062A1C] text-3xl xl:text-4xl '
                 f'text-center">{e(heading)}</h2>')
-    cta = button(cta_label, cta_href, "secondary", "sm") if cta_label else ""
+    cta = button(cta_label, cta_href, "secondary", "sm", full_mobile=False) if cta_label else ""
     return (f'<div class="flex flex-wrap justify-between items-center gap-4 mb-10">'
             f'<h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">{e(heading)}</h2>{cta}</div>')
 
@@ -1210,21 +1219,24 @@ def checkout_summary(lines_html, subtotal, total, delivery_fee, interactive=True
     toggle and the promo field are dropped — each one's effect is already applied
     and survives only as a figure in the totals below. The order note is NOT
     money, so it stays on payment too (Ahmed, 2026-08-04): initOrderNotes reads
-    the same stored note, so a note added on checkout carries over and is still
-    editable up to confirmation. Checkout keeps all three (interactive=True),
-    grouped together, and both add a "تعديل" link back to the cart page.
+    the same stored note, so a note added on checkout carries over. It is fully
+    EDITABLE on payment as well (Ahmed, 2026-08-05) — a shopper often remembers
+    a delivery instruction at the last step, and the note changes nothing about
+    the price, so there is no reason to lock it the way the money controls are.
+    Checkout keeps all three (interactive=True), grouped together, and both add a
+    "تعديل" link back to the cart page.
     """
     # #8 — a "تعديل" link back to the CART PAGE (not the drawer), on the title's
     # own line. On BOTH checkout and payment (Ahmed, 2026-08-04): even at payment
     # a shopper may want to jump back to the basket to change it.
     edit_link = '<a href="cart.html" class="link-sweep font-semibold text-cta text-sm">تعديل</a>'
     # #12 — wallet, promo and the note editor grouped together above the totals.
-    # The note editor is on BOTH steps; wallet and promo (the money controls) are
-    # checkout-only — on payment their result is shown as a figure in the totals.
-    # Checkout: full editor. Payment: read-only — the note from the previous
-    # step shows but can't be changed or removed (Ahmed, 2026-08-04).
+    # The note editor is on BOTH steps with the FULL editor; wallet and promo
+    # (the money controls) are checkout-only — on payment their result is shown
+    # as a figure in the totals. The note is editable at payment too (Ahmed,
+    # 2026-08-05): it is not money, so there is nothing to lock.
     note_block = f"""
-            <div class="pt-1">{order_notes(readonly=not interactive)}
+            <div class="pt-1">{order_notes()}
             </div>"""
     controls = (f"""
 {wallet_toggle()}
@@ -1362,8 +1374,13 @@ def promo_field(readonly=False):
                     <input type="text" data-promo-input inputmode="latin" autocomplete="off"
                            placeholder="{e('أدخل كود الخصم')}"
                            class="flex-1 bg-white px-3 py-2 border border-neutral-divider focus:border-cta rounded-xl outline-none min-w-0 text-[#062A1C] text-sm transition-colors latin" />
+                    <!-- Secondary (outline) button (Ahmed, 2026-08-05): the
+                         Apply sits next to the primary green order CTA below, so
+                         a second solid-green button competed with it for the
+                         eye. An outline keeps it clearly actionable while the
+                         filled CTA stays the one obvious next step. -->
                     <button type="button" data-promo-apply
-                            class="bg-cta hover:bg-cta-hover px-4 rounded-full min-h-11 font-semibold text-white text-sm whitespace-nowrap transition-colors">تطبيق</button>
+                            class="bg-white hover:bg-interaction-base px-4 border border-cta rounded-full min-h-11 font-semibold text-cta text-sm whitespace-nowrap transition-colors">تطبيق</button>
                   </div>
                   <p data-promo-msg hidden class="text-xs leading-5"></p>
                 </div>
@@ -1613,9 +1630,13 @@ def wallet_toggle(balance=WALLET_BALANCE):
                  widget is a compact row rather than a two-line card. -->
             <label data-wallet-toggle data-wallet-balance="{balance}"
                    class="wallet-toggle flex items-center gap-3 bg-[#E9F3E6] px-4 py-3 rounded-xl cursor-pointer">
-              <span class="place-items-center grid bg-accent-green/10 rounded-full text-accent-green size-9 shrink-0">
-                <span class="w-5 h-5">{ICON['wallet']}</span>
-              </span>
+              <!-- The client's 3D wallet render (Ahmed, 2026-08-05), the same
+                   glyph the account dashboard, the wallet page and the wallet
+                   stat card already use — so the summary's "pay from wallet"
+                   switch and the balance it spends read as one wallet across the
+                   site. Kept at 36px (w-9), the exact footprint of the tinted
+                   circle it replaces, so the fixed-height row does not shift. -->
+              <img src="images/abuauf/icons/wallet-3d.png" alt="" class="w-9 h-9 object-contain shrink-0" />
               <span class="flex flex-1 flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
                 <span class="font-semibold text-[#062A1C] text-sm">الدفع من المحفظة</span>
                 <!-- Idle balance and the "deducted" caption share ONE grid cell,
@@ -1999,7 +2020,11 @@ def page(title_text, description, body, page_id, path, main_class="overflow-x-cl
          the sticky-nav selector). Reverse these two and they stop working. -->
     <link rel="stylesheet" href="tailwind.css" />
     <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" href="images/abuauf/brand/logo-abuauf-white.webp" />
+    <!-- The client's 3D leaf mark as the tab icon (Ahmed, 2026-08-05) — the
+         same spec-leaf.png the mega-panel bullets and product benefits use, so
+         the favicon is a recognisable brand glyph rather than the white
+         wordmark, which reads as a blank sliver at 16px. -->
+    <link rel="icon" type="image/png" href="images/abuauf/icons/spec-leaf.png" />
     <!-- The English dictionary, generated by build/i18n.py. Also `defer`, and
          listed FIRST: deferred scripts run in document order, so this has
          always defined window.ABUAUF_I18N by the time scripts.js boots and

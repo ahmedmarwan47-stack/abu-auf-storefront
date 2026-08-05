@@ -1,9 +1,12 @@
 """Vouchers — new page mirroring Exception's vouchers screen (Ahmed,
 2026-08-04): a wallet-balance banner, the list of available vouchers each with
-an activate (+) control, and two modals (add a code / confirm activation). A
-voucher's value is added straight to the wallet, exactly like redeemed points —
-scripts.js initVouchers persists activations under abuauf:vouchersWallet and
-calls syncWalletBalance. Demo/placeholder (no live endpoint, DESIGN-NOTES §1)."""
+an activate (+) control, and two sheets (add a code / confirm activation).
+
+Adding a code (Ahmed, 2026-08-05) does NOT credit the wallet — it drops a new
+voucher into the AVAILABLE list with its value and expiry, persisted under
+abuauf:vouchersAdded. Only ACTIVATING a voucher (the + → confirm) moves its
+value into the wallet, under abuauf:vouchersWallet, and syncWalletBalance then
+plays the credit animation. Demo/placeholder (no live endpoint, DESIGN-NOTES §1)."""
 from _account import (
     CUSTOMER, VOUCHERS, account_page, account_title,
 )
@@ -55,8 +58,9 @@ def build():
               </button>
             </div>
 
-            <!-- Wallet banner: activating any voucher lands its value here. -->
-            <div class="flex flex-wrap items-center gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
+            <!-- Wallet banner: activating any voucher lands its value here.
+                 data-wallet-card is glowed by the credit animation (scripts.js). -->
+            <div data-wallet-card class="flex flex-wrap items-center gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
               <img src="images/abuauf/icons/wallet-3d.png" alt="" class="w-14 h-14 object-contain shrink-0" />
               <div class="flex flex-col">
                 <span class="text-neutral-secondary text-sm">رصيد المحفظة</span>

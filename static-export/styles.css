@@ -209,14 +209,14 @@ select {
 
 /* Plain horizontal drag-to-scroll rows that are NOT a carousel (the shop
    listing's category filter chips) — see initDragScroll in scripts.js for
-   the full story. Same no-JS fallback as .carousel-track below: `pan-x`
-   gives native horizontal scrolling if this script never runs, and
-   initDragScroll overrides it to `pan-y` once it does, because leaving the
-   browser to disambiguate a drag on an element with no touch-action override
-   let it claim the gesture as its own pan and `pointercancel` our tracking
-   mid-drag — the row simply stopped moving partway through the gesture. */
+   the full story. Touch scrolls this NATIVELY, same as the carousel and the
+   home-page review row: the browser disambiguates the axis (`auto`), so a
+   horizontal swipe pans the chips and a vertical one scrolls the page, with
+   momentum and no mid-drag stall. `overscroll-behavior-x: contain` stops a
+   fling off the end from chaining into a browser back-navigation. The
+   pointer-drag in initDragScroll is mouse-only and does not touch this. */
 [data-drag-scroll] {
-  touch-action: pan-x pinch-zoom;
+  touch-action: auto;
   overscroll-behavior-x: contain;
 }
 
@@ -298,33 +298,29 @@ select {
   -ms-overflow-style: none;
   scrollbar-width: none;
 
-  /* Give the page back the vertical axis.
+  /* Native touch scrolling, and why `auto` and not `pan-x`.
 
-     Reported as "sometimes it doesn't want to scroll" on mobile. A rail is a
-     horizontal scroll container with `scroll-snap-type: x mandatory`, and the
-     home page carries four of them stacked down the page — so a thumb drag
-     that starts on a product rail, which is most of the page's height, is a
-     coin toss. If the browser's gesture disambiguation locks to the
-     horizontal axis, the rail consumes the gesture, the snap holds it at the
-     current slide, and the page does not move at all. It reads as the site
-     freezing, not as a carousel working.
+     A rail is a horizontal scroll container with `scroll-snap-type: x
+     mandatory`, and the home page stacks several of them. Two failures have
+     been chased here:
 
-     `pan-x` says this element handles horizontal panning only; anything
-     vertical is passed straight to the page. `pinch-zoom` is kept explicitly
-     because bare `pan-x` would also disable zoom on the rails, which is a
-     WCAG 1.4.4 regression traded for a scroll fix — not a trade worth making.
+       1. A vertical thumb drag STARTING on a rail did not scroll the page — it
+          froze. The first fix was `touch-action: pan-x` + a JS pointer-drag
+          driving scrollLeft by hand.
+       2. That JS drag then "swiped oddly": no momentum, no fling, and a
+          slightly-diagonal swipe stalled — unlike the home-page review row,
+          a plain native scroller that always felt right.
 
-     overscroll-behavior-x stops a fling that reaches the end of a rail from
-     chaining outward into page-level horizontal scroll or a browser back
-     navigation.
-
-     NOTE: this is the no-JS fallback. It holds on Blink, but WebKit (all iOS
-     browsers) does not reliably pass a vertical gesture that starts on the
-     rail back to the page, so once initCarousel() runs it overrides this to
-     `pan-y` and drives horizontal scrolling from pointer events instead —
-     which is the only arrangement that guarantees the page scrolls. See the
-     drag-to-scroll block in scripts.js. */
-  touch-action: pan-x pinch-zoom;
+     `auto` fixes both. The browser disambiguates the axis: a horizontal swipe
+     pans the rail (with native momentum), a vertical one scrolls the page.
+     `pan-x` caused (1) because it forbids vertical panning ON the element,
+     which WebKit failed to hand back to the page; `auto` allows vertical, so it
+     passes straight through — the review row is the proof, being `auto` and
+     never freezing. So the rails scroll natively on touch and initCarousel's
+     pointer-drag is mouse-only (see the drag-to-scroll block in scripts.js).
+     `overscroll-behavior-x` stops a fling off the end of a rail from chaining
+     into page-level horizontal scroll or a browser back-navigation. */
+  touch-action: auto;
   overscroll-behavior-x: contain;
 
   /* Room for the slides' shadows INSIDE the clip region.
@@ -897,18 +893,81 @@ fieldset {
   gap: 10px;
 }
 .toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   background: #fff;
   color: #2c3340;
-  padding: 12px 18px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.16);
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.16);
   font-size: 14px;
   font-weight: 500;
   border-inline-start: 4px solid #16bb55;
+  max-width: min(360px, calc(100vw - 40px));
   animation: slideUp 0.25s ease-out;
 }
+/* The glyph rides in a soft tinted disc coloured to the toast's accent, so the
+   action (credit / spend / undo / error) is legible before the text is read. */
+.toast__icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  color: #16bb55;
+  background: rgba(22, 187, 85, 0.14);
+}
+.toast__icon > svg {
+  width: 18px;
+  height: 18px;
+}
+.toast__msg {
+  min-width: 0;
+  line-height: 1.4;
+}
+/* Success (default) is the green above. The rest re-tint both the border and
+   the icon disc as ONE decision per action. */
 .toast--error {
   border-color: #a8200d;
+}
+.toast--error .toast__icon {
+  color: #a8200d;
+  background: rgba(168, 32, 13, 0.12);
+}
+/* Wallet CREDIT — money landing in the wallet. Brand green, the "good money"
+   colour the wallet card and discount chips already use. */
+.toast--wallet {
+  border-color: #163300;
+}
+.toast--wallet .toast__icon {
+  color: #163300;
+  background: rgba(22, 51, 0, 0.12);
+}
+/* Wallet SPEND — the balance applied against a bill. Accent gold, this site's
+   price/amount colour, so a spend reads as an amount moving, not a win. */
+.toast--spend {
+  border-color: #b8860b;
+}
+.toast--spend .toast__icon {
+  color: #916400;
+  background: rgba(184, 134, 11, 0.14);
+}
+/* Neutral INFO / undo — a cancel or a removal, nothing gained or spent. */
+.toast--info {
+  border-color: #6b7280;
+}
+.toast--info .toast__icon {
+  color: #4b5563;
+  background: rgba(107, 114, 128, 0.14);
+}
+.toast--cart {
+  border-color: #163300;
+}
+.toast--cart .toast__icon {
+  color: #163300;
+  background: rgba(22, 51, 0, 0.12);
 }
 
 /* --------------------------------------------------------------------------
@@ -2408,6 +2467,50 @@ input:checked + .radio-card-accent {
 }
 @media (prefers-reduced-motion: reduce) {
   .wallet-pop { animation: none; }
+}
+
+/* Wallet CARD credit glow — the whole balance panel pulses a green ring and
+   lifts when money lands in it, so a top-up reads at panel scale, not just on
+   the digits (Ahmed, 2026-08-05). Paired with walletCreditFX() in scripts.js;
+   applied to [data-wallet-card]. */
+.wallet-card-glow {
+  animation: walletCardGlow 1.4s var(--ease-out);
+}
+@keyframes walletCardGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(22, 51, 0, 0), 0px 4px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(0);
+  }
+  22% {
+    box-shadow: 0 0 0 4px rgba(52, 104, 83, 0.45), 0px 12px 34px rgba(22, 51, 0, 0.22);
+    transform: translateY(-4px);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(22, 51, 0, 0), 0px 4px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(0);
+  }
+}
+
+/* The "+EGP N" chip that rises off the balance as it counts up. Fixed-position
+   like the fly-to-cart ghost so no card overflow can clip it; positioned and
+   animated in JS, removed on finish. */
+.wallet-delta-chip {
+  position: fixed;
+  z-index: 130;
+  pointer-events: none;
+  transform: translate(-50%, 0);
+  background: #163300;
+  color: #fff;
+  font-weight: 800;
+  font-size: 15px;
+  line-height: 1;
+  padding: 7px 12px;
+  border-radius: 9999px;
+  box-shadow: 0px 6px 16px rgba(22, 51, 0, 0.35);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wallet-card-glow { animation: none; }
 }
 
 /* Membership tier cards (points page). The current tier is inked + ringed; the

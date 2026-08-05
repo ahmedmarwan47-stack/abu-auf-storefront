@@ -236,6 +236,7 @@ UI = {
     "كل الطلبات": "All orders",
     "تفاصيل الطلب": "Order details",
     "حالة الطلب": "Order status",
+    "متابعة التسوق": "Continue shopping",
     "رقم الطلب": "Order number",
     "التاريخ": "Date",
     "المجموع": "Subtotal",

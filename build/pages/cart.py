@@ -51,13 +51,15 @@ def build():
 
       <!-- ============================== CART ============================== -->
       <section class="py-8 xl:py-10">
-        <div class="items-start gap-6 lg:gap-8 grid grid-cols-1 lg:grid-cols-[380px_1fr] mx-auto px-4 max-w-[1536px]">
+        <div class="items-start gap-6 lg:gap-8 grid grid-cols-1 lg:grid-cols-[1fr_380px] mx-auto px-4 max-w-[1536px]">
 
-          <!-- RTL start: summary. DOM-first so RTL puts it in the right column
-               at lg; the Figma mobile cart (804:32907) leads with the line
-               items and drops the summary beneath them, so below lg it moves
-               visually to the end. -->
-          <aside class="flex flex-col gap-4 lg:sticky lg:top-4 order-last lg:order-none min-w-0">
+          <!-- Summary on the LEFT at lg, matching the checkout/payment layout
+               (Ahmed, 2026-08-05): the 380px column is the grid's SECOND track,
+               which in RTL is the inline-end (left) side. `lg:order-2` puts the
+               summary there while the line items (lg:order-1) take the 1fr track
+               on the right. `order-last` keeps the Figma mobile cart order below
+               lg — line items first, summary beneath (804:32907). -->
+          <aside class="flex flex-col gap-4 lg:sticky lg:top-4 order-last lg:order-2 min-w-0">
             <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
               <h2 class="font-bold text-[#062A1C] text-xl">ملخص السلة</h2>
 {freeship_bar()}
@@ -104,8 +106,8 @@ def build():
             </div>
           </aside>
 
-          <!-- RTL end: line items -->
-          <div class="bg-white shadow-custom4 px-6 py-2 rounded-[20px] min-w-0" data-cart-lines>{lines}
+          <!-- Line items — the 1fr track (inline-start / right in RTL). -->
+          <div class="bg-white shadow-custom4 px-6 py-2 rounded-[20px] lg:order-1 min-w-0" data-cart-lines>{lines}
           </div>
         </div>
       </section>

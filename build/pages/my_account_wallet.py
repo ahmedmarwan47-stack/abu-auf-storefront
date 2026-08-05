@@ -42,8 +42,10 @@ def build():
     content = f"""
             {account_title("my-account-wallet.html", "محفظتي")}
 
-            <!-- Balance banner + Explore Vouchers (Exception parity). -->
-            <div class="flex flex-wrap justify-between items-center gap-4 bg-white shadow-custom4 p-6 xl:p-7 rounded-[20px]">
+            <!-- Balance banner + Explore Vouchers (Exception parity).
+                 data-wallet-card is the hook the credit animation glows when a
+                 voucher or points top up the balance (scripts.js). -->
+            <div data-wallet-card class="flex flex-wrap justify-between items-center gap-4 bg-white shadow-custom4 p-6 xl:p-7 rounded-[20px]">
               <div class="flex items-center gap-4 min-w-0">
                 <img src="images/abuauf/icons/wallet-3d.png" alt="" class="w-16 h-16 object-contain shrink-0" />
                 <div class="flex flex-col min-w-0">
