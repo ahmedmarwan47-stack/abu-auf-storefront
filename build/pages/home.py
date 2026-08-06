@@ -234,9 +234,9 @@ def build():
               {button("تسوق الهدايا", "shop-category.html", "primary", "lg", "mt-3 self-start")}
             </div>
             <div class="flex justify-center items-center order-1 lg:order-2 self-stretch py-2 xl:py-4">
-              <img src="images/abuauf/site/gifts.png"
-                   alt="تشكيلة هدايا أبو عوف — علبة تمور فاخرة وصينية مكسرات وبوكس مناسبات"
-                   class="drop-shadow-2xl w-full max-w-[420px] h-auto object-contain" loading="lazy" />
+              <img src="images/abuauf/site/gifts-isolated.webp"
+                   alt="تشكيلة هدايا أبو عوف — علبة تمور فاخرة، صينية مكسرات وفواكه مجففة، وتشكيلة سناكس"
+                   class="drop-shadow-xl w-full max-w-[520px] h-auto object-contain" loading="lazy" />
             </div>
           </div>
         </div>
