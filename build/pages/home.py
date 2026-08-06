@@ -215,10 +215,6 @@ def build():
         <div class="mx-auto px-4 max-w-[1536px]">
           <div class="items-center gap-8 xl:gap-10 grid lg:grid-cols-2 bg-beige px-6 xl:px-16 py-8 xl:py-10 rounded-[20px] overflow-hidden">
             <div class="flex flex-col gap-5 order-2 lg:order-1">
-              <p class="inline-flex items-center gap-2 self-start bg-white/70 px-3 py-1.5 rounded-full font-semibold text-primary text-sm">
-                <span class="w-4 h-4 text-cta">{ICON['gift']}</span>
-                خصم يصل إلى <span class="latin">20٪</span> على الهدايا
-              </p>
               <h2 class="font-bold text-[#062A1C] text-4xl xl:text-6xl leading-tight">الهدايا</h2>
               <p class="max-w-xl text-neutral-800 text-base xl:text-lg leading-8">{e(GIFT_INTRO)}</p>
               <ul class="flex flex-col gap-3.5 mt-1">{"".join(f'''
@@ -236,15 +232,13 @@ def build():
               </div>
               {button("تسوق الهدايا", "shop-category.html", "primary", "lg", "mt-3 self-start")}
             </div>
-            <!-- The image tracks the copy column's height: on lg the wrapper
-                 stretches to the row and the image fills it (object-contain), so
-                 a taller copy makes a bigger photo and vice versa — no fixed
-                 whitespace band around a small picture. On mobile it falls back
-                 to a width-capped block. -->
-            <div class="flex justify-center items-center order-1 lg:order-2 lg:self-stretch">
+            <!-- The image leads the visual weight of the section: on lg it fills
+                 the full column width (no cap) so it reads large next to the
+                 copy; on mobile it is a width-capped block above the text. -->
+            <div class="flex justify-center items-center order-1 lg:order-2">
               <img src="images/abuauf/site/gifts-isolated.webp"
                    alt="تشكيلة هدايا أبو عوف — علبة تمور فاخرة، صينية مكسرات وفواكه مجففة، وتشكيلة سناكس"
-                   class="drop-shadow-xl w-full max-w-[560px] h-auto object-contain lg:w-full lg:h-full lg:max-w-none" loading="lazy" />
+                   class="drop-shadow-xl mx-auto w-full max-w-[620px] lg:max-w-none h-auto object-contain" loading="lazy" />
             </div>
           </div>
         </div>
