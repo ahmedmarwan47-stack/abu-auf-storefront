@@ -57,11 +57,14 @@ GIFT_INTRO = (
     "ونوصّلها بتغليف أنيق لأي مكان في مصر."
 )
 
-# (icon key, heading, supporting line)
+# (3D icon file, heading, supporting line) — the pre-rendered 3D icons in
+# images/abuauf/icons, the same client render family used on the product spec
+# row and the account cards (Ahmed, 2026-08-06). spec-delivery is the green
+# scooter carrying a gift, which reads for both the range and the delivery line.
 GIFT_FEATURES = [
-    ("gift", "تغليف فخم جاهز للإهداء", "علب وصواني وبوكسات بتصميم أنيق يليق بالمناسبة."),
-    ("leaf", "تشكيلة مختارة بعناية", "تمور ومكسرات وفواكه مجففة بجودة أبو عوف المعتادة."),
-    ("truck", "توصيل لكل محافظات مصر", "نوصّل هديتك في الموعد اللي يناسبك."),
+    ("spec-shield.png", "تغليف فخم جاهز للإهداء", "علب وصواني وبوكسات بتصميم أنيق يليق بالمناسبة."),
+    ("spec-leaf.png", "تشكيلة مختارة بعناية", "تمور ومكسرات وفواكه مجففة بجودة أبو عوف المعتادة."),
+    ("spec-delivery.png", "توصيل لكل محافظات مصر", "نوصّل هديتك في الموعد اللي يناسبك."),
 ]
 
 GIFT_OCCASIONS = ["رمضان", "الأعياد", "المناسبات", "التخرّج", "شكراً"]
@@ -210,7 +213,7 @@ def build():
            which reads better than a headline over a blank column. -->
       <section data-reveal class="py-8 xl:py-12">
         <div class="mx-auto px-4 max-w-[1536px]">
-          <div class="items-center gap-8 xl:gap-12 grid lg:grid-cols-2 bg-beige px-6 xl:px-16 py-10 xl:py-14 rounded-[20px] overflow-hidden">
+          <div class="items-center gap-8 xl:gap-10 grid lg:grid-cols-2 bg-beige px-6 xl:px-16 py-8 xl:py-10 rounded-[20px] overflow-hidden">
             <div class="flex flex-col gap-5 order-2 lg:order-1">
               <p class="inline-flex items-center gap-2 self-start bg-white/70 px-3 py-1.5 rounded-full font-semibold text-primary text-sm">
                 <span class="w-4 h-4 text-cta">{ICON['gift']}</span>
@@ -219,8 +222,8 @@ def build():
               <h2 class="font-bold text-[#062A1C] text-4xl xl:text-6xl leading-tight">الهدايا</h2>
               <p class="max-w-xl text-neutral-800 text-base xl:text-lg leading-8">{e(GIFT_INTRO)}</p>
               <ul class="flex flex-col gap-3.5 mt-1">{"".join(f'''
-                <li class="flex items-start gap-3">
-                  <span class="place-items-center grid bg-white shadow-custom4 mt-0.5 rounded-full size-9 text-cta shrink-0"><span class="w-[18px] h-[18px]">{ICON[ic]}</span></span>
+                <li class="flex items-center gap-3.5">
+                  <img src="images/abuauf/icons/{ic}" alt="" class="size-12 xl:size-14 object-contain shrink-0" loading="lazy" />
                   <div class="min-w-0">
                     <p class="font-semibold text-[#062A1C] text-sm xl:text-base">{e(t)}</p>
                     <p class="text-neutral-secondary text-xs xl:text-sm leading-6">{e(d)}</p>
@@ -233,10 +236,15 @@ def build():
               </div>
               {button("تسوق الهدايا", "shop-category.html", "primary", "lg", "mt-3 self-start")}
             </div>
-            <div class="flex justify-center items-center order-1 lg:order-2 self-stretch py-2 xl:py-4">
+            <!-- The image tracks the copy column's height: on lg the wrapper
+                 stretches to the row and the image fills it (object-contain), so
+                 a taller copy makes a bigger photo and vice versa — no fixed
+                 whitespace band around a small picture. On mobile it falls back
+                 to a width-capped block. -->
+            <div class="flex justify-center items-center order-1 lg:order-2 lg:self-stretch">
               <img src="images/abuauf/site/gifts-isolated.webp"
                    alt="تشكيلة هدايا أبو عوف — علبة تمور فاخرة، صينية مكسرات وفواكه مجففة، وتشكيلة سناكس"
-                   class="drop-shadow-xl w-full max-w-[520px] h-auto object-contain" loading="lazy" />
+                   class="drop-shadow-xl w-full max-w-[560px] h-auto object-contain lg:w-full lg:h-full lg:max-w-none" loading="lazy" />
             </div>
           </div>
         </div>
