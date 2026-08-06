@@ -213,7 +213,7 @@ def build():
            which reads better than a headline over a blank column. -->
       <section data-reveal class="py-8 xl:py-12">
         <div class="mx-auto px-4 max-w-[1536px]">
-          <div class="items-center gap-8 xl:gap-10 grid lg:grid-cols-2 bg-beige px-6 xl:px-16 py-8 xl:py-10 rounded-[20px] overflow-hidden">
+          <div class="items-center gap-6 xl:gap-8 grid lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] bg-beige px-6 xl:ps-16 xl:pe-8 py-8 xl:py-10 rounded-[20px] overflow-hidden">
             <div class="flex flex-col gap-5 order-2 lg:order-1">
               <h2 class="font-bold text-[#062A1C] text-4xl xl:text-6xl leading-tight">الهدايا والمناسبات</h2>
               <p class="max-w-xl text-neutral-800 text-base xl:text-lg leading-8">{e(GIFT_INTRO)}</p>
@@ -232,13 +232,14 @@ def build():
               </div>
               {button("تسوق الهدايا", "shop-category.html", "primary", "lg", "mt-3 self-start")}
             </div>
-            <!-- The image leads the visual weight of the section: on lg it fills
-                 the full column width (no cap) so it reads large next to the
-                 copy; on mobile it is a width-capped block above the text. -->
+            <!-- The image leads the visual weight of the section: its grid
+                 column is the wider track (1.18fr vs 0.82fr) and it fills that
+                 track edge to edge on lg, so the gift set reads large next to
+                 the copy; on mobile it is a width-capped block above the text. -->
             <div class="flex justify-center items-center order-1 lg:order-2">
               <img src="images/abuauf/site/gifts-isolated.webp"
-                   alt="تشكيلة هدايا أبو عوف — علبة تمور فاخرة، صينية مكسرات وفواكه مجففة، وتشكيلة سناكس"
-                   class="drop-shadow-xl mx-auto w-full max-w-[620px] lg:max-w-none h-auto object-contain" loading="lazy" />
+                   alt="تشكيلة هدايا أبو عوف — شنطة هدايا بشريطة ذهبية تضم مكسرات وزبدة فول سوداني وفواكه مجففة وتمور"
+                   class="drop-shadow-xl mx-auto w-full max-w-[640px] lg:max-w-none h-auto object-contain" loading="lazy" />
             </div>
           </div>
         </div>
