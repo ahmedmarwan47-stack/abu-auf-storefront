@@ -1248,12 +1248,25 @@ fieldset {
   [data-sticky-actions][data-stuck="true"] {
     position: fixed;
     top: 60px;
-    /* Align the pill's inline-end edge to the content container's inner edge
-       (mx-auto max-w-[1536px] px-4). `100%` resolves against the fixed pill's
-       containing block — the viewport EXCLUDING the scrollbar — so it tracks the
-       container exactly; `100vw` (used before) counts the scrollbar and drifted
-       the pill ~half a scrollbar off the grid on screens wider than 1536. */
-    inset-inline-end: max(16px, calc((100% - 1536px) / 2 + 16px));
+    /* Hold the pill a fixed gap OUTSIDE the content column, in the margin, so it
+       stops stacking over the left-aligned primary CTAs it used to collide with
+       (the product page's "اشتري الان" / "أضف الكل للسلة", listing card add
+       buttons) — Ahmed, 2026-08-06. It used to align its inline-end edge to the
+       content's inner edge, which parked it exactly where those green buttons
+       live.
+
+       148 = the pill's own width (124px, the uniform cart+search chrome) + a
+       24px gap held to the content box's outer edge. So the pill's near edge
+       sits 24px clear of the content on every screen wide enough to have a
+       margin to move into. `100%` resolves against the fixed pill's containing
+       block — the viewport EXCLUDING the scrollbar — so it tracks the container
+       exactly; `100vw` counts the scrollbar and would drift it off the grid.
+
+       The 16px floor is load-bearing: below ~1864px the content fills the width
+       and there is no margin, so the pill stays exactly on the old content edge
+       (16px) rather than being shoved off-screen. If the pill's control count
+       ever changes, update the 124 in the 148. */
+    inset-inline-end: max(16px, calc((100% - 1536px) / 2 - 148px));
     z-index: 90;
     gap: 12px;
     padding: 8px;

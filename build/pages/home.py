@@ -43,6 +43,29 @@ CATEGORY_ORDER = [
     ("Gifting & Sharing", "الهدايا"),
 ]
 
+# Gifts section copy (Ahmed, 2026-08-06) — the banner used to carry a single
+# tagline and a 2×2 grid of unrelated product-spread photos (snacks, pretzels,
+# coffee), none of them gift-specific. It now leads with a proper intro
+# paragraph, three benefit rows and a strip of occasion chips, so the section
+# reads as an actual pitch for the gifting range rather than a bare headline.
+# All in-house Arabic, unsigned like every other string we wrote — flagged in
+# DESIGN-NOTES. Nothing here asserts a product claim; it restates the range
+# (dates/nuts/dried-fruit boxes) and the site-wide delivery promise.
+GIFT_INTRO = (
+    "من علب التمور الفاخرة إلى صواني المكسرات وبوكسات المناسبات، جهّزنا لك "
+    "تشكيلة هدايا تليق بكل مناسبة. اختَر هديتك الجاهزة أو نسّقها بنفسك، "
+    "ونوصّلها بتغليف أنيق لأي مكان في مصر."
+)
+
+# (icon key, heading, supporting line)
+GIFT_FEATURES = [
+    ("gift", "تغليف فخم جاهز للإهداء", "علب وصواني وبوكسات بتصميم أنيق يليق بالمناسبة."),
+    ("leaf", "تشكيلة مختارة بعناية", "تمور ومكسرات وفواكه مجففة بجودة أبو عوف المعتادة."),
+    ("truck", "توصيل لكل محافظات مصر", "نوصّل هديتك في الموعد اللي يناسبك."),
+]
+
+GIFT_OCCASIONS = ["رمضان", "الأعياد", "المناسبات", "التخرّج", "شكراً"]
+
 REVIEWS = [
     ("منى عبد الله", "القاهرة",
      "التمور والمكسرات دايماً طازة وجودتها ثابتة، وبيوصلوا بسرعة. أبو عوف بقى جزء أساسي من تسوق البيت عندنا."),
@@ -174,21 +197,46 @@ def build():
         </div>
       </section>
 
-      <!-- ============================ GIFTS BANNER ============================ -->
+      <!-- ============================ GIFTS BANNER ============================
+           Copy-led pitch for the gifting range (Ahmed, 2026-08-06): an intro
+           paragraph, three icon benefit rows and a strip of occasion chips on
+           the copy side, and a single ISOLATED gift image (gifts.png — a real
+           Abu Auf dates box, nuts tray and gift box on a soft green blend) in
+           place of the old 2×2 grid of unrelated product-spread photos.
+
+           Ordering: copy is DOM-first so it takes the RTL-right column at lg;
+           the image is second, so it takes the left. On mobile the order is
+           flipped with `order-*` so the gift image leads and the copy follows,
+           which reads better than a headline over a blank column. -->
       <section data-reveal class="py-8 xl:py-12">
         <div class="mx-auto px-4 max-w-[1536px]">
-          <div class="items-center gap-8 grid lg:grid-cols-2 bg-beige px-6 xl:px-12 py-10 xl:py-0 rounded-[20px] overflow-hidden">
-            <div class="flex flex-col gap-4 py-0 xl:py-16">
-              <p class="font-semibold text-primary text-lg xl:text-xl">خصم يصل إلى <span class="latin">20٪</span> على قسم</p>
+          <div class="items-center gap-8 xl:gap-12 grid lg:grid-cols-2 bg-beige px-6 xl:px-16 py-10 xl:py-14 rounded-[20px] overflow-hidden">
+            <div class="flex flex-col gap-5 order-2 lg:order-1">
+              <p class="inline-flex items-center gap-2 self-start bg-white/70 px-3 py-1.5 rounded-full font-semibold text-primary text-sm">
+                <span class="w-4 h-4 text-cta">{ICON['gift']}</span>
+                خصم يصل إلى <span class="latin">20٪</span> على الهدايا
+              </p>
               <h2 class="font-bold text-[#062A1C] text-4xl xl:text-6xl leading-tight">الهدايا</h2>
-              <p class="text-neutral-800 text-base xl:text-xl leading-8">اعثر على الهدية المثالية لكل شخص وكل مناسبة</p>
-              {button("تسوق الهدايا", "shop-category.html", "primary", "lg", "mt-2 self-start")}
+              <p class="max-w-xl text-neutral-800 text-base xl:text-lg leading-8">{e(GIFT_INTRO)}</p>
+              <ul class="flex flex-col gap-3.5 mt-1">{"".join(f'''
+                <li class="flex items-start gap-3">
+                  <span class="place-items-center grid bg-white shadow-custom4 mt-0.5 rounded-full size-9 text-cta shrink-0"><span class="w-[18px] h-[18px]">{ICON[ic]}</span></span>
+                  <div class="min-w-0">
+                    <p class="font-semibold text-[#062A1C] text-sm xl:text-base">{e(t)}</p>
+                    <p class="text-neutral-secondary text-xs xl:text-sm leading-6">{e(d)}</p>
+                  </div>
+                </li>''' for ic, t, d in GIFT_FEATURES)}
+              </ul>
+              <div class="flex flex-wrap gap-2 mt-1">
+                <span class="font-semibold text-neutral-secondary text-xs">مناسبة لكل مناسبة:</span>{"".join(f'''
+                <span class="bg-white/70 px-3 py-1 rounded-full font-medium text-primary text-xs">{e(o)}</span>''' for o in GIFT_OCCASIONS)}
+              </div>
+              {button("تسوق الهدايا", "shop-category.html", "primary", "lg", "mt-3 self-start")}
             </div>
-            <div class="gap-3 grid grid-cols-2 self-stretch py-8">
-              <img src="images/abuauf/site/1-2.webp" alt="" class="rounded-xl w-full h-full object-cover" loading="lazy" />
-              <img src="images/abuauf/site/2-1.webp" alt="" class="rounded-xl w-full h-full object-cover" loading="lazy" />
-              <img src="images/abuauf/site/3-1.webp" alt="" class="rounded-xl w-full h-full object-cover" loading="lazy" />
-              <img src="images/abuauf/site/4-1-1.webp" alt="" class="rounded-xl w-full h-full object-cover" loading="lazy" />
+            <div class="flex justify-center items-center order-1 lg:order-2 self-stretch py-2 xl:py-4">
+              <img src="images/abuauf/site/gifts.png"
+                   alt="تشكيلة هدايا أبو عوف — علبة تمور فاخرة وصينية مكسرات وبوكس مناسبات"
+                   class="drop-shadow-2xl w-full max-w-[420px] h-auto object-contain" loading="lazy" />
             </div>
           </div>
         </div>
