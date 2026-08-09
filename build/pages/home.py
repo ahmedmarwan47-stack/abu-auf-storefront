@@ -51,20 +51,16 @@ CATEGORY_ORDER = [
 # All in-house Arabic, unsigned like every other string we wrote — flagged in
 # DESIGN-NOTES. Nothing here asserts a product claim; it restates the range
 # (dates/nuts/dried-fruit boxes) and the site-wide delivery promise.
-GIFT_INTRO = (
-    "من علب التمور الفاخرة إلى صواني المكسرات وبوكسات المناسبات، جهّزنا لك "
-    "تشكيلة هدايا تليق بكل مناسبة. اختَر هديتك الجاهزة أو نسّقها بنفسك، "
-    "ونوصّلها بتغليف أنيق لأي مكان في مصر."
-)
+GIFT_INTRO = "من علب التمور وصواني المكسرات وبوكسات المناسبات — بتغليف أنيق وتوصيل لكل محافظات مصر."
 
-# (3D icon file, heading, supporting line) — the pre-rendered 3D icons in
-# images/abuauf/icons, the same client render family used on the product spec
-# row and the account cards (Ahmed, 2026-08-06). spec-delivery is the green
-# scooter carrying a gift, which reads for both the range and the delivery line.
+# (3D icon file, heading) — the pre-rendered 3D icons in images/abuauf/icons,
+# the same client render family used on the product spec row and the account
+# cards (Ahmed, 2026-08-06). spec-delivery is the green scooter carrying a
+# gift, which reads for both the range and the delivery line.
 GIFT_FEATURES = [
-    ("spec-shield.png", "تغليف فخم جاهز للإهداء", "علب وصواني وبوكسات بتصميم أنيق يليق بالمناسبة."),
-    ("spec-leaf.png", "تشكيلة مختارة بعناية", "تمور ومكسرات وفواكه مجففة بجودة أبو عوف المعتادة."),
-    ("spec-delivery.png", "توصيل لكل محافظات مصر", "نوصّل هديتك في الموعد اللي يناسبك."),
+    ("spec-shield.png", "تغليف فخم جاهز للإهداء"),
+    ("spec-leaf.png", "تشكيلة مختارة بعناية"),
+    ("spec-delivery.png", "توصيل لكل محافظات مصر"),
 ]
 
 GIFT_OCCASIONS = ["رمضان", "الأعياد", "المناسبات", "التخرّج", "شكراً"]
@@ -201,11 +197,11 @@ def build():
       </section>
 
       <!-- ============================ GIFTS BANNER ============================
-           Copy-led pitch for the gifting range (Ahmed, 2026-08-06): an intro
-           paragraph, three icon benefit rows and a strip of occasion chips on
-           the copy side, and a single ISOLATED gift image (gifts.png — a real
-           Abu Auf dates box, nuts tray and gift box on a soft green blend) in
-           place of the old 2×2 grid of unrelated product-spread photos.
+           Copy-led pitch for the gifting range (Ahmed, 2026-08-06): occasion
+           chips as an eyebrow, then the title, a short intro, three icon-only
+           benefit rows and the CTA; a single ISOLATED gift image fills the
+           wider grid track opposite, in place of the old 2×2 grid of
+           unrelated product-spread photos.
 
            Ordering: copy is DOM-first so it takes the RTL-right column at lg;
            the image is second, so it takes the left. On mobile the order is
@@ -213,33 +209,36 @@ def build():
            which reads better than a headline over a blank column. -->
       <section data-reveal class="py-8 xl:py-12">
         <div class="mx-auto px-4 max-w-[1536px]">
-          <div class="items-center gap-6 xl:gap-8 grid lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] bg-beige px-6 xl:ps-16 xl:pe-8 py-8 xl:py-10 rounded-[20px] overflow-hidden">
+          <div class="items-center gap-6 xl:gap-10 grid lg:grid-cols-[1fr_auto] xl:grid-cols-[1fr_570px] bg-beige px-6 xl:px-12 py-8 xl:py-10 rounded-[20px]">
             <div class="flex flex-col gap-5 order-2 lg:order-1">
-              <h2 class="font-bold text-[#062A1C] text-4xl xl:text-6xl leading-tight">الهدايا والمناسبات</h2>
-              <p class="max-w-xl text-neutral-800 text-base xl:text-lg leading-8">{e(GIFT_INTRO)}</p>
-              <ul class="flex flex-col gap-3.5 mt-1">{"".join(f'''
-                <li class="flex items-center gap-3.5">
-                  <img src="images/abuauf/icons/{ic}" alt="" class="size-12 xl:size-14 object-contain shrink-0" loading="lazy" />
-                  <div class="min-w-0">
-                    <p class="font-semibold text-[#062A1C] text-sm xl:text-base">{e(t)}</p>
-                    <p class="text-neutral-secondary text-xs xl:text-sm leading-6">{e(d)}</p>
-                  </div>
-                </li>''' for ic, t, d in GIFT_FEATURES)}
-              </ul>
-              <div class="flex flex-wrap gap-2 mt-1">
-                <span class="font-semibold text-neutral-secondary text-xs">مناسبة لكل مناسبة:</span>{"".join(f'''
+              <div class="flex flex-wrap gap-2">{"".join(f'''
                 <span class="bg-white/70 px-3 py-1 rounded-full font-medium text-primary text-xs">{e(o)}</span>''' for o in GIFT_OCCASIONS)}
               </div>
+              <h2 class="font-bold text-[#062A1C] text-4xl xl:text-6xl leading-tight">الهدايا والمناسبات</h2>
+              <p class="max-w-xl text-neutral-800 text-base xl:text-lg leading-8">{e(GIFT_INTRO)}</p>
+              <ul class="flex flex-col gap-3 mt-1">{"".join(f'''
+                <li class="flex items-center gap-2.5">
+                  <img src="images/abuauf/icons/{ic}" alt="" class="size-9 xl:size-10 object-contain shrink-0" loading="lazy" />
+                  <p class="font-semibold text-[#062A1C] text-sm xl:text-base">{e(t)}</p>
+                </li>''' for ic, t in GIFT_FEATURES)}
+              </ul>
               {button("تسوق الهدايا", "shop-category.html", "primary", "lg", "mt-3 self-start")}
             </div>
-            <!-- The image leads the visual weight of the section: its grid
-                 column is the wider track (1.18fr vs 0.82fr) and it fills that
-                 track edge to edge on lg, so the gift set reads large next to
-                 the copy; on mobile it is a width-capped block above the text. -->
-            <div class="flex justify-center items-center order-1 lg:order-2">
+            <!-- At xl the photo column is a fixed 570px wide track and the
+                 wrapper stretches to the row height (= copy height, since the
+                 card no longer sets a fixed h — that was clipping the CTA).
+                 img `h-full w-full object-contain` fits the 3:2 source inside
+                 that 570×row_h box; when the copy runs taller than 380px the
+                 photo shows small beige stripes above and below rather than
+                 being cropped or distorted. The explicit column width is
+                 required because a height-driven img has no intrinsic width
+                 and a plain `auto` track would collapse to 0. Below xl the
+                 photo is width-driven with a cap so the copy column keeps
+                 room. -->
+            <div class="flex justify-center items-center order-1 lg:order-2 xl:self-stretch">
               <img src="images/abuauf/site/gifts-isolated.d86d0c74.webp"
                    alt="تشكيلة هدايا أبو عوف — شنطة هدايا بشريطة ذهبية تضم مكسرات وزبدة فول سوداني وفواكه مجففة وتمور"
-                   class="drop-shadow-xl mx-auto w-full max-w-[640px] lg:max-w-none h-auto object-contain" loading="lazy" />
+                   class="mx-auto w-full max-w-[640px] lg:max-w-[560px] xl:max-w-none xl:h-full xl:w-full object-contain" loading="lazy" />
             </div>
           </div>
         </div>
