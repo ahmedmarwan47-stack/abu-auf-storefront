@@ -546,6 +546,16 @@ decrementing clock comes back minutes behind, this one comes back correct.
 `role="timer"` with **no** `aria-live`: a live region here would announce a new
 time every second and make the page unusable with a screen reader.
 
+**On mobile both messages share one 29px band** (Ahmed: "both are
+mandatory"). Measured at 320: the clock with its unit words visible needs
+343px of a 296px line, and there is no phone width where the words, the clock
+and the promo code all fit. So the mobile strip keeps the bolt and the clock —
+`12 : 22 : 53` — and carries `عرض خاطف` as `sr-only`: the icon does the work
+the words were doing, and a screen reader still hears them. The row is
+`flex-wrap` as a safety net rather than a layout: Arabic sits on one line at
+320–414, English wraps to two at 320 only (the band grows to 47px, nothing
+overflows).
+
 **The 3D bolt is in-house artwork, not a client asset.**
 `images/abuauf/icons/flash-sale-3d.png` is drawn to sit beside the real 3D set
 (voucher/points/wallet) — deep green tile, gold bolt, brand tokens only — and

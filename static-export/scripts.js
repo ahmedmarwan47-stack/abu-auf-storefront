@@ -901,11 +901,28 @@
     };
   }
 
-  function flashSaleHTML() {
+  /*
+   * `opts.compact` is the mobile band's version: 16px bolt, 11px type, and the
+   * unit words carried as sr-only rather than painted. Both mastheads show the
+   * clock AND the promo code (Ahmed: "both are mandatory"), and at 320 the two
+   * only share one 29px line if the clock reads 12:38:59 — three labelled
+   * units do not fit beside the code at any phone width.
+   * `opts.cls` is the caller's visibility/spacing, because the desktop bar
+   * wants `hidden lg:flex` and the mobile band wants neither.
+   */
+  function flashSaleHTML(opts) {
+    const o = opts || {};
+    const compact = !!o.compact;
     const ms = flashSaleLeft();
     if (ms === null) return "";
     const parts = flashSaleParts(ms);
     const units = FLASH_UNITS[currentLang()] || FLASH_UNITS.ar;
+    const num = compact
+      ? "font-bold text-[#163300] text-[11px] tabular-nums latin"
+      : "font-bold text-[#163300] text-[13px] tabular-nums latin";
+    const lbl = compact
+      ? "sr-only"
+      : "font-semibold text-[#6B6255] text-xs 2xl:sr-only";
     /* One unit = a bold two-digit number plus a muted label. The number is
        .latin (Inter) and tabular-nums, so the strip cannot jitter as the
        seconds tick and the text beside it cannot shuffle. The label ink is
@@ -913,7 +930,7 @@
        neutral-secondary grey used on white does not. */
     const unit = (k) => `
           <span class="flex items-baseline gap-1">
-            <span class="font-bold text-[#163300] text-[13px] tabular-nums latin" data-flash-unit="${k}">${parts[k]}</span>
+            <span class="${num}" data-flash-unit="${k}">${parts[k]}</span>
             <!-- 2xl:sr-only, not 2xl:hidden: 1536 is where the support links
                  come back into this bar, and in English - whose link labels
                  run longer than the Arabic - a labelled clock pushes that nav
@@ -923,15 +940,21 @@
                  words in the accessibility tree, so what a screen reader
                  hears does not shrink with the viewport; display:none would
                  drop them outright. -->
-            <span class="font-semibold text-[#6B6255] text-xs 2xl:sr-only" data-flash-label="${k}">${esc(units[k])}</span>
+            <span class="${lbl}" data-flash-label="${k}">${esc(units[k])}</span>
           </span>`;
     // The colon is decoration between two labelled numbers, so it is hidden
     // from assistive tech rather than read out as punctuation every tick.
-    const sep = '<span class="font-bold text-[#6B6255] text-[13px] latin" aria-hidden="true">:</span>';
+    const sep = `<span class="font-bold text-[#6B6255] ${compact ? "text-[11px]" : "text-[13px]"} latin" aria-hidden="true">:</span>`;
     return `
-        <div data-flash-sale class="hidden lg:flex items-center gap-2 shrink-0">
-          <img src="images/abuauf/icons/flash-sale-3d.png" alt="" class="shrink-0 w-[22px] h-[22px] object-contain flash-bolt" />
-          <span class="font-bold text-[#163300] text-[13px] leading-[140%] whitespace-nowrap">${esc(t("عرض خاطف"))}</span>
+        <div data-flash-sale class="${o.cls || "hidden lg:flex items-center gap-2 shrink-0"}">
+          <img src="images/abuauf/icons/flash-sale-3d.png" alt="" class="shrink-0 ${compact ? "w-4 h-4" : "w-[22px] h-[22px]"} object-contain flash-bolt" />
+          <!-- On mobile the words go sr-only and the bolt carries the meaning:
+               measured at 320 the visible pair (words + clock + code) needs
+               343px of a 296px line, and there is no phone width where all
+               three fit. The clock still says a sale is running, the code
+               still says what the offer is, and a screen reader still hears
+               "عرض خاطف" - only the sighted duplicate of the icon is dropped. -->
+          <span class="${compact ? "sr-only" : "font-bold text-[#163300] text-[13px] leading-[140%] whitespace-nowrap"}">${esc(t("عرض خاطف"))}</span>
           <!-- role=timer with NO aria-live: the value is meaningful, but a
                live region here would announce a new time every second and make
                the rest of the page unusable with a screen reader. -->
@@ -939,10 +962,14 @@
         </div>`;
   }
 
+  /* Both mastheads carry a strip (the mobile one is display:none above md and
+     vice versa), so this paints every match rather than the first. */
   function paintFlashSale() {
-    const strip = document.querySelector("[data-flash-sale]");
-    if (!strip) return;
     const ms = flashSaleLeft();
+    document.querySelectorAll("[data-flash-sale]").forEach((strip) => paintOneStrip(strip, ms));
+  }
+
+  function paintOneStrip(strip, ms) {
     if (ms === null) {
       // Sale over: take the strip out rather than park it on 00:00:00. A dead
       // clock is worse than no clock, and the next repaint agrees - with an
@@ -1317,11 +1344,22 @@
         ${
           checkout
             ? ""
-            : `<div class="bg-beige px-3 py-1.5">
-                 <p class="font-semibold text-[#5F5035] text-[11px] text-center">
-                   خصم 10% بكود <span class="latin">DISCOUNT10</span>
-                 </p>
-               </div>`
+            : `<!-- Clock AND promo code on one 29px line (Ahmed: "both are
+                       mandatory"). That only fits at 320 in short form: the
+                       clock drops its unit words to sr-only and reads
+                       12:38:59, and the code keeps the shortened sentence the
+                       desktop bar uses. justify-center with a hairline rule
+                       between them, so the two read as two facts rather than
+                       one run-on line. -->
+                 <div class="bg-beige px-3 py-1.5">
+                   <div class="flex flex-wrap justify-center items-center gap-x-2 gap-y-0.5 min-w-0">
+                     ${flashSaleHTML({ compact: true, cls: "flex items-center gap-1.5 shrink-0" })}
+                     <span aria-hidden="true" class="bg-[#5F5035]/25 w-px h-3 shrink-0"></span>
+                     <p class="font-semibold text-[#5F5035] text-[11px] whitespace-nowrap">
+                       خصم 10% بكود <span class="latin">DISCOUNT10</span>
+                     </p>
+                   </div>
+                 </div>`
         }
         <!-- Both side groups are flex-1, so the logo sits dead-centre no
              matter how many controls each side holds — matching the live
