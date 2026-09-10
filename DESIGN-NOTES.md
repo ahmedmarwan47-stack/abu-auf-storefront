@@ -597,14 +597,21 @@ the words were doing, and a screen reader still hears them. The row is
 320–414, English wraps to two at 320 only (the band grows to 47px, nothing
 overflows).
 
-**The 3D bolt is in-house artwork, not a client asset.**
-`images/abuauf/icons/flash-sale-3d.png` is drawn to sit beside the real 3D set
-(voucher/points/wallet) — deep green tile, gold bolt, brand tokens only — and
-its source is `build/art/flash-sale-3d.svg`, re-rasterised with
-`build/art/render.sh flash-sale-3d`. It is a **stand-in for a real 3D render**;
-drop a 256px transparent PNG at the same path and nothing else changes. The
-digits are `.latin` + `tabular-nums` so the row cannot jitter as they tick, and
-the label ink is `#6B6255` (`onBeigeMuted`) — the token that clears 4.5:1 on
+**The 3D bolt is the client's own render** (Ahmed supplied it 2026-09-10; the
+in-house SVG stand-in it replaced has been deleted). The master is
+`build/art/sources/flash-sale-3d.png` — 1254×1254 RGBA, deliberately **outside**
+`static-export/`, because everything under that directory is published and 752KB
+is not a thing to ship for a glyph that paints at 22px. What ships is
+`images/abuauf/icons/flash-sale-3d.png`, 243×256 and 35KB, produced by
+`python3 build/art/prepare_icon.py build/art/sources/flash-sale-3d.png
+static-export/images/abuauf/icons/flash-sale-3d.png`. That step trims to the
+artwork's own alpha bounds and downscales; it would also cut a white studio
+background (reusing `isolate_products.py`'s border-connected fill) but skips it
+here, since this file arrived with real transparency. Re-run it, don't hand-edit
+the shipped PNG.
+
+The digits are `.latin` + `tabular-nums` so the row cannot jitter as they tick,
+and the label ink is `#6B6255` (`onBeigeMuted`) — the token that clears 4.5:1 on
 this beige, which `neutral.secondary` does not.
 
 ### Search field focus: a single darkened divider, not the offset ring
