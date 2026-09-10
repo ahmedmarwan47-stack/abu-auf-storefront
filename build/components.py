@@ -18,7 +18,7 @@ Split of responsibilities:
 import html as html_mod
 import re
 
-from catalog import e, money, title
+from catalog import e, money, size_count, title
 
 # --------------------------------------------------------------------------
 # Icons — generic UI glyphs. Brand marks and Figma-authored icons are real
@@ -1708,7 +1708,13 @@ def product_card(p, slide=True, cat=None):
     # reads name/price/image straight off the card, so adding to the cart needs
     # no lookup table and still works from file://.
     cat_slug = cat if cat is not None else p.get("categorySlug", "")
-    keys = (f'data-product data-cat="{e(cat_slug)}" '
+    # `sizes` is the count of real SKUs this product is sold as, and it is only
+    # emitted when there is a genuine choice to make (>= 2). scripts.js keys the
+    # cart guard off it: a [data-product] host that declares several sizes and
+    # offers no chips to pick one cannot add to the cart.
+    n_sizes = size_count(p)
+    sizes_attr = f' data-sizes="{n_sizes}"' if n_sizes >= 2 else ""
+    keys = (f'data-product data-cat="{e(cat_slug)}"{sizes_attr} '
             f'data-price="{p.get("sale") or p.get("price") or 0}" '
             f'data-id="{p.get("id", 0)}" '
             f'data-name="{e(title(p))}" '
@@ -1716,6 +1722,21 @@ def product_card(p, slide=True, cat=None):
             # switcher. Not a translation we wrote.
             f'data-name-en="{e(p.get("name") or title(p))}" '
             f'data-image="{e(p["image"])}"')
+    # A product sold in more than one size cannot be added from a card: the
+    # card shows ONE SKU's price, and its siblings are different SKUs at
+    # different prices (the medium Brazilian coffee is 74 / 99 / 275 / 500).
+    # So the CTA stops being an add and becomes the route to the choice, on the
+    # product page where the size chips live. Same box, same height, same
+    # classes as the button it replaces — swapping one for the other must never
+    # change a card's height in a rail.
+    _cta_break = "\n                          "
+    if n_sizes >= 2:
+        cta = (f'<a href="product-{p.get("id", 0)}.html" data-card-choose{_cta_break}'
+               f'class="btn-elevate block bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm text-center">اختر الحجم</a>')
+    else:
+        cta = (f'<button type="button" data-add-to-cart{_cta_break}'
+               f'class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>')
+
     return f"""
           <article class="product-card {wrapper}" {keys}>
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
@@ -1745,8 +1766,7 @@ def product_card(p, slide=True, cat=None):
                      also w-full, so swapping one for the other never changes
                      the card's height. -->
                 <div class="mt-auto pt-1">
-                  <button type="button" data-add-to-cart
-                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                  {cta}
                   <!-- Shown by scripts.js once the product is in the cart, in
                        place of the add button. `hidden` is safe to toggle on a
                        flex container here only because styles.css forces

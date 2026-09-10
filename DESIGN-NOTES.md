@@ -504,6 +504,47 @@ four products under every category, incoherent in a per-category preview.
 Lives in `megaPanelHTML()` + `initMegaMenu()` (`scripts.js`) and the `.mega-*`
 block in `styles.css`.
 
+### A card for a multi-size product routes to the choice, it does not add (Ahmed, 2026-09-10)
+
+10 of the 99 catalogue products are sold in more than one weight, and the
+siblings are separate SKUs at genuinely different prices — the medium Brazilian
+coffee is 50 / 100 / 200 / 400 جم at **74 / 99 / 275 / 500 EGP**. A card shows
+one of those SKUs. Its old `اضف الى السلة` therefore committed the shopper to
+whichever weight the card happened to render, at a price the other weights do
+not share, without ever asking.
+
+Those cards now carry **`اختر الحجم`**, a link to the product page where the
+size chips live. Same box, same classes, same 44px height as the button it
+replaces — a card must not change height when one becomes the other in a rail.
+`size_count()` in `catalog.py` is the single answer to "is this sold in several
+sizes", and `product_card()` emits `data-sizes="N"` only when N ≥ 2.
+
+**The guard is a rule about the DOM, not a list of ids.** In `scripts.js` the
+add path bails when a `[data-product]` host declares `data-sizes` **and**
+contains no `[data-size-chips]`, sending the shopper to the product page
+instead. That phrasing is what makes the product page still work: it declares
+its sizes too, but its chips resolve the choice (they repoint `data-id` and
+`data-price` at the chosen SKU), so adding there is correct — verified:
+choosing 200 جم on `product-8560` and buying puts SKU **6348 at 220** in the
+cart, not the rendered 8560 at 82.5. Every surface funnels through that one
+handler, so the rule holds on the home rails, the listing grid, the favourites
+page, the cart page and the drawer without each having to remember it.
+
+Three surfaces are built at runtime rather than by the build, and each carries
+the same rule: the recently-viewed rail (the size count rides along in
+`productFrom`, so entries stored before this existed simply behave as they
+did), the cart drawer's upsell rail (`كرانبيري` is 25 جم / 100 جم at 30 / 121,
+so its chip is an arrow link now, not a plus), and the product page's
+"قد يعجبك أيضاً" bundle — where multi-size companions are **left out of the
+list** rather than shown, because a bundle row is a checkbox and a price and
+there is no single price to put on one.
+
+**Not done, and worth a decision:** the card still shows the rendered SKU's
+price (`EGP 82.5`) rather than a from-price (`يبدأ من EGP 69`). The min is real
+data — it is that SKU's own price — so it can be shown honestly; it was left
+out because it changes the card's price treatment, which is a design call
+rather than a correctness one.
+
 ### The utility bar carries a flash-sale clock, not payment marks (Ahmed, 2026-09-10)
 
 The Visa and Mastercard chips that sat mid-bar are gone; a 3D bolt, `عرض خاطف`

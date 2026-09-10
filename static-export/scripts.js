@@ -1628,7 +1628,11 @@
     const upsell = [
       { id: "16499", name: "بافس بالجبنة 40 جرام", price: 11, img: "images/abuauf/products/6223011438028.webp" },
       { id: "16502", name: "بافس بالشطة والليمون 40 جرام", price: 11, img: "images/abuauf/products/6223011438035.webp" },
-      { id: "1631", name: "كرانبيري - 25 جم", price: 30, img: "images/abuauf/products/6223006314092.webp" },
+      // sizes: 25 جم and 100 جم are separate SKUs at 30 and 121, so this row
+      // gets the same treatment as its card — it routes to the choice instead
+      // of adding a weight nobody picked. If this list gains another
+      // multi-size product, give it `sizes` too.
+      { id: "1631", name: "كرانبيري - 25 جم", price: 30, img: "images/abuauf/products/6223006314092.webp", sizes: 2 },
       { id: "1320", name: "فول سوداني بالشيكولاتة - 100 جم", price: 35.5, img: "images/abuauf/products/2000208000000.webp" },
       { id: "1368", name: "بروتين بار براونيز شيكولاتة - 70 جم", price: 65, img: "images/abuauf/products/6223006315341-thumb.webp" },
       { id: "46238", name: "بسكويت محشو تمر - 12 قطعة", price: 65, img: "images/abuauf/products/image-600x600-1.png" },
@@ -1638,7 +1642,7 @@
         (p) => `
         <article class="carousel-slide flex flex-col gap-2 bg-white p-2 border border-neutral-divider rounded-2xl w-[136px] shrink-0"
              data-product data-id="${esc(p.id)}" data-name="${esc(p.name)}"
-             data-price="${p.price}" data-image="${esc(p.img)}">
+             data-price="${p.price}" data-image="${esc(p.img)}"${p.sizes ? ` data-sizes="${p.sizes}"` : ""}>
           <img src="${p.img}" alt="" class="bg-interaction-base p-1 rounded-xl w-full aspect-square object-contain" loading="lazy" />
           <!-- Two lines reserved whatever the name's length, so a one-line and
                a two-line product do not make neighbouring cards different
@@ -1655,10 +1659,16 @@
                  reader gets no help from the basket it is sitting next to.
                  size-11 keeps the audited 44px tap target: the card is 136px
                  wide, so the chip and the button fit without shrinking it. -->
-            <button type="button" data-add-to-cart aria-label="اضف الى السلة"
+            ${
+              p.sizes
+                ? `<a href="product-${esc(p.id)}.html" data-card-choose aria-label="${esc(t("اختر الحجم"))}"
+                    class="place-items-center grid bg-cta hover:bg-cta-hover shrink-0 rounded-full text-white transition-colors size-11">
+              <span class="w-4 h-4 rtl:scale-flip">${ICON.arrowRight}</span></a>`
+                : `<button type="button" data-add-to-cart aria-label="اضف الى السلة"
                     class="place-items-center grid bg-cta hover:bg-cta-hover shrink-0 rounded-full text-white transition-colors size-11">
               <span class="w-4 h-4">${ICON.plus}</span>
-            </button>
+            </button>`
+            }
           </div>
         </article>`,
       )
@@ -3702,7 +3712,17 @@
     if (!host) return null;
     const d = host.dataset;
     if (!d.id || !d.name) return null;
-    return { id: d.id, name: d.name, price: Number(d.price) || 0, image: d.image || "" };
+    // `sizes` is the number of real SKUs the product is sold as, emitted by the
+    // build only when there is a genuine choice (>= 2). It rides along so a
+    // card rendered from stored data — the recently-viewed rail — knows to
+    // route to the choice rather than offer an add.
+    return {
+      id: d.id,
+      name: d.name,
+      price: Number(d.price) || 0,
+      image: d.image || "",
+      sizes: Number(d.sizes) || 0,
+    };
   }
 
   const egp = (n) => "EGP " + (Math.round(n * 100) / 100).toFixed(2);
@@ -4302,7 +4322,11 @@
       // Sibling lookup, not a card-wide query: on the product page the
       // outer [data-product] host also contains the related-products rail,
       // whose cards have add buttons of their own.
-      const addBtn = stepper.parentElement.querySelector("[data-add-to-cart]");
+      // Either control can be sitting there: an add button, or the
+      // "اختر الحجم" link a multi-size product's card carries instead. Both
+      // occupy the same box, so whichever is present is the one to hide when
+      // the stepper takes over.
+      const addBtn = stepper.parentElement.querySelector("[data-add-to-cart], [data-card-choose]");
       const it = Cart.find(card.dataset.id);
       stepper.hidden = !it;
       if (addBtn) addBtn.hidden = !!it;
@@ -5497,6 +5521,20 @@
         if (!product) return;
         // Respect a quantity stepper sitting next to the button (product page).
         const scope = add.closest("[data-product]") || document;
+
+        /* A product sold in several sizes cannot be added from a surface that
+           does not offer the choice: its siblings are different SKUs at
+           different prices, so "add this one" is a guess made on the shopper's
+           behalf. The test is chips, not the attribute — the product page
+           declares its sizes too and DOES resolve the choice (the chips
+           repoint data-id and data-price at the chosen SKU), so adding there
+           is correct. Anywhere else we send them to the page that asks.
+           Cards render a link rather than a button, so this is the backstop
+           for anything built at runtime; it never fires on a normal card. */
+        if (product.sizes >= 2 && !scope.querySelector("[data-size-chips]")) {
+          window.location.href = "product-" + product.id + ".html";
+          return;
+        }
         const qtyEl = scope.querySelector("[data-stepper] [data-qty]");
 
         /* Send the product image to the cart, and hold the badge at its old
@@ -5840,9 +5878,13 @@
   function recentCardHTML(p) {
     const id = esc(String(p.id));
     const name = esc(p.name || "");
+    // Same rule as the build-time card: a product sold in several sizes routes
+    // to the choice instead of offering an add. Entries stored before the size
+    // count existed simply come back as 0 and behave as they always did.
+    const sizes = Number(p.sizes) || 0;
     return `
       <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0"
-               data-product data-id="${id}" data-name="${name}" data-price="${Number(p.price) || 0}" data-image="${esc(p.image || "")}">
+               data-product data-id="${id}" data-name="${name}" data-price="${Number(p.price) || 0}" data-image="${esc(p.image || "")}"${sizes >= 2 ? ` data-sizes="${sizes}"` : ""}>
         <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
           <a href="product-${id}.html" class="product-card__media block relative bg-interaction-base p-4">
             <img src="${esc(p.image || "")}" alt="${name}" class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
@@ -5855,8 +5897,12 @@
               <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">${egp(Number(p.price) || 0)}</span>
             </div>
             <div class="pt-2">
-              <button type="button" data-add-to-cart
-                      class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+              ${
+                sizes >= 2
+                  ? `<a href="product-${id}.html" data-card-choose class="btn-elevate block bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm text-center">${esc(t("اختر الحجم"))}</a>`
+                  : `<button type="button" data-add-to-cart
+                      class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>`
+              }
               <div data-card-stepper hidden class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                 <button type="button" data-card-step="-1" aria-label="إنقاص"
                         class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4">${ICON.minus}</span></span></button>
