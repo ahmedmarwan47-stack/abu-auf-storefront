@@ -34,6 +34,26 @@ distinguishes branch type or delivery availability.
 
 **Needs:** the client to populate the CMS.
 
+### Flash-sale countdown — the deadline is the invented part
+
+The utility bar's countdown (`flashSaleHTML` / `initFlashSale` in `scripts.js`,
+2026-09-10) is real machinery pointed at a **placeholder deadline**. Abu Auf
+have given us no campaign window: no start, no end, no offer attached to it.
+
+`FLASH_SALE_END` is empty, and empty means *"a sale that ends at local
+midnight"* — recomputed on every tick, so the clock rolls over on its own and
+never sits at zero. That is a stand-in, not a claim: nothing on the site is
+actually discounted because of it, and the strip does not link to an offer.
+
+Set `FLASH_SALE_END` to an ISO 8601 string **with an explicit offset**
+(`"2026-09-30T23:59:59+02:00"` — Cairo is +02:00, +03:00 in DST) and the strip
+counts to that instant and then **removes itself**, rather than rolling to the
+next midnight. An unparseable value draws nothing at all, on purpose: a clock
+counting down from `NaN` is worse than no clock.
+
+**Needs:** the campaign's real end time, and the products it applies to — the
+clock is currently the only thing on the page that knows a sale is running.
+
 ### Two gift baskets are indistinguishable in Arabic
 
 Three products came out of the scrape with damaged names. `catalog.py` now
@@ -483,6 +503,116 @@ four products under every category, incoherent in a per-category preview.
 
 Lives in `megaPanelHTML()` + `initMegaMenu()` (`scripts.js`) and the `.mega-*`
 block in `styles.css`.
+
+### A card for a multi-size product routes to the choice, it does not add (Ahmed, 2026-09-10)
+
+10 of the 99 catalogue products are sold in more than one weight, and the
+siblings are separate SKUs at genuinely different prices — the medium Brazilian
+coffee is 50 / 100 / 200 / 400 جم at **74 / 99 / 275 / 500 EGP**. A card shows
+one of those SKUs. Its old `اضف الى السلة` therefore committed the shopper to
+whichever weight the card happened to render, at a price the other weights do
+not share, without ever asking.
+
+Those cards now carry **`اختر الحجم`**, a link to the product page where the
+size chips live. Same box, same classes, same 44px height as the button it
+replaces — a card must not change height when one becomes the other in a rail.
+`size_count()` in `catalog.py` is the single answer to "is this sold in several
+sizes", and `product_card()` emits `data-sizes="N"` only when N ≥ 2.
+
+**The guard is a rule about the DOM, not a list of ids.** In `scripts.js` the
+add path bails when a `[data-product]` host declares `data-sizes` **and**
+contains no `[data-size-chips]`, sending the shopper to the product page
+instead. That phrasing is what makes the product page still work: it declares
+its sizes too, but its chips resolve the choice (they repoint `data-id` and
+`data-price` at the chosen SKU), so adding there is correct — verified:
+choosing 200 جم on `product-8560` and buying puts SKU **6348 at 220** in the
+cart, not the rendered 8560 at 82.5. Every surface funnels through that one
+handler, so the rule holds on the home rails, the listing grid, the favourites
+page, the cart page and the drawer without each having to remember it.
+
+Three surfaces are built at runtime rather than by the build, and each carries
+the same rule: the recently-viewed rail (the size count rides along in
+`productFrom`, so entries stored before this existed simply behave as they
+did), the cart drawer's upsell rail (`كرانبيري` is 25 جم / 100 جم at 30 / 121,
+so its chip is an arrow link now, not a plus), and the product page's
+"قد يعجبك أيضاً" bundle — where multi-size companions are **left out of the
+list** rather than shown, because a bundle row is a checkbox and a price and
+there is no single price to put on one.
+
+**Not done, and worth a decision:** the card still shows the rendered SKU's
+price (`EGP 82.5`) rather than a from-price (`يبدأ من EGP 69`). The min is real
+data — it is that SKU's own price — so it can be shown honestly; it was left
+out because it changes the card's price treatment, which is a design call
+rather than a correctness one.
+
+### The utility bar carries a flash-sale clock, not payment marks (Ahmed, 2026-09-10)
+
+The Visa and Mastercard chips that sat mid-bar are gone; a 3D bolt, `عرض خاطف`
+and a live `HH : MM : SS` clock stand in their place. **The payment marks are
+not lost** — the same `paymentMarks()` row still runs in the footer and in the
+checkout summary, which is where a shopper looks for accepted methods. The top
+bar is urgency now, reassurance later.
+
+Three layout consequences, all measured in the browser rather than eyeballed —
+the bar is a **33px band with no room to wrap**, so anything that grows in it
+pushes a neighbour onto a second, clipped line:
+
+1. **The support links moved from `xl:` to `2xl:`** (`قصتنا`, `المكافآت`, …).
+   The clock is 3–4× the width of the two payment chips, and at 1280 the links
+   had nowhere to go. Worth knowing: **at 1280 that nav was already wrapping to
+   two lines before this change** (measured: 36px tall inside a 33px bar, its
+   tail clipped) — the strip made an existing squeeze visible rather than
+   creating it. From 1536 up, where the links return, they now sit on one line
+   with room to spare. Their internal gap is `gap-4`, and the bar's own group
+   gap is `gap-4`; both were `gap-6`. The row is `justify-between`, so at
+   widths with slack the groups still spread out and nothing looks tighter.
+2. **The promo sentence was shortened** to `خصم 10% بكود DISCOUNT10` (from
+   `خصم 10% لما تستخدم برومو كود DISCOUNT10`) — Ahmed's call, to take the
+   crowding out rather than trade one element off against another. Same code,
+   same offer, ~155px narrower. Both mastheads use the shortened form so the
+   two never diverge, and the old string stays in the `EN` dictionary because
+   `translateDocument()` keys off exact strings.
+3. **The unit labels collapse to `sr-only` above 1536**, leaving
+   `12 : 39 : 25`. English is the binding case: its support-link labels run
+   longer than the Arabic, and a labelled clock put that nav onto a second line
+   again. `sr-only`, never `hidden` — the words stay in the accessibility tree,
+   so what a screen reader hears does not shrink with the viewport.
+
+The clock itself: one `setInterval` for the page, started once, **re-querying
+the strip every tick** rather than holding a node — so it survives
+`repaintForLang()` replacing the whole header with nothing to re-bind. Every
+tick recomputes from the deadline instead of decrementing, because
+`setInterval` is throttled to roughly once a minute in a backgrounded tab; a
+decrementing clock comes back minutes behind, this one comes back correct.
+`role="timer"` with **no** `aria-live`: a live region here would announce a new
+time every second and make the page unusable with a screen reader.
+
+**On mobile both messages share one 29px band** (Ahmed: "both are
+mandatory"). Measured at 320: the clock with its unit words visible needs
+343px of a 296px line, and there is no phone width where the words, the clock
+and the promo code all fit. So the mobile strip keeps the bolt and the clock —
+`12 : 22 : 53` — and carries `عرض خاطف` as `sr-only`: the icon does the work
+the words were doing, and a screen reader still hears them. The row is
+`flex-wrap` as a safety net rather than a layout: Arabic sits on one line at
+320–414, English wraps to two at 320 only (the band grows to 47px, nothing
+overflows).
+
+**The 3D bolt is the client's own render** (Ahmed supplied it 2026-09-10; the
+in-house SVG stand-in it replaced has been deleted). The master is
+`build/art/sources/flash-sale-3d.png` — 1254×1254 RGBA, deliberately **outside**
+`static-export/`, because everything under that directory is published and 752KB
+is not a thing to ship for a glyph that paints at 22px. What ships is
+`images/abuauf/icons/flash-sale-3d.png`, 243×256 and 35KB, produced by
+`python3 build/art/prepare_icon.py build/art/sources/flash-sale-3d.png
+static-export/images/abuauf/icons/flash-sale-3d.png`. That step trims to the
+artwork's own alpha bounds and downscales; it would also cut a white studio
+background (reusing `isolate_products.py`'s border-connected fill) but skips it
+here, since this file arrived with real transparency. Re-run it, don't hand-edit
+the shipped PNG.
+
+The digits are `.latin` + `tabular-nums` so the row cannot jitter as they tick,
+and the label ink is `#6B6255` (`onBeigeMuted`) — the token that clears 4.5:1 on
+this beige, which `neutral.secondary` does not.
 
 ### Search field focus: a single darkened divider, not the offset ring
 

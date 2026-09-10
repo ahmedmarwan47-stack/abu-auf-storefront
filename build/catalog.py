@@ -95,6 +95,20 @@ except (OSError, AttributeError, TypeError, ValueError):
 BRANCH_GROUPS = _govs
 
 
+def size_count(p):
+    """
+    How many real SKUs this product is sold as (`sizes` in catalog.json, written
+    by fetch_sizes.py — Abu Auf use no product variations, so each weight is its
+    own SKU with its own id and price).
+
+    >= 2 is the interesting case: the product card cannot honestly add "the
+    product" to the cart, because there is no such thing — there is a 50 g SKU
+    at 74 and a 400 g SKU at 500. One helper so the card, the bundle and the
+    build's own checks all agree on what "has sizes" means.
+    """
+    return len(p.get("sizes") or [])
+
+
 def e(s):
     """Escape for HTML attribute/text context."""
     return html.escape(str(s or ""), quote=True)

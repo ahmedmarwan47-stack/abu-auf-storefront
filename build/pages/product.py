@@ -23,7 +23,7 @@ ours — same rule as the branch phone numbers.
 import re
 from html import unescape
 
-from catalog import PRODUCTS, e, in_category, money, rail_products, title
+from catalog import PRODUCTS, e, in_category, money, rail_products, size_count, title
 from components import (
     ICON, accordion, best_seller_badge, button, carousel, page, page_header,
     points_callout, product_card, product_gallery, qty_stepper, rating,
@@ -260,11 +260,23 @@ def _render(p):
     # product has no strip, so the plate already fills the column and an inset
     # would push the list off-centre. Below md the gallery stacks full-width, so
     # the inset is scoped to md+.
+    # Same attribute the cards carry. Adding from THIS page is still fine — the
+    # size chips are right here and pre-select the SKU the page is — so the
+    # guard in scripts.js checks for chips rather than for the attribute alone.
+    # It is emitted so a card built from this page's data (the recently-viewed
+    # rail reads the host through productFrom) inherits the size count.
+    n_sizes = size_count(p)
+    sizes_attr = f' data-sizes="{n_sizes}"' if n_sizes >= 2 else ""
+
     gallery_images = [i for i in (p.get("images") or [p["image"]]) if i]
     related_inset = " md:ms-[96px]" if len(gallery_images) > 1 else ""
     related_list = ""
     if similar:
-        picks = similar[:4]
+        # Multi-size companions are left out rather than listed: a bundle row
+        # is a price and a checkbox, and for a product sold in four weights
+        # there is no single price to put there. Its own card routes to the
+        # size choice instead — see product_card in components.py.
+        picks = [x for x in similar if size_count(x) < 2][:4]
         related_total = sum(x["price"] for x in picks)
         rows = "".join(bundle_item(x) for x in picks)
         related_list = f"""
@@ -331,7 +343,7 @@ def _render(p):
                info column drops its container so the content sits inline with
                the page grid, like the gallery beside it. lg+ keeps the card. -->
           <div class="flex flex-col gap-5 lg:bg-white lg:shadow-custom4 lg:p-6 xl:p-8 lg:rounded-[20px]"
-               data-product data-record-view data-id="{p.get('id', 0)}" data-name="{e(title(p))}"
+               data-product data-record-view{sizes_attr} data-id="{p.get('id', 0)}" data-name="{e(title(p))}"
                data-price="{p.get('sale') or p.get('price') or 0}" data-image="{e(p['image'])}">
             <div class="flex flex-col gap-3">
               {best_seller_badge(p)}

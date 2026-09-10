@@ -409,6 +409,7 @@
     "تعذر تحميل نتائج البحث. حاول مرة أخرى.": "Could not load search results. Please try again.",
     "منتجات أُضيفت إلى السلة": "products added to cart",
     // masthead + utility
+    "عرض خاطف": "Flash sale",
     "المنتجات": "Products",
     "الحساب": "Account",
     "تسجيل الدخول": "Sign in",
@@ -476,6 +477,10 @@
     "اللغة": "Language",
     // build-time UI strings — these live in the generated HTML, and are picked
     // up by translateDocument()'s text-node pass rather than by t()
+    // Shortened (Ahmed, 2026-09-10) to make room for the flash-sale clock in
+    // the utility bar. The long form is kept below: translateDocument() keys
+    // off exact strings and may still meet it in stored copy.
+    "خصم 10% بكود": "10% off with code",
     "خصم 10% لما تستخدم برومو كود": "10% off with promo code",
     // Demo sign-in
     "تم تسجيل الدخول بنجاح": "Signed in successfully",
@@ -840,6 +845,166 @@
   }
 
   /* ---------------------------------------------------------------
+     Flash-sale countdown (desktop utility bar)
+
+     Replaces the Visa / Mastercard marks that used to sit in the middle of the
+     beige utility bar (Ahmed, 2026-09-10). The marks are not lost: the same
+     paymentMarks() row still runs in the footer and in the checkout summary,
+     which is where a shopper actually looks for accepted payment methods. The
+     utility bar is urgency now, not reassurance.
+
+     FLASH_SALE_END is the ONE invented value here - Abu Auf have not given us
+     a campaign window, so it is placeholder and flagged in DESIGN-NOTES.
+     Left empty it means "a sale that ends at local midnight", recomputed every
+     tick, so the strip rolls over on its own. Set it to an ISO 8601 string
+     WITH an explicit offset ("2026-09-30T23:59:59+02:00") and the strip counts
+     to that instant and then removes itself instead of rolling.
+     --------------------------------------------------------------- */
+  const FLASH_SALE_END = "";
+
+  /* Unit labels are deliberately NOT dictionary entries. t() already
+     translates a standalone "ثانية" for the OTP resend cooldown, where it is
+     part of a sentence; one shared entry cannot read correctly in both a
+     sentence and a clock. So the clock owns its own labels and paintFlashSale
+     re-applies them, which also covers the load-with-English-stored case
+     where the chrome is rendered before applyLang has run. */
+  const FLASH_UNITS = {
+    ar: { h: "ساعة", m: "دقيقة", s: "ثانية" },
+    en: { h: "hrs", m: "mins", s: "secs" },
+  };
+
+  /* Milliseconds left, or null for "there is no sale to show". */
+  function flashSaleLeft() {
+    const now = Date.now();
+    if (FLASH_SALE_END) {
+      const end = Date.parse(FLASH_SALE_END);
+      // An unparseable date is a config mistake, not a sale: draw nothing
+      // rather than a clock counting down from NaN.
+      if (!isFinite(end) || end <= now) return null;
+      return end - now;
+    }
+    const midnight = new Date();
+    midnight.setHours(24, 0, 0, 0);
+    return midnight.getTime() - now;
+  }
+
+  function flashSaleParts(ms) {
+    const total = Math.floor(ms / 1000);
+    const pad = (n) => (n < 10 ? "0" + n : String(n));
+    // Hours are not rolled into days: the strip is a same-day urgency cue and
+    // a "1 day" chunk reads as permission to come back tomorrow. A deadline
+    // further out than 99 hours simply widens the first number.
+    return {
+      h: pad(Math.floor(total / 3600)),
+      m: pad(Math.floor(total / 60) % 60),
+      s: pad(total % 60),
+    };
+  }
+
+  /*
+   * `opts.compact` is the mobile band's version: 16px bolt, 11px type, and the
+   * unit words carried as sr-only rather than painted. Both mastheads show the
+   * clock AND the promo code (Ahmed: "both are mandatory"), and at 320 the two
+   * only share one 29px line if the clock reads 12:38:59 — three labelled
+   * units do not fit beside the code at any phone width.
+   * `opts.cls` is the caller's visibility/spacing, because the desktop bar
+   * wants `hidden lg:flex` and the mobile band wants neither.
+   */
+  function flashSaleHTML(opts) {
+    const o = opts || {};
+    const compact = !!o.compact;
+    const ms = flashSaleLeft();
+    if (ms === null) return "";
+    const parts = flashSaleParts(ms);
+    const units = FLASH_UNITS[currentLang()] || FLASH_UNITS.ar;
+    const num = compact
+      ? "font-bold text-[#163300] text-[11px] tabular-nums latin"
+      : "font-bold text-[#163300] text-[13px] tabular-nums latin";
+    const lbl = compact
+      ? "sr-only"
+      : "font-semibold text-[#6B6255] text-xs 2xl:sr-only";
+    /* One unit = a bold two-digit number plus a muted label. The number is
+       .latin (Inter) and tabular-nums, so the strip cannot jitter as the
+       seconds tick and the text beside it cannot shuffle. The label ink is
+       #6B6255 - onBeigeMuted, the token that clears 4.5:1 on this bar; the
+       neutral-secondary grey used on white does not. */
+    const unit = (k) => `
+          <span class="flex items-baseline gap-1">
+            <span class="${num}" data-flash-unit="${k}">${parts[k]}</span>
+            <!-- 2xl:sr-only, not 2xl:hidden: 1536 is where the support links
+                 come back into this bar, and in English - whose link labels
+                 run longer than the Arabic - a labelled clock pushes that nav
+                 onto a second line inside a 33px band, which the bar clips.
+                 So above 1536 the clock collapses to 12 : 41 : 59, which a
+                 colon-separated triple already reads as. sr-only keeps the
+                 words in the accessibility tree, so what a screen reader
+                 hears does not shrink with the viewport; display:none would
+                 drop them outright. -->
+            <span class="${lbl}" data-flash-label="${k}">${esc(units[k])}</span>
+          </span>`;
+    // The colon is decoration between two labelled numbers, so it is hidden
+    // from assistive tech rather than read out as punctuation every tick.
+    const sep = `<span class="font-bold text-[#6B6255] ${compact ? "text-[11px]" : "text-[13px]"} latin" aria-hidden="true">:</span>`;
+    return `
+        <div data-flash-sale class="${o.cls || "hidden lg:flex items-center gap-2 shrink-0"}">
+          <img src="images/abuauf/icons/flash-sale-3d.png" alt="" class="shrink-0 ${compact ? "w-4 h-4" : "w-[22px] h-[22px]"} object-contain flash-bolt" />
+          <!-- On mobile the words go sr-only and the bolt carries the meaning:
+               measured at 320 the visible pair (words + clock + code) needs
+               343px of a 296px line, and there is no phone width where all
+               three fit. The clock still says a sale is running, the code
+               still says what the offer is, and a screen reader still hears
+               "عرض خاطف" - only the sighted duplicate of the icon is dropped. -->
+          <span class="${compact ? "sr-only" : "font-bold text-[#163300] text-[13px] leading-[140%] whitespace-nowrap"}">${esc(t("عرض خاطف"))}</span>
+          <!-- role=timer with NO aria-live: the value is meaningful, but a
+               live region here would announce a new time every second and make
+               the rest of the page unusable with a screen reader. -->
+          <span class="flex items-center gap-1" role="timer" data-flash-clock>${unit("h")}${sep}${unit("m")}${sep}${unit("s")}</span>
+        </div>`;
+  }
+
+  /* Both mastheads carry a strip (the mobile one is display:none above md and
+     vice versa), so this paints every match rather than the first. */
+  function paintFlashSale() {
+    const ms = flashSaleLeft();
+    document.querySelectorAll("[data-flash-sale]").forEach((strip) => paintOneStrip(strip, ms));
+  }
+
+  function paintOneStrip(strip, ms) {
+    if (ms === null) {
+      // Sale over: take the strip out rather than park it on 00:00:00. A dead
+      // clock is worse than no clock, and the next repaint agrees - with an
+      // expired FLASH_SALE_END, flashSaleHTML() returns nothing either.
+      strip.remove();
+      return;
+    }
+    const parts = flashSaleParts(ms);
+    const units = FLASH_UNITS[currentLang()] || FLASH_UNITS.ar;
+    Object.keys(parts).forEach((k) => {
+      const n = strip.querySelector('[data-flash-unit="' + k + '"]');
+      if (n && n.textContent !== parts[k]) n.textContent = parts[k];
+      const l = strip.querySelector('[data-flash-label="' + k + '"]');
+      if (l && l.textContent !== units[k]) l.textContent = units[k];
+    });
+  }
+
+  /*
+   * One interval per page, started once and never cleared. It re-queries the
+   * strip on every tick, so it survives repaintForLang() replacing the whole
+   * header with nothing to re-bind - the same reason the cart renderer keys
+   * off `cart:change` rather than holding node references.
+   *
+   * Every tick recomputes from the deadline instead of decrementing a counter:
+   * setInterval is throttled to about once a minute in a backgrounded tab, so
+   * a decrementing clock would come back minutes behind, while this one comes
+   * back correct.
+   */
+  function initFlashSale() {
+    paintFlashSale();
+    if (initFlashSale._timer) return;
+    initFlashSale._timer = setInterval(paintFlashSale, 1000);
+  }
+
+  /* ---------------------------------------------------------------
      Header
      --------------------------------------------------------------- */
   /*
@@ -1044,19 +1209,14 @@
           checkout
             ? ""
             : `<div class="relative z-50 bg-beige h-[33px]">
-                 <div class="flex justify-between items-center gap-6 mx-auto px-4 max-w-[1536px] h-full">
+                 <div class="flex justify-between items-center gap-4 mx-auto px-4 max-w-[1536px] h-full">
                    <div class="flex items-center gap-6 min-w-0">
                      ${countryButton()}
-                     <nav class="hidden xl:flex items-center gap-6 min-w-0 overflow-hidden">${support}</nav>
+                     <nav class="hidden 2xl:flex items-center gap-4 min-w-0 overflow-hidden">${support}</nav>
                    </div>
-                   <div class="hidden lg:flex items-center gap-2 shrink-0">
-                     <span class="grid place-items-center bg-white border border-neutral-divider rounded w-[35px] h-6">
-                       <img src="images/abuauf/payments/pay-mastercard.svg" alt="Mastercard" class="w-[22px] h-[14px]" />
-                     </span>
-                     <img src="images/abuauf/payments/pay-visa.svg" alt="Visa" class="w-[35px] h-6" />
-                   </div>
+                   ${flashSaleHTML()}
                    <p class="hidden lg:block shrink-0 font-bold text-[#5F5035] text-base leading-[22px] whitespace-nowrap">
-                     خصم 10% لما تستخدم برومو كود <span class="latin">DISCOUNT10</span>
+                     خصم 10% بكود <span class="latin">DISCOUNT10</span>
                    </p>
                  </div>
                </div>`
@@ -1184,11 +1344,22 @@
         ${
           checkout
             ? ""
-            : `<div class="bg-beige px-3 py-1.5">
-                 <p class="font-semibold text-[#5F5035] text-[11px] text-center">
-                   خصم 10% لما تستخدم برومو كود <span class="latin">DISCOUNT10</span>
-                 </p>
-               </div>`
+            : `<!-- Clock AND promo code on one 29px line (Ahmed: "both are
+                       mandatory"). That only fits at 320 in short form: the
+                       clock drops its unit words to sr-only and reads
+                       12:38:59, and the code keeps the shortened sentence the
+                       desktop bar uses. justify-center with a hairline rule
+                       between them, so the two read as two facts rather than
+                       one run-on line. -->
+                 <div class="bg-beige px-3 py-1.5">
+                   <div class="flex flex-wrap justify-center items-center gap-x-2 gap-y-0.5 min-w-0">
+                     ${flashSaleHTML({ compact: true, cls: "flex items-center gap-1.5 shrink-0" })}
+                     <span aria-hidden="true" class="bg-[#5F5035]/25 w-px h-3 shrink-0"></span>
+                     <p class="font-semibold text-[#5F5035] text-[11px] whitespace-nowrap">
+                       خصم 10% بكود <span class="latin">DISCOUNT10</span>
+                     </p>
+                   </div>
+                 </div>`
         }
         <!-- Both side groups are flex-1, so the logo sits dead-centre no
              matter how many controls each side holds — matching the live
@@ -1457,7 +1628,11 @@
     const upsell = [
       { id: "16499", name: "بافس بالجبنة 40 جرام", price: 11, img: "images/abuauf/products/6223011438028.webp" },
       { id: "16502", name: "بافس بالشطة والليمون 40 جرام", price: 11, img: "images/abuauf/products/6223011438035.webp" },
-      { id: "1631", name: "كرانبيري - 25 جم", price: 30, img: "images/abuauf/products/6223006314092.webp" },
+      // sizes: 25 جم and 100 جم are separate SKUs at 30 and 121, so this row
+      // gets the same treatment as its card — it routes to the choice instead
+      // of adding a weight nobody picked. If this list gains another
+      // multi-size product, give it `sizes` too.
+      { id: "1631", name: "كرانبيري - 25 جم", price: 30, img: "images/abuauf/products/6223006314092.webp", sizes: 2 },
       { id: "1320", name: "فول سوداني بالشيكولاتة - 100 جم", price: 35.5, img: "images/abuauf/products/2000208000000.webp" },
       { id: "1368", name: "بروتين بار براونيز شيكولاتة - 70 جم", price: 65, img: "images/abuauf/products/6223006315341-thumb.webp" },
       { id: "46238", name: "بسكويت محشو تمر - 12 قطعة", price: 65, img: "images/abuauf/products/image-600x600-1.png" },
@@ -1467,7 +1642,7 @@
         (p) => `
         <article class="carousel-slide flex flex-col gap-2 bg-white p-2 border border-neutral-divider rounded-2xl w-[136px] shrink-0"
              data-product data-id="${esc(p.id)}" data-name="${esc(p.name)}"
-             data-price="${p.price}" data-image="${esc(p.img)}">
+             data-price="${p.price}" data-image="${esc(p.img)}"${p.sizes ? ` data-sizes="${p.sizes}"` : ""}>
           <img src="${p.img}" alt="" class="bg-interaction-base p-1 rounded-xl w-full aspect-square object-contain" loading="lazy" />
           <!-- Two lines reserved whatever the name's length, so a one-line and
                a two-line product do not make neighbouring cards different
@@ -1484,10 +1659,16 @@
                  reader gets no help from the basket it is sitting next to.
                  size-11 keeps the audited 44px tap target: the card is 136px
                  wide, so the chip and the button fit without shrinking it. -->
-            <button type="button" data-add-to-cart aria-label="اضف الى السلة"
+            ${
+              p.sizes
+                ? `<a href="product-${esc(p.id)}.html" data-card-choose aria-label="${esc(t("اختر الحجم"))}"
+                    class="place-items-center grid bg-cta hover:bg-cta-hover shrink-0 rounded-full text-white transition-colors size-11">
+              <span class="w-4 h-4 rtl:scale-flip">${ICON.arrowRight}</span></a>`
+                : `<button type="button" data-add-to-cart aria-label="اضف الى السلة"
                     class="place-items-center grid bg-cta hover:bg-cta-hover shrink-0 rounded-full text-white transition-colors size-11">
               <span class="w-4 h-4">${ICON.plus}</span>
-            </button>
+            </button>`
+            }
           </div>
         </article>`,
       )
@@ -3531,7 +3712,17 @@
     if (!host) return null;
     const d = host.dataset;
     if (!d.id || !d.name) return null;
-    return { id: d.id, name: d.name, price: Number(d.price) || 0, image: d.image || "" };
+    // `sizes` is the number of real SKUs the product is sold as, emitted by the
+    // build only when there is a genuine choice (>= 2). It rides along so a
+    // card rendered from stored data — the recently-viewed rail — knows to
+    // route to the choice rather than offer an add.
+    return {
+      id: d.id,
+      name: d.name,
+      price: Number(d.price) || 0,
+      image: d.image || "",
+      sizes: Number(d.sizes) || 0,
+    };
   }
 
   const egp = (n) => "EGP " + (Math.round(n * 100) / 100).toFixed(2);
@@ -3607,6 +3798,9 @@
     applyLangToContent();
 
     initMegaMenu();
+    // The strip is rebuilt with the header, so its labels need re-applying at
+    // once; without this they stay in the old language for up to a second.
+    initFlashSale();
     initLangSwitcher(true);
     window.kInit(document);
     renderCart();
@@ -4128,7 +4322,11 @@
       // Sibling lookup, not a card-wide query: on the product page the
       // outer [data-product] host also contains the related-products rail,
       // whose cards have add buttons of their own.
-      const addBtn = stepper.parentElement.querySelector("[data-add-to-cart]");
+      // Either control can be sitting there: an add button, or the
+      // "اختر الحجم" link a multi-size product's card carries instead. Both
+      // occupy the same box, so whichever is present is the one to hide when
+      // the stepper takes over.
+      const addBtn = stepper.parentElement.querySelector("[data-add-to-cart], [data-card-choose]");
       const it = Cart.find(card.dataset.id);
       stepper.hidden = !it;
       if (addBtn) addBtn.hidden = !!it;
@@ -5323,6 +5521,20 @@
         if (!product) return;
         // Respect a quantity stepper sitting next to the button (product page).
         const scope = add.closest("[data-product]") || document;
+
+        /* A product sold in several sizes cannot be added from a surface that
+           does not offer the choice: its siblings are different SKUs at
+           different prices, so "add this one" is a guess made on the shopper's
+           behalf. The test is chips, not the attribute — the product page
+           declares its sizes too and DOES resolve the choice (the chips
+           repoint data-id and data-price at the chosen SKU), so adding there
+           is correct. Anywhere else we send them to the page that asks.
+           Cards render a link rather than a button, so this is the backstop
+           for anything built at runtime; it never fires on a normal card. */
+        if (product.sizes >= 2 && !scope.querySelector("[data-size-chips]")) {
+          window.location.href = "product-" + product.id + ".html";
+          return;
+        }
         const qtyEl = scope.querySelector("[data-stepper] [data-qty]");
 
         /* Send the product image to the cart, and hold the badge at its old
@@ -5666,9 +5878,13 @@
   function recentCardHTML(p) {
     const id = esc(String(p.id));
     const name = esc(p.name || "");
+    // Same rule as the build-time card: a product sold in several sizes routes
+    // to the choice instead of offering an add. Entries stored before the size
+    // count existed simply come back as 0 and behave as they always did.
+    const sizes = Number(p.sizes) || 0;
     return `
       <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0"
-               data-product data-id="${id}" data-name="${name}" data-price="${Number(p.price) || 0}" data-image="${esc(p.image || "")}">
+               data-product data-id="${id}" data-name="${name}" data-price="${Number(p.price) || 0}" data-image="${esc(p.image || "")}"${sizes >= 2 ? ` data-sizes="${sizes}"` : ""}>
         <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
           <a href="product-${id}.html" class="product-card__media block relative bg-interaction-base p-4">
             <img src="${esc(p.image || "")}" alt="${name}" class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
@@ -5681,8 +5897,12 @@
               <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-sm latin">${egp(Number(p.price) || 0)}</span>
             </div>
             <div class="pt-2">
-              <button type="button" data-add-to-cart
-                      class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+              ${
+                sizes >= 2
+                  ? `<a href="product-${id}.html" data-card-choose class="btn-elevate block bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm text-center">${esc(t("اختر الحجم"))}</a>`
+                  : `<button type="button" data-add-to-cart
+                      class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>`
+              }
               <div data-card-stepper hidden class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
                 <button type="button" data-card-step="-1" aria-label="إنقاص"
                         class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4">${ICON.minus}</span></span></button>
@@ -6727,6 +6947,9 @@
     // dictionary pass sees every string on the page. Without this call a
     // stored English preference only styled the chrome.
     applyLangToContent();
+    // After applyLangToContent, so the first paint of the clock already knows
+    // whether the stored language is English.
+    initFlashSale();
     window.kInit(document);
     // Once per page, after the buy block and its host are in the DOM. Guards
     // itself off [data-sticky-buybar], so it is a no-op everywhere but product.

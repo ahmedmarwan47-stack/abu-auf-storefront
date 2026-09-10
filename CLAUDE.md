@@ -92,6 +92,15 @@ below). `my-account-favorites.html` ships the whole catalogue hidden and
 reveals what is saved, the same way the listing chips filter cards already in
 the DOM — so card markup stays in `components.py` alone.
 
+**A product sold in several sizes cannot be added from a card.** `sizes` in
+`catalog.json` holds real sibling SKUs at real different prices, so
+`product_card()` swaps the add button for an `اختر الحجم` link to the product
+page (same box, same 44px) and emits `data-sizes="N"`. The runtime rule is in
+the add handler and is about the DOM, not a list of ids: a `[data-product]`
+host that declares `data-sizes` and has no `[data-size-chips]` inside it does
+not add — it routes. The product page passes that test because its chips
+repoint `data-id`/`data-price` at the chosen SKU. See DESIGN-NOTES §3.
+
 **Any seeded product must be keyed by its `catalog.json` id**, not its barcode.
 Both stores dedupe on id against the `data-id` on product cards; a barcode key
 silently creates a second line for a product already in the cart.
