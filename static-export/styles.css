@@ -2790,3 +2790,38 @@ input:checked + .radio-card-accent {
     box-shadow: inset 0 0 0 2px #163300;
   }
 }
+
+/* ===============================================================
+   Flash-sale countdown — the utility bar's 3D bolt
+   =============================================================== */
+/* The badge breathes so the strip reads as live rather than as another static
+   mark in the row it replaced (it took over from the Visa/Mastercard chips).
+   Deliberately slow and small: this sits above every page on the site, and a
+   fast or large loop in permanent peripheral vision is an irritant, not an
+   incentive. transform only — no layout property is touched, so it cannot
+   reflow the 33px bar. The digits themselves never animate; they are
+   tabular-nums so the row cannot jitter as they tick. */
+.flash-bolt {
+  /* ease-in-out, not the shared --ease-out token: that curve is decelerating,
+     which is right for a one-way transition and wrong for a loop, where it
+     makes every cycle start with a jolt. */
+  animation: flash-bolt-pulse 2.6s ease-in-out infinite;
+  transform-origin: 50% 55%;
+  will-change: transform;
+}
+@keyframes flash-bolt-pulse {
+  0%,
+  70%,
+  100% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.09);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-bolt {
+    animation: none;
+  }
+}

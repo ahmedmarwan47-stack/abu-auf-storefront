@@ -409,6 +409,7 @@
     "تعذر تحميل نتائج البحث. حاول مرة أخرى.": "Could not load search results. Please try again.",
     "منتجات أُضيفت إلى السلة": "products added to cart",
     // masthead + utility
+    "عرض خاطف": "Flash sale",
     "المنتجات": "Products",
     "الحساب": "Account",
     "تسجيل الدخول": "Sign in",
@@ -476,6 +477,10 @@
     "اللغة": "Language",
     // build-time UI strings — these live in the generated HTML, and are picked
     // up by translateDocument()'s text-node pass rather than by t()
+    // Shortened (Ahmed, 2026-09-10) to make room for the flash-sale clock in
+    // the utility bar. The long form is kept below: translateDocument() keys
+    // off exact strings and may still meet it in stored copy.
+    "خصم 10% بكود": "10% off with code",
     "خصم 10% لما تستخدم برومو كود": "10% off with promo code",
     // Demo sign-in
     "تم تسجيل الدخول بنجاح": "Signed in successfully",
@@ -840,6 +845,139 @@
   }
 
   /* ---------------------------------------------------------------
+     Flash-sale countdown (desktop utility bar)
+
+     Replaces the Visa / Mastercard marks that used to sit in the middle of the
+     beige utility bar (Ahmed, 2026-09-10). The marks are not lost: the same
+     paymentMarks() row still runs in the footer and in the checkout summary,
+     which is where a shopper actually looks for accepted payment methods. The
+     utility bar is urgency now, not reassurance.
+
+     FLASH_SALE_END is the ONE invented value here - Abu Auf have not given us
+     a campaign window, so it is placeholder and flagged in DESIGN-NOTES.
+     Left empty it means "a sale that ends at local midnight", recomputed every
+     tick, so the strip rolls over on its own. Set it to an ISO 8601 string
+     WITH an explicit offset ("2026-09-30T23:59:59+02:00") and the strip counts
+     to that instant and then removes itself instead of rolling.
+     --------------------------------------------------------------- */
+  const FLASH_SALE_END = "";
+
+  /* Unit labels are deliberately NOT dictionary entries. t() already
+     translates a standalone "ثانية" for the OTP resend cooldown, where it is
+     part of a sentence; one shared entry cannot read correctly in both a
+     sentence and a clock. So the clock owns its own labels and paintFlashSale
+     re-applies them, which also covers the load-with-English-stored case
+     where the chrome is rendered before applyLang has run. */
+  const FLASH_UNITS = {
+    ar: { h: "ساعة", m: "دقيقة", s: "ثانية" },
+    en: { h: "hrs", m: "mins", s: "secs" },
+  };
+
+  /* Milliseconds left, or null for "there is no sale to show". */
+  function flashSaleLeft() {
+    const now = Date.now();
+    if (FLASH_SALE_END) {
+      const end = Date.parse(FLASH_SALE_END);
+      // An unparseable date is a config mistake, not a sale: draw nothing
+      // rather than a clock counting down from NaN.
+      if (!isFinite(end) || end <= now) return null;
+      return end - now;
+    }
+    const midnight = new Date();
+    midnight.setHours(24, 0, 0, 0);
+    return midnight.getTime() - now;
+  }
+
+  function flashSaleParts(ms) {
+    const total = Math.floor(ms / 1000);
+    const pad = (n) => (n < 10 ? "0" + n : String(n));
+    // Hours are not rolled into days: the strip is a same-day urgency cue and
+    // a "1 day" chunk reads as permission to come back tomorrow. A deadline
+    // further out than 99 hours simply widens the first number.
+    return {
+      h: pad(Math.floor(total / 3600)),
+      m: pad(Math.floor(total / 60) % 60),
+      s: pad(total % 60),
+    };
+  }
+
+  function flashSaleHTML() {
+    const ms = flashSaleLeft();
+    if (ms === null) return "";
+    const parts = flashSaleParts(ms);
+    const units = FLASH_UNITS[currentLang()] || FLASH_UNITS.ar;
+    /* One unit = a bold two-digit number plus a muted label. The number is
+       .latin (Inter) and tabular-nums, so the strip cannot jitter as the
+       seconds tick and the text beside it cannot shuffle. The label ink is
+       #6B6255 - onBeigeMuted, the token that clears 4.5:1 on this bar; the
+       neutral-secondary grey used on white does not. */
+    const unit = (k) => `
+          <span class="flex items-baseline gap-1">
+            <span class="font-bold text-[#163300] text-[13px] tabular-nums latin" data-flash-unit="${k}">${parts[k]}</span>
+            <!-- 2xl:sr-only, not 2xl:hidden: 1536 is where the support links
+                 come back into this bar, and in English - whose link labels
+                 run longer than the Arabic - a labelled clock pushes that nav
+                 onto a second line inside a 33px band, which the bar clips.
+                 So above 1536 the clock collapses to 12 : 41 : 59, which a
+                 colon-separated triple already reads as. sr-only keeps the
+                 words in the accessibility tree, so what a screen reader
+                 hears does not shrink with the viewport; display:none would
+                 drop them outright. -->
+            <span class="font-semibold text-[#6B6255] text-xs 2xl:sr-only" data-flash-label="${k}">${esc(units[k])}</span>
+          </span>`;
+    // The colon is decoration between two labelled numbers, so it is hidden
+    // from assistive tech rather than read out as punctuation every tick.
+    const sep = '<span class="font-bold text-[#6B6255] text-[13px] latin" aria-hidden="true">:</span>';
+    return `
+        <div data-flash-sale class="hidden lg:flex items-center gap-2 shrink-0">
+          <img src="images/abuauf/icons/flash-sale-3d.png" alt="" class="shrink-0 w-[22px] h-[22px] object-contain flash-bolt" />
+          <span class="font-bold text-[#163300] text-[13px] leading-[140%] whitespace-nowrap">${esc(t("عرض خاطف"))}</span>
+          <!-- role=timer with NO aria-live: the value is meaningful, but a
+               live region here would announce a new time every second and make
+               the rest of the page unusable with a screen reader. -->
+          <span class="flex items-center gap-1" role="timer" data-flash-clock>${unit("h")}${sep}${unit("m")}${sep}${unit("s")}</span>
+        </div>`;
+  }
+
+  function paintFlashSale() {
+    const strip = document.querySelector("[data-flash-sale]");
+    if (!strip) return;
+    const ms = flashSaleLeft();
+    if (ms === null) {
+      // Sale over: take the strip out rather than park it on 00:00:00. A dead
+      // clock is worse than no clock, and the next repaint agrees - with an
+      // expired FLASH_SALE_END, flashSaleHTML() returns nothing either.
+      strip.remove();
+      return;
+    }
+    const parts = flashSaleParts(ms);
+    const units = FLASH_UNITS[currentLang()] || FLASH_UNITS.ar;
+    Object.keys(parts).forEach((k) => {
+      const n = strip.querySelector('[data-flash-unit="' + k + '"]');
+      if (n && n.textContent !== parts[k]) n.textContent = parts[k];
+      const l = strip.querySelector('[data-flash-label="' + k + '"]');
+      if (l && l.textContent !== units[k]) l.textContent = units[k];
+    });
+  }
+
+  /*
+   * One interval per page, started once and never cleared. It re-queries the
+   * strip on every tick, so it survives repaintForLang() replacing the whole
+   * header with nothing to re-bind - the same reason the cart renderer keys
+   * off `cart:change` rather than holding node references.
+   *
+   * Every tick recomputes from the deadline instead of decrementing a counter:
+   * setInterval is throttled to about once a minute in a backgrounded tab, so
+   * a decrementing clock would come back minutes behind, while this one comes
+   * back correct.
+   */
+  function initFlashSale() {
+    paintFlashSale();
+    if (initFlashSale._timer) return;
+    initFlashSale._timer = setInterval(paintFlashSale, 1000);
+  }
+
+  /* ---------------------------------------------------------------
      Header
      --------------------------------------------------------------- */
   /*
@@ -1044,19 +1182,14 @@
           checkout
             ? ""
             : `<div class="relative z-50 bg-beige h-[33px]">
-                 <div class="flex justify-between items-center gap-6 mx-auto px-4 max-w-[1536px] h-full">
+                 <div class="flex justify-between items-center gap-4 mx-auto px-4 max-w-[1536px] h-full">
                    <div class="flex items-center gap-6 min-w-0">
                      ${countryButton()}
-                     <nav class="hidden xl:flex items-center gap-6 min-w-0 overflow-hidden">${support}</nav>
+                     <nav class="hidden 2xl:flex items-center gap-4 min-w-0 overflow-hidden">${support}</nav>
                    </div>
-                   <div class="hidden lg:flex items-center gap-2 shrink-0">
-                     <span class="grid place-items-center bg-white border border-neutral-divider rounded w-[35px] h-6">
-                       <img src="images/abuauf/payments/pay-mastercard.svg" alt="Mastercard" class="w-[22px] h-[14px]" />
-                     </span>
-                     <img src="images/abuauf/payments/pay-visa.svg" alt="Visa" class="w-[35px] h-6" />
-                   </div>
+                   ${flashSaleHTML()}
                    <p class="hidden lg:block shrink-0 font-bold text-[#5F5035] text-base leading-[22px] whitespace-nowrap">
-                     خصم 10% لما تستخدم برومو كود <span class="latin">DISCOUNT10</span>
+                     خصم 10% بكود <span class="latin">DISCOUNT10</span>
                    </p>
                  </div>
                </div>`
@@ -1186,7 +1319,7 @@
             ? ""
             : `<div class="bg-beige px-3 py-1.5">
                  <p class="font-semibold text-[#5F5035] text-[11px] text-center">
-                   خصم 10% لما تستخدم برومو كود <span class="latin">DISCOUNT10</span>
+                   خصم 10% بكود <span class="latin">DISCOUNT10</span>
                  </p>
                </div>`
         }
@@ -3607,6 +3740,9 @@
     applyLangToContent();
 
     initMegaMenu();
+    // The strip is rebuilt with the header, so its labels need re-applying at
+    // once; without this they stay in the old language for up to a second.
+    initFlashSale();
     initLangSwitcher(true);
     window.kInit(document);
     renderCart();
@@ -6727,6 +6863,9 @@
     // dictionary pass sees every string on the page. Without this call a
     // stored English preference only styled the chrome.
     applyLangToContent();
+    // After applyLangToContent, so the first paint of the clock already knows
+    // whether the stored language is English.
+    initFlashSale();
     window.kInit(document);
     // Once per page, after the buy block and its host are in the DOM. Guards
     // itself off [data-sticky-buybar], so it is a no-op everywhere but product.
