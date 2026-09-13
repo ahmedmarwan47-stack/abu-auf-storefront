@@ -8,6 +8,7 @@ rail happens in one place and reaches every page on the next build.
 import html
 import json
 import os
+import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EXPORT = os.path.join(ROOT, "static-export")
@@ -107,6 +108,48 @@ def size_count(p):
     build's own checks all agree on what "has sizes" means.
     """
     return len(p.get("sizes") or [])
+
+
+# Units Abu Auf actually use in their Arabic product names, longest-first so
+# "جرام" is never matched as "جم" + a stray letter. Measured off all 99 names:
+# جم 71, جرام 7, قطعة 3, قطع 1. كجم/كيلو/مل/لتر appear in none of our 99 but are
+# in the client's wider store, so they are accepted rather than waiting to break.
+_PACK_UNITS = "كجم|كيلو|جرام|جم|قطعة|قطع|مل|لتر"
+
+# The number+unit run, anchored at the END of the name — optionally followed by
+# a parenthetical, because several offer names carry the pack weight before a
+# "(1+1 مجانا)" tail. Anchoring matters: an unanchored search would pull the
+# "3" out of "عرض بريتزل (اشتري 3 بسعر أقل)" and call it a pack size.
+_PACK_RE = re.compile(
+    r"(?P<num>\d+(?:[.,]\d+)?)\s*(?P<unit>" + _PACK_UNITS + r")"
+    r"[^\u0600-\u06FF\w]*(?:\([^)]*\))?\s*$"
+)
+
+
+def pack_label(p):
+    """
+    "80 جم", "12 قطعة", or "" — the pack size, READ OFF the client's own Arabic
+    name, never invented.
+
+    Abu Auf carry no weight field at all: the Store API returns `weight: ""` for
+    every product (CLAUDE.md), and the size lives in the name instead — which is
+    exactly why fetch_sizes.py has to recover sibling SKUs by stripping that
+    suffix. So the name is the only place this figure exists, and parsing it is
+    reading real data rather than deriving a new one.
+
+    82 of our 99 products yield a label. The 17 that do not are gift boxes,
+    baskets, trays and multi-item offers — things that genuinely have no single
+    pack size ("عرض معمول (1 سادة + 1 قرفة + ...)"). They get no tag rather than
+    a guessed one, the same rule that left the branch phones missing.
+    """
+    m = _PACK_RE.search((p.get("nameAr") or "").strip())
+    if not m:
+        return ""
+    num = m.group("num").replace(",", ".")
+    # 250.0 -> 250, but 1.5 kept.
+    if num.endswith(".0"):
+        num = num[:-2]
+    return num + " " + m.group("unit")
 
 
 def e(s):

@@ -2577,6 +2577,305 @@
         </div>
       </section>
 
+      <!-- =========================== NEW ARRIVALS ===========================
+           Sits below the gifts banner at Ahmed's request (2026-09-13), in the
+           same shape as the product page's recommendation rail: a heading and a
+           carousel of the standard product_card().
+
+           The products are the client's OWN "New Arrivals" category, not a
+           proxy — `وصل حديثاً` elsewhere on this site sorts by id because there
+           is no publish-date field, but this category genuinely exists in their
+           taxonomy and these four products genuinely sit in it.
+
+           FOUR is all there are. Their live category counts 130, but our scrape
+           holds 4 of them, so the rail does not fill the row at desktop and has
+           nothing to scroll. It is padded with nothing: the tabbed rail above
+           tops its own "وصل حديثاً" tab up with coffee, which makes a rail
+           labelled "new" show products that are not, and that trade is worse
+           here where the section's whole subject is the label. Re-scrape to
+           fill it. See DESIGN-NOTES §1. -->
+      <section data-reveal class="py-12 xl:py-16">
+        <div class="mx-auto px-4 max-w-[1536px]">
+          <div class="flex flex-wrap justify-between items-center gap-4 mb-10"><h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">وصل حديثاً</h2><a href="shop.html" class="inline-flex justify-center items-center rounded-full font-semibold transition-colors px-6 py-2.5 text-sm border border-cta text-cta hover:bg-interaction-base ">تسوق الكل</a></div>
+          
+          <div class="relative carousel " style="--carousel-gap:24px">
+            <div class="carousel-track">
+          <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="new-arrivals" data-price="45.0" data-id="10532" data-name="بار مكسرات بالبندق والشيكولاته - 40 جم" data-name-en="Nuts Bar Chocolate &amp; Hazelnut – 40 gm" data-image="images/abuauf/products/6223011433511.webp">
+            <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product-10532.html" class="product-card__media block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/6223011433511.webp" alt="بار مكسرات بالبندق والشيكولاته - 40 جم"
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+              </a>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-10532.html" data-product-title class="hover:text-primary transition-colors">بار مكسرات بالبندق والشيكولاته - 40 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
+                  </div>
+                </div>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="mt-auto pt-1">
+                  <button type="button" data-add-to-cart
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                  <!-- Shown by scripts.js once the product is in the cart, in
+                       place of the add button. `hidden` is safe to toggle on a
+                       flex container here only because styles.css forces
+                       display:none on [hidden] with !important. -->
+                  <!-- The number is flex-1 with NO min-w-0, so its own text is
+                       its floor and it can never be crushed narrower than the
+                       digits — the sweep caught exactly that at 414, a 5px
+                       overflow inside the span. The buttons are the ones that
+                       give, down to a 36px floor, which only ever happens at a
+                       three-digit quantity on a 320px screen. -->
+                  <!-- Colour lives in styles.css, not here: this is the light
+                       counterpart of the solid CTA button it replaces — the
+                       brand's light surface with the CTA green as the ink, so
+                       an item already in the cart reads as settled rather than
+                       shouting as loudly as the button that put it there. -->
+                  <div data-card-stepper hidden
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
+                    <!-- The visible circle is the inner .stepper-face, NOT the
+                         button. The face is 36px, inset 4px like the product
+                         page's padded counter, while the button stays the
+                         full 44px of the control's height — the padding is
+                         painted, the tap target is not reduced. Shrinking the
+                         button itself would regress the audited 44px floor,
+                         and growing the control would resize the card on the
+                         add-button swap. -->
+                    <button type="button" data-card-step="-1" aria-label="إنقاص"
+                            class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></span></button>
+                    <span data-card-qty class="flex-1 font-bold text-base text-center latin">1</span>
+                    <button type="button" data-card-step="1" aria-label="زيادة"
+                            class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="new-arrivals" data-price="25.0" data-id="8543" data-name="جيلى بينسون كولا -65 جم" data-name-en="Jelly Benson Cola 65gm" data-image="images/abuauf/products/image-600x600-4.webp">
+            <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product-8543.html" class="product-card__media block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/image-600x600-4.webp" alt="جيلى بينسون كولا -65 جم"
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+              </a>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-8543.html" data-product-title class="hover:text-primary transition-colors">جيلى بينسون كولا -65 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 25</span>
+                  </div>
+                </div>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="mt-auto pt-1">
+                  <button type="button" data-add-to-cart
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                  <!-- Shown by scripts.js once the product is in the cart, in
+                       place of the add button. `hidden` is safe to toggle on a
+                       flex container here only because styles.css forces
+                       display:none on [hidden] with !important. -->
+                  <!-- The number is flex-1 with NO min-w-0, so its own text is
+                       its floor and it can never be crushed narrower than the
+                       digits — the sweep caught exactly that at 414, a 5px
+                       overflow inside the span. The buttons are the ones that
+                       give, down to a 36px floor, which only ever happens at a
+                       three-digit quantity on a 320px screen. -->
+                  <!-- Colour lives in styles.css, not here: this is the light
+                       counterpart of the solid CTA button it replaces — the
+                       brand's light surface with the CTA green as the ink, so
+                       an item already in the cart reads as settled rather than
+                       shouting as loudly as the button that put it there. -->
+                  <div data-card-stepper hidden
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
+                    <!-- The visible circle is the inner .stepper-face, NOT the
+                         button. The face is 36px, inset 4px like the product
+                         page's padded counter, while the button stays the
+                         full 44px of the control's height — the padding is
+                         painted, the tap target is not reduced. Shrinking the
+                         button itself would regress the audited 44px floor,
+                         and growing the control would resize the card on the
+                         add-button swap. -->
+                    <button type="button" data-card-step="-1" aria-label="إنقاص"
+                            class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></span></button>
+                    <span data-card-qty class="flex-1 font-bold text-base text-center latin">1</span>
+                    <button type="button" data-card-step="1" aria-label="زيادة"
+                            class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="new-arrivals" data-price="25.0" data-id="33417" data-name="جيلى بينسون فراولة - 65 جم" data-name-en="Jelly Benson Strawberry – 65 GM" data-image="images/abuauf/products/6223001690047-thumb.webp">
+            <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product-33417.html" class="product-card__media block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/6223001690047-thumb.webp" alt="جيلى بينسون فراولة - 65 جم"
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+              </a>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-33417.html" data-product-title class="hover:text-primary transition-colors">جيلى بينسون فراولة - 65 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 25</span>
+                  </div>
+                </div>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="mt-auto pt-1">
+                  <button type="button" data-add-to-cart
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                  <!-- Shown by scripts.js once the product is in the cart, in
+                       place of the add button. `hidden` is safe to toggle on a
+                       flex container here only because styles.css forces
+                       display:none on [hidden] with !important. -->
+                  <!-- The number is flex-1 with NO min-w-0, so its own text is
+                       its floor and it can never be crushed narrower than the
+                       digits — the sweep caught exactly that at 414, a 5px
+                       overflow inside the span. The buttons are the ones that
+                       give, down to a 36px floor, which only ever happens at a
+                       three-digit quantity on a 320px screen. -->
+                  <!-- Colour lives in styles.css, not here: this is the light
+                       counterpart of the solid CTA button it replaces — the
+                       brand's light surface with the CTA green as the ink, so
+                       an item already in the cart reads as settled rather than
+                       shouting as loudly as the button that put it there. -->
+                  <div data-card-stepper hidden
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
+                    <!-- The visible circle is the inner .stepper-face, NOT the
+                         button. The face is 36px, inset 4px like the product
+                         page's padded counter, while the button stays the
+                         full 44px of the control's height — the padding is
+                         painted, the tap target is not reduced. Shrinking the
+                         button itself would regress the audited 44px floor,
+                         and growing the control would resize the card on the
+                         add-button swap. -->
+                    <button type="button" data-card-step="-1" aria-label="إنقاص"
+                            class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></span></button>
+                    <span data-card-qty class="flex-1 font-bold text-base text-center latin">1</span>
+                    <button type="button" data-card-step="1" aria-label="زيادة"
+                            class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="new-arrivals" data-price="45.0" data-id="10533" data-name="بار مكسرات باللوز والبريتزل المملح -40 جم" data-name-en="Nuts Bar Salted Pretzel &amp; Almond- 40gm" data-image="images/abuauf/products/6223011433528.webp">
+            <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="product-10533.html" class="product-card__media block relative bg-interaction-base p-4">
+                <img src="images/abuauf/products/6223011433528.webp" alt="بار مكسرات باللوز والبريتزل المملح -40 جم"
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+              </a>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <!-- Name and price share one row now (Ahmed, 2026-08-02): the
+                     price sits on the inline-start (the left in RTL) of the
+                     name, so the text block is a row shorter and the media area
+                     above is free to grow (its image is taller to match). -->
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="product-10533.html" data-product-title class="hover:text-primary transition-colors">بار مكسرات باللوز والبريتزل المملح -40 جم</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    
+                    <!-- Same marker-band price as the product page (Ahmed): the
+                         inline line-height pulls the yellow in shorter than the
+                         digits instead of a tall pill around them. -->
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 45</span>
+                  </div>
+                </div>
+                <!-- Add button is full width now that the favourites heart is
+                     gone (Ahmed, 2026-07-29). The stepper that replaces it is
+                     also w-full, so swapping one for the other never changes
+                     the card's height. -->
+                <div class="mt-auto pt-1">
+                  <button type="button" data-add-to-cart
+                          class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>
+                  <!-- Shown by scripts.js once the product is in the cart, in
+                       place of the add button. `hidden` is safe to toggle on a
+                       flex container here only because styles.css forces
+                       display:none on [hidden] with !important. -->
+                  <!-- The number is flex-1 with NO min-w-0, so its own text is
+                       its floor and it can never be crushed narrower than the
+                       digits — the sweep caught exactly that at 414, a 5px
+                       overflow inside the span. The buttons are the ones that
+                       give, down to a 36px floor, which only ever happens at a
+                       three-digit quantity on a 320px screen. -->
+                  <!-- Colour lives in styles.css, not here: this is the light
+                       counterpart of the solid CTA button it replaces — the
+                       brand's light surface with the CTA green as the ink, so
+                       an item already in the cart reads as settled rather than
+                       shouting as loudly as the button that put it there. -->
+                  <div data-card-stepper hidden
+                       class="card-stepper flex w-full min-w-0 items-center rounded-full h-11">
+                    <!-- The visible circle is the inner .stepper-face, NOT the
+                         button. The face is 36px, inset 4px like the product
+                         page's padded counter, while the button stays the
+                         full 44px of the control's height — the padding is
+                         painted, the tap target is not reduced. Shrinking the
+                         button itself would regress the audited 44px floor,
+                         and growing the control would resize the card on the
+                         add-button swap. -->
+                    <button type="button" data-card-step="-1" aria-label="إنقاص"
+                            class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></span></button>
+                    <span data-card-qty class="flex-1 font-bold text-base text-center latin">1</span>
+                    <button type="button" data-card-step="1" aria-label="زيادة"
+                            class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+            </div>
+            <!-- The side offset is set in styles.css on .carousel-prev/.next
+                 (centre ON the track border, -22px = half the 44px circle):
+                 a -start/-end utility here ties with that rule and loses on
+                 source order, same as the hero arrows. -->
+            <button type="button" class="hidden xl:grid top-[130px] absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-prev" aria-label="السابق">
+              <span class="rtl:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+            <button type="button" class="hidden xl:grid top-[130px] absolute place-items-center bg-white shadow-custom3 rounded-full text-cta transition size-11 carousel-next" aria-label="التالي">
+              <span class="ltr:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+            
+          </div>
+        </div>
+      </section>
+
       <!-- ============================== REVIEWS ============================== -->
       <section data-reveal class="py-12 xl:py-16">
         <div class="mx-auto px-4 max-w-[1536px]">

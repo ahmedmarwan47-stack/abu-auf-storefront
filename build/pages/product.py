@@ -26,7 +26,7 @@ from html import unescape
 from catalog import PRODUCTS, e, in_category, money, rail_products, size_count, title
 from components import (
     ICON, accordion, best_seller_badge, button, carousel, page, page_header,
-    points_callout, product_card, product_gallery, qty_stepper, rating,
+    pack_tag, points_callout, product_card, product_gallery, qty_stepper, rating,
     recipe_card, reviews_section, size_chips, sold_proof, specs_block,
     bundle_item, section_heading,
 )
@@ -381,6 +381,12 @@ def _render(p):
             <div class="flex flex-col gap-3">
               {best_seller_badge(p)}
               <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">{e(title(p))}</h1>
+              <!-- Pack size immediately under the title (Ahmed, 2026-09-13):
+                   "80 جم", "12 قطعة". Read off the client's own name, the only
+                   place the figure exists — see catalog.pack_label(). Renders
+                   nothing for a gift box or a multi-item offer, which have no
+                   single pack size to state. -->
+{pack_tag(p)}
               <!-- Points callout sits with the rating + social-proof line, right
                    beside the red "best seller" proof text (Ahmed, 2026-08-04) —
                    not up by the yellow best-seller badge. Wraps on a narrow

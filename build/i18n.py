@@ -146,6 +146,14 @@ UI = {
     # --- best-seller headings
     "الأكثر مبيعاً": "Best selling",
     "وصل حديثاً": "New arrivals",
+    "تسوق الكل": "Shop all",
+    # Pack-size units for the product page's tag under the title. They are their
+    # OWN text node — the number beside them is wrapped in .latin — so each unit
+    # is translated on its own rather than as part of a phrase.
+    "جم": "g",
+    "جرام": "g",
+    "قطعة": "pcs",
+    "قطع": "pcs",
     "الأكثر مبيعاً في مخبوزات وبسكويت": "Best selling in Baked Snacks & Biscuits",
     "الأكثر مبيعاً في البهارات والزيوت": "Best selling in Spices & Oils",
     "الأكثر مبيعاً في الهدايا والمشاركة": "Best selling in Gifting & Sharing",

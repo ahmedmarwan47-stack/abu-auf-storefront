@@ -177,6 +177,12 @@
             <div class="flex flex-col gap-3">
               <span data-best-seller class="inline-flex self-start items-center bg-accent-yellow px-3 py-1.5 rounded-full font-bold text-[#062A1C] text-xs"><span class="relative top-[2px] leading-none">الأكثر مبيعاً</span></span>
               <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">تمر مجدول محشو بالمكسرات - 740 جم</h1>
+              <!-- Pack size immediately under the title (Ahmed, 2026-09-13):
+                   "80 جم", "12 قطعة". Read off the client's own name, the only
+                   place the figure exists — see catalog.pack_label(). Renders
+                   nothing for a gift box or a multi-item offer, which have no
+                   single pack size to state. -->
+<span data-pack-tag class="inline-flex items-center gap-1 self-start bg-interaction-base px-3 py-1 rounded-full font-semibold text-[#062A1C] text-xs"><span data-pack-value><span class="latin">740</span> جم</span></span>
               <!-- Points callout sits with the rating + social-proof line, right
                    beside the red "best seller" proof text (Ahmed, 2026-08-04) —
                    not up by the yellow best-seller badge. Wraps on a narrow

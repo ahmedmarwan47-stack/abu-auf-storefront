@@ -193,6 +193,27 @@ one.
 **Needs:** real reviews, or sign-off on dropping the section AND the header
 rating together.
 
+### The home page's "وصل حديثاً" rail has four products, not twelve
+
+Added below the gifts banner at Ahmed's request (2026-09-13). Unlike the
+`وصل حديثاً` SORT on the listing pages — which is a proxy, ordering by id
+because no publish-date field exists — this section is the client's own
+**New Arrivals category**, and the products in it genuinely sit there.
+
+The problem is depth. Their live category reports **130** products; our scrape
+holds **4** of them, so the rail does not fill a desktop row and has nothing to
+scroll.
+
+It is deliberately NOT padded. The tabbed rail higher up the page tops its own
+"وصل حديثاً" tab up with `Coffee & Beverages` to reach twelve, which means a rail
+labelled "new" shows products that are not new. That trade is worse in a
+section whose entire subject is the label.
+
+**Needs:** a re-scrape that pulls the full New Arrivals category, or a decision
+to drop the section until there is one. Note also that the page now carries the
+label **twice** — this section and that tab — which is worth resolving either
+way.
+
 ### The points HISTORY is placeholder too (2026-09-13)
 
 `my-account-point.html` now carries a "سجل النقاط" table mirroring the wallet's

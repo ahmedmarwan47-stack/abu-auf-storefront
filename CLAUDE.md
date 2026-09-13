@@ -390,6 +390,16 @@ seller"; a one-entry `images` means the client has only shot the product once,
 and `product_gallery()` drops the thumbnail strip rather than render a
 one-item carousel.
 
+**The pack size lives in the NAME, and `catalog.pack_label()` reads it out.**
+Abu Auf record no weight at all — the Store API returns `weight: ""` for every
+product — so "80 جم" / "12 قطعة" is parsed off the client's own Arabic name,
+which is the same reason `fetch_sizes.py` has to recover sibling SKUs by
+stripping that suffix. 82 of 99 yield a label; the 17 that do not are gift
+boxes, baskets and multi-item offers with no single pack size, and they render
+no tag rather than a guessed one. `pack_tag()` puts it under the product title,
+and the size chips repoint it (`[data-pack-value]`) so it can never state a
+weight the chosen chip disagrees with.
+
 `sizes` is the real answer to "what weights is this sold in, and for how
 much". **Abu Auf do not use product variations** — the Store API returns
 `type: "simple"`, `variations: []`, `attributes: []`, `weight: ""` for

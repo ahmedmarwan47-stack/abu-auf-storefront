@@ -18,7 +18,7 @@ Split of responsibilities:
 import html as html_mod
 import re
 
-from catalog import e, money, size_count, title
+from catalog import e, money, pack_label, size_count, title
 
 # --------------------------------------------------------------------------
 # Icons — generic UI glyphs. Brand marks and Figma-authored icons are real
@@ -760,6 +760,35 @@ def best_seller_badge(p):
     return ('<span data-best-seller class="inline-flex self-start items-center bg-accent-yellow px-3 py-1.5 '
             'rounded-full font-bold text-[#062A1C] text-xs">'
             f'<span class="relative top-[2px] leading-none">{e(label)}</span></span>')
+
+
+def pack_tag(p):
+    """
+    The pack size as a chip directly under the product title — "80 جم",
+    "12 قطعة" (Ahmed, 2026-09-13).
+
+    Real data: `pack_label()` reads it off the client's own Arabic name, which
+    is the ONLY place Abu Auf record it (the Store API's `weight` is empty for
+    every product). A product with no single pack size — a gift basket, a
+    multi-item offer — renders nothing rather than a guess.
+
+    Neutral, not a badge. The best-seller chip above it is yellow and the points
+    chip beside the rating is green, because both are claims being made; this is
+    a specification, so it takes the quiet interaction tint and stays out of
+    that competition.
+
+    `data-pack-tag` + the `[data-pack-value]` span: on a multi-size product the
+    chips repoint the price and the SKU id, and scripts.js repoints this too, so
+    the tag can never say 100 جم while the chosen chip says 200 جم.
+    """
+    label = pack_label(p)
+    if not label:
+        return ""
+    num, _, unit = label.partition(" ")
+    return (f'<span data-pack-tag class="inline-flex items-center gap-1 self-start '
+            f'bg-interaction-base px-3 py-1 rounded-full font-semibold '
+            f'text-[#062A1C] text-xs">'
+            f'<span data-pack-value><span class="latin">{e(num)}</span> {e(unit)}</span></span>')
 
 
 def points_callout(p):

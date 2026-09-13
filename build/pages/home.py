@@ -1,5 +1,5 @@
 """Home page — Figma node 4842:55826."""
-from catalog import e, home_categories, rail_products, category
+from catalog import e, home_categories, in_category, rail_products, category
 from components import (
     ICON, blog_card, button, carousel, category_tile, info_card, page,
     product_card, recipe_card, review_card, section_heading,
@@ -241,6 +241,30 @@ def build():
                    class="mx-auto w-full max-w-[640px] lg:max-w-[560px] xl:max-w-none xl:h-full xl:w-full object-contain" loading="lazy" />
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- =========================== NEW ARRIVALS ===========================
+           Sits below the gifts banner at Ahmed's request (2026-09-13), in the
+           same shape as the product page's recommendation rail: a heading and a
+           carousel of the standard product_card().
+
+           The products are the client's OWN "New Arrivals" category, not a
+           proxy — `وصل حديثاً` elsewhere on this site sorts by id because there
+           is no publish-date field, but this category genuinely exists in their
+           taxonomy and these four products genuinely sit in it.
+
+           FOUR is all there are. Their live category counts 130, but our scrape
+           holds 4 of them, so the rail does not fill the row at desktop and has
+           nothing to scroll. It is padded with nothing: the tabbed rail above
+           tops its own "وصل حديثاً" tab up with coffee, which makes a rail
+           labelled "new" show products that are not, and that trade is worse
+           here where the section's whole subject is the label. Re-scrape to
+           fill it. See DESIGN-NOTES §1. -->
+      <section data-reveal class="py-12 xl:py-16">
+        <div class="mx-auto px-4 max-w-[1536px]">
+          {section_heading("وصل حديثاً", "تسوق الكل", "shop.html")}
+          {carousel("".join(product_card(x) for x in in_category("New Arrivals")))}
         </div>
       </section>
 

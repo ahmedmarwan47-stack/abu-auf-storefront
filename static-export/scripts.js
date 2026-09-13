@@ -3042,6 +3042,18 @@
           // Point the cart at the chosen SKU, not the rendered one.
           host.dataset.price = price;
           if (chip.dataset.sizeId) host.dataset.id = chip.dataset.sizeId;
+          // The pack tag under the title states a size, so it has to follow the
+          // chosen one — left alone it kept saying the size the PAGE was built
+          // for while the chip beneath it said something else. The chip's own
+          // label is the size ("200 جم"), so there is nothing to recompute.
+          const packVal = host.querySelector("[data-pack-tag] [data-pack-value]");
+          const sizeLabel = (chip.dataset.sizeLabel || "").trim();
+          if (packVal && sizeLabel) {
+            const m = sizeLabel.match(/^([\d.,]+)\s*(.*)$/);
+            packVal.innerHTML = m
+              ? '<span class="latin">' + esc(m[1]) + "</span> " + esc(m[2])
+              : esc(sizeLabel);
+          }
           paint();
           if (!reduceMotion() && display.animate) {
             display.animate(
