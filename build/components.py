@@ -764,18 +764,21 @@ def best_seller_badge(p):
 
 def pack_tag(p):
     """
-    The pack size as a chip directly under the product title — "80 جم",
-    "12 قطعة" (Ahmed, 2026-09-13).
+    The pack size directly under the product title — "80 جم", "12 قطعة"
+    (Ahmed, 2026-09-13).
 
     Real data: `pack_label()` reads it off the client's own Arabic name, which
     is the ONLY place Abu Auf record it (the Store API's `weight` is empty for
     every product). A product with no single pack size — a gift basket, a
     multi-item offer — renders nothing rather than a guess.
 
-    Neutral, not a badge. The best-seller chip above it is yellow and the points
-    chip beside the rating is green, because both are claims being made; this is
-    a specification, so it takes the quiet interaction tint and stays out of
-    that competition.
+    Plain text at 16px, no chip (Ahmed, 2026-09-13). It started as a 12px
+    tinted pill: one container too many in a column that already stacks a
+    yellow best-seller badge, a rating row and a green points chip, and too
+    small to carry a spec the shopper is meant to read. Dropping the box and
+    going up to 16px makes it a line of the product's description rather than
+    a fourth thing competing for the eye — it now sits a step ABOVE the rating
+    row's 14px instead of a step below it.
 
     `data-pack-tag` + the `[data-pack-value]` span: on a multi-size product the
     chips repoint the price and the SKU id, and scripts.js repoints this too, so
@@ -785,9 +788,7 @@ def pack_tag(p):
     if not label:
         return ""
     num, _, unit = label.partition(" ")
-    return (f'<span data-pack-tag class="inline-flex items-center gap-1 self-start '
-            f'bg-interaction-base px-3 py-1 rounded-full font-semibold '
-            f'text-[#062A1C] text-xs">'
+    return (f'<span data-pack-tag class="font-semibold text-neutral-secondary text-base">'
             f'<span data-pack-value><span class="latin">{e(num)}</span> {e(unit)}</span></span>')
 
 

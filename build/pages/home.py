@@ -1,5 +1,5 @@
 """Home page — Figma node 4842:55826."""
-from catalog import e, home_categories, in_category, rail_products, category
+from catalog import e, home_categories, new_arrivals, rail_products, category
 from components import (
     ICON, blog_card, button, carousel, category_tile, info_card, page,
     product_card, recipe_card, review_card, section_heading,
@@ -254,17 +254,21 @@ def build():
            is no publish-date field, but this category genuinely exists in their
            taxonomy and these four products genuinely sit in it.
 
-           FOUR is all there are. Their live category counts 130, but our scrape
-           holds 4 of them, so the rail does not fill the row at desktop and has
-           nothing to scroll. It is padded with nothing: the tabbed rail above
-           tops its own "وصل حديثاً" tab up with coffee, which makes a rail
-           labelled "new" show products that are not, and that trade is worse
-           here where the section's whole subject is the label. Re-scrape to
-           fill it. See DESIGN-NOTES §1. -->
+           Only FOUR of them are in our scrape (their live category counts
+           130) — not enough to fill a desktop row or give the carousel anything
+           to scroll. `new_arrivals()` puts those four first and TOPS THE RAIL UP
+           so the component can be exercised at all (Ahmed, 2026-09-13: "just add
+           more products to test the carousel").
+
+           The fill is ordered by descending id, the same proxy
+           `_listing.py`'s "وصل حديثاً" sort already uses, because no
+           publish-date field exists anywhere in the client's data. So the first
+           four are the client calling them new and the rest is our inference —
+           a re-scrape of the full category replaces it. See DESIGN-NOTES §1. -->
       <section data-reveal class="py-12 xl:py-16">
         <div class="mx-auto px-4 max-w-[1536px]">
           {section_heading("وصل حديثاً", "تسوق الكل", "shop.html")}
-          {carousel("".join(product_card(x) for x in in_category("New Arrivals")))}
+          {carousel("".join(product_card(x) for x in new_arrivals()))}
         </div>
       </section>
 

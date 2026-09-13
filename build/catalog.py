@@ -186,6 +186,44 @@ def rail_products(*api_names, limit=12):
     return out
 
 
+def new_arrivals(limit=12):
+    """
+    Products for the home page's "وصل حديثاً" rail, in two tiers.
+
+    FIRST the client's own New Arrivals category — genuinely new, from their
+    taxonomy, no inference. Their live category counts 130; our scrape holds 4,
+    which is why this cannot stop there: a four-card rail does not fill a
+    desktop row and has nothing to scroll (Ahmed rejected that look).
+
+    THEN the rest of the catalogue by descending id, which is this project's
+    existing proxy for "newest" — `_listing.py`'s `وصل حديثاً` sort already
+    orders by id for exactly the same reason, because no publish-date field
+    exists anywhere in the client's data. Using the same proxy here keeps the
+    home rail and the listing sort telling one story rather than two.
+
+    It IS a proxy, and the second tier is therefore inference rather than the
+    client saying "this is new". Flagged in DESIGN-NOTES §1 with everything else
+    that needs real data; a re-scrape of the full New Arrivals category makes
+    the fill unnecessary.
+    """
+    out = list(in_category("New Arrivals"))
+    seen = {p["id"] for p in out}
+    for p in sorted(PRODUCTS, key=lambda x: x.get("id", 0), reverse=True):
+        if len(out) >= limit:
+            break
+        # Gift sets are skipped in the FILL tier. They hold eight of the ten
+        # highest ids, so unfiltered this rail came out as six Ramadan boxes —
+        # sitting immediately below the gifts banner, which is the section that
+        # already sells exactly those. A layout call, not a data one: a gift set
+        # that really is new still arrives through the first tier above.
+        if p.get("category") == "Gifting & Sharing":
+            continue
+        if p["id"] not in seen:
+            seen.add(p["id"])
+            out.append(p)
+    return out[:limit]
+
+
 def category(api_name):
     return BY_API_NAME.get(api_name)
 
