@@ -6953,6 +6953,14 @@
         cancelPending = ask.getAttribute("data-order-cancel");
         const no = document.querySelector("[data-order-cancel-no]");
         if (no) no.textContent = cancelPending;
+        // Below xl the confirm sheet REPLACES the drawer instead of stacking
+        // on it — two sliding layers over the page is clutter on a phone
+        // (Ahmed, 2026-09-13). From xl the centred dialog sits over the
+        // drawer as every other dialog here does. Either way the back path
+        // reopens the order's panel, so nothing is lost.
+        if (!window.matchMedia("(min-width: 1280px)").matches) {
+          drawer.classList.remove("is-open");
+        }
         openOverlay("orderCancel");
         return;
       }

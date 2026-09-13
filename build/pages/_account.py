@@ -415,15 +415,17 @@ def order_panel(o):
     subtotal = order_total(o) - DELIVERY_FEE
     tracker = "" if o["tone"] == "red" else f'<div class="pb-1" data-order-track>{_order_tracker(o["step"])}</div>'
     # Only an ONGOING order (amber — still in preparation) can be cancelled; a
-    # completed or already-cancelled one renders no button rather than a dead
-    # control. The button is the drawer's foot action and opens the orderCancel
-    # confirm sheet (initOrders) — it never cancels on its own.
+    # completed or already-cancelled one renders no control rather than a dead
+    # one. A quiet side-aligned text LINK, not a filled button (Ahmed,
+    # 2026-09-13): cancelling is not a main action and must not compete with
+    # the drawer's content. py-2 keeps the tap target at the 24px floor. It
+    # opens the orderCancel confirm sheet (initOrders) — never cancels on its
+    # own.
     cancel = ""
     if o["tone"] == "amber":
         cancel = (f'<button type="button" data-order-cancel="{e(o["no"])}" '
-                  f'class="flex justify-center items-center gap-2 hover:bg-accent-error py-3 '
-                  f'border border-accent-error rounded-full w-full font-semibold '
-                  f'text-accent-error hover:text-white text-sm transition-colors">إلغاء الطلب</button>')
+                  f'class="link-sweep self-start py-2 font-semibold '
+                  f'text-accent-error text-sm">إلغاء الطلب</button>')
     return f"""
               <div data-order-panel data-order-id="{e(o['no'])}" hidden class="flex flex-col gap-4">
                 <div class="flex flex-wrap justify-between items-center gap-2">

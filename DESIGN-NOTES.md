@@ -233,8 +233,9 @@ history needs.
 
 ### Cancelling an ongoing order is demo state (2026-09-13)
 
-The order drawer's "إلغاء الطلب" button (Ahmed's request) only shows on an
-in-preparation order and opens a confirm — a bottom sheet on phones, a centred
+The order drawer's "إلغاء الطلب" text link (Ahmed's request — a quiet
+side-aligned link, deliberately not a filled button, since cancelling is not a
+main action) only shows on an in-preparation order and opens a confirm — a bottom sheet on phones, a centred
 dialog on desktop, red confirm plus a "الرجوع" way out. Confirming flips the
 order to "ملغي" everywhere it appears (drawer panel, orders table row, the
 dashboard tracker card) and persists under `abuauf:cancelled`, but the orders
