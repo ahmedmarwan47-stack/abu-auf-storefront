@@ -231,6 +231,24 @@ the seeded rows, and survives a reload.
 **Needs:** a real points ledger, or the same drop-it sign-off the wallet
 history needs.
 
+### Cancelling an ongoing order is demo state (2026-09-13)
+
+The order drawer's "إلغاء الطلب" button (Ahmed's request) only shows on an
+in-preparation order and opens a confirm — a bottom sheet on phones, a centred
+dialog on desktop, red confirm plus a "الرجوع" way out. Confirming flips the
+order to "ملغي" everywhere it appears (drawer panel, orders table row, the
+dashboard tracker card) and persists under `abuauf:cancelled`, but the orders
+themselves are still the static `ORDERS` placeholder — there is no orders
+endpoint to actually cancel against, and no rule from the client on *when* an
+order stops being cancellable (we allow it while "تحت التحضير" only).
+
+One in-house colour: the confirm button's hover is `#8C1B0B`, a darkened
+`accent.error` — the palette has no error-hover token and hovering a solid
+destructive button had to resolve somewhere.
+
+**Needs:** a cancellation endpoint/policy (cut-off stage, refund wording), and
+sign-off on the confirm copy.
+
 ### The wallet discount works, but the balance is still fiction
 
 **Replaced the points banner entirely (Ahmed, 2026-07-26): a toggle, and the

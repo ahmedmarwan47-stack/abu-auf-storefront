@@ -2221,6 +2221,7 @@
     voucherActivate: '[data-sheet="voucherActivate"]',
     pointsRedeem: '[data-sheet="pointsRedeem"]',
     reviewWrite: '[data-sheet="reviewWrite"]',
+    orderCancel: '[data-sheet="orderCancel"]',
   };
   let openEl = null;
 
@@ -6885,6 +6886,97 @@
       if (!row) return;
       e.preventDefault();
       open(row.getAttribute("data-order-open"));
+    });
+
+    /* Cancel an ongoing order (Ahmed, 2026-09-13): the drawer's cancel button
+       only opens the orderCancel confirm sheet — a bottom sheet on phones, a
+       centred dialog on desktop — and the red confirm inside it is what
+       actually cancels. Backing out (the X, or the الرجوع link) reopens the
+       order's panel, because closeOverlay takes the drawer down with the
+       sheet. Cancelled ids persist under abuauf:cancelled so the demo state
+       survives a reload the way the cart and favourites do; the orders
+       themselves are still the static ORDERS placeholder (DESIGN-NOTES). */
+    const OC_KEY = "abuauf:cancelled";
+    function cancelledIds() {
+      try {
+        const v = JSON.parse(localStorage.getItem(OC_KEY));
+        if (Array.isArray(v)) return v;
+      } catch (e) {
+        /* fall through */
+      }
+      return [];
+    }
+    function cancelledBadgeHTML() {
+      return (
+        '<span data-order-status class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-accent-error text-white">' +
+        esc(t("ملغي")) +
+        "</span>"
+      );
+    }
+    function applyCancelled(id) {
+      // The drawer panel: settled badge, no tracker, no second cancel.
+      document
+        .querySelectorAll('[data-order-panel][data-order-id="' + id + '"]')
+        .forEach((panel) => {
+          const badge = panel.querySelector("[data-order-status]");
+          if (badge) badge.outerHTML = cancelledBadgeHTML();
+          const track = panel.querySelector("[data-order-track]");
+          if (track) track.remove();
+          const btn = panel.querySelector("[data-order-cancel]");
+          if (btn) btn.remove();
+        });
+      // The orders table row's status pill.
+      document
+        .querySelectorAll('tr[data-order-open="' + id + '"] [data-order-status]')
+        .forEach((badge) => {
+          badge.outerHTML = cancelledBadgeHTML();
+        });
+      // The dashboard "track your current order" card: a live, pulsing tracker
+      // on a cancelled order would be a lie — swap it for a settled note.
+      document.querySelectorAll('[data-order-card="' + id + '"]').forEach((card) => {
+        const track = card.querySelector("[data-order-tracker]");
+        if (track)
+          track.outerHTML =
+            '<div class="flex items-center gap-2 bg-interaction-base p-3 rounded-xl">' +
+            cancelledBadgeHTML() +
+            '<span class="text-neutral-secondary text-sm">' +
+            esc(t("تم إلغاء الطلب")) +
+            "</span></div>";
+      });
+    }
+    cancelledIds().forEach(applyCancelled);
+
+    let cancelPending = null;
+    document.addEventListener("click", (e) => {
+      const ask = e.target.closest("[data-order-cancel]");
+      if (ask) {
+        cancelPending = ask.getAttribute("data-order-cancel");
+        const no = document.querySelector("[data-order-cancel-no]");
+        if (no) no.textContent = cancelPending;
+        openOverlay("orderCancel");
+        return;
+      }
+      if (e.target.closest("[data-order-cancel-back]")) {
+        const id = cancelPending;
+        cancelPending = null;
+        closeOverlay();
+        if (id) open(id);
+        return;
+      }
+      if (e.target.closest("[data-order-cancel-confirm]") && cancelPending) {
+        const id = cancelPending;
+        cancelPending = null;
+        try {
+          const ids = cancelledIds();
+          if (ids.indexOf(id) === -1) ids.push(id);
+          localStorage.setItem(OC_KEY, JSON.stringify(ids));
+        } catch (e2) {
+          /* state just won't survive a reload */
+        }
+        applyCancelled(id);
+        closeOverlay();
+        toast(t("تم إلغاء الطلب"), "info");
+      }
     });
   }
 

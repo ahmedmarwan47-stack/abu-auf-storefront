@@ -317,7 +317,9 @@ def status_badge(o):
     2026-08-04 — "make sure the order status is animated")."""
     live = o["tone"] == "amber"
     dot = '<span class="status-live-dot" aria-hidden="true"></span>' if live else ""
-    return (f'<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full '
+    # data-order-status lets the runtime swap this pill for the red "ملغي" one
+    # when the shopper cancels the order from the drawer (initOrders).
+    return (f'<span data-order-status class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full '
             f'font-semibold text-xs {STATUS_STYLE[o["tone"]]}">{dot}{e(o["status"])}</span>')
 
 
@@ -411,7 +413,17 @@ def order_panel(o):
     one' pattern) — so a shopper can open several orders in turn without leaving
     the list."""
     subtotal = order_total(o) - DELIVERY_FEE
-    tracker = "" if o["tone"] == "red" else f'<div class="pb-1">{_order_tracker(o["step"])}</div>'
+    tracker = "" if o["tone"] == "red" else f'<div class="pb-1" data-order-track>{_order_tracker(o["step"])}</div>'
+    # Only an ONGOING order (amber — still in preparation) can be cancelled; a
+    # completed or already-cancelled one renders no button rather than a dead
+    # control. The button is the drawer's foot action and opens the orderCancel
+    # confirm sheet (initOrders) — it never cancels on its own.
+    cancel = ""
+    if o["tone"] == "amber":
+        cancel = (f'<button type="button" data-order-cancel="{e(o["no"])}" '
+                  f'class="flex justify-center items-center gap-2 hover:bg-accent-error py-3 '
+                  f'border border-accent-error rounded-full w-full font-semibold '
+                  f'text-accent-error hover:text-white text-sm transition-colors">إلغاء الطلب</button>')
     return f"""
               <div data-order-panel data-order-id="{e(o['no'])}" hidden class="flex flex-col gap-4">
                 <div class="flex flex-wrap justify-between items-center gap-2">
@@ -431,6 +443,7 @@ def order_panel(o):
                   <span>شقة 3 - 220 شارع الحرية - الدور الأول</span>
                   <span>مصر الجديدة، القاهرة</span>
                 </div>
+                {cancel}
               </div>"""
 
 
@@ -449,7 +462,29 @@ def order_drawer(orders):
       </div>
       <div class="flex-1 px-5 py-4 overflow-y-auto" data-order-panels>{panels}
       </div>
-    </aside>"""
+    </aside>
+
+    <!-- Cancel-order confirmation — a bottom sheet on phones, a centred dialog
+         from xl (the bottom-sheet--modal contract every short form here uses).
+         It sits AFTER the drawer in the DOM so, at equal z-index, it paints
+         above it. Both dismiss controls carry data-order-cancel-back, not
+         data-close: the generic closer would take the drawer down with the
+         sheet, and backing out of a confirmation must land the shopper back on
+         the order they were reading (initOrders reopens it). -->
+    <div data-sheet="orderCancel" class="bottom-sheet bottom-sheet--modal" role="dialog" aria-modal="true" aria-labelledby="orderCancel-sheet-title">
+      <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 id="orderCancel-sheet-title" class="font-bold text-[#062A1C] text-lg">إلغاء الطلب</h2>
+        <button type="button" data-order-cancel-back class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق">{_icon('close', 'w-5 h-5')}</button>
+      </div>
+      <div class="flex flex-col items-center gap-3 text-center">
+        <img src="images/abuauf/icons/orders-3d.png" alt="" class="w-16 h-16 object-contain" />
+        <p class="font-bold text-[#062A1C] text-base">طلب رقم <span class="latin" data-order-cancel-no></span></p>
+        <p class="text-neutral-secondary text-sm leading-6">هل أنت متأكد من إلغاء هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.</p>
+        <button type="button" data-order-cancel-confirm class="bg-accent-error hover:bg-[#8C1B0B] mt-1 py-3 rounded-full w-full font-semibold text-white text-sm transition-colors">نعم، إلغاء الطلب</button>
+        <button type="button" data-order-cancel-back class="link-sweep self-center py-1 font-semibold text-[#062A1C] text-sm">الرجوع</button>
+      </div>
+    </div>"""
 
 
 def order_rows(orders):
@@ -475,7 +510,7 @@ def order_tracking_card(o):
     Its slot in the header now holds the details button (moved up from the
     card's foot), so the header carries the one action worth taking."""
     return f"""
-            <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
+            <div data-order-card="{e(o['no'])}" class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
               <div class="flex flex-wrap justify-between items-center gap-3">
                 <div class="flex items-center gap-2">
                   <span class="font-bold text-[#062A1C] text-base">تتبع طلبك الحالي</span>
