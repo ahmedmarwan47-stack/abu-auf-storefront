@@ -471,8 +471,6 @@ UI = {
     "من فضلك اختر تقييمك بالنجوم أولاً": "Please choose a star rating first",
     "اكتب كلمة عن المنتج قبل الإرسال": "Write a few words about the product before sending",
 
-    # --- mobile drawer account footer
-    "مرحباً": "Welcome",
 
     # --- points history (mirrors the wallet's table)
     "سجل النقاط": "Points history",

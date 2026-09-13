@@ -240,7 +240,6 @@ def mobile_nav(active_slug):
             </div>
             <nav class="flex flex-col">{rows}
             </nav>
-            <button type="button" data-close class="bg-cta hover:bg-cta-hover mt-4 py-3 rounded-full w-full font-semibold text-white transition-colors">تأكيد</button>
           </div>"""
 
 

@@ -1849,11 +1849,10 @@
       <div class="flex flex-col gap-3 bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.06)] px-5 pt-4 pb-5 border-neutral-divider border-t shrink-0">
         <!-- Signed OUT: one button, sign in. -->
         <a href="${pageHref("/login")}" data-anon-only class="flex justify-center items-center min-h-11 py-2.5 border border-cta rounded-full font-medium text-cta text-sm text-center">تسجيل الدخول</a>
-        <!-- Signed IN: who you are, the way into the dashboard, and the way
-             out. All three are [data-authed-only], so paintAccountLinks flips
-             the whole group on auth:change — the same mechanism the header
-             account link already uses, no second source of truth for "is
-             anyone signed in".
+        <!-- Signed IN: the way into the dashboard and the way out. Both are
+             [data-authed-only], so paintAccountLinks flips the pair on
+             auth:change — the same mechanism the header account link already
+             uses, no second source of truth for "is anyone signed in".
 
              Sign-out is HERE rather than only on the dashboard because the
              utility bar that carries it on desktop is hidden lg:flex, so on a
@@ -1861,19 +1860,9 @@
              into the account pages (Ahmed). It shares [data-logout] with the
              dashboard button, so one handler in initAuthUI serves both.
 
-             The greeting is its own row above the buttons: putting the name
-             inside the account button made that button's width swing with the
-             length of a name, and a long one truncated the only label saying
-             what the button does. -->
-        <div data-authed-only hidden class="flex items-center gap-2 min-w-0">
-          <span class="place-items-center grid bg-interaction-base rounded-full text-primary shrink-0 size-9">
-            <span class="w-5 h-5">${ICON.account}</span>
-          </span>
-          <span class="flex flex-col min-w-0">
-            <span class="text-neutral-secondary text-[11px] leading-4">${esc(t("مرحباً"))}</span>
-            <span class="font-bold text-[#062A1C] text-sm truncate" data-drawer-user>—</span>
-          </span>
-        </div>
+             No greeting row: the drawer opens over the page a shopper is
+             already using, and it does not need to re-introduce them to
+             themselves (Ahmed, 2026-09-13). The two controls are the point. -->
         <a href="${pageHref("/my-account")}" data-authed-only hidden class="flex justify-center items-center gap-2 bg-cta rounded-full min-h-11 py-2.5 font-medium text-white text-sm text-center">
           <span class="w-5 h-5">${ICON.account}</span>
           <span>حسابي</span>
@@ -5785,11 +5774,6 @@
       });
       document.querySelectorAll("[data-authed-only]").forEach((el) => {
         el.hidden = !authed;
-      });
-      // The mobile drawer's greeting. Same name the header shows, read from the
-      // same user record, so the two can never greet different people.
-      document.querySelectorAll("[data-drawer-user]").forEach((el) => {
-        el.textContent = authed ? (currentLang() === "en" ? u.nameEn : u.name) : "—";
       });
       document.querySelectorAll("[data-anon-only]").forEach((el) => {
         el.hidden = authed;
