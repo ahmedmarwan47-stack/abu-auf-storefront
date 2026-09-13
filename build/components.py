@@ -1948,8 +1948,11 @@ def reviews_section(score, count, reviews, visible=4):
 
     more = ""
     if len(reviews) > visible:
+        # mt-10/xl:mt-12 — the control needs to read as separate from the list
+        # it acts on, not as a last row of it (Ahmed, 2026-09-13). At the grid's
+        # own gap it looked like a card that had lost its box.
         more = f"""
-          <div class="flex justify-center mt-8" data-reviews-more-wrap>
+          <div class="flex justify-center mt-10 xl:mt-12" data-reviews-more-wrap>
             <button type="button" data-reviews-more
                     class="btn-elevate flex items-center gap-2 bg-white hover:bg-interaction-base px-6 border border-neutral-divider rounded-full min-h-11 font-semibold text-[#062A1C] text-sm transition-colors">
               عرض المزيد من التقييمات
@@ -1960,26 +1963,55 @@ def reviews_section(score, count, reviews, visible=4):
     return f"""
       <section data-reviews class="bg-interaction-base py-12 xl:py-16">
         <div class="mx-auto px-4 max-w-[1536px]">
-          <!-- Heading, summary and CTA on ONE wrapping row: the score is the
-               headline number, so it reads beside the title rather than under
-               it, and the CTA keeps the end of the row at every width. -->
-          <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
-            <div class="flex flex-wrap items-center gap-x-5 gap-y-2 min-w-0">
+          <!-- Title, the score in its own CONTAINER beside it, and the CTA at
+               the row's end (Ahmed, 2026-09-13). The score sits in a white
+               bordered box rather than running loose next to the heading: on
+               this section's beige ground a bare mark row read as part of the
+               title's own line, and boxing it makes it a figure being reported
+               rather than decoration on the heading. -->
+          <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-3 min-w-0">
               <h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">آراء العملاء</h2>
-              <div data-review-summary data-review-base-score="{e(str(score))}" data-review-base-count="{count}">
-                {rating(str(score), count, size="lg")}
+              <!-- ONE mark, not the five-mark row (Ahmed, 2026-09-13). Five
+                   marks are how a single review reports ITS score, where the
+                   shape carries the value; the summary is a number with a
+                   count beside it, and repeating the marks here made the
+                   heading row compete with every card below it. The tint is
+                   the container — no border, so it reads as a figure set into
+                   the section rather than a card floating in the header. -->
+              <div data-review-summary data-review-base-score="{e(str(score))}" data-review-base-count="{count}"
+                   class="inline-flex items-center gap-2 bg-[#E9F3E6] px-4 py-2 rounded-xl">
+                <span class="w-5 h-5 text-accent-yellow shrink-0" aria-hidden="true">{ICON['star']}</span>
+                <span class="font-bold text-[#062A1C] text-lg latin" data-rating-score>{e(str(score))}</span>
+                <span class="text-neutral-secondary text-sm">·&nbsp;<span class="latin" data-rating-count>{count}</span> تقييم</span>
               </div>
             </div>
+            <!-- SECONDARY, not the filled CTA (Ahmed, 2026-09-13). Writing a
+                 review is not what this page is for — the buy button is — so
+                 it takes the site's secondary treatment and stops competing
+                 with it. Same classes as button(variant="secondary"); it is a
+                 <button> rather than an <a> because it opens the sheet. -->
             <button type="button" data-open="reviewWrite"
-                    class="btn-elevate flex items-center gap-2 bg-cta hover:bg-cta-hover px-6 rounded-full min-h-11 font-semibold text-white text-sm transition-colors">
+                    class="btn-elevate flex items-center gap-2 hover:bg-interaction-base px-6 border border-cta rounded-full min-h-11 font-semibold text-cta text-sm transition-colors">
               <span class="w-4 h-4" aria-hidden="true">{ICON['star']}</span>
               اكتب تقييمك
             </button>
           </div>
-          <!-- data-reviews-grid: scripts.js prepends a shopper's own review
+          <!-- A rule between the header and the list. The header carries a
+               heading, a figure and a control; without it the first row of
+               cards read as a continuation of that cluster. -->
+          <div class="mb-8 border-neutral-divider border-t" role="separator"></div>
+          <!-- No `items-start`: grid children stretch by default, which is what
+               gives every card in a row the SAME height (Ahmed, 2026-09-13).
+               items-start let each card size to its own text, so a two-line
+               review sat visibly shorter than the four-line one beside it. The
+               card is a flex column, so its content still starts at the top of
+               whatever height the row settles on.
+
+               data-reviews-grid: scripts.js prepends a shopper's own review
                here, so it lands above the seeded ones rather than at the end of
                a list they would have to press "show more" to reach. -->
-          <div class="items-start gap-4 xl:gap-6 grid md:grid-cols-2" data-reviews-grid>{cards}
+          <div class="gap-5 xl:gap-6 grid md:grid-cols-2" data-reviews-grid>{cards}
           </div>{more}
         </div>
       </section>"""
