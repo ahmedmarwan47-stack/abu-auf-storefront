@@ -240,7 +240,7 @@
                 <a href="my-account-orders.html" class="hover:bg-interaction-base px-5 py-2 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-xs transition-colors">كل الطلبات</a>
               </div>
               
-            <div class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
+            <div data-order-card="#30941" class="flex flex-col gap-4 bg-white shadow-custom4 p-6 rounded-[20px]">
               <div class="flex flex-wrap justify-between items-center gap-3">
                 <div class="flex items-center gap-2">
                   <span class="font-bold text-[#062A1C] text-base">تتبع طلبك الحالي</span>
@@ -350,9 +350,9 @@
               <div data-order-panel data-order-id="#30941" hidden class="flex flex-col gap-4">
                 <div class="flex flex-wrap justify-between items-center gap-2">
                   <h3 class="font-bold text-[#062A1C] text-base">طلب رقم <span class="latin">#30941</span></h3>
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-accent-yellow text-[#062A1C]"><span class="status-live-dot" aria-hidden="true"></span>تحت التحضير</span>
+                  <span data-order-status class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-accent-yellow text-[#062A1C]"><span class="status-live-dot" aria-hidden="true"></span>تحت التحضير</span>
                 </div>
-                <div class="pb-1"><ol class="order-track" data-order-tracker>
+                <div class="pb-1" data-order-track><ol class="order-track" data-order-tracker>
                 <li class="track-step is-done">
                   <span class="track-step__art" aria-hidden="true"><img src="images/abuauf/icons/track-placed-3d.png" alt="" class="w-12 h-12 object-contain" /><span class="track-step__check"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
                   <span class="track-step__label">تم الطلب</span>
@@ -398,11 +398,12 @@
                   <span>شقة 3 - 220 شارع الحرية - الدور الأول</span>
                   <span>مصر الجديدة، القاهرة</span>
                 </div>
+                <button type="button" data-order-cancel="#30941" class="link-sweep self-start py-2 font-semibold text-accent-error text-sm">إلغاء الطلب</button>
               </div>
               <div data-order-panel data-order-id="#30942" hidden class="flex flex-col gap-4">
                 <div class="flex flex-wrap justify-between items-center gap-2">
                   <h3 class="font-bold text-[#062A1C] text-base">طلب رقم <span class="latin">#30942</span></h3>
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-accent-error text-white">ملغي</span>
+                  <span data-order-status class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-accent-error text-white">ملغي</span>
                 </div>
                 
                 <div class="flex flex-col">
@@ -433,13 +434,14 @@
                   <span>شقة 3 - 220 شارع الحرية - الدور الأول</span>
                   <span>مصر الجديدة، القاهرة</span>
                 </div>
+                
               </div>
               <div data-order-panel data-order-id="#30943" hidden class="flex flex-col gap-4">
                 <div class="flex flex-wrap justify-between items-center gap-2">
                   <h3 class="font-bold text-[#062A1C] text-base">طلب رقم <span class="latin">#30943</span></h3>
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-primary text-white">مكتمل</span>
+                  <span data-order-status class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-semibold text-xs bg-primary text-white">مكتمل</span>
                 </div>
-                <div class="pb-1"><ol class="order-track" data-order-tracker>
+                <div class="pb-1" data-order-track><ol class="order-track" data-order-tracker>
                 <li class="track-step is-done">
                   <span class="track-step__art" aria-hidden="true"><img src="images/abuauf/icons/track-placed-3d.png" alt="" class="w-12 h-12 object-contain" /><span class="track-step__check"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
                   <span class="track-step__label">تم الطلب</span>
@@ -493,9 +495,32 @@
                   <span>شقة 3 - 220 شارع الحرية - الدور الأول</span>
                   <span>مصر الجديدة، القاهرة</span>
                 </div>
+                
               </div>
       </div>
     </aside>
+
+    <!-- Cancel-order confirmation — a bottom sheet on phones, a centred dialog
+         from xl (the bottom-sheet--modal contract every short form here uses).
+         It sits AFTER the drawer in the DOM so, at equal z-index, it paints
+         above it. Both dismiss controls carry data-order-cancel-back, not
+         data-close: the generic closer would take the drawer down with the
+         sheet, and backing out of a confirmation must land the shopper back on
+         the order they were reading (initOrders reopens it). -->
+    <div data-sheet="orderCancel" class="bottom-sheet bottom-sheet--modal" role="dialog" aria-modal="true" aria-labelledby="orderCancel-sheet-title">
+      <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 id="orderCancel-sheet-title" class="font-bold text-[#062A1C] text-lg">إلغاء الطلب</h2>
+        <button type="button" data-order-cancel-back class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="flex flex-col items-center gap-3 text-center">
+        <img src="images/abuauf/icons/orders-3d.png" alt="" class="w-16 h-16 object-contain" />
+        <p class="font-bold text-[#062A1C] text-base">طلب رقم <span class="latin" data-order-cancel-no></span></p>
+        <p class="text-neutral-secondary text-sm leading-6">هل أنت متأكد من إلغاء هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.</p>
+        <button type="button" data-order-cancel-confirm class="bg-accent-error hover:bg-[#8C1B0B] mt-1 py-3 rounded-full w-full font-semibold text-white text-sm transition-colors">نعم، إلغاء الطلب</button>
+        <button type="button" data-order-cancel-back class="link-sweep self-center py-1 font-semibold text-[#062A1C] text-sm">الرجوع</button>
+      </div>
+    </div>
           </div>
         </div>
       </section>

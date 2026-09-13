@@ -259,6 +259,12 @@ UI = {
     "الميعاد المتوقع للتوصيل": "Estimated delivery",
     "بيانات التوصيل": "Delivery details",
     "عنوان التوصيل": "Delivery address",
+    "إلغاء الطلب": "Cancel order",
+    "هل أنت متأكد من إلغاء هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.":
+        "Are you sure you want to cancel this order? This action cannot be undone.",
+    "نعم، إلغاء الطلب": "Yes, cancel the order",
+    "الرجوع": "Go back",
+    "تم إلغاء الطلب": "Order cancelled",
 
     # --- wallet / points
     "رصيد محفظتي": "My wallet balance",
