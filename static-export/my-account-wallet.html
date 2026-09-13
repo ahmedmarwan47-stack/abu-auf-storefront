@@ -235,7 +235,13 @@
                     <td class="py-4 pe-3">
                       <span class="inline-flex items-center gap-2 font-bold text-sm latin text-primary">
                         <span class="place-items-center grid rounded-full size-6 shrink-0 bg-[#E9F3E6]"><span class="w-3 h-3"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
-                        +500 EGP
+                        <!-- dir="ltr" on the NUMBER only, not on the row: the
+                             sign is bidi-neutral, so in the page's RTL flow
+                             "-320 EGP" resolved as "EGP 320-" with the minus
+                             stranded on the wrong end — a debit that read as a
+                             credit at a glance. Scoped to this span so the
+                             up/down chip beside it stays at the RTL start. -->
+                        <span dir="ltr">+500 EGP</span>
                       </span>
                     </td>
                     <td class="py-4 px-3 text-neutral-secondary text-sm whitespace-nowrap">02 يوليو 2026</td>
@@ -246,7 +252,13 @@
                     <td class="py-4 pe-3">
                       <span class="inline-flex items-center gap-2 font-bold text-sm latin text-accent-error">
                         <span class="place-items-center grid rounded-full size-6 shrink-0 bg-[#F6E9E7]"><span class="w-3 h-3"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
-                        -320 EGP
+                        <!-- dir="ltr" on the NUMBER only, not on the row: the
+                             sign is bidi-neutral, so in the page's RTL flow
+                             "-320 EGP" resolved as "EGP 320-" with the minus
+                             stranded on the wrong end — a debit that read as a
+                             credit at a glance. Scoped to this span so the
+                             up/down chip beside it stays at the RTL start. -->
+                        <span dir="ltr">-320 EGP</span>
                       </span>
                     </td>
                     <td class="py-4 px-3 text-neutral-secondary text-sm whitespace-nowrap">28 يونيو 2026</td>
@@ -257,7 +269,13 @@
                     <td class="py-4 pe-3">
                       <span class="inline-flex items-center gap-2 font-bold text-sm latin text-primary">
                         <span class="place-items-center grid rounded-full size-6 shrink-0 bg-[#E9F3E6]"><span class="w-3 h-3"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
-                        +150 EGP
+                        <!-- dir="ltr" on the NUMBER only, not on the row: the
+                             sign is bidi-neutral, so in the page's RTL flow
+                             "-320 EGP" resolved as "EGP 320-" with the minus
+                             stranded on the wrong end — a debit that read as a
+                             credit at a glance. Scoped to this span so the
+                             up/down chip beside it stays at the RTL start. -->
+                        <span dir="ltr">+150 EGP</span>
                       </span>
                     </td>
                     <td class="py-4 px-3 text-neutral-secondary text-sm whitespace-nowrap">21 يونيو 2026</td>
@@ -268,7 +286,13 @@
                     <td class="py-4 pe-3">
                       <span class="inline-flex items-center gap-2 font-bold text-sm latin text-accent-error">
                         <span class="place-items-center grid rounded-full size-6 shrink-0 bg-[#F6E9E7]"><span class="w-3 h-3"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
-                        -260 EGP
+                        <!-- dir="ltr" on the NUMBER only, not on the row: the
+                             sign is bidi-neutral, so in the page's RTL flow
+                             "-320 EGP" resolved as "EGP 320-" with the minus
+                             stranded on the wrong end — a debit that read as a
+                             credit at a glance. Scoped to this span so the
+                             up/down chip beside it stays at the RTL start. -->
+                        <span dir="ltr">-260 EGP</span>
                       </span>
                     </td>
                     <td class="py-4 px-3 text-neutral-secondary text-sm whitespace-nowrap">14 يونيو 2026</td>
@@ -279,7 +303,13 @@
                     <td class="py-4 pe-3">
                       <span class="inline-flex items-center gap-2 font-bold text-sm latin text-primary">
                         <span class="place-items-center grid rounded-full size-6 shrink-0 bg-[#E9F3E6]"><span class="w-3 h-3"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
-                        +80 EGP
+                        <!-- dir="ltr" on the NUMBER only, not on the row: the
+                             sign is bidi-neutral, so in the page's RTL flow
+                             "-320 EGP" resolved as "EGP 320-" with the minus
+                             stranded on the wrong end — a debit that read as a
+                             credit at a glance. Scoped to this span so the
+                             up/down chip beside it stays at the RTL start. -->
+                        <span dir="ltr">+80 EGP</span>
                       </span>
                     </td>
                     <td class="py-4 px-3 text-neutral-secondary text-sm whitespace-nowrap">05 يونيو 2026</td>

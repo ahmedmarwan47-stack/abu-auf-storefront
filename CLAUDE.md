@@ -17,7 +17,10 @@ Abu Auf is the client; we have rights to their assets.
 
 **Status:** rebrand complete, mobile pass complete, cart **and favourites** are
 real state with event APIs, listing filters and nav routes genuinely work, and
-the chrome is measured against the live site. Remaining work is in
+the chrome is measured against the live site. The product page carries a
+reviews section with a working write-review modal, the mobile drawer can sign
+out, the points page has a history, and checkout offers a signed-in shopper
+their saved addresses instead of a blank form. Remaining work is in
 `DESIGN-NOTES.md` under "Open questions" and "Blocked on client data".
 
 ## Hard rules
@@ -157,6 +160,28 @@ exactly the case it exists to cover.
 does this) or below-fold content is measured at opacity 0 and the run is
 meaningless.
 
+**Product reviews** — `reviews_section()` builds the block; `initReviews()` in
+`scripts.js` runs it. A written review is stored under `abuauf:reviews` **keyed
+by the product's `catalog.json` id** (same rule as the cart and favourites — a
+barcode key files it against the wrong product), and folded into the printed
+average as a weighted mean over the seeded base rather than replacing it, so
+the header rating and the section summary can never disagree. Both rows are
+repainted from one place: `[data-rating-sync]` on the header, `[data-review-
+summary]` on the section. **The seeded reviews are invented placeholder** and
+are the largest block of fabricated content on the site — DESIGN-NOTES §1 before
+you extend them. The star input is five BUTTONS in a radiogroup, not radio
+inputs: the paint runs from the first star up to the chosen one, which no
+`:checked` sibling selector expresses. `aria-pressed`'s sibling contract applies
+— `aria-checked` is the state and CSS paints off that alone.
+
+**Saved addresses at checkout** — signed in with addresses on file, the delivery
+step is a radio list plus a dashed "add new" control and the form is **not
+rendered** until that control is pressed; signed out or with none saved, it is
+the plain form as always. `initCheckoutAddress()` reads the SAME store the
+account page writes (`abuauf:addresses` via `addrAll()`) — never bake a copy
+into the page. The block ships `hidden` so a JS failure degrades to the working
+form, never to an empty chooser.
+
 **Search** — the **only** runtime reader of `catalog.json`. `loadCatalog()`
 fetches it once, lazily, on first modal open and caches the promise; a failed
 fetch resolves to `null` and paints a message rather than hanging. `fold()`
@@ -254,6 +279,12 @@ These have each cost real time. Read them.
   creating a scroll container. If a sticky element "does nothing", walk its
   ancestors for an overflow that is not `visible` or `clip` before touching the
   element itself.
+- **A leading `+`/`−` on a number lands on the wrong end in RTL.** The sign is
+  bidi-neutral, so it is not part of the number's run and gets pushed to the
+  paragraph end: the wallet table rendered `-320 EGP` as `EGP 320-`, and a
+  debit read as a credit at a glance. `.latin` does not help — it sets the font
+  family only, never a direction. Wrap the **number span alone** in `dir="ltr"`,
+  not the row: on the row it also moves the leading icon out of the RTL start.
 - **`min-w-0` on flex/grid children.** The single most common bug class in this
   codebase. A `flex-1` child has `min-width: auto`, so it cannot shrink below its
   content and pushes its parent wider. Symptom: clipped content that page-level
@@ -299,10 +330,14 @@ git status --porcelain                    # rebuild must produce no diff
 python3 build/serve.py                    # http://localhost:8000, always
 ```
 
-Then in the browser run the **sweep** in `HANDOFF.md` §5 — it loads all 31 pages
+Then in the browser run the **sweep** in `HANDOFF.md` §5 — it loads all 33 pages
 in a same-origin iframe at 320/360/375/390/414 and reports horizontal overflow
-plus WCAG contrast. Current baseline: **31/31 clean at every width, ~7600 text
-nodes checked, 0 contrast failures.** The sweep's page list is the 31 core
+plus WCAG contrast. Current baseline: **0 contrast failures at every width
+(~7,100 nodes per width) and no page-level horizontal scroll anywhere.**
+The old "31/31 clean" overflow figure no longer reproduces and should not be
+quoted — `.sr-only` is `width:1px` + `overflow:hidden` by design and the sweep
+counts it as overflow, so nearly every page now reports one. Verified identical
+against the previous commit; see HANDOFF §5 for the detail and the fix. The sweep's page list is the 31 core
 pages; the 99 generated product pages share one layout, so sweep a
 representative sample rather than all of them (multi-size + gallery, e.g.
 `product-1322`; single-image + no client copy, e.g. `product-1631`).

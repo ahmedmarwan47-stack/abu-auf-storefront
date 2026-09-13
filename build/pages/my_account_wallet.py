@@ -31,7 +31,13 @@ def build():
                     <td class="py-4 pe-3">
                       <span class="inline-flex items-center gap-2 font-bold text-sm latin {'text-primary' if credit else 'text-accent-error'}">
                         <span class="place-items-center grid rounded-full size-6 shrink-0 {'bg-[#E9F3E6]' if credit else 'bg-[#F6E9E7]'}"><span class="w-3 h-3">{_UP if credit else _DOWN}</span></span>
-                        {amount} EGP
+                        <!-- dir="ltr" on the NUMBER only, not on the row: the
+                             sign is bidi-neutral, so in the page's RTL flow
+                             "-320 EGP" resolved as "EGP 320-" with the minus
+                             stranded on the wrong end — a debit that read as a
+                             credit at a glance. Scoped to this span so the
+                             up/down chip beside it stays at the RTL start. -->
+                        <span dir="ltr">{amount} EGP</span>
                       </span>
                     </td>
                     <td class="py-4 px-3 text-neutral-secondary text-sm whitespace-nowrap">{date}</td>

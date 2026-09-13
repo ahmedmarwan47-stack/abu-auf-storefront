@@ -161,8 +161,52 @@ def build():
                 </div>
               </fieldset>
 
-              <fieldset class="flex flex-col gap-4">
+              <fieldset class="flex flex-col gap-4" data-delivery-address>
                 <legend class="mb-3 font-bold text-[#062A1C] text-lg">عنوان التوصيل</legend>
+
+                <!-- SAVED ADDRESSES — signed-in shoppers only (Ahmed).
+                     A shopper who already has addresses on file should be
+                     picking one, not retyping it; the blank form below is for
+                     the case where there is nothing to pick. So this block and
+                     the form are alternatives, not a stack: scripts.js
+                     (initCheckoutAddress) shows this one and HIDES the form
+                     until "add a new address" is pressed, and shows the form
+                     alone for a guest or for an account with no saved address.
+
+                     Empty at build time on purpose. The addresses live in the
+                     browser store that my-account-addresses.html writes
+                     (abuauf:addresses), so there is nothing to server-render —
+                     and baking a copy here would be a second source of truth
+                     that goes stale the moment an address is edited. It ships
+                     `hidden`, so a JS failure degrades to the plain form that
+                     has always worked rather than to an empty chooser. -->
+                <div data-saved-address-block hidden class="flex flex-col gap-3">
+                  <div class="flex flex-col gap-3" data-saved-address-list></div>
+                  <!-- The dashed border is the affordance: a dashed outline
+                       reads as a slot that is not filled yet, which is exactly
+                       what "add one that is not in this list" means, and keeps
+                       it visibly a different KIND of control from the solid
+                       cards above it rather than a fifth address. -->
+                  <button type="button" data-address-new
+                          class="flex justify-center items-center gap-2 hover:bg-interaction-base px-5 py-4 border-2 border-neutral-divider hover:border-cta border-dashed rounded-xl min-h-11 font-semibold text-cta text-sm transition-colors">
+                    <span class="text-lg leading-none" aria-hidden="true">+</span>
+                    إضافة عنوان جديد
+                  </button>
+                </div>
+
+                <!-- The address form. `data-address-fields` is the whole group,
+                     so one hidden toggle covers it; the fields keep their own
+                     names, so a submitted form is unchanged in either mode. -->
+                <div data-address-fields class="flex flex-col gap-4">
+                  <!-- Only rendered once there is a saved list to go back TO —
+                       scripts.js unhides it. Without a list this is the only
+                       form there is and there is nothing to cancel to. -->
+                  <div data-address-cancel-row hidden class="flex justify-between items-center gap-3">
+                    <span class="font-semibold text-[#062A1C] text-sm">عنوان جديد</span>
+                    <button type="button" data-address-cancel class="font-semibold text-cta text-sm underline">
+                      اختر من عناويني
+                    </button>
+                  </div>
 {select_field("المدينة", "city", GOVERNORATES, required=True)}
                 <div class="gap-4 grid sm:grid-cols-2">
 {select_field("الحي", "district", CAIRO_AREAS, required=True)}
@@ -185,6 +229,7 @@ def build():
                 <div class="gap-4 grid grid-cols-2 max-w-[320px]">
 {field("الطابق", "floor")}
 {field("رقم الشقة", "apartment", required=True)}
+                </div>
                 </div>
               </fieldset>
 

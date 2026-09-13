@@ -341,6 +341,17 @@
       '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     chevronDown:
       '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    /* The SAME star path as ICON["star"] in build/components.py. It has to be:
+       a review card rendered here sits in a grid beside cards rendered there,
+       and two stars drawn from two different paths would be visible as a
+       mismatch in the same row. */
+    star:
+      '<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.58 1.11 6.47L12 17.44 6.19 20.5 7.3 14.03 2.6 9.45l6.5-.95L12 2.6Z"/></svg>',
+    /* Door with an arrow leaving it. Drawn without a writing-direction bias:
+       the arrow points along the +x axis and the door frame sits behind it, so
+       it reads the same in RTL and LTR and needs no scale-flip. */
+    logout:
+      '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3M15.5 8.5 19 12l-3.5 3.5M19 12H9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     /* Shopping bag: solid body, stroked handle. Replaces the old basket,
        which was a Figma export carrying preserveAspectRatio="none" and a
        hardcoded fill, so it neither inherited colour nor scaled honestly.
@@ -1836,11 +1847,41 @@
            toggles this anon/authed pair here — sign-in out, dashboard in — the
            same mechanism the header already uses, always within thumb reach. -->
       <div class="flex flex-col gap-3 bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.06)] px-5 pt-4 pb-5 border-neutral-divider border-t shrink-0">
-        <a href="login.html" data-anon-only class="flex justify-center items-center min-h-11 py-2.5 border border-cta rounded-full font-medium text-cta text-sm text-center">تسجيل الدخول</a>
-        <a href="my-account.html" data-authed-only hidden class="flex justify-center items-center gap-2 min-h-11 py-2.5 bg-cta rounded-full font-medium text-white text-sm text-center">
-          <img src="images/abuauf/icons/icon-user.svg" alt="" class="w-5 h-5" />
+        <!-- Signed OUT: one button, sign in. -->
+        <a href="${pageHref("/login")}" data-anon-only class="flex justify-center items-center min-h-11 py-2.5 border border-cta rounded-full font-medium text-cta text-sm text-center">تسجيل الدخول</a>
+        <!-- Signed IN: who you are, the way into the dashboard, and the way
+             out. All three are [data-authed-only], so paintAccountLinks flips
+             the whole group on auth:change — the same mechanism the header
+             account link already uses, no second source of truth for "is
+             anyone signed in".
+
+             Sign-out is HERE rather than only on the dashboard because the
+             utility bar that carries it on desktop is hidden lg:flex, so on a
+             phone there was no way to sign out at all without first navigating
+             into the account pages (Ahmed). It shares [data-logout] with the
+             dashboard button, so one handler in initAuthUI serves both.
+
+             The greeting is its own row above the buttons: putting the name
+             inside the account button made that button's width swing with the
+             length of a name, and a long one truncated the only label saying
+             what the button does. -->
+        <div data-authed-only hidden class="flex items-center gap-2 min-w-0">
+          <span class="place-items-center grid bg-interaction-base rounded-full text-primary shrink-0 size-9">
+            <span class="w-5 h-5">${ICON.account}</span>
+          </span>
+          <span class="flex flex-col min-w-0">
+            <span class="text-neutral-secondary text-[11px] leading-4">${esc(t("مرحباً"))}</span>
+            <span class="font-bold text-[#062A1C] text-sm truncate" data-drawer-user>—</span>
+          </span>
+        </div>
+        <a href="${pageHref("/my-account")}" data-authed-only hidden class="flex justify-center items-center gap-2 bg-cta rounded-full min-h-11 py-2.5 font-medium text-white text-sm text-center">
+          <span class="w-5 h-5">${ICON.account}</span>
           <span>حسابي</span>
         </a>
+        <button type="button" data-logout data-authed-only hidden class="flex justify-center items-center gap-2 border-neutral-divider hover:bg-interaction-base border rounded-full min-h-11 py-2.5 font-medium text-accent-error text-sm text-center transition-colors">
+          <span class="w-[18px] h-[18px]">${ICON.logout}</span>
+          <span>تسجيل الخروج</span>
+        </button>
         <div class="flex justify-center">${countryButton()}</div>
       </div>
     </aside>
@@ -2132,6 +2173,44 @@
       </div>
     </div>
 
+    <!-- Write a review. A bottom sheet on phones and a centred dialog from xl,
+         the same shape every other short form on this site uses.
+
+         The rating is five BUTTONS in a radiogroup rather than five radio
+         inputs: the paint has to run from the first star up to the chosen one,
+         which no :checked sibling selector can express. aria-checked is the
+         state — styles.css paints off that selector alone, so the accessible
+         state and the painted one cannot drift (the same contract the
+         favourites heart uses). -->
+    <div data-sheet="reviewWrite" class="bottom-sheet bottom-sheet--modal" role="dialog" aria-modal="true" aria-labelledby="reviewWrite-sheet-title">
+      <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 id="reviewWrite-sheet-title" class="font-bold text-[#062A1C] text-lg">${esc(t("اكتب تقييمك"))}</h2>
+        <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
+      </div>
+      <form data-review-form class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+          <span class="font-medium text-neutral-secondary text-sm">${esc(t("تقييمك"))}</span>
+          <div class="flex items-center gap-1 -ms-2" role="radiogroup" aria-label="${esc(t("تقييمك"))}" data-review-stars>
+            ${[1, 2, 3, 4, 5]
+              .map(
+                (n) =>
+                  `<button type="button" class="star-input" role="radio" aria-checked="false" data-review-star="${n}" aria-label="${n} ${esc(t("من 5"))}"><span>${ICON.star}</span></button>`,
+              )
+              .join("")}
+          </div>
+        </div>
+        <label class="flex flex-col gap-2">
+          <span class="font-medium text-neutral-secondary text-sm">${esc(t("رأيك في المنتج"))}</span>
+          <textarea data-review-text rows="4" maxlength="600"
+                    placeholder="${esc(t("احكيلنا إيه اللي عجبك في المنتج…"))}"
+                    class="bg-white p-3 border border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-sm leading-7 transition-colors resize-none"></textarea>
+        </label>
+        <p data-review-msg hidden class="font-semibold text-accent-error text-xs"></p>
+        <button type="submit" data-review-submit class="bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm transition-colors">${esc(t("إرسال التقييم"))}</button>
+      </form>
+    </div>
+
     <div id="toast-container"></div>`;
   }
 
@@ -2152,6 +2231,7 @@
     voucherAdd: '[data-sheet="voucherAdd"]',
     voucherActivate: '[data-sheet="voucherActivate"]',
     pointsRedeem: '[data-sheet="pointsRedeem"]',
+    reviewWrite: '[data-sheet="reviewWrite"]',
   };
   let openEl = null;
 
@@ -5706,6 +5786,11 @@
       document.querySelectorAll("[data-authed-only]").forEach((el) => {
         el.hidden = !authed;
       });
+      // The mobile drawer's greeting. Same name the header shows, read from the
+      // same user record, so the two can never greet different people.
+      document.querySelectorAll("[data-drawer-user]").forEach((el) => {
+        el.textContent = authed ? (currentLang() === "en" ? u.nameEn : u.name) : "—";
+      });
       document.querySelectorAll("[data-anon-only]").forEach((el) => {
         el.hidden = authed;
       });
@@ -6527,8 +6612,70 @@
       });
     });
   }
+  /* Points history ("سجل النقاط") — the live half of the table
+     build/pages/my_account_point.py seeds. A redeem done on the page is
+     recorded here and PREPENDED to the seeded rows, so the newest-first order
+     the table already reads in still holds, and it survives a reload the same
+     way the redeem itself does.
+
+     The balance is stored WITH the row rather than recomputed on render: the
+     row is a record of what the balance was after that transaction, and
+     recomputing it from today's figure would rewrite history every time the
+     shopper spends again. */
+  const PT_HIST_KEY = "abuauf:pointsHistory";
+  function pointsHistory() {
+    try {
+      const v = JSON.parse(localStorage.getItem(PT_HIST_KEY));
+      return Array.isArray(v) ? v : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  function pointsHistRow(h) {
+    // Same four cells, same chips and same column order as _point_rows() in
+    // my_account_point.py — a dynamic row must be indistinguishable from a
+    // seeded one or the table reads as two tables.
+    const credit = Number(h.delta) > 0;
+    const arrow = credit
+      ? '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    return (
+      '<tr data-points-hist-row class="border-neutral-divider border-b last:border-0">' +
+      '<td class="py-4 pe-3"><span class="inline-flex items-center gap-2 font-bold text-sm latin ' +
+      (credit ? "text-primary" : "text-accent-error") + '">' +
+      '<span class="place-items-center grid rounded-full size-6 shrink-0 ' +
+      (credit ? "bg-[#E9F3E6]" : "bg-[#F6E9E7]") + '"><span class="w-3 h-3">' + arrow + "</span></span>" +
+      // dir="ltr" on the number alone, matching _point_rows() — the sign is
+      // bidi-neutral and lands on the wrong end of the run without it.
+      '<span dir="ltr">' + (credit ? "+" : "−") + nfEn(Math.abs(Number(h.delta) || 0)) + "</span></span></td>" +
+      '<td class="py-4 px-3 text-neutral-secondary text-sm whitespace-nowrap">' + esc(h.date) + "</td>" +
+      '<td class="py-4 px-3 text-[#062A1C] text-sm">' + esc(t(h.reason)) + "</td>" +
+      '<td class="py-4 ps-3 font-semibold text-[#062A1C] text-sm text-end latin whitespace-nowrap">' +
+      nfEn(Number(h.balance) || 0) + "</td></tr>"
+    );
+  }
+  function renderPointsHistory() {
+    const body = document.querySelector("[data-points-history]");
+    if (!body) return;
+    body.querySelectorAll("[data-points-hist-row]").forEach((el) => el.remove());
+    pointsHistory()
+      .slice()
+      .forEach((h) => body.insertAdjacentHTML("afterbegin", pointsHistRow(h)));
+  }
+  function addPointsHistory(delta, reason, balance) {
+    try {
+      const h = pointsHistory();
+      h.push({ delta: delta, reason: reason, balance: balance, date: fmtDateAr(new Date()) });
+      localStorage.setItem(PT_HIST_KEY, JSON.stringify(h));
+    } catch (e) {
+      /* ignore */
+    }
+    renderPointsHistory();
+  }
+
   function initPointsRedeem() {
     syncPointsUI();
+    renderPointsHistory();
     const modal = document.querySelector('[data-sheet="pointsRedeem"]');
     if (!modal) return;
     const input = modal.querySelector("[data-redeem-input]");
@@ -6563,6 +6710,9 @@
         return;
       }
       try { localStorage.setItem(PT_SPENT_KEY, String(pointsSpent() + v)); } catch (e) { /* ignore */ }
+      // Log it BEFORE the UI sync reads the new balance, so the row records the
+      // balance the shopper is left with rather than the one they started from.
+      addPointsHistory(-v, "استبدال نقاط برصيد محفظة", pointsRemaining());
       syncPointsUI();
       syncWalletBalance(true);
       closeOverlay();
@@ -6893,6 +7043,408 @@
     });
   }
 
+  /* ---------------------------------------------------------------
+     Product reviews
+
+     Three jobs, all on the product page: reveal the rest of the seeded list,
+     drive the star input in the "write a review" sheet, and fold a shopper's
+     own review into the page.
+
+     A submitted review is stored under `abuauf:reviews` KEYED BY THE PRODUCT'S
+     catalog id — the same key the cart and favourites dedupe on — so a review
+     written on one product never surfaces on another, and a reload brings it
+     back. There is no endpoint behind this: the client's review API returns
+     ten identical QA rows (DESIGN-NOTES §1), so nothing is posted anywhere and
+     the sheet says as much rather than implying a submission that was received.
+
+     The summary and the header rating are recomputed from the SEEDED average
+     and count, not replaced by it: 4.9 on one new 5★ review over a base of 126
+     would be a lie about the base, so the new score is the honest weighted
+     mean of the two. Both rows read the same numbers, so they cannot disagree.
+     --------------------------------------------------------------- */
+  const REVIEWS_KEY = "abuauf:reviews";
+  const REVIEW_TINTS = [
+    "bg-[#E9F3E6] text-[#1B5E3B]",
+    "bg-[#FDF0DA] text-[#8A5A12]",
+    "bg-[#E7EFF6] text-[#1F4E79]",
+    "bg-[#F6E9E7] text-[#8C3125]",
+  ];
+
+  function reviewsAll() {
+    try {
+      const v = JSON.parse(localStorage.getItem(REVIEWS_KEY));
+      return v && typeof v === "object" ? v : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function reviewsFor(id) {
+    const list = reviewsAll()[String(id)];
+    return Array.isArray(list) ? list : [];
+  }
+
+  function reviewsWrite(id, list) {
+    try {
+      const all = reviewsAll();
+      all[String(id)] = list;
+      localStorage.setItem(REVIEWS_KEY, JSON.stringify(all));
+    } catch (e) {
+      /* a full or blocked store must not break the page */
+    }
+  }
+
+  /* Five marks for `score`, the same partial-fill contract as rating() in
+     components.py: one glyph over another, clipped on the INLINE axis so it
+     fills from the right in RTL. Rebuilt here rather than toggled, because the
+     boundary mark's width changes with the value. */
+  function ratingMarksHTML(score) {
+    let out = "";
+    for (let i = 0; i < 5; i++) {
+      const fill = Math.max(0, Math.min(1, Number(score) - i));
+      if (fill >= 0.999) out += '<span class="rating-mark is-full">' + ICON.star + "</span>";
+      else if (fill <= 0.001) out += '<span class="rating-mark">' + ICON.star + "</span>";
+      else
+        out +=
+          '<span class="rating-mark">' + ICON.star +
+          '<span class="rating-mark__fill" style="--rating-fill:' + Math.round(fill * 100) + '%">' +
+          ICON.star + "</span></span>";
+    }
+    return out;
+  }
+
+  function reviewCardHTML(r, index) {
+    const tint = REVIEW_TINTS[index % REVIEW_TINTS.length];
+    const parts = String(r.name || "").split(" ").filter(Boolean);
+    const initials = parts.slice(0, 2).map((w) => w.charAt(0)).join("");
+    return `
+      <article class="flex flex-col gap-3 bg-white p-5 xl:p-6 border border-neutral-divider rounded-2xl" data-review-mine>
+        <div class="flex justify-between items-center gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="place-items-center grid rounded-full font-bold text-sm shrink-0 size-10 ${tint}" aria-hidden="true">${esc(initials)}</span>
+            <span class="font-bold text-[#062A1C] text-sm truncate">${esc(r.name || "")}</span>
+          </div>
+          <span class="text-neutral-secondary text-xs whitespace-nowrap shrink-0">${esc(r.date || "")}</span>
+        </div>
+        <!-- Marks only, no numeral — same as product_review_card(), which
+             passes show_score=False. A digit beside the marks on a card that
+             carries no count just repeats the picture. -->
+        <div class="flex items-center gap-1.5">
+          <span class="rating-marks flex items-center" role="img" aria-label="${esc(String(r.score))} ${esc(t("من 5"))}">${ratingMarksHTML(r.score)}</span>
+        </div>
+        <p class="text-neutral-secondary text-sm leading-7">${esc(r.text || "")}</p>
+      </article>`;
+  }
+
+  /* The product this page is ABOUT.
+
+     Deliberately anchored on [data-record-view], not on the first
+     [data-product]: this page is full of [data-product] hosts that are other
+     products — every bundle row in "قد يعجبك أيضاً" is one, and so is every
+     card in the rails below. [data-record-view] is on the details column alone
+     and is already the marker for "this is the product this page records a
+     view of", so it is the only hook here that means the page's own subject.
+
+     The fallback is the details column by shape rather than the first
+     [data-product] anywhere, for the same reason. */
+  function reviewProductId() {
+    const host =
+      document.querySelector("[data-product][data-record-view][data-id]") ||
+      document.querySelector("[data-reviews]") &&
+        document.querySelector("[data-buy-block]") &&
+        document.querySelector("[data-buy-block]").closest("[data-product][data-id]");
+    return host ? host.dataset.id : "";
+  }
+
+  function syncReviewTotals() {
+    const summary = document.querySelector("[data-review-summary]");
+    if (!summary) return;
+    const mine = reviewsFor(reviewProductId());
+    const baseScore = Number(summary.dataset.reviewBaseScore) || 0;
+    const baseCount = Number(summary.dataset.reviewBaseCount) || 0;
+    const count = baseCount + mine.length;
+    const sum = baseScore * baseCount + mine.reduce((a, r) => a + (Number(r.score) || 0), 0);
+    // One decimal, matching the seeded "4.8" — two would imply a precision the
+    // base number does not have.
+    const score = count ? Math.round((sum / count) * 10) / 10 : baseScore;
+    const text = score.toFixed(1);
+
+    // Every row that quotes the rating: the summary AND the header rating on
+    // the product block, which carries data-rating-sync for exactly this.
+    const rows = [summary].concat([...document.querySelectorAll("[data-rating-sync]")]);
+    rows.forEach((row) => {
+      const marks = row.querySelector("[data-rating-marks]");
+      if (marks) {
+        marks.innerHTML = ratingMarksHTML(score);
+        marks.setAttribute("aria-label", text + " " + t("من 5"));
+      }
+      const scoreEl = row.querySelector("[data-rating-score]");
+      if (scoreEl) scoreEl.textContent = text;
+      const countEl = row.querySelector("[data-rating-count]");
+      if (countEl) countEl.textContent = nfEn(count);
+    });
+  }
+
+  function renderMyReviews() {
+    const grid = document.querySelector("[data-reviews-grid]");
+    if (!grid) return;
+    grid.querySelectorAll("[data-review-mine]").forEach((el) => el.remove());
+    const mine = reviewsFor(reviewProductId());
+    // Newest first, and ahead of the seeded cards — a shopper who just wrote
+    // one should not have to press "show more" to find it.
+    mine
+      .slice()
+      .reverse()
+      .forEach((r, i) => grid.insertAdjacentHTML("afterbegin", reviewCardHTML(r, mine.length - 1 - i)));
+    syncReviewTotals();
+  }
+
+  function initReviews() {
+    const section = document.querySelector("[data-reviews]");
+    const sheet = document.querySelector('[data-sheet="reviewWrite"]');
+    if (!section && !sheet) return;
+
+    if (section) {
+      renderMyReviews();
+      // Show more: reveals the rest and retires itself. No "show less" — a
+      // control that undoes the only thing it was pressed for.
+      const moreBtn = section.querySelector("[data-reviews-more]");
+      if (moreBtn) {
+        moreBtn.addEventListener("click", () => {
+          section.querySelectorAll("[data-review-extra]").forEach((el) => {
+            el.hidden = false;
+            el.removeAttribute("data-review-extra");
+          });
+          const wrap = section.querySelector("[data-reviews-more-wrap]");
+          if (wrap) wrap.remove();
+          // The revealed cards are new DOM: translate and animate them the
+          // same way the rest of the page was.
+          if (currentLang() === "en") applyLangToContent();
+        });
+      }
+    }
+
+    if (!sheet) return;
+    const stars = [...sheet.querySelectorAll("[data-review-star]")];
+    const textEl = sheet.querySelector("[data-review-text]");
+    const msg = sheet.querySelector("[data-review-msg]");
+    let picked = 0;
+
+    const paint = (preview) => {
+      stars.forEach((b, i) => {
+        const n = i + 1;
+        b.setAttribute("aria-checked", n <= picked ? "true" : "false");
+        // The preview wash only ever shows on stars that are NOT chosen, so
+        // the committed rating keeps its own paint under the pointer.
+        b.classList.toggle("is-preview", preview > 0 && n <= preview && n > picked);
+        // Roving tabindex: one stop for the whole group, on the chosen star.
+        b.tabIndex = n === (picked || 1) ? 0 : -1;
+      });
+    };
+    const setMsg = (m) => {
+      if (!msg) return;
+      msg.textContent = m || "";
+      msg.hidden = !m;
+    };
+
+    stars.forEach((b, i) => {
+      const n = i + 1;
+      b.addEventListener("click", () => {
+        picked = n;
+        paint(0);
+        setMsg("");
+      });
+      b.addEventListener("mouseenter", () => paint(n));
+      b.addEventListener("focus", () => paint(n));
+      b.addEventListener("blur", () => paint(0));
+      b.addEventListener("keydown", (ev) => {
+        // Arrow keys walk the group. The row is drawn 1→5 in source order and
+        // RTL mirrors it on screen, so "next" follows the visual direction.
+        const back = document.documentElement.dir === "rtl" ? "ArrowRight" : "ArrowLeft";
+        const fwd = document.documentElement.dir === "rtl" ? "ArrowLeft" : "ArrowRight";
+        let to = 0;
+        if (ev.key === fwd || ev.key === "ArrowDown") to = Math.min(5, (picked || 0) + 1);
+        else if (ev.key === back || ev.key === "ArrowUp") to = Math.max(1, (picked || 1) - 1);
+        else return;
+        ev.preventDefault();
+        picked = to;
+        paint(0);
+        stars[to - 1].focus();
+      });
+    });
+    sheet.querySelectorAll("[data-review-stars]").forEach((g) =>
+      g.addEventListener("mouseleave", () => paint(0)),
+    );
+
+    // Reset on every open, so a second review never starts pre-filled with the
+    // first one's words.
+    document.querySelectorAll('[data-open="reviewWrite"]').forEach((b) =>
+      b.addEventListener("click", () => {
+        picked = 0;
+        if (textEl) textEl.value = "";
+        setMsg("");
+        paint(0);
+      }),
+    );
+    paint(0);
+
+    const form = sheet.querySelector("[data-review-form]");
+    if (!form) return;
+    form.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+      if (!picked) {
+        setMsg(t("من فضلك اختر تقييمك بالنجوم أولاً"));
+        return;
+      }
+      const body = String((textEl && textEl.value) || "").trim();
+      if (body.length < 4) {
+        setMsg(t("اكتب كلمة عن المنتج قبل الإرسال"));
+        return;
+      }
+      const id = reviewProductId();
+      if (!id) return;
+      const u = Auth.isAuthed() ? Auth.user() : null;
+      const list = reviewsFor(id);
+      list.push({
+        // A signed-in shopper reviews under their own name; a guest is labelled
+        // a guest rather than given an invented one.
+        name: (u && (currentLang() === "en" ? u.nameEn : u.name)) || t("زائر"),
+        score: picked,
+        text: body,
+        date: fmtDateAr(new Date()),
+      });
+      reviewsWrite(id, list);
+      renderMyReviews();
+      closeOverlay();
+      toast(t("شكراً لك! تم نشر تقييمك"));
+    });
+  }
+
+  /* ---------------------------------------------------------------
+     Checkout — delivery address
+
+     Two modes for one fieldset, decided by whether there is anything to
+     choose from:
+
+       * signed in WITH saved addresses → pick one; the blank form is not
+         rendered until "إضافة عنوان جديد" is pressed
+       * signed out, or signed in with none saved → the blank form alone,
+         exactly as the page has always behaved
+
+     The addresses come from the SAME store my-account-addresses.html writes
+     (addrAll / abuauf:addresses), so an address added on the account page is
+     selectable here on the next visit and one deleted there stops being
+     offered — there is no second copy to drift.
+
+     Nothing here validates or submits: the checkout CTA still does not check
+     its own form (DESIGN-NOTES §3). This decides what the shopper is asked to
+     fill in, not what happens when they press continue.
+     --------------------------------------------------------------- */
+  function checkoutAddressCardHTML(a, checked) {
+    // Same treatment as radio_card() in components.py — a sr-only radio, a
+    // peer-checked border and a real .radio-dot — so a saved address and a
+    // delivery-method card read as the same kind of control. Selected takes
+    // the ink border and a filled dot; hover is the wash styles.css puts on
+    // the label. Never the same paint for both (CLAUDE.md).
+    return `
+      <label class="block cursor-pointer">
+        <input type="radio" name="saved-address" class="peer sr-only" value="${esc(a.id)}"${checked ? " checked" : ""} />
+        <span class="flex justify-between items-center gap-3 bg-white px-5 py-4 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors">
+          <span class="flex flex-col gap-0.5 min-w-0">
+            <span class="flex items-center gap-2 min-w-0">
+              <span class="font-semibold text-[#062A1C] text-base truncate">${esc(a.label)}</span>
+              ${a.main ? `<span class="bg-interaction-base px-2 py-0.5 rounded-full font-semibold text-primary text-[11px] shrink-0">${esc(t("العنوان الرئيسي"))}</span>` : ""}
+            </span>
+            <span class="text-neutral-secondary text-xs leading-5">${esc(a.line1)}</span>
+            <span class="text-neutral-secondary text-xs leading-5">${esc(a.line2)}</span>
+          </span>
+          <span class="radio-dot shrink-0" aria-hidden="true"></span>
+        </span>
+      </label>`;
+  }
+
+  function initCheckoutAddress() {
+    const root = document.querySelector("[data-delivery-address]");
+    if (!root) return;
+    const block = root.querySelector("[data-saved-address-block]");
+    const list = root.querySelector("[data-saved-address-list]");
+    const fields = root.querySelector("[data-address-fields]");
+    const cancelRow = root.querySelector("[data-address-cancel-row]");
+    if (!block || !list || !fields) return;
+
+    // Whether the shopper has asked for the blank form. Reset whenever the
+    // list changes underneath them (a sign-out, say), so the mode is always
+    // derived from the current state rather than remembered from an old one.
+    let adding = false;
+
+    const saved = () => (Auth.isAuthed() ? addrAll() : []);
+
+    const paint = () => {
+      const rows = saved();
+      const choosing = rows.length > 0;
+      if (!choosing) adding = false;
+
+      block.hidden = !choosing;
+      // The form is hidden ONLY when there is a list to choose from and the
+      // shopper has not asked for a new address. Every other case shows it,
+      // so the page can never end up with no way to enter an address.
+      fields.hidden = choosing && !adding;
+      if (cancelRow) cancelRow.hidden = !choosing;
+
+      if (!choosing) {
+        list.innerHTML = "";
+        return;
+      }
+      // Keep the current pick across a repaint; fall back to the main address,
+      // which is the one the shopper already told us to prefer.
+      const was = list.querySelector('input[name="saved-address"]:checked');
+      const wasId = was ? was.value : "";
+      const keep = rows.some((a) => a.id === wasId) ? wasId : "";
+      const main = rows.find((a) => a.main) || rows[0];
+      const pick = adding ? "" : keep || main.id;
+      list.innerHTML = rows.map((a) => checkoutAddressCardHTML(a, a.id === pick)).join("");
+      // The cards are new DOM every repaint, so an English session has to have
+      // them walked again — boot's own pass ran before they existed.
+      if (currentLang() === "en") applyLangToContent();
+    };
+
+    // Opening the blank form DESELECTS the saved cards: two visible answers to
+    // one question is worse than none, and the shopper has just said the
+    // address they want is not in that list.
+    root.addEventListener("click", (ev) => {
+      if (ev.target.closest("[data-address-new]")) {
+        adding = true;
+        paint();
+        const first = fields.querySelector("select, input");
+        if (first) first.focus();
+        return;
+      }
+      if (ev.target.closest("[data-address-cancel]")) {
+        adding = false;
+        paint();
+        return;
+      }
+    });
+
+    // Picking a saved address closes the blank form again — the two are
+    // alternatives, so choosing one has to retire the other.
+    root.addEventListener("change", (ev) => {
+      const r = ev.target.closest('input[name="saved-address"]');
+      if (!r) return;
+      if (adding) {
+        adding = false;
+        paint();
+        // paint() rebuilt the list, so re-check the address that was clicked.
+        const again = list.querySelector('input[value="' + r.value.replace(/"/g, '\\"') + '"]');
+        if (again) again.checked = true;
+      }
+    });
+
+    // Signing in or out mid-checkout swaps the mode, same as a fresh load.
+    document.addEventListener("auth:change", paint);
+    paint();
+  }
+
   window.kInit = function (scope) {
     scope = scope || document;
     scope.querySelectorAll(".carousel").forEach(initCarousel);
@@ -6939,7 +7491,9 @@
     initOrderNotes();
     initReferralCopy();
     initAddresses();
+    initCheckoutAddress();
     initPointsRedeem();
+    initReviews();
     initVouchers();
     initOrders();
     initReorder();

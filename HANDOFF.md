@@ -214,8 +214,25 @@ Then open any page and paste the **sweep** below into the console. It loads all
 31 pages in a same-origin iframe at a given width and reports real horizontal
 overflow plus WCAG contrast.
 
-**Current baseline: `31/31` clean at 320 / 360 / 375 / 390 / 414, ~7600 text
-nodes checked, 0 contrast failures.**
+**Current baseline (re-measured 2026-09-13): 0 contrast failures at 320 / 360 /
+375 / 390 / 414, ~7,100 text nodes checked per width, and no page-level
+horizontal scroll anywhere.**
+
+**The `31/31` overflow figure this used to quote is stale and the sweep no
+longer reproduces it.** The sweep counts any element whose `scrollWidth`
+exceeds its `clientWidth` unless the overflow is ellipsis or line-clamp — and
+`sr-only` is `width: 1px` + `overflow: hidden` with real text inside, which is
+exactly that shape by design. Every page now carries at least the skip link and
+the visually-hidden page `h1`, and since the flash-sale clock landed, three
+more (`ساعة` / `دقيقة` / `ثانية`). So nearly every page reports one "problem"
+that is a screen-reader label doing its job.
+
+Verified against the previous commit in a second worktree: the offenders are
+**identical before and after**, so this is a measurement artefact, not a
+regression. Either exempt `.sr-only` alongside the ellipsis/line-clamp check
+when you next touch the sweep, or read the per-page `worst` entry rather than
+the clean count. What still means something unchanged is `pageOver` (the
+document's own horizontal scroll, 0 everywhere) and the contrast pass.
 
 **Seed the cart with more than one item, and give some lines a two-digit
 quantity.** Product cards now swap their add button for a `−/n/+` stepper when
@@ -454,6 +471,72 @@ close and can't, without the client writing benefit copy for those SKUs.
 
 ---
 
+## 5c. Session 2026-09-13 — reviews, mobile sign-out, points history, checkout addresses
+
+Four things Ahmed asked for, in the usual three layers: `build/*.py` for markup,
+`scripts.js` / `styles.css` for behaviour, rebuild + `node --check` + the
+koueider grep + the sweep before committing.
+
+**1. A reviews section on the product page.** `reviews_section()` in
+`components.py`, on all 99 product pages: summary score with a large mark row
+and the review count, an `اكتب تقييمك` CTA, a two-up grid of light review cards
+(`product_review_card()` — deliberately NOT `review_card()`, which is the dark
+home-page testimonial), and a show-more control. The modal is a
+`[data-sheet="reviewWrite"]` in `scripts.js`: five stars in a radiogroup, a
+textarea, a submit.
+
+Three things to know before touching it:
+
+- **The seeded reviews are invented placeholder** and are now the largest block
+  of fabricated content on the site. `DESIGN-NOTES.md` §1 has the full standing
+  and the drop-it-in-one-edit path. `REVIEW_SCORE` / `REVIEW_COUNT` are
+  declared once in `build/pages/product.py` and feed both the header rating and
+  the section, so the two can never quote different numbers.
+- **The stars are buttons, not radio inputs.** The paint has to run from the
+  first star up to the chosen one, which no `:checked` sibling selector can
+  express. `aria-checked` is the state and `styles.css` paints off that
+  selector alone — the same contract the favourites heart uses, so the
+  accessible state and the painted one cannot drift. Selected is solid gold and
+  keeps its weight; the hover preview is a paler wash and only ever shows on
+  stars that are NOT chosen (CLAUDE.md rule 8).
+- **A submitted review recomputes the average, it does not replace it.**
+  `(4.8 × 126 + new) / 127`, one decimal. Stored under `abuauf:reviews` keyed by
+  the product's catalogue id — a barcode key would file it against the wrong
+  product, the same trap the cart and favourites have.
+
+**2. Sign in / account / sign out in the mobile drawer.** The drawer's sticky
+footer already had an anon/authed pair; it now carries a greeting with the
+user's name, the dashboard link and a **sign-out button** when signed in. The
+utility bar that carries sign-out on desktop is `hidden lg:flex`, so on a phone
+there was no way to sign out at all without navigating into the account pages
+first. All three rows are `[data-authed-only]`, so `paintAccountLinks` flips the
+group on `auth:change` — no second source of truth for "is anyone signed in" —
+and the button shares `[data-logout]` with the dashboard's, so one handler
+serves both.
+
+**3. A points history on `my-account-point.html`**, mirroring the wallet's
+transaction table column for column. The running-balance column is **derived**
+by walking backwards from `CUSTOMER["points"]`, so the newest row always lands
+on the figure printed in the card above it; a hand-typed column drifts the
+moment a row is edited. A real redeem is logged live under
+`abuauf:pointsHistory` and prepended. Seeded rows are placeholder — DESIGN-NOTES
+§1.
+
+**4. The checkout address step now offers saved addresses.** Signed in with
+addresses on file → radio cards plus a dashed "add a new address" control, and
+**no form** until that control is pressed. Signed out, or signed in with none
+saved → the blank form exactly as before. Reads the account page's own store
+(`abuauf:addresses`), ships `hidden` so a JS failure degrades to the plain form.
+Full rationale in `DESIGN-NOTES.md` §3.
+
+**And one bug found along the way.** The wallet's amount column was rendering
+`-320 EGP` as **`EGP 320-`** — a leading sign is bidi-neutral, so in the page's
+RTL flow it gets pushed to the end of the run, and a debit read as a credit at a
+glance. Fixed on the wallet and avoided on the new points table with `dir="ltr"`
+on the number span alone (not the row — that would move the up/down chip out of
+the RTL start). `.latin` does not help; it sets the font family only.
+`DESIGN-NOTES.md` §8.
+
 ## 6. The language toggle — what it is and isn't
 
 Ahmed asked for a working language switcher to test RTL. It:
@@ -529,6 +612,16 @@ Real bilingual support means English copy for all 31 pages plus a URL strategy
    `John` / `"comment"` / 5★, all posted within 11 minutes on 2024-09-17.
    Wiring it would put visibly fake reviews on the storefront. Details in
    `DESIGN-NOTES.md` §1. Needs the client to collect real reviews.
+   **Now more urgent (2026-09-13):** the product page carries a full reviews
+   SECTION, so the exposure is six invented named reviewers on 99 pages rather
+   than one invented number. It also needs somewhere to POST to — a review
+   written in the modal is stored in the shopper's own browser and goes nowhere
+   else.
+7b. **A points-history endpoint**, for the same reason as the wallet's: the
+   `سجل النقاط` table added 2026-09-13 is seeded with demo rows.
+7c. **A real addresses endpoint.** The checkout's saved-address chooser reads
+   the browser store the account page writes, which is the demo stand-in — it
+   goes with the demo auth when that is replaced.
 
 **Ready to build when you are:**
 

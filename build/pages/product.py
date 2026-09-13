@@ -27,7 +27,8 @@ from catalog import PRODUCTS, e, in_category, money, rail_products, size_count, 
 from components import (
     ICON, accordion, best_seller_badge, button, carousel, page, page_header,
     points_callout, product_card, product_gallery, qty_stepper, rating,
-    recipe_card, size_chips, sold_proof, specs_block, bundle_item, section_heading,
+    recipe_card, reviews_section, size_chips, sold_proof, specs_block,
+    bundle_item, section_heading,
 )
 
 SLUG = "product.html"
@@ -39,6 +40,38 @@ SLUG = "product.html"
 # "مخبوزة"), so the strip now reads identically for the handoff. Brand-level
 # reassurance only — no auditable product claim — and still OUR unsigned Arabic
 # pending client sign-off, flagged in DESIGN-NOTES like every in-house string.
+# Rating and reviews. BOTH numbers here are invented placeholder and both are
+# flagged in DESIGN-NOTES §1: the client's review endpoint returns ten identical
+# `John / "comment" / 5★` QA rows, and the Store API reports
+# `average_rating: "0"` / `review_count: 0` for every product. There is nothing
+# real to fetch, so the section is built against a stand-in rather than wired to
+# an endpoint that would put visibly fake reviews on the storefront.
+#
+# Declared ONCE so the header row and the reviews section can never quote two
+# different numbers for the same product.
+REVIEW_SCORE = "4.8"
+REVIEW_COUNT = 126
+
+# In-house Arabic, unsigned, same on all 99 pages — the same standing as
+# SPECS_* below and the home page's four testimonials. Deliberately about
+# service and freshness rather than any one product's taste, because one list
+# serves every page; nothing here makes an auditable product claim.
+# (name, when, score, text)
+REVIEWS = [
+    ("نورهان عبد الله", "منذ أسبوعين", "5",
+     "الطعم ممتاز والتغليف محكم جداً، وصل الطلب في نفس اليوم وكل حاجة كانت طازة. طلبته هدية لأختي والكل سأل جبتيه منين."),
+    ("كريم مصطفى", "منذ شهر", "5",
+     "أفضل جودة جربتها أونلاين بصراحة. التوصيل كان سريع والمنتج وصل زي ما هو في الصور بالظبط، وهكرر الطلب أكيد."),
+    ("سلمى حسن", "منذ شهر", "4",
+     "المنتج حلو جداً والجودة تستاهل، كنت بتمنى الحجم يكون أكبر شوية بالنسبة للسعر، بس الطعم عوّض كل حاجة."),
+    ("عمر فتحي", "منذ شهرين", "5",
+     "طلبته لمناسبة في الشغل وخلص في دقايق. طازة وواضح إنه متعمول بمكوّنات كويسة، بنصح بيه بشدة."),
+    ("منة سيد", "منذ شهرين", "5",
+     "بطلب من أبو عوف باستمرار والجودة ثابتة كل مرة، وده اللي خلاني أستمر معاهم. خدمة العملاء كمان متعاونة جداً."),
+    ("أحمد نبيل", "منذ ٣ شهور", "4",
+     "جودة ممتازة وسعر مناسب مقارنة بغيره. مصاريف التوصيل بس كانت أعلى شوية من المتوقع، لكن المنتج نفسه يستاهل."),
+]
+
 SPECS_TAGLINE = "جودة أبو عوف في كل قضمة"
 SPECS_DESC = "منتجات نختارها بعناية ونقدّمها لك بالطزاجة والجودة اللي تستاهلها."
 SPECS_POINTS = [
@@ -353,7 +386,7 @@ def _render(p):
                    not up by the yellow best-seller badge. Wraps on a narrow
                    column instead of colliding. -->
               <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-                {rating("4.8", 126)}
+                {rating(REVIEW_SCORE, REVIEW_COUNT, sync=True)}
                 {sold_proof(p)}
                 {points_callout(p)}
               </div>
@@ -429,6 +462,13 @@ def _render(p):
           <div class="lg:hidden">{related_list}</div>
         </div>
       </section>
+
+      <!-- ============================= REVIEWS =============================
+           Sits directly under the product block and above the recipes: it
+           answers "should I buy this", which is the question still open at
+           that point in the page, whereas the recipes answer "what do I do
+           with it" — a question you only have once you have decided. -->
+{reviews_section(REVIEW_SCORE, REVIEW_COUNT, REVIEWS)}
 
       <!-- ============================= RECIPES ============================= -->
       <section data-reveal class="bg-interaction-base py-12">

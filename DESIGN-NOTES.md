@@ -160,6 +160,56 @@ proof: every product returns `average_rating: "0"` and `review_count: 0`. The
 `4.8 (126 تقييم)` on `product.html` is therefore still invented placeholder —
 it is the one number in that header block that is not real.
 
+#### The reviews SECTION (2026-09-13) raises that exposure again
+
+Ahmed asked for a full reviews block on the product page — a summary score, a
+grid of review cards, a show-more control and a "write a review" modal — and it
+is now on all 99 product pages (`reviews_section()` in `components.py`, seeded
+from `REVIEWS` in `build/pages/product.py`).
+
+**Everything in it is placeholder, and it is the largest block of invented
+content on the site.** Six Arabic reviews with six invented names, written
+in-house, unsigned. They are deliberately about service, freshness and
+packaging rather than any one product's taste, because ONE list serves all 99
+pages — nothing in them makes a claim that could be audited against a specific
+product — but six named strangers praising a product they never bought is still
+fabricated social proof, and it is the thing on this site most likely to be
+read as real by a shopper.
+
+Same standing as the four home-page testimonials, and the same remedy: the
+endpoint is QA test data (above), so wiring it would be worse. `REVIEW_SCORE`
+and `REVIEW_COUNT` are declared once in `product.py` and feed both the header
+rating and the section, so if the client signs off on dropping this, the whole
+thing comes out in one edit per file.
+
+What IS real is the mechanism around it. A review written in the modal is
+stored under `abuauf:reviews`, keyed by the product's catalogue id, and folded
+into the printed average as an honest weighted mean over the seeded base —
+`(4.8 × 126 + new) / 127` — rather than replacing it. Nothing is posted
+anywhere; there is no endpoint to post to. A signed-in shopper reviews under
+their own name and a guest is labelled `زائر` rather than given an invented
+one.
+
+**Needs:** real reviews, or sign-off on dropping the section AND the header
+rating together.
+
+### The points HISTORY is placeholder too (2026-09-13)
+
+`my-account-point.html` now carries a "سجل النقاط" table mirroring the wallet's
+transaction history, at Ahmed's request. Its five seeded rows are demo data on
+exactly the footing of the wallet's `TXNS` — there is no points ledger endpoint
+any more than there is a wallet one.
+
+Two things are honest about it. The running-balance column is **derived**, not
+typed: `_point_rows()` walks backwards from `CUSTOMER["points"]`, so the newest
+row always lands on the figure printed in the card directly above it and cannot
+drift when a row is edited. And a redeem actually done on the page is recorded
+live under `abuauf:pointsHistory` with the balance it left behind, prepended to
+the seeded rows, and survives a reload.
+
+**Needs:** a real points ledger, or the same drop-it sign-off the wallet
+history needs.
+
 ### The wallet discount works, but the balance is still fiction
 
 **Replaced the points banner entirely (Ahmed, 2026-07-26): a toggle, and the
@@ -613,6 +663,43 @@ the shipped PNG.
 The digits are `.latin` + `tabular-nums` so the row cannot jitter as they tick,
 and the label ink is `#6B6255` (`onBeigeMuted`) — the token that clears 4.5:1 on
 this beige, which `neutral.secondary` does not.
+
+### Checkout asks a signed-in shopper to PICK an address, not retype one (Ahmed, 2026-09-13)
+
+The Figma's checkout has one delivery-address block: a blank form, always
+present, for everyone. That is right for a guest and wrong for an account that
+already has addresses on file — it asks a returning shopper to retype something
+the site already knows, in a nine-field form, at the step most likely to be
+abandoned.
+
+So the fieldset now has two modes, and which one shows is decided by whether
+there is anything to choose from:
+
+| State | What renders |
+|---|---|
+| Signed out | the blank form, exactly as before |
+| Signed in, **no** saved addresses | the blank form, exactly as before |
+| Signed in, 1+ saved addresses | radio cards for each, a dashed "إضافة عنوان جديد" control, **and no form** until that control is pressed |
+
+Three things worth keeping if this is ever touched again:
+
+- **The addresses come from the account page's own store** (`abuauf:addresses`,
+  via `addrAll()`), not a copy baked into the page. One added on
+  `my-account-addresses.html` is selectable here on the next visit and one
+  deleted there stops being offered. A build-time copy would be a second source
+  of truth that goes stale on the first edit.
+- **The block ships `hidden` and JS reveals it.** Same reasoning as
+  `[data-reveal]`: if JS fails the page must degrade to the plain form that has
+  always worked, never to an empty chooser with no way to enter an address.
+- **The dashed border is doing work.** A dashed outline reads as an unfilled
+  slot, which is what "not one of these" means, and keeps the control visibly a
+  different *kind* of thing from the solid cards above it rather than a fifth
+  address. Opening it deselects the saved cards — two visible answers to one
+  question is worse than none — and a `اختر من عناويني` link goes back.
+
+**Still true:** the checkout CTA does not validate this form, or any of it (see
+below). This decides what the shopper is *asked* for, not what happens when
+they press continue.
 
 ### Search field focus: a single darkened divider, not the offset ring
 
@@ -1388,6 +1475,12 @@ the glyph lied about it. Two consequences worth recording:
 
 The same swap is on the product page's stepper, which is now cart-bound (§3).
 
+**The review sheet's star input is 44×44 (2026-09-13)** — the AAA goal, not the
+24px floor, because there was no layout decision to trade against: five 44px
+buttons plus their gaps come to 236px, which fits the sheet at 320. Recorded
+here so the next person sizing a control in a sheet knows the room was checked
+rather than assumed. The glyph inside is 30px; the box is the target.
+
 Re-audit the whole site's tap targets before trusting the "≥44px, audited and
 passing" claim elsewhere.
 
@@ -1412,6 +1505,45 @@ the UI.
 ---
 
 ## 8. Technical traps
+
+### A leading `+`/`−` on a number lands on the WRONG END in RTL
+
+Found on the wallet's transaction table while building the points history
+against it (2026-09-13), and fixed on both. `-320 EGP` inside the page's RTL
+flow rendered as **`EGP 320-`**: the sign is bidi-neutral, so it is not part of
+the number's run and gets pushed to the paragraph end. A debit therefore read
+as a credit at a glance — the one thing an amount column exists to distinguish
+— and it had been live on the wallet page the whole time.
+
+`.latin` does not help: it sets the font family only, never a direction.
+
+The fix is `dir="ltr"` on the **number span alone**, not on the row. Putting it
+on the row would also move the up/down chip out of the RTL start position it
+shares with every other cell. Anywhere a signed number, a range or a phone
+number is printed in Arabic copy, wrap the run itself.
+
+### A transform does NOT take a descendant out of the overflow calculation
+
+Found while stopping a new bottom sheet from adding to a pre-existing 6px
+overflow (2026-09-13). Every bottom sheet's header row ends with a close button
+carrying `-me-1.5` — an optical pull so the glyph lines up with the sheet's own
+padding edge — and a negative end margin on the last flex item makes the flex
+LINE wider than its container. Eight sheets, eight 6px overflows in the sweep.
+
+The obvious fix, moving the button with `transform: translateX()` instead of a
+margin, **does not work**: a transformed descendant still contributes its
+*shifted* border box to an ancestor's scrollable overflow region, so the 6px
+moved from the margin to the transform and the measurement did not change at
+all. Transforms are out of *flow*, not out of *overflow*.
+
+What works is moving the 6px up a level: the ROW borrows 6px of the sheet's own
+inline padding (`margin-inline-end: -0.375rem`) and the button then sits flush
+at that widened row's end. Measured before and after: the glyph is in the same
+place to the pixel, and nothing overflows anything.
+
+The rule is in `styles.css` on `.bottom-sheet > div:has(> [data-close])`, using
+`:has()` rather than a shared class because those rows live in eight separate
+template literals in `scripts.js` and the shape already identifies them exactly.
 
 ### `neutral.secondary` is for light surfaces only
 

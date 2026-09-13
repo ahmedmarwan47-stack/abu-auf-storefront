@@ -422,6 +422,72 @@ UI = {
         "I love the healthy snacks section — plenty of choices for children and lunch boxes. The service is fast and the branches are everywhere.",
     "كريم سمير — المنصورة": "Karim Samir — Mansoura",
 
+    # --- product-page reviews section (in-house placeholder personas, same
+    #     standing as the four home-page testimonials above — DESIGN-NOTES §1)
+    "آراء العملاء": "Customer reviews",
+    "اكتب تقييمك": "Write a review",
+    "عرض المزيد من التقييمات": "Show more reviews",
+    "نورهان عبد الله": "Nourhan Abdallah",
+    "كريم مصطفى": "Karim Mostafa",
+    "سلمى حسن": "Salma Hassan",
+    "عمر فتحي": "Omar Fathy",
+    "منة سيد": "Menna Sayed",
+    "أحمد نبيل": "Ahmed Nabil",
+    "منذ أسبوعين": "2 weeks ago",
+    "منذ شهر": "1 month ago",
+    "منذ شهرين": "2 months ago",
+    "منذ ٣ شهور": "3 months ago",
+    # The avatar INITIALS are their own text node, derived from the Arabic name
+    # at build time — without these an English card shows "نع" beside
+    # "Nourhan Abdallah". aria-hidden already keeps them off the accessibility
+    # tree; this keeps them off the page in English too.
+    "نع": "NA",
+    "كم": "KM",
+    "سح": "SH",
+    "عف": "OF",
+    "مس": "MS",
+    "أن": "AN",
+    "الطعم ممتاز والتغليف محكم جداً، وصل الطلب في نفس اليوم وكل حاجة كانت طازة. طلبته هدية لأختي والكل سأل جبتيه منين.":
+        "The taste is excellent and the packaging is very secure. The order arrived the same day and everything was fresh. I bought it as a gift for my sister and everyone asked where it was from.",
+    "أفضل جودة جربتها أونلاين بصراحة. التوصيل كان سريع والمنتج وصل زي ما هو في الصور بالظبط، وهكرر الطلب أكيد.":
+        "Honestly the best quality I have ordered online. Delivery was quick and the product arrived exactly as pictured. I will definitely order again.",
+    "المنتج حلو جداً والجودة تستاهل، كنت بتمنى الحجم يكون أكبر شوية بالنسبة للسعر، بس الطعم عوّض كل حاجة.":
+        "A lovely product and the quality is worth it. I would have liked a slightly larger size for the price, but the taste made up for it.",
+    "طلبته لمناسبة في الشغل وخلص في دقايق. طازة وواضح إنه متعمول بمكوّنات كويسة، بنصح بيه بشدة.":
+        "I ordered it for an occasion at work and it was gone in minutes. Fresh and clearly made with good ingredients — highly recommended.",
+    "بطلب من أبو عوف باستمرار والجودة ثابتة كل مرة، وده اللي خلاني أستمر معاهم. خدمة العملاء كمان متعاونة جداً.":
+        "I order from Abu Auf regularly and the quality is the same every time, which is what keeps me coming back. Customer service is very helpful too.",
+    "جودة ممتازة وسعر مناسب مقارنة بغيره. مصاريف التوصيل بس كانت أعلى شوية من المتوقع، لكن المنتج نفسه يستاهل.":
+        "Excellent quality at a fair price compared with others. The delivery fee was a little higher than I expected, but the product itself is worth it.",
+
+    # --- write-a-review sheet
+    "تقييمك": "Your rating",
+    "رأيك في المنتج": "Your review",
+    "احكيلنا إيه اللي عجبك في المنتج…": "Tell others what you loved about it…",
+    "إرسال التقييم": "Submit review",
+    "من 5": "of 5",
+    "زائر": "Guest",
+    "شكراً لك! تم نشر تقييمك": "Thank you! Your review has been posted",
+    "من فضلك اختر تقييمك بالنجوم أولاً": "Please choose a star rating first",
+    "اكتب كلمة عن المنتج قبل الإرسال": "Write a few words about the product before sending",
+
+    # --- mobile drawer account footer
+    "مرحباً": "Welcome",
+
+    # --- points history (mirrors the wallet's table)
+    "سجل النقاط": "Points history",
+    "النقاط": "Points",
+    "استبدال نقاط برصيد محفظة": "Points redeemed for wallet credit",
+    "طلب #30941": "Order #30941",
+    "طلب #30942": "Order #30942",
+    "تقييم منتجات": "Product reviews",
+    "مكافأة ترحيبية": "Welcome bonus",
+
+    # --- checkout saved addresses
+    "إضافة عنوان جديد": "Add a new address",
+    "عنوان جديد": "New address",
+    "اختر من عناويني": "Choose from my addresses",
+
     # --- blog
     "كل المقالات": "All articles",
     "أحدث المقالات": "Latest articles",

@@ -3,7 +3,14 @@
 the membership-tier ladder, a "how to earn" grid, and a Redeem-Points modal that
 converts points into wallet credit. All demo/client-side (no live endpoint,
 DESIGN-NOTES §1); scripts.js initPoints/syncPointsUI keep the balance, the bar
-and the wallet in step, persisted under abuauf:pointsSpent."""
+and the wallet in step, persisted under abuauf:pointsSpent.
+
+The points history below mirrors the wallet's transaction table (Ahmed): the
+same four columns, the same up/down chips, the same running-balance column —
+because the two pages answer the same question about two different balances,
+and a shopper who has read one should not have to learn a second table. The
+seeded rows are demo/placeholder like the wallet's; a real redeem done on this
+page is prepended to them live by scripts.js and survives a reload."""
 from _account import (
     CUSTOMER, POINT_TIERS, POINTS_PER_EGP, TIERS, account_page, account_title,
     card, tier_progress,
@@ -23,6 +30,51 @@ _EARN = [
     ("🎁", "مكافأة ترحيبية", "نقاط هدية عند إنشاء حساب جديد"),
     ("🎂", "عروض المناسبات", "نقاط مضاعفة في العروض الموسمية"),
 ]
+
+
+# Points history — demo/placeholder, exactly the standing of the wallet's TXNS
+# (no live endpoint, DESIGN-NOTES §1). (delta, reason, date) with the running
+# balance DERIVED below rather than typed, so the newest row always lands on
+# CUSTOMER["points"]: a hand-typed balance column drifts the moment a row is
+# edited, and a history whose last line disagrees with the balance printed
+# directly above it is worse than no history at all.
+_POINT_TXNS = [
+    (320, "طلب #30941", "02 يوليو 2026"),
+    (-500, "استبدال نقاط برصيد محفظة", "28 يونيو 2026"),
+    (150, "تقييم منتجات", "21 يونيو 2026"),
+    (430, "طلب #30942", "14 يونيو 2026"),
+    (100, "مكافأة ترحيبية", "05 يونيو 2026"),
+]
+
+_UP = ('<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 19V5M6 11l6-6 6 6" '
+       'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+_DOWN = ('<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M6 13l6 6 6-6" '
+         'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+
+
+def _point_rows(start_balance):
+    """Newest first, walking the balance BACKWARDS from today's figure."""
+    rows = ""
+    bal = start_balance
+    for delta, reason, date in _POINT_TXNS:
+        credit = delta > 0
+        rows += f"""
+                  <tr class="border-neutral-divider border-b last:border-0">
+                    <td class="py-4 pe-3">
+                      <span class="inline-flex items-center gap-2 font-bold text-sm latin {'text-primary' if credit else 'text-accent-error'}">
+                        <span class="place-items-center grid rounded-full size-6 shrink-0 {'bg-[#E9F3E6]' if credit else 'bg-[#F6E9E7]'}"><span class="w-3 h-3">{_UP if credit else _DOWN}</span></span>
+                        <!-- dir="ltr" on the number alone — see the same note on
+                             the wallet's table. Without it the sign resolves to
+                             the far end of the run and a −500 reads as +500. -->
+                        <span dir="ltr">{'+' if credit else '−'}{abs(delta):,}</span>
+                      </span>
+                    </td>
+                    <td class="py-4 px-3 text-neutral-secondary text-sm whitespace-nowrap">{date}</td>
+                    <td class="py-4 px-3 text-[#062A1C] text-sm">{reason}</td>
+                    <td class="py-4 ps-3 font-semibold text-[#062A1C] text-sm text-end latin whitespace-nowrap">{bal:,}</td>
+                  </tr>"""
+        bal -= delta
+    return rows
 
 
 def _tier_cards(current_idx):
@@ -97,7 +149,26 @@ def build():
               <h2 class="font-bold text-[#062A1C] text-lg">إزاي تكسب نقاط؟</h2>
               <div class="gap-3 grid grid-cols-2 lg:grid-cols-4">{earn}
               </div>
-            </div>"""
+            </div>
+
+            <!-- Points history, same table as the wallet's.
+                 [data-points-history] is where scripts.js PREPENDS a redeem the
+                 shopper has just made, so the row appears above the seeded ones
+                 in the same newest-first order the rest of the table reads in.
+                 min-w on the table + overflow-x-auto on its own wrapper: the
+                 four columns cannot fit a 320px phone, and this is the one
+                 escape the sweep allows (CLAUDE.md) — the page body itself
+                 still must not scroll sideways. -->
+            {card("سجل النقاط", f'''<div class="overflow-x-auto"><table class="w-full min-w-[460px] text-start">
+              <thead>
+                <tr class="border-neutral-divider border-b text-neutral-secondary text-xs">
+                  <th class="py-2 pe-3 font-semibold text-start">النقاط</th>
+                  <th class="py-2 px-3 font-semibold text-start">التاريخ</th>
+                  <th class="py-2 px-3 font-semibold text-start">السبب</th>
+                  <th class="py-2 ps-3 font-semibold text-end">الرصيد</th>
+                </tr>
+              </thead>
+              <tbody data-points-history>{_point_rows(pts)}</tbody></table></div>''')}"""
     return account_page("نقاطي | أبو عوف", "رصيد نقاطك وطرق استبدالها.",
                         content, "my-account-point", "/my-account/points",
                         "نقاطي", "my-account-point.html")

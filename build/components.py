@@ -377,7 +377,7 @@ def product_grid(products, cols="grid-cols-2 md:grid-cols-3 xl:grid-cols-4", att
     return f'<div data-product-grid{extra} class="gap-4 xl:gap-6 grid {cols}">{cards}\n          </div>'
 
 
-def rating(score="4.8", count=None):
+def rating(score="4.8", count=None, size="sm", sync=False, show_score=True):
     """
     Five marks that actually show the score. 4.8 draws four full and the fifth
     filled 80% of the way across — a row of five identical full marks beside
@@ -412,14 +412,34 @@ def rating(score="4.8", count=None):
             pct = round(fill * 100)
             marks.append(
                 f'<span class="rating-mark">{ICON["star"]}'
-                f'<span class="rating-mark__fill" style="width:{pct}%">{ICON["star"]}</span>'
+                f'<span class="rating-mark__fill" style="--rating-fill:{pct}%">{ICON["star"]}</span>'
                 f'</span>')
-    tail = (f'<span class="text-neutral-secondary text-sm">(<span class="latin">{count}</span> تقييم)</span>'
+    # `size` only widens the marks and the text; the fill maths above is
+    # identical, so a large row and a small one can never disagree about 4.8.
+    lg = size == "lg"
+    mark_cls = "rating-marks rating-marks--lg" if lg else "rating-marks"
+    score_cls = ("font-bold text-[#062A1C] text-2xl latin" if lg
+                 else "font-semibold text-[#062A1C] text-sm latin")
+    # The count stays text-sm at both sizes on purpose: it is the quieter half
+    # of the pair, and growing it with the score would give "(126 تقييم)" the
+    # same weight as the score itself.
+    tail = (f'<span class="text-neutral-secondary text-sm">(<span class="latin" data-rating-count>{count}</span> تقييم)</span>'
             if count else "")
-    return (f'<div class="flex items-center gap-1.5">'
-            f'<span class="rating-marks flex items-center" role="img" '
+    # show_score=False is the review CARD's row: the marks already say 4 of 5,
+    # and a numeral beside them on a card that carries no count is repeating
+    # the picture in digits. The accessible name lives on the marks span, so
+    # nothing is lost by dropping it — a screen reader still hears "4 من 5".
+    score_html = (f'<span class="{score_cls}" data-rating-score>{e(score)}</span>'
+                  if show_score else "")
+    # data-rating-sync: scripts.js repaints this row (marks, score AND count)
+    # when a shopper leaves a review, so the header rating and the reviews
+    # section can never quote two different numbers for the same product.
+    hook = (f' data-rating-sync data-rating-base-score="{e(score)}" '
+            f'data-rating-base-count="{count or 0}"' if sync else "")
+    return (f'<div class="flex items-center gap-1.5"{hook}>'
+            f'<span class="{mark_cls} flex items-center" role="img" data-rating-marks '
             f'aria-label="{e(score)} من 5">{"".join(marks)}</span>'
-            f'<span class="font-semibold text-[#062A1C] text-sm latin">{e(score)}</span>{tail}</div>')
+            f'{score_html}{tail}</div>')
 
 
 def variant_chips(options, name="variant"):
@@ -1858,6 +1878,111 @@ def review_card(name, city, text, score="4.8"):
               </span>
             </div>
           </article>"""
+
+
+def _initials(name):
+    parts = [w for w in str(name).split() if w]
+    return "".join(w[0] for w in parts[:2])
+
+
+# Avatar tints, cycled by index. LITERAL class strings, never built by
+# concatenation — a "bg-" + name tint compiles to nothing (CLAUDE.md).
+# Measured, not assumed: 6.80 / 5.25 / 7.46 / 6.87 for the initials on their
+# own tint, so every one clears AA (4.5:1) as small bold text.
+_AVATAR_TINTS = [
+    "bg-[#E9F3E6] text-[#1B5E3B]",
+    "bg-[#FDF0DA] text-[#8A5A12]",
+    "bg-[#E7EFF6] text-[#1F4E79]",
+    "bg-[#F6E9E7] text-[#8C3125]",
+]
+
+
+def product_review_card(name, when, score, text, extra_attr="", index=0):
+    """
+    One customer review — the LIGHT card on the product page, deliberately not
+    `review_card()`. That one is the dark quote-led testimonial the home page
+    uses to sell the brand; this one is a record of what a person said about
+    one product, so it leads with who and when, then the score, then the words.
+
+    The avatar is INITIALS on a tint, not a photo: there are no customer
+    portraits and this project does not invent them (same rule as the branch
+    phones). `index` only picks a tint from a fixed list, so a card's colour is
+    stable per position and nothing is built by string concatenation.
+    """
+    tint = _AVATAR_TINTS[index % len(_AVATAR_TINTS)]
+    return f"""
+            <article class="flex flex-col gap-3 bg-white p-5 xl:p-6 border border-neutral-divider rounded-2xl"{extra_attr}>
+              <div class="flex justify-between items-center gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <span class="place-items-center grid rounded-full font-bold text-sm shrink-0 size-10 {tint}" aria-hidden="true">{e(_initials(name))}</span>
+                  <span class="font-bold text-[#062A1C] text-sm truncate">{e(name)}</span>
+                </div>
+                <span class="text-neutral-secondary text-xs whitespace-nowrap shrink-0">{e(when)}</span>
+              </div>
+              {rating(score, show_score=False)}
+              <p class="text-neutral-secondary text-sm leading-7">{e(text)}</p>
+            </article>"""
+
+
+def reviews_section(score, count, reviews, visible=4):
+    """
+    "آراء العملاء" on the product page: a summary (score + marks + how many
+    people left one), a "write a review" CTA, a two-up grid of cards and a
+    show-more control.
+
+    Only the first `visible` cards are in the flow; the rest ship with `hidden`
+    and are revealed by the button, so a no-JS visitor still reads four real
+    reviews rather than an empty list behind a dead control. The button removes
+    ITSELF once everything is shown — there is no "show less", because
+    collapsing a list the shopper just asked to see is a control that undoes
+    the only thing it was pressed for.
+
+    The summary carries data-review-* so scripts.js can fold a locally-written
+    review into the average and the count; `rating(sync=True)` on the page
+    header reads the same numbers, so the two rows stay in step.
+    """
+    cards = ""
+    for i, (name, when, sc, text) in enumerate(reviews):
+        hide = "" if i < visible else ' data-review-extra hidden'
+        cards += product_review_card(name, when, sc, text, hide, i)
+
+    more = ""
+    if len(reviews) > visible:
+        more = f"""
+          <div class="flex justify-center mt-8" data-reviews-more-wrap>
+            <button type="button" data-reviews-more
+                    class="btn-elevate flex items-center gap-2 bg-white hover:bg-interaction-base px-6 border border-neutral-divider rounded-full min-h-11 font-semibold text-[#062A1C] text-sm transition-colors">
+              عرض المزيد من التقييمات
+              <span class="inline-flex text-neutral-secondary" aria-hidden="true">{ICON['chevron']}</span>
+            </button>
+          </div>"""
+
+    return f"""
+      <section data-reviews class="bg-interaction-base py-12 xl:py-16">
+        <div class="mx-auto px-4 max-w-[1536px]">
+          <!-- Heading, summary and CTA on ONE wrapping row: the score is the
+               headline number, so it reads beside the title rather than under
+               it, and the CTA keeps the end of the row at every width. -->
+          <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+            <div class="flex flex-wrap items-center gap-x-5 gap-y-2 min-w-0">
+              <h2 class="font-bold text-[#062A1C] text-3xl xl:text-4xl">آراء العملاء</h2>
+              <div data-review-summary data-review-base-score="{e(str(score))}" data-review-base-count="{count}">
+                {rating(str(score), count, size="lg")}
+              </div>
+            </div>
+            <button type="button" data-open="reviewWrite"
+                    class="btn-elevate flex items-center gap-2 bg-cta hover:bg-cta-hover px-6 rounded-full min-h-11 font-semibold text-white text-sm transition-colors">
+              <span class="w-4 h-4" aria-hidden="true">{ICON['star']}</span>
+              اكتب تقييمك
+            </button>
+          </div>
+          <!-- data-reviews-grid: scripts.js prepends a shopper's own review
+               here, so it lands above the seeded ones rather than at the end of
+               a list they would have to press "show more" to reach. -->
+          <div class="items-start gap-4 xl:gap-6 grid md:grid-cols-2" data-reviews-grid>{cards}
+          </div>{more}
+        </div>
+      </section>"""
 
 
 def blog_card(img, tag, heading, excerpt, href="blog.html"):

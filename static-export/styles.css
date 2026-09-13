@@ -2049,21 +2049,124 @@ input:checked + .radio-card-accent {
 .rating-mark.is-full {
   color: #edc843;
 }
+/* The partial mark is clipped with `clip-path`, NOT by a narrowed box with
+   `overflow: hidden` and an oversized glyph inside it, which is what this used
+   to be. Two reasons the mechanism changed:
+
+     * that box genuinely overflowed — a 24px glyph in a 19px box — so the
+       responsive sweep reported it as horizontal overflow on every product
+       page. Under 4px at the 16px size it slipped beneath the threshold; at
+       the 24px summary size it did not. A measurement that has to be
+       explained away every run is worthless.
+     * the glyph no longer has to be re-sized per mark size. The box is the
+       full mark either way and only the CLIP moves, so `--lg` needs no rule
+       of its own here.
+
+   `inset()` takes PHYSICAL sides, so the direction is spelled out: fill from
+   the left in LTR, from the right in RTL — the direction the row is read in,
+   which is the whole point of the partial mark. */
 .rating-mark__fill {
   position: absolute;
-  inset-block: 0;
-  inset-inline-start: 0;
+  inset: 0;
   display: grid;
   place-items: center;
-  overflow: hidden;
   color: #edc843;
+  clip-path: inset(0 calc(100% - var(--rating-fill, 100%)) 0 0);
 }
-/* The inner glyph must keep the FULL mark's width and simply be cropped —
-   without this it squashes to the clip width and draws a thin sliver. */
+[dir="rtl"] .rating-mark__fill {
+  clip-path: inset(0 0 0 calc(100% - var(--rating-fill, 100%)));
+}
 .rating-mark__fill > svg {
-  width: 1rem;
-  height: 1rem;
-  max-width: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* The large row on the reviews summary. Only the BOX grows — the glyph is
+   `width:100%` of it and the clip is a percentage, so a large 4.8 and a small
+   4.8 land on the same fraction with no second rule to keep in step. */
+.rating-marks--lg {
+  gap: 2px;
+}
+.rating-marks--lg .rating-mark {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* --- Bottom-sheet close button: optical pull WITHOUT the overflow ---------
+   Every bottom sheet ends its header row with a close button carrying
+   `-me-1.5`, so the glyph lines up with the sheet's own padding edge rather
+   than the button's box. A negative end margin on the LAST flex item makes the
+   flex LINE 6px wider than its container, so all eight sheets reported a 6px
+   horizontal overflow in the responsive sweep — invisible (the sheet clips it)
+   but real, and eight lines of noise in a run whose whole value is being quiet.
+
+   The fix moves the 6px up one level: the ROW borrows 6px of the sheet's own
+   inline padding, and the button then sits flush at that widened row's end.
+   Same glyph position to the pixel, nothing overflowing anything.
+
+   A transform on the button does NOT work here and was the first attempt: a
+   transformed descendant still contributes its shifted border box to the
+   ancestor's scrollable overflow region, so the 6px simply moved from the
+   margin to the transform and the measurement was unchanged.
+
+   `:has()` rather than a class, because the rows live in eight separate
+   template literals in scripts.js and a shared class would have to be added to
+   each — the shape (a direct child of the sheet that contains the close
+   button) already identifies them exactly. Scoped to `.bottom-sheet`: the
+   search modal and the drawers use their own offsets and measure clean. */
+.bottom-sheet > div:has(> [data-close]) {
+  margin-inline-end: -0.375rem;
+}
+.bottom-sheet > div > [data-close] {
+  margin-inline-end: 0;
+}
+
+/* --- Star input (the "write a review" sheet) ------------------------------
+   Five buttons in a radiogroup, not five radio inputs: the painted state has
+   to run from the first star UP TO the chosen one, which a `:checked` sibling
+   selector cannot express in either direction.
+
+   The SELECTED state and the HOVER preview are deliberately different paints
+   (CLAUDE.md): a chosen star is solid gold and keeps its weight after the
+   pointer leaves, while the preview is a paler wash that is plainly transient.
+   Identical treatments would leave the committed rating looking stuck under a
+   pointer that has gone. */
+/* 44px, the AAA tap target rather than the 24px floor (CLAUDE.md): this is a
+   primary control in a sheet with room to spare, so there is no layout
+   decision to trade against here — five of them plus their gaps come to 236px,
+   which fits the sheet at 320. The glyph is smaller than its box; the box is
+   the target. */
+.star-input {
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  color: #d9dcd7;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: color .15s ease, transform .15s ease;
+}
+.star-input > span {
+  display: block;
+  width: 1.875rem;
+  height: 1.875rem;
+}
+.star-input.is-preview {
+  color: #f2e2a8;
+}
+.star-input[aria-checked="true"] {
+  color: #edc843;
+  transform: scale(1.04);
+}
+@media (prefers-reduced-motion: reduce) {
+  .star-input {
+    transition: none;
+  }
+  .star-input[aria-checked="true"] {
+    transform: none;
+  }
 }
 
 /* --- Product gallery -----------------------------------------------------
