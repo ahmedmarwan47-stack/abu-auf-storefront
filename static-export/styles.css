@@ -708,18 +708,41 @@ body.no-scroll {
    The shell keeps its own opacity/visibility transition, so open/close,
    backdrop and Escape all still run through the unchanged .modal-shell
    machinery; only the box moves. */
-@media (max-width: 1279.98px) {
+/* The switch happens at `lg` (1024px), NOT at the `xl` (1280px) the locale and
+   address sheets use. Ahmed reported (2026-09-17) having to widen the browser
+   on a laptop a long way before the centred dialog appeared, and he is right:
+   1280 is a threshold a maximised laptop window often does not clear, so the
+   full-width sheet was showing on screens that are plainly desktop. A
+   deliberate, scoped deviation from the one-breakpoint sheet rule, and it is
+   scoped for a reason — search is the widest of these panels and the only one
+   that wants the room, so moving the shared breakpoint to suit it would drag
+   the small pickers along with it. DESIGN-NOTES §3. */
+@media (max-width: 1023.98px) {
   .modal-shell--search {
     padding: 0;
-    align-items: stretch;
+    align-items: flex-start;
   }
+  /* NOT full height (Ahmed, 2026-09-17). It used to be height:100% with square
+     corners, which reads as a new PAGE rather than a panel over the one you
+     were on, and left no way to see you could dismiss it. It is anchored to
+     the TOP and capped instead, so the field still sits above the software
+     keyboard — that constraint has not gone away — while a strip of the
+     backdrop stays visible underneath.
+
+     It also sizes to its CONTENT up to that cap, so the idle panel is a short
+     sheet and only a long result list reaches the limit.
+
+     dvh after vh, not instead of it: dvh tracks the viewport as mobile browser
+     chrome collapses, and the vh line is the fallback for anything that does
+     not know it. */
   .modal-shell--search [data-modal-box] {
     width: 100%;
     max-width: none;
-    height: 100%;
     min-height: 0;
-    border-radius: 0;
-    transform: translateY(1.25rem);
+    max-height: 86vh;
+    max-height: 86dvh;
+    border-radius: 0 0 22px 22px;
+    transform: translateY(-1rem);
     transition: transform 0.28s ease;
   }
   .modal-shell--search.is-open [data-modal-box] {
@@ -727,12 +750,12 @@ body.no-scroll {
   }
   /* The field clears the notch/status bar when the sheet is full-bleed. */
   .modal-shell--search .search-row {
-    padding-top: calc(1rem + env(safe-area-inset-top));
+    padding-top: calc(0.625rem + env(safe-area-inset-top));
   }
   /* Two utilities in one group tie on specificity and emit order wins, so
      `max-h-[52vh]` is not beaten by another utility — these are authored here
-     on a two-class selector (0,2,0) instead. The scrolling region fills the
-     sheet rather than a 52vh window pinned to the top of a full screen. */
+     on a two-class selector (0,2,0) instead. The scrolling region takes
+     whatever the capped sheet has left rather than a 52vh window. */
   .modal-shell--search [data-search-results],
   .modal-shell--search [data-search-idle],
   .modal-shell--search [data-search-empty] {

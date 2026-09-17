@@ -131,6 +131,25 @@ coherence question is.
 
 **Needs:** `date_created` and a sales/popularity figure in the scrape.
 
+### Seeded "previous searches" are invented — and there IS no search analytics
+
+`SEARCH_RECENT_SEED` in `scripts.js` fills the search modal's idle panel on a
+first-ever visit, so the recent-searches block is not invisible until you have
+used the search once (Ahmed, 2026-09-17, explicitly for the developers' demo).
+Nobody made those six searches.
+
+Two things keep it honest. It is filed under **`عمليات بحث سابقة`** and never
+`الأكثر بحثاً` — the second asserts what customers actually search for, and no
+analytics exists anywhere in this build to support it, which is the same reason
+the suggestion chips lost that label. And every seeded term is counted off the
+real catalogue and returns 2–10 products, so no chip is a dead end.
+
+**To drop it before launch:** delete `SEARCH_RECENT_SEED` and have
+`recentSearches()` return `[]` for a missing key. One edit, no other call site
+depends on it. Once real search analytics exists, the same block is where
+genuinely popular terms would go — and only then does the `الأكثر بحثاً` label
+become available.
+
 ### Product reviews — the client's endpoint is test data, not reviews
 
 `HANDOFF.md` used to list "real reviews at `apis/v2/get-all`" as ready-to-build.
@@ -768,7 +787,7 @@ problem, not ours. A search results page was explicitly **out** of scope — so
 everything below happens inside the modal, and the modal now has to carry the
 whole feature on its own.
 
-**The shape.** Below `xl` the modal was a `.modal-shell` — a small centred card
+**The shape.** Below `lg` the modal was a `.modal-shell` — a small centred card
 — at every width. That is the same objection Ahmed raised against the locale
 picker on 2026-07-22, unfixed here: a desktop popup shape on a phone. It is
 **not** a `.bottom-sheet` either, though, which is the interesting part. Search
@@ -782,6 +801,54 @@ the box moves — so there is still one overlay system, not two.
 Measured, all three states (idle / results / empty), 320–1440: 0 contrast
 failures, 0 undersized targets, no horizontal scroll. The box is the full
 viewport below `xl` and the unchanged 640px card at and above it.
+
+**Second pass, same day, three things Ahmed reported.**
+
+*The breakpoint was too far out.* The sheet became a dialog at `xl` (1280px),
+the threshold the locale and address sheets use, and he had to widen the
+browser on a laptop a long way before the desktop popup appeared. He is right:
+a maximised laptop window often does not clear 1280, so the full-width sheet
+was showing on screens that are plainly desktop. Search now switches at **`lg`
+(1024px)**. This is a **deliberate, scoped deviation** from the site's
+one-breakpoint sheet rule, and scoped on purpose — search is the widest of
+these panels and the only one that wants the room, so moving the shared
+breakpoint to suit it would drag the small pickers along too. If the pickers
+are later judged to have the same problem, move them individually.
+
+*It should not reach the full height of the screen.* It was `height: 100%` with
+square corners, which reads as a new **page** rather than a panel over the one
+you were on. It is capped at **`86dvh`** now (with a `vh` fallback line first,
+for anything that does not know `dvh`), keeps its top anchor so the field still
+sits above the software keyboard — that constraint has not gone away — and has
+rounded bottom corners. It also sizes to its **content** up to that cap, so the
+idle panel is a short sheet (≈400px at 390×844) and only a long result list
+reaches the limit.
+
+*Previous searches before you type anything.* The idle panel had a recent-
+searches block that a fresh browser never saw, because there was nothing in it
+yet. `SEARCH_RECENT_SEED` now fills it on a first-ever visit, on the same
+contract as `CART_SEED` and `FAVS_SEED`: absent key = seed, empty array = a
+shopper who pressed مسح, and once they search anything it is never consulted
+again.
+
+**That seed is invented data** — nobody made those searches, and there is no
+search analytics behind this site. It is demo state for the developers and it
+is filed under `عمليات بحث سابقة`, **not** `الأكثر بحثاً`: the second is a
+claim about what customers actually search for, which we cannot make. That is
+the same line the suggestion chips already walk. Every term is counted off the
+real catalogue and returns between 2 and 10 products, and none of them
+duplicates a suggestion chip — the original chips were phrases like
+`قهوة تركي` that matched nothing, so every one was a guaranteed dead end.
+
+**Two bugs this pass, one of them mine.** `recentSearchClear()` used
+`removeItem`, which is indistinguishable from a first-ever visit — so with the
+seed in place مسح would have refilled the list instead of emptying it. It
+writes `"[]"` now. And the dimmed area *around* a centred modal belongs to the
+`.modal-shell` (inset:0, z-100), not to the backdrop underneath it at z-90, so
+a click there never reached the backdrop handler and tapping beside any modal
+did nothing. Pre-existing and true of every `.modal-shell`, fixed site-wide
+rather than for search — it only became urgent because the capped sheet now
+shows a strip of darkened page, which is an invitation to tap it.
 
 **The combobox.** `role="combobox"` + `aria-expanded` + `aria-controls` +
 `aria-activedescendant` on the field, `role="listbox"` on the list, `role=

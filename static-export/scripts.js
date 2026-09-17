@@ -2536,10 +2536,43 @@
   const SEARCH_RECENT_MAX = 6;
   const SEARCH_SEEDS = ["قهوة", "مكسرات", "تمر", "معمول", "بروتين"];
 
+  /*
+   * Seeded on a first-ever visit only, exactly like CART_SEED and FAVS_SEED
+   * and for the same reason: Ahmed asked (2026-09-17) for the idle panel to
+   * show previous searches before anything is typed, and a fresh browser has
+   * none, so the whole block was invisible until you had used the search once.
+   * Once the shopper searches anything, this is never consulted again.
+   *
+   * This is INVENTED data — nobody made these searches, and there is no search
+   * analytics behind the site. It is demo state for the developers, flagged in
+   * DESIGN-NOTES §1, and it is deliberately filed under "عمليات بحث سابقة"
+   * rather than "الأكثر بحثاً": the second would be a claim about what
+   * customers actually search for, which we cannot make. Same line the seed
+   * CHIPS already walk.
+   *
+   * Every term is counted off the real catalogue and returns between 2 and 10
+   * products (قهوة سريعة التحضير 2, كاجو 2, شيكولاتة 10, عين جمل 2, فستق 2,
+   * بسكويت 4). That check is the point: the original suggestion chips were
+   * phrases like "قهوة تركي" that matched nothing, so every one was a
+   * guaranteed dead end. None of these duplicates a suggestion chip either,
+   * so the two rows never show the same word twice.
+   */
+  const SEARCH_RECENT_SEED = [
+    "قهوة سريعة التحضير",
+    "كاجو",
+    "شيكولاتة",
+    "عين جمل",
+    "فستق",
+    "بسكويت",
+  ];
+
   function recentSearches() {
     try {
-      const raw = JSON.parse(localStorage.getItem(SEARCH_RECENT_KEY) || "[]");
-      return Array.isArray(raw) ? raw.filter((x) => typeof x === "string") : [];
+      const raw = localStorage.getItem(SEARCH_RECENT_KEY);
+      // No key at all = a first-ever visit, so seed. An empty array is a
+      // shopper who pressed مسح on purpose — leave that alone.
+      const list = raw === null ? SEARCH_RECENT_SEED.slice() : JSON.parse(raw);
+      return Array.isArray(list) ? list.filter((x) => typeof x === "string") : [];
     } catch (e) {
       return [];
     }
@@ -2561,9 +2594,13 @@
 
   function recentSearchClear() {
     try {
-      localStorage.removeItem(SEARCH_RECENT_KEY);
+      // Writes an EMPTY ARRAY, never removeItem. Removing the key is
+      // indistinguishable from a first-ever visit, so the seed above would
+      // come straight back and مسح would look broken — the button that is
+      // supposed to empty the list would refill it.
+      localStorage.setItem(SEARCH_RECENT_KEY, "[]");
     } catch (e) {
-      /* nothing to clear */
+      /* private mode — the list is empty for this page view either way */
     }
   }
 
@@ -3749,6 +3786,26 @@
         return;
       }
       if (e.target.classList.contains("overlay-backdrop")) {
+        closeOverlay();
+        return;
+      }
+      /*
+       * The dimmed area AROUND a centred modal belongs to the .modal-shell,
+       * not to the backdrop — the shell is inset:0 at z-100 and the backdrop
+       * sits under it at z-90, so a click outside the box never reaches the
+       * rule above and tapping beside a modal did nothing at all. Site-wide,
+       * every .modal-shell, not a search-only patch.
+       *
+       * `classList.contains` on the TARGET is what keeps this safe: the shell
+       * is only ever the target when the pointer lands on the shell itself,
+       * because [data-modal-box] and everything inside it is a descendant.
+       * Same test the backdrop line above uses.
+       *
+       * This mattered less while the search sheet covered the whole screen.
+       * It is capped now and shows a strip of the darkened page underneath,
+       * which is an invitation to tap it.
+       */
+      if (e.target.classList.contains("modal-shell")) {
         closeOverlay();
       }
     });

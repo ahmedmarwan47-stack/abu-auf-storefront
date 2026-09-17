@@ -191,15 +191,19 @@ terms must match (AND, not OR), prefix matches outrank buried ones, and
 `popularityRank` breaks ties. Because it fetches, **search is the one feature
 that does not work from `file://`** — everything else still does.
 
-The modal around that matcher is a **full-height sheet below `xl`** (field
-pinned at the top — a `.bottom-sheet` would put it behind the software
-keyboard) and a **real combobox** (arrow keys, `aria-activedescendant`,
+The modal around that matcher is a **top-anchored sheet below `lg`**, capped at
+`86dvh` and sizing to its content (field pinned at the top — a `.bottom-sheet`
+would put it behind the software keyboard; `lg` rather than the `xl` the other
+sheets use is a scoped deviation, DESIGN-NOTES §3) and a **real combobox** (arrow keys, `aria-activedescendant`,
 Escape clears before it closes). `fold()` is now defined in terms of
 **`foldMap()`**, which folds character by character and keeps an index back
 into the original string — that index is what the match highlighter needs and
 what a chain of `.replace()` calls cannot give you. Recent searches live under
 **`abuauf:searches`**; `abuauf:recent` is the recently-*viewed* product store
-and the two must not be confused. The active row and the scope chips are
+and the two must not be confused. `abuauf:searches` is **seeded on a first-ever
+visit** so the idle panel is not empty — invented demo data, DESIGN-NOTES §1 —
+so anything clearing it must write `"[]"`, never `removeItem`, which reads as a
+first visit and brings the seed back. The active row and the scope chips are
 **selected** states and are painted accordingly (rule 8): marker bar and ink,
 never the hover wash alone. There is no result cap — with no search results
 page, capping made matches unreachable and under-reported the count. See
