@@ -537,6 +537,49 @@ on the number span alone (not the row — that would move the up/down chip out o
 the RTL start). `.latin` does not help; it sets the font family only.
 `DESIGN-NOTES.md` §8.
 
+## 5d. Session 2026-09-17 — the search modal, end to end
+
+Ahmed decided the search *backend* is the developers' problem (Meilisearch was
+the candidate) and asked what the design side could add on top. A search results
+page was explicitly ruled out, so all of this lives in the modal. **Nothing here
+touched `build/`** — the search modal is injected chrome, so the whole change is
+`scripts.js` + `styles.css`, and a rebuild produces no HTML diff.
+
+1. **Full-height sheet below `xl`**, field pinned at the top. Not a
+   `.bottom-sheet`: a software keyboard would cover a bottom-anchored field and
+   iOS does not resize the visual viewport, so there is nothing to recover from.
+   Reuses `.modal-shell`'s open/close, backdrop and Escape — only the box moves.
+2. **A real combobox** — arrow keys, `aria-activedescendant`, Escape clears
+   before it closes. Previously only the first row was reachable without a mouse.
+3. **Match highlighting** via a new `foldMap()` that keeps an index back into
+   the original string. `fold()` is now defined in terms of it.
+4. **Recent searches** under `abuauf:searches` — *not* `abuauf:recent`, which is
+   the recently-viewed product store.
+5. **Scope chips** with counts off the live hit set, and a **recovery empty
+   state** (real best sellers + categories) instead of a dead end.
+6. **A skeleton** for the one query that waits on the `catalog.json` fetch.
+
+**Three bugs found by measuring, all fixed here.** The search field was **22px
+tall**, under the WCAG 2.5.8 floor. `-me-2` on the clear-recents button hung it
+8px past its parent, which on an `overflow-y-auto` pane is a real horizontal
+scroll (the other axis computes to `auto`). And the i18n walker was translating
+the shopper's **own typed query** — a recent search for `تمر` rendered as
+"Dates" in English because the nav contains that word, while the chip's
+`data-search-seed` still carried the Arabic, so the label and what the chip
+searched had drifted apart. `inSkipped()` now honours a **`data-i18n-skip`**
+attribute; it is general, and any future surface showing user-authored text
+should carry it.
+
+**Verified:** build clean (34 + 99, no missing assets), `node --check` clean,
+koueider grep empty, rebuild produces no diff. Full sweep at 320/360/375/390/414
+— **0 contrast failures (6,842 nodes per width), 0 page-level horizontal
+scroll**. The sweep never opens the modal, so the modal was swept separately in
+all three states at 320/360/375/390/414/768/1280/1440: **0 contrast failures, 0
+targets under 24px, no horizontal scroll**; the one remaining overflow entry is
+the `.sr-only` label, the known artefact described in §5.
+
+Full rationale in `DESIGN-NOTES.md` §3.
+
 ## 6. The language toggle — what it is and isn't
 
 Ahmed asked for a working language switcher to test RTL. It:

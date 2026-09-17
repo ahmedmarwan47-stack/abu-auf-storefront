@@ -191,6 +191,26 @@ terms must match (AND, not OR), prefix matches outrank buried ones, and
 `popularityRank` breaks ties. Because it fetches, **search is the one feature
 that does not work from `file://`** — everything else still does.
 
+The modal around that matcher is a **full-height sheet below `xl`** (field
+pinned at the top — a `.bottom-sheet` would put it behind the software
+keyboard) and a **real combobox** (arrow keys, `aria-activedescendant`,
+Escape clears before it closes). `fold()` is now defined in terms of
+**`foldMap()`**, which folds character by character and keeps an index back
+into the original string — that index is what the match highlighter needs and
+what a chain of `.replace()` calls cannot give you. Recent searches live under
+**`abuauf:searches`**; `abuauf:recent` is the recently-*viewed* product store
+and the two must not be confused. The active row and the scope chips are
+**selected** states and are painted accordingly (rule 8): marker bar and ink,
+never the hover wash alone. There is no result cap — with no search results
+page, capping made matches unreachable and under-reported the count. See
+DESIGN-NOTES §3.
+
+**`data-i18n-skip`** opts a subtree out of the i18n walk. The dictionary is
+keyed on exact Arabic strings, which is right for chrome copy and wrong for
+text the **shopper** wrote — a recent search for `تمر` was being rewritten to
+"Dates" because the nav contains that word. Any surface showing user-authored
+text needs it.
+
 **i18n** — `t()` for chrome strings and `translateDocument()` for build-time
 copy, both keyed off an `EN` dictionary of exact Arabic strings. Switching
 language re-renders the injected chrome and walks text nodes, stashing originals

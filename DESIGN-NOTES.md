@@ -760,6 +760,89 @@ pattern, was **left on the full ring** (it lives in the footer, not a modal).
 If the single-divider cue is judged too subtle, the fallback is to restore the
 ring for `.search-row` — the rule is a two-line change.
 
+### Search is a full-height sheet on phones, and a real combobox (Ahmed, 2026-09-17)
+
+Ahmed asked for the search experience to be taken further, having decided the
+search *backend* (Meilisearch was the specific candidate) is the developers'
+problem, not ours. A search results page was explicitly **out** of scope — so
+everything below happens inside the modal, and the modal now has to carry the
+whole feature on its own.
+
+**The shape.** Below `xl` the modal was a `.modal-shell` — a small centred card
+— at every width. That is the same objection Ahmed raised against the locale
+picker on 2026-07-22, unfixed here: a desktop popup shape on a phone. It is
+**not** a `.bottom-sheet` either, though, which is the interesting part. Search
+is keyboard-first, and a software keyboard covers the bottom half of the
+viewport; on iOS the visual viewport does not resize, so nothing in CSS can
+recover a bottom-anchored field from behind it. The sheet therefore fills the
+screen with the **field pinned at the top** and the results scrolling under it.
+It keeps `.modal-shell`'s own open/close, backdrop and Escape machinery — only
+the box moves — so there is still one overlay system, not two.
+
+Measured, all three states (idle / results / empty), 320–1440: 0 contrast
+failures, 0 undersized targets, no horizontal scroll. The box is the full
+viewport below `xl` and the unchanged 640px card at and above it.
+
+**The combobox.** `role="combobox"` + `aria-expanded` + `aria-controls` +
+`aria-activedescendant` on the field, `role="listbox"` on the list, `role=
+"option"` on the rows. Before this, arrow keys did nothing at all and Enter
+jumped to the first row, so no other row was reachable without a pointer.
+Escape now clears the query first and closes only on the second press (ARIA
+behaviour); the document-level handler still does the closing.
+
+The active row is a **selected** state and is deliberately not painted like the
+hover (hard rule 8): hover is the wash alone, active is the wash **plus** an
+ink marker bar on the inline-start edge and the name in `#163300`. Same for the
+scope chips — selected is filled ink with white text and 700 weight, hover on
+an unselected chip is a wash, and `aria-pressed` is the state the CSS paints
+off, exactly as the favourites heart does.
+
+**Match highlighting.** `fold()` already knew which characters matched and the
+row threw it away. That matters most in the case the fold exists for: type
+`قهوه`, get back a row reading `قهوة`, and with nothing marked it looks like a
+*wrong* result rather than a spelling the search understood. `foldMap()` folds
+character by character and keeps an index back into the original string —
+a chain of `.replace()` calls cannot, because stripping tashkeel and collapsing
+whitespace both shorten the string, so folded offset N is not original offset N.
+`fold()` is now defined in terms of `foldMap()` so the matcher and the
+highlighter read the same fold by construction.
+
+**Recent searches** — `abuauf:searches`, max 6, deduped on the **folded** form
+so `قهوه` and `قهوة` do not both take a slot. Deliberately **not**
+`abuauf:recent`, which is already the recently-*viewed* product store; two
+unrelated shapes writing one key would have been a silent corruption. Written
+on activation only — a term abandoned mid-word is not a search anyone made.
+This is the shopper's own data, so unlike the suggestion chips it needs no
+defence against the "don't invent data" rule.
+
+**The empty state** is now a recovery surface rather than a full stop: the
+client's real best sellers by `popularityRank` and the categories to browse.
+A shopper who searched and found nothing is the likeliest to leave.
+
+**The 24-result cap is gone.** With no search results page, a cap meant matches
+25+ were simply unreachable, and the count printed above the list was the
+*capped* number, so it under-reported. The catalogue is 99 products: the list
+scrolls and the scope chips narrow it.
+
+**Two defects found by measuring, not by looking**, both fixed here: the
+search field was **22px tall** — under the WCAG 2.5.8 24px floor, on the one
+control the whole feature is built around — and `-me-2` on the clear-recents
+button hung it 8px outside its parent, which with `overflow-y-auto` on that
+pane (the other axis computes to `auto`) was a real horizontal scroll.
+
+**One thing left deliberately undone:** the result count still reads
+`5 نتيجة`. Arabic number agreement wants `نتائج` for 3–10, `نتيجتان` for 2 and
+`نتيجة واحدة` for 1, so getting it right is a four-branch rule, not a string
+swap — and `نتيجة` is pre-existing copy. Flagged for sign-off rather than
+half-fixed.
+
+**What the backend swap will and will not need.** The highlight, the scope
+chips and the count are all fed from one place, so pointing them at a real
+engine's hits, facet counts and match positions is a change inside
+`render()`/`paint()`. What genuinely has no home yet is pagination — that is
+the search results page Ahmed ruled out, and a server-backed index is the thing
+that will eventually force the question.
+
 ### The best-seller badge has a second, category-relative tier
 
 Ahmed asked (2026-07-22) for more products to carry a best-seller badge. The
