@@ -28,19 +28,15 @@
 # to main corrects it on its own.
 name: Deploy branch preview
 
-# The push trigger is not a convenience, it is the only one that works from
-# here: GitHub registers a workflow_dispatch workflow only once the file is on
-# the DEFAULT branch, so a dispatch-only preview cannot be launched from a
-# feature branch without first committing this to main. A push event runs the
-# workflow from the branch pushed to, with that branch's copy of this file, so
-# the mechanism needs nothing on main at all.
-#
-# workflow_dispatch is kept for the day this does land on main, where it makes
-# any branch previewable by name.
+# Dispatch only, and run it FROM main — that is a constraint, not a style
+# choice. Pages deployments go through the `github-pages` environment, whose
+# deployment-branch rule GitHub sets to default-branch-only when the Pages
+# source is Actions. A run started on a feature branch is rejected before its
+# first step, with no log to read: the build passes, the deploy job dies in a
+# second. Running from main satisfies that rule while the `branch` input says
+# what to preview, so no repository setting has to be loosened to let a branch
+# be published.
 on:
-  push:
-    branches:
-      - "claude/**"
   workflow_dispatch:
     inputs:
       branch:
