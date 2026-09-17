@@ -191,6 +191,38 @@ terms must match (AND, not OR), prefix matches outrank buried ones, and
 `popularityRank` breaks ties. Because it fetches, **search is the one feature
 that does not work from `file://`** — everything else still does.
 
+The modal around that matcher is a **top-anchored sheet below `lg`**, capped at
+`86dvh` and sizing to its content — the field starts at the top of the screen
+because that is the only placement a software keyboard cannot cover. It was
+flipped to a bottom anchor once on geometry that looked sound and **a real
+handset disproved**; this sandbox cannot test a software keyboard, so do not
+move this anchor without a device. (`lg` rather than the `xl` the other sheets
+use is a scoped deviation, DESIGN-NOTES §3.) The centred dialog above `lg` is capped at `84vh` so a short
+desktop window cannot push its bottom off-screen. The idle panel opens on the
+real best sellers via `bestSellersHTML()`, shared with the no-results state and
+filled asynchronously from `catalog.json`. A full-bleed `-mx-5` block must be a
+**direct child** of a pane that scrolls, or the wrapper in between gets a real
+20px horizontal scroll. It is also a **real combobox** (arrow keys, `aria-activedescendant`,
+Escape clears before it closes). `fold()` is now defined in terms of
+**`foldMap()`**, which folds character by character and keeps an index back
+into the original string — that index is what the match highlighter needs and
+what a chain of `.replace()` calls cannot give you. Recent searches live under
+**`abuauf:searches`**; `abuauf:recent` is the recently-*viewed* product store
+and the two must not be confused. `abuauf:searches` is **seeded on a first-ever
+visit** so the idle panel is not empty — invented demo data, DESIGN-NOTES §1 —
+so anything clearing it must write `"[]"`, never `removeItem`, which reads as a
+first visit and brings the seed back. The active row and the scope chips are
+**selected** states and are painted accordingly (rule 8): marker bar and ink,
+never the hover wash alone. There is no result cap — with no search results
+page, capping made matches unreachable and under-reported the count. See
+DESIGN-NOTES §3.
+
+**`data-i18n-skip`** opts a subtree out of the i18n walk. The dictionary is
+keyed on exact Arabic strings, which is right for chrome copy and wrong for
+text the **shopper** wrote — a recent search for `تمر` was being rewritten to
+"Dates" because the nav contains that word. Any surface showing user-authored
+text needs it.
+
 **i18n** — `t()` for chrome strings and `translateDocument()` for build-time
 copy, both keyed off an `EN` dictionary of exact Arabic strings. Switching
 language re-renders the injected chrome and walks text nodes, stashing originals

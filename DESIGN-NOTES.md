@@ -131,6 +131,25 @@ coherence question is.
 
 **Needs:** `date_created` and a sales/popularity figure in the scrape.
 
+### Seeded "previous searches" are invented — and there IS no search analytics
+
+`SEARCH_RECENT_SEED` in `scripts.js` fills the search modal's idle panel on a
+first-ever visit, so the recent-searches block is not invisible until you have
+used the search once (Ahmed, 2026-09-17, explicitly for the developers' demo).
+Nobody made those six searches.
+
+Two things keep it honest. It is filed under **`عمليات بحث سابقة`** and never
+`الأكثر بحثاً` — the second asserts what customers actually search for, and no
+analytics exists anywhere in this build to support it, which is the same reason
+the suggestion chips lost that label. And every seeded term is counted off the
+real catalogue and returns 2–10 products, so no chip is a dead end.
+
+**To drop it before launch:** delete `SEARCH_RECENT_SEED` and have
+`recentSearches()` return `[]` for a missing key. One edit, no other call site
+depends on it. Once real search analytics exists, the same block is where
+genuinely popular terms would go — and only then does the `الأكثر بحثاً` label
+become available.
+
 ### Product reviews — the client's endpoint is test data, not reviews
 
 `HANDOFF.md` used to list "real reviews at `apis/v2/get-all`" as ready-to-build.
@@ -759,6 +778,187 @@ focus indicator in that context. The newsletter field, which shares the same
 pattern, was **left on the full ring** (it lives in the footer, not a modal).
 If the single-divider cue is judged too subtle, the fallback is to restore the
 ring for `.search-row` — the rule is a two-line change.
+
+### Search is a full-height sheet on phones, and a real combobox (Ahmed, 2026-09-17)
+
+Ahmed asked for the search experience to be taken further, having decided the
+search *backend* (Meilisearch was the specific candidate) is the developers'
+problem, not ours. A search results page was explicitly **out** of scope — so
+everything below happens inside the modal, and the modal now has to carry the
+whole feature on its own.
+
+**The shape.** Below `lg` the modal was a `.modal-shell` — a small centred card
+— at every width. That is the same objection Ahmed raised against the locale
+picker on 2026-07-22, unfixed here: a desktop popup shape on a phone. It is
+**not** a `.bottom-sheet` either, though, which is the interesting part. Search
+is keyboard-first, and a software keyboard covers the bottom half of the
+viewport; on iOS the visual viewport does not resize, so nothing in CSS can
+recover a bottom-anchored field from behind it. The sheet therefore fills the
+screen with the **field pinned at the top** and the results scrolling under it.
+It keeps `.modal-shell`'s own open/close, backdrop and Escape machinery — only
+the box moves — so there is still one overlay system, not two.
+
+Measured, all three states (idle / results / empty), 320–1440: 0 contrast
+failures, 0 undersized targets, no horizontal scroll. The box is the full
+viewport below `xl` and the unchanged 640px card at and above it.
+
+**Second pass, same day, three things Ahmed reported.**
+
+*The breakpoint was too far out.* The sheet became a dialog at `xl` (1280px),
+the threshold the locale and address sheets use, and he had to widen the
+browser on a laptop a long way before the desktop popup appeared. He is right:
+a maximised laptop window often does not clear 1280, so the full-width sheet
+was showing on screens that are plainly desktop. Search now switches at **`lg`
+(1024px)**. This is a **deliberate, scoped deviation** from the site's
+one-breakpoint sheet rule, and scoped on purpose — search is the widest of
+these panels and the only one that wants the room, so moving the shared
+breakpoint to suit it would drag the small pickers along too. If the pickers
+are later judged to have the same problem, move them individually.
+
+*It should not reach the full height of the screen.* It was `height: 100%` with
+square corners, which reads as a new **page** rather than a panel over the one
+you were on. It is capped at **`86dvh`** now (with a `vh` fallback line first,
+for anything that does not know `dvh`), keeps its top anchor so the field still
+sits above the software keyboard — that constraint has not gone away — and has
+rounded bottom corners. It also sizes to its **content** up to that cap, so the
+idle panel is a short sheet (≈400px at 390×844) and only a long result list
+reaches the limit.
+
+*Previous searches before you type anything.* The idle panel had a recent-
+searches block that a fresh browser never saw, because there was nothing in it
+yet. `SEARCH_RECENT_SEED` now fills it on a first-ever visit, on the same
+contract as `CART_SEED` and `FAVS_SEED`: absent key = seed, empty array = a
+shopper who pressed مسح, and once they search anything it is never consulted
+again.
+
+**That seed is invented data** — nobody made those searches, and there is no
+search analytics behind this site. It is demo state for the developers and it
+is filed under `عمليات بحث سابقة`, **not** `الأكثر بحثاً`: the second is a
+claim about what customers actually search for, which we cannot make. That is
+the same line the suggestion chips already walk. Every term is counted off the
+real catalogue and returns between 2 and 10 products, and none of them
+duplicates a suggestion chip — the original chips were phrases like
+`قهوة تركي` that matched nothing, so every one was a guaranteed dead end.
+
+**Two bugs this pass, one of them mine.** `recentSearchClear()` used
+`removeItem`, which is indistinguishable from a first-ever visit — so with the
+seed in place مسح would have refilled the list instead of emptying it. It
+writes `"[]"` now. And the dimmed area *around* a centred modal belongs to the
+`.modal-shell` (inset:0, z-100), not to the backdrop underneath it at z-90, so
+a click there never reached the backdrop handler and tapping beside any modal
+did nothing. Pre-existing and true of every `.modal-shell`, fixed site-wide
+rather than for search — it only became urgent because the capped sheet now
+shows a strip of darkened page, which is an invitation to tap it.
+
+**Third pass: it rises from the bottom, and it opens on a recommendation.**
+
+*The anchor: top, then bottom, then top again — and the third one is settled by
+a handset.* Ahmed asked why these sheets came from above. The top anchor was a
+deliberate trade: search is keyboard-first, and a short bottom sheet puts its
+own input behind the software keyboard, which on iOS nothing in CSS recovers
+because the visual viewport does not resize.
+
+It was flipped to the bottom at a **fixed** `86dvh`, on the reasoning that a
+top edge at 14dvh would hold the field clear of a keyboard covering about the
+bottom half. The geometry checked out here — field at y=110 of 568, y=148 of
+844. **Ahmed then opened it on a real phone and the keyboard covered it
+anyway**, and it is back to the top.
+
+Worth recording why the arithmetic was not enough, because it is the reusable
+part: it assumed the sheet stays where it is painted. A bottom-anchored fixed
+element does not — the keyboard does not resize the layout viewport it is
+anchored to, so the whole sheet ends up behind it, and measuring its resting
+position in a browser with no software keyboard can never show that. **This
+sandbox cannot test a software keyboard at all**, so any future change to this
+anchor needs a device, not a measurement. It has now cost two rounds.
+
+The sheet hangs from the top, capped at `86dvh`, rounded BOTTOM corners, and
+sizes to its content up to that cap — which is safe on this anchor in a way it
+was not on the other, because a short panel cannot move a field pinned to the
+top edge. The grab mark sits at the **bottom**, this sheet's free edge.
+
+*The idle panel opens on the best sellers.* Ahmed asked for the initial state
+to carry the recommendation rows the no-results state already had. There is now
+one `bestSellersHTML()` used by both, rather than the block written twice, so
+the two cannot drift. This is **real data** — `popularityRank` is the product's
+actual position in the client's 653-product store; a product with no rank is
+left out rather than padded in, so the list moves when their sales do.
+
+It fills **asynchronously**, after the chips are already painted: it needs
+`catalog.json`, `openOverlay()` already warms that fetch while the shopper is
+reaching for the keyboard, and a failed fetch leaves the chips alone rather
+than a spinner. It is therefore the one part of the idle panel that does not
+work from `file://` — the same caveat search itself carries.
+
+*Two bugs this pass.* The richer idle panel outgrew a **short desktop window** —
+694px against a 600px viewport, with the bottom of the dialog off-screen and no
+way to scroll to it, because `.modal-shell` is not a scroll container. The
+centred dialog is capped at `84vh` now and its panes shrink and scroll inside
+it (`min-height: 0`, without which a flex child will not shrink below its
+content). And a full-bleed `-mx-5` row block inside a plain wrapper gave that
+wrapper a real 20px horizontal scroll; the full-bleed box has to be a **direct
+child of the pane**, which is `overflow-y-auto` and absorbs it. Same defect as
+the clear-recents `-me-2`, caught the same way — by measuring, not by looking.
+
+**The combobox.** `role="combobox"` + `aria-expanded` + `aria-controls` +
+`aria-activedescendant` on the field, `role="listbox"` on the list, `role=
+"option"` on the rows. Before this, arrow keys did nothing at all and Enter
+jumped to the first row, so no other row was reachable without a pointer.
+Escape now clears the query first and closes only on the second press (ARIA
+behaviour); the document-level handler still does the closing.
+
+The active row is a **selected** state and is deliberately not painted like the
+hover (hard rule 8): hover is the wash alone, active is the wash **plus** an
+ink marker bar on the inline-start edge and the name in `#163300`. Same for the
+scope chips — selected is filled ink with white text and 700 weight, hover on
+an unselected chip is a wash, and `aria-pressed` is the state the CSS paints
+off, exactly as the favourites heart does.
+
+**Match highlighting.** `fold()` already knew which characters matched and the
+row threw it away. That matters most in the case the fold exists for: type
+`قهوه`, get back a row reading `قهوة`, and with nothing marked it looks like a
+*wrong* result rather than a spelling the search understood. `foldMap()` folds
+character by character and keeps an index back into the original string —
+a chain of `.replace()` calls cannot, because stripping tashkeel and collapsing
+whitespace both shorten the string, so folded offset N is not original offset N.
+`fold()` is now defined in terms of `foldMap()` so the matcher and the
+highlighter read the same fold by construction.
+
+**Recent searches** — `abuauf:searches`, max 6, deduped on the **folded** form
+so `قهوه` and `قهوة` do not both take a slot. Deliberately **not**
+`abuauf:recent`, which is already the recently-*viewed* product store; two
+unrelated shapes writing one key would have been a silent corruption. Written
+on activation only — a term abandoned mid-word is not a search anyone made.
+This is the shopper's own data, so unlike the suggestion chips it needs no
+defence against the "don't invent data" rule.
+
+**The empty state** is now a recovery surface rather than a full stop: the
+client's real best sellers by `popularityRank` and the categories to browse.
+A shopper who searched and found nothing is the likeliest to leave.
+
+**The 24-result cap is gone.** With no search results page, a cap meant matches
+25+ were simply unreachable, and the count printed above the list was the
+*capped* number, so it under-reported. The catalogue is 99 products: the list
+scrolls and the scope chips narrow it.
+
+**Two defects found by measuring, not by looking**, both fixed here: the
+search field was **22px tall** — under the WCAG 2.5.8 24px floor, on the one
+control the whole feature is built around — and `-me-2` on the clear-recents
+button hung it 8px outside its parent, which with `overflow-y-auto` on that
+pane (the other axis computes to `auto`) was a real horizontal scroll.
+
+**One thing left deliberately undone:** the result count still reads
+`5 نتيجة`. Arabic number agreement wants `نتائج` for 3–10, `نتيجتان` for 2 and
+`نتيجة واحدة` for 1, so getting it right is a four-branch rule, not a string
+swap — and `نتيجة` is pre-existing copy. Flagged for sign-off rather than
+half-fixed.
+
+**What the backend swap will and will not need.** The highlight, the scope
+chips and the count are all fed from one place, so pointing them at a real
+engine's hits, facet counts and match positions is a change inside
+`render()`/`paint()`. What genuinely has no home yet is pagination — that is
+the search results page Ahmed ruled out, and a server-backed index is the thing
+that will eventually force the question.
 
 ### The best-seller badge has a second, category-relative tier
 

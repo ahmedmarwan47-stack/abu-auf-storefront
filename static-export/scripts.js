@@ -372,6 +372,8 @@
     // arriving rather than the same one changing meaning.
     trash:
       '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M4 7h16M10 4h4M9 7v11m6-11v11M6 7l.8 12.1A2 2 0 0 0 8.8 21h6.4a2 2 0 0 0 2-1.9L18 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    clock:
+      '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   };
 
   const isCheckout = () => document.body.getAttribute("data-page") === "checkout";
@@ -418,6 +420,14 @@
     "نتيجة": "results",
     "لا توجد نتائج لـ": "No results for",
     "تعذر تحميل نتائج البحث. حاول مرة أخرى.": "Could not load search results. Please try again.",
+    "عمليات بحث سابقة": "Recent searches",
+    "مسح": "Clear",
+    "الكل": "All",
+    "في": "in",
+    "نتائج البحث": "Search results",
+    "تصفية النتائج حسب الفئة": "Filter results by category",
+    "جرب اسم منتج أو فئة، أو ابدأ من الأكثر مبيعاً.": "Try a product or category name, or start from the best sellers.",
+    "تصفح الفئات": "Browse categories",
     "منتجات أُضيفت إلى السلة": "products added to cart",
     // masthead + utility
     "عرض خاطف": "Flash sale",
@@ -636,9 +646,17 @@
   const I18N_ATTRS = ["placeholder", "aria-label", "title", "alt"];
   const collapse = (s) => s.replace(/\s+/g, " ").trim();
 
+  /* `data-i18n-skip` opts a subtree out of the walk. The dictionary is keyed
+     on exact Arabic strings, which is right for chrome copy and wrong for text
+     the SHOPPER wrote: a recent search for "تمر" is their query, not a nav
+     label, and it was being rewritten to "Dates" in English simply because the
+     nav happens to contain that word. Their own typing is not ours to
+     translate — and the chip's data-search-seed still carried the Arabic, so
+     the label and what the chip actually searched had drifted apart. */
   const inSkipped = (el) => {
     for (let n = el; n; n = n.parentElement) {
       if (I18N_SKIP[n.tagName]) return true;
+      if (n.hasAttribute && n.hasAttribute("data-i18n-skip")) return true;
     }
     return false;
   };
@@ -1875,45 +1893,98 @@
       </div>
     </aside>
 
-    <!-- Search modal -->
-    <div data-modal="search" class="modal-shell">
-      <div class="bg-white shadow-custom3 rounded-2xl w-full max-w-[640px] overflow-hidden" data-modal-box>
-        <div class="flex items-center gap-3 px-5 py-4 border-transparent border-b search-row">
+    <!-- Search modal
+
+         Below xl this is a FULL-HEIGHT sheet, not the centred card it used to
+         be at every width (Ahmed, 2026-09-17). Same reasoning as the locale
+         picker: a small floating box in the middle of a phone screen is a
+         desktop shape on a surface the thumb never reaches. Search has one
+         constraint the locale sheet does not, though, so it is NOT a
+         .bottom-sheet: it is keyboard-first, and a software keyboard eats the
+         bottom half of the viewport. On iOS the visual viewport does not
+         resize, so a bottom-anchored sheet puts its own input behind the
+         keyboard. This fills the screen instead, with the field pinned at the
+         TOP and the results scrolling underneath it. The shape lives in
+         styles.css under .modal-shell--search; the open/close mechanism,
+         backdrop and Escape handling are the unchanged .modal-shell ones.
+
+         The field is a real combobox now - role, aria-expanded, aria-controls
+         and aria-activedescendant, with the result list as its listbox. Arrow
+         keys used to do nothing at all: Enter jumped to the first row and no
+         other row was reachable without a pointer.
+    -->
+    <div data-modal="search" class="modal-shell modal-shell--search">
+      <div class="flex flex-col bg-white shadow-custom3 rounded-2xl w-full max-w-[640px] overflow-hidden" data-modal-box>
+        <div class="flex items-center gap-3 px-5 py-2.5 border-transparent border-b search-row shrink-0">
           <span class="w-5 h-5 text-neutral-secondary shrink-0">${ICON.search}</span>
           <label class="sr-only" for="site-search">${esc(t("ابحث عن قهوة، مكسرات، تمور…"))}</label>
           <input type="search" id="site-search" data-search-input autocomplete="off"
+                 role="combobox" aria-expanded="false" aria-autocomplete="list"
+                 aria-controls="search-listbox"
                  placeholder="ابحث عن قهوة، مكسرات، تمور…"
-                 class="flex-1 bg-transparent outline-none min-w-0 text-[#062A1C] text-base" />
+                 class="flex-1 bg-transparent outline-none min-w-0 min-h-11 text-[#062A1C] text-base" />
           <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-11 h-11 -me-2 text-[#062A1C] shrink-0" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
         </div>
 
-        <!-- Idle state: the query is empty. These were five links that all
-             pointed at the same category page; they now seed the box.
+        <!-- Scope chips, built from the CURRENT result set with its real
+             counts, so a chip can never offer a category that returns
+             nothing and a count can never disagree with the list under it.
+             Rendered only from two categories up - one chip is not a choice.
+             Selected is filled ink, hover is a wash; see styles.css. -->
+        <div class="flex gap-2 px-5 pt-3 pb-1 overflow-x-auto no-scrollbar shrink-0" data-search-scopes role="group" aria-label="تصفية النتائج حسب الفئة" hidden></div>
 
-             The label is NOT "الأكثر بحثاً" any more and the terms are not
-             the old invented ones. There is no search analytics behind this,
-             so claiming these are the most-searched was inventing data — and
-             the terms themselves were phrases like "قهوة تركي" that match
-             nothing in the catalogue, so every chip was a guaranteed empty
-             result. These five are counted off the real product names
-             (5-7 products each), so a chip always lands on something. -->
-        <div class="px-5 py-6" data-search-idle>
-          <p class="mb-3 text-neutral-secondary text-xs">${esc(t("اقتراحات البحث"))}</p>
-          <div class="flex flex-wrap gap-2">
-            ${["قهوة", "مكسرات", "تمر", "معمول", "بروتين"]
-              .map(
-                (s) =>
-                  `<button type="button" data-search-seed="${esc(s)}" class="bg-interaction-base hover:bg-cta px-3 py-2 rounded-full min-h-11 text-[#062A1C] hover:text-white text-sm transition-colors">${esc(s)}</button>`,
-              )
-              .join("")}
-          </div>
-        </div>
+        <!-- Idle state: the query is empty. The shopper's own recent searches
+             sit above the standing suggestions.
+
+             The label is NOT "الأكثر بحثاً" and the terms are not the old
+             invented ones. There is no search analytics behind this, so
+             claiming these are the most-searched was inventing data - and the
+             terms themselves were phrases like "قهوة تركي" that match nothing
+             in the catalogue, so every chip was a guaranteed empty result.
+             These five are counted off the real product names (5-7 products
+             each), so a chip always lands on something. The recent list is
+             the shopper's own typing and needs no such defence. -->
+        <div class="px-5 py-6 overflow-y-auto" data-search-idle></div>
 
         <!-- Result count is a live region so a screen reader hears the list
              change; the list itself is plain anchors, which stay operable if
              the fetch or the JS ever fails. -->
-        <p class="px-5 text-neutral-secondary text-xs" data-search-status role="status" aria-live="polite" hidden></p>
-        <div class="max-h-[52vh] overflow-y-auto overscroll-contain" data-search-results hidden></div>
+        <p class="px-5 text-neutral-secondary text-xs shrink-0" data-search-status data-i18n-skip role="status" aria-live="polite" hidden></p>
+
+        <!-- The first query pays a catalog.json fetch and a 140ms debounce on
+             top of it. Without this the modal simply sat there for that beat,
+             which reads as a dead box rather than a working one. -->
+        <div class="px-5 py-1 shrink-0" data-search-skeleton hidden aria-hidden="true">
+          ${[0, 1, 2]
+            .map(
+              () => `
+          <div class="search-skel__row">
+            <span class="bg-interaction-base rounded-lg w-12 h-12 shrink-0 search-skel__pulse"></span>
+            <span class="flex flex-col flex-1 gap-2 min-w-0">
+              <span class="bg-interaction-base rounded w-3/4 h-2.5 search-skel__pulse"></span>
+              <span class="bg-interaction-base rounded w-1/2 h-2.5 search-skel__pulse"></span>
+            </span>
+          </div>`,
+            )
+            .join("")}
+        </div>
+
+        <div id="search-listbox" role="listbox" aria-label="نتائج البحث"
+             class="max-h-[52vh] overflow-y-auto overscroll-contain" data-search-results hidden></div>
+
+        <!-- No hits is a recovery surface, not a full stop. A shopper who
+             searched and found nothing is the likeliest to leave, so this
+             offers the client's real best sellers (popularityRank, fetched
+             not authored) and the categories to browse. -->
+        <div class="px-5 pb-6 overflow-y-auto" data-search-empty hidden></div>
+
+        <!-- Grab affordance, the same mark the locale and address sheets
+             carry. It sits at the BOTTOM because that is this sheet's free
+             edge — it hangs from the top of the screen, so the bottom is the
+             edge that moves and the one a thumb pushes at. Meaningless once
+             this is a centred dialog, hence lg:hidden — lg, not the xl those
+             sheets use, because this panel switches earlier. -->
+        <div class="lg:hidden bg-neutral-200 mx-auto mt-1 mb-3 rounded-full w-10 h-1 shrink-0" aria-hidden="true"></div>
       </div>
     </div>
 
@@ -2269,6 +2340,9 @@
      resolves.
      --------------------------------------------------------------- */
   let catalogPromise = null;
+  // Whether the fetch has SETTLED, either way. The skeleton is shown on the
+  // first query only, and a failed fetch must not keep showing it for ever.
+  let catalogReady = false;
 
   function loadCatalog() {
     if (!catalogPromise) {
@@ -2277,8 +2351,14 @@
           if (!r.ok) throw new Error("HTTP " + r.status);
           return r.json();
         })
-        .then((d) => d.products || [])
-        .catch(() => null);
+        .then((d) => {
+          catalogReady = true;
+          return d.products || [];
+        })
+        .catch(() => {
+          catalogReady = true;
+          return null;
+        });
     }
     return catalogPromise;
   }
@@ -2290,23 +2370,108 @@
    * product names is never typed at all. Without this, searching "قهوه"
    * returns nothing while "قهوة" returns twelve products, which reads as a
    * broken search rather than a spelling difference.
+   *
+   * foldMap folds CHARACTER BY CHARACTER and keeps an index back into the
+   * original string, because the highlighter has to know which run of the
+   * original name a match landed on. A chain of .replace() calls cannot
+   * answer that: stripping tashkeel and collapsing whitespace both shorten
+   * the string, so folded offset N is not original offset N. fold() is
+   * defined in terms of foldMap so the matcher and the highlighter cannot
+   * drift apart — they are by construction reading the same fold.
    */
+  const TASHKEEL = /[ً-ْـ]/;
+
+  function foldMap(s) {
+    const src = String(s == null ? "" : s);
+    let out = "";
+    const map = [];
+    // Starts true so leading whitespace is dropped, which is the trim() the
+    // old chain ended with.
+    let lastSpace = true;
+    for (let i = 0; i < src.length; i++) {
+      let ch = src.charAt(i).toLowerCase();
+      if (TASHKEEL.test(ch)) continue;
+      if (/\s/.test(ch)) {
+        if (lastSpace) continue;
+        out += " ";
+        map.push(i);
+        lastSpace = true;
+        continue;
+      }
+      lastSpace = false;
+      if (ch === "أ" || ch === "إ" || ch === "آ" || ch === "ٱ") ch = "ا";
+      else if (ch === "ى") ch = "ي";
+      else if (ch === "ة") ch = "ه";
+      else if (ch === "ؤ" || ch === "ئ") ch = "ء";
+      out += ch;
+      map.push(i);
+    }
+    while (out.length && out.charAt(out.length - 1) === " ") {
+      out = out.slice(0, -1);
+      map.pop();
+    }
+    return { folded: out, map: map };
+  }
+
   function fold(s) {
-    return String(s || "")
-      .toLowerCase()
-      .replace(/[ً-ْـ]/g, "")
-      .replace(/[أإآٱ]/g, "ا")
-      .replace(/ى/g, "ي")
-      .replace(/ة/g, "ه")
-      .replace(/[ؤئ]/g, "ء")
-      .replace(/\s+/g, " ")
-      .trim();
+    return foldMap(s).folded;
+  }
+
+  function searchTerms(q) {
+    const needle = fold(q);
+    return needle ? needle.split(" ").filter(Boolean) : [];
+  }
+
+  /*
+   * Bold the run the shopper actually typed. fold() already knows exactly
+   * which characters matched and the old row threw that away, printing the
+   * plain name — which matters most in the case the fold exists for: typing
+   * قهوه and being handed a row reading قهوة looks like a WRONG result
+   * unless the page shows why it matched.
+   *
+   * Every segment is escaped on its own, so the only markup this can emit is
+   * the <mark> pair it inserts itself.
+   */
+  function highlight(name, terms) {
+    const text = String(name == null ? "" : name);
+    const fm = foldMap(text);
+    if (!fm.folded || !terms || !terms.length) return esc(text);
+    const spans = [];
+    terms.forEach((term) => {
+      if (!term) return;
+      let from = 0;
+      for (;;) {
+        const at = fm.folded.indexOf(term, from);
+        if (at < 0) break;
+        const s0 = fm.map[at];
+        const s1 = fm.map[at + term.length - 1];
+        if (s0 != null && s1 != null) spans.push([s0, s1 + 1]);
+        from = at + term.length;
+      }
+    });
+    if (!spans.length) return esc(text);
+    spans.sort((a, b) => a[0] - b[0]);
+    // Two terms can overlap on one run ("قهوة قهو"); painting both would
+    // nest <mark> inside <mark>.
+    const merged = [];
+    spans.forEach((sp) => {
+      const last = merged[merged.length - 1];
+      if (last && sp[0] <= last[1]) last[1] = Math.max(last[1], sp[1]);
+      else merged.push([sp[0], sp[1]]);
+    });
+    let html = "";
+    let cursor = 0;
+    merged.forEach((m) => {
+      html += esc(text.slice(cursor, m[0]));
+      html += "<mark>" + esc(text.slice(m[0], m[1])) + "</mark>";
+      cursor = m[1];
+    });
+    return html + esc(text.slice(cursor));
   }
 
   function searchProducts(products, q) {
-    const needle = fold(q);
-    if (!needle) return [];
-    const terms = needle.split(" ");
+    const terms = searchTerms(q);
+    if (!terms.length) return [];
     const scored = [];
     products.forEach((p) => {
       const ar = fold(p.nameAr);
@@ -2318,25 +2483,133 @@
       // it outranks a match buried mid-name; popularityRank breaks ties
       // with the client's real sales order rather than catalogue order.
       const starts = ar.startsWith(terms[0]) || en.startsWith(terms[0]);
-      scored.push({ p: p, score: (starts ? 0 : 1000) + (p.popularityRank || 999) });
+      scored.push({
+        p: p,
+        score: (starts ? 0 : 1000) + (Number(p.popularityRank) || 999),
+      });
     });
     scored.sort((a, b) => a.score - b.score);
-    return scored.slice(0, 24).map((x) => x.p);
+    // No slice. The old cap was 24, which with no search results page in the
+    // site meant matches 25+ were simply unreachable — and the count printed
+    // above the list was the capped one, so it under-reported. The catalogue
+    // is 99 products: the list scrolls, and the scope chips narrow it.
+    return scored.map((x) => x.p);
   }
 
-  function searchResultHTML(p) {
+  /*
+   * A row is an <a> either way; `optId` is what makes it an option of the
+   * listbox. The best-seller rows in the empty state are NOT in the listbox,
+   * so they are rendered without the option role — role="option" outside a
+   * listbox is invalid and would be announced as a stray control.
+   */
+  function searchResultHTML(p, terms, optId) {
     const name = currentLang() === "en" ? p.name || p.nameAr : p.nameAr || p.name;
     const img = (p.images && p.images[0]) || p.image || "";
+    const cat = p.categoryAr || p.category || "";
+    const opt = optId
+      ? ' role="option" id="' + esc(optId) + '" aria-selected="false"'
+      : "";
     return `
-      <a href="product-${esc(String(p.id))}.html"
-         class="flex items-center gap-3 hover:bg-interaction-base px-5 py-3 border-neutral-divider border-b last:border-b-0 transition-colors">
+      <a href="product-${esc(String(p.id))}.html"${opt}
+         class="relative flex items-center gap-3 hover:bg-interaction-base px-5 py-3 border-neutral-divider border-b last:border-b-0 transition-colors search-opt">
         <img src="${esc(img)}" alt="" loading="lazy"
              class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" />
-        <span class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm line-clamp-2">${esc(name)}</span>
+        <span class="flex-1 min-w-0">
+          <span class="block font-semibold text-[#062A1C] text-sm line-clamp-2 search-opt__name">${highlight(
+            name,
+            terms,
+          )}</span>
+          ${cat ? `<span class="block mt-0.5 text-neutral-secondary text-xs">${esc(cat)}</span>` : ""}
+        </span>
         <span class="bg-accent-yellow shrink-0 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">EGP ${esc(
           String(p.price),
         )}</span>
       </a>`;
+  }
+
+  /* ---------------------------------------------------------------
+     Recent searches
+
+     NOT `abuauf:recent` — that key is already the recently-VIEWED product
+     store further down this file, and reusing it would have two unrelated
+     shapes writing the same array. This is `abuauf:searches`: the shopper's
+     own query strings, most recent first, deduped on the FOLDED form so
+     قهوه and قهوة do not both earn a slot.
+
+     Written on activation (a row clicked, or Enter on the active row), not
+     on every keystroke — a term the shopper abandoned mid-word is not a
+     search they made.
+     --------------------------------------------------------------- */
+  const SEARCH_RECENT_KEY = "abuauf:searches";
+  const SEARCH_RECENT_MAX = 6;
+  const SEARCH_SEEDS = ["قهوة", "مكسرات", "تمر", "معمول", "بروتين"];
+
+  /*
+   * Seeded on a first-ever visit only, exactly like CART_SEED and FAVS_SEED
+   * and for the same reason: Ahmed asked (2026-09-17) for the idle panel to
+   * show previous searches before anything is typed, and a fresh browser has
+   * none, so the whole block was invisible until you had used the search once.
+   * Once the shopper searches anything, this is never consulted again.
+   *
+   * This is INVENTED data — nobody made these searches, and there is no search
+   * analytics behind the site. It is demo state for the developers, flagged in
+   * DESIGN-NOTES §1, and it is deliberately filed under "عمليات بحث سابقة"
+   * rather than "الأكثر بحثاً": the second would be a claim about what
+   * customers actually search for, which we cannot make. Same line the seed
+   * CHIPS already walk.
+   *
+   * Every term is counted off the real catalogue and returns between 2 and 10
+   * products (قهوة سريعة التحضير 2, كاجو 2, شيكولاتة 10, عين جمل 2, فستق 2,
+   * بسكويت 4). That check is the point: the original suggestion chips were
+   * phrases like "قهوة تركي" that matched nothing, so every one was a
+   * guaranteed dead end. None of these duplicates a suggestion chip either,
+   * so the two rows never show the same word twice.
+   */
+  const SEARCH_RECENT_SEED = [
+    "قهوة سريعة التحضير",
+    "كاجو",
+    "شيكولاتة",
+    "عين جمل",
+    "فستق",
+    "بسكويت",
+  ];
+
+  function recentSearches() {
+    try {
+      const raw = localStorage.getItem(SEARCH_RECENT_KEY);
+      // No key at all = a first-ever visit, so seed. An empty array is a
+      // shopper who pressed مسح on purpose — leave that alone.
+      const list = raw === null ? SEARCH_RECENT_SEED.slice() : JSON.parse(raw);
+      return Array.isArray(list) ? list.filter((x) => typeof x === "string") : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function recentSearchAdd(q) {
+    const term = String(q == null ? "" : q).trim();
+    const key = fold(term);
+    if (!key) return;
+    const next = [term]
+      .concat(recentSearches().filter((x) => fold(x) !== key))
+      .slice(0, SEARCH_RECENT_MAX);
+    try {
+      localStorage.setItem(SEARCH_RECENT_KEY, JSON.stringify(next));
+    } catch (e) {
+      /* private mode — the list simply does not persist */
+    }
+  }
+
+  function recentSearchClear() {
+    try {
+      // Writes an EMPTY ARRAY, never removeItem. Removing the key is
+      // indistinguishable from a first-ever visit, so the seed above would
+      // come straight back and مسح would look broken — the button that is
+      // supposed to empty the list would refill it.
+      localStorage.setItem(SEARCH_RECENT_KEY, "[]");
+    } catch (e) {
+      /* private mode — the list is empty for this page view either way */
+    }
   }
 
   function initSearch() {
@@ -2346,43 +2619,290 @@
     const results = modal.querySelector("[data-search-results]");
     const status = modal.querySelector("[data-search-status]");
     const idle = modal.querySelector("[data-search-idle]");
+    const scopes = modal.querySelector("[data-search-scopes]");
+    const skeleton = modal.querySelector("[data-search-skeleton]");
+    const empty = modal.querySelector("[data-search-empty]");
     if (!input || !results || !status || !idle) return;
 
     let timer = null;
     let token = 0;
+    let hits = [];
+    let terms = [];
+    let scope = "all";
+    let active = -1;
+    let idleToken = 0;
+
+    function options() {
+      return results.querySelectorAll('[role="option"]');
+    }
+
+    /*
+     * The active row is a SELECTED state, so it is not painted the way the
+     * hover is (rule 8): hover is a wash, active is the wash plus an ink
+     * marker bar on the inline-start edge, so a row the pointer merely
+     * passed over never looks like the row Enter will open.
+     */
+    function setActive(i) {
+      const rows = options();
+      if (!rows.length || i < 0) {
+        active = -1;
+        rows.forEach((r) => {
+          r.setAttribute("aria-selected", "false");
+          r.classList.remove("is-active");
+        });
+        input.removeAttribute("aria-activedescendant");
+        return;
+      }
+      active = ((i % rows.length) + rows.length) % rows.length;
+      rows.forEach((r, n) => {
+        const on = n === active;
+        r.setAttribute("aria-selected", on ? "true" : "false");
+        r.classList.toggle("is-active", on);
+        if (on) {
+          input.setAttribute("aria-activedescendant", r.id);
+          if (r.scrollIntoView) r.scrollIntoView({ block: "nearest" });
+        }
+      });
+    }
+
+    function renderIdle() {
+      const recent = recentSearches();
+      const seedChip = (s) =>
+        `<button type="button" data-search-seed="${esc(s)}" class="bg-interaction-base hover:bg-cta px-3 py-2 rounded-full min-h-11 text-[#062A1C] hover:text-white text-sm transition-colors">${esc(s)}</button>`;
+      const recentChip = (s) =>
+        `<button type="button" data-search-seed="${esc(s)}" data-i18n-skip class="flex items-center gap-1.5 hover:bg-interaction-base px-3 py-2 border border-neutral-divider rounded-full min-h-11 text-[#062A1C] text-sm transition-colors"><span class="w-4 h-4 text-neutral-secondary shrink-0" aria-hidden="true">${ICON.clock}</span>${esc(s)}</button>`;
+      const recentBlock = recent.length
+        ? `<div class="mb-5">
+             <div class="flex justify-between items-center gap-3 mb-3">
+               <p class="text-neutral-secondary text-xs">${esc(t("عمليات بحث سابقة"))}</p>
+               <button type="button" data-search-recent-clear class="hover:bg-interaction-base px-2 py-1 rounded-full min-h-8 font-medium text-[#062A1C] text-xs transition-colors">${esc(t("مسح"))}</button>
+             </div>
+             <div class="flex flex-wrap gap-2">${recent.map(recentChip).join("")}</div>
+           </div>`
+        : "";
+      idle.innerHTML =
+        recentBlock +
+        `<p class="mb-3 text-neutral-secondary text-xs">${esc(t("اقتراحات البحث"))}</p>
+         <div class="flex flex-wrap gap-2 mb-5">${SEARCH_SEEDS.map(seedChip).join("")}</div>
+         <div class="-mx-5" data-search-recs></div>`;
+
+      /*
+       * The recommendation rows are filled ASYNCHRONOUSLY, after the chips are
+       * already on screen. They need catalog.json, and the idle panel must not
+       * wait on a fetch to paint anything — openOverlay() warms the catalogue
+       * while the shopper is still reaching for the keyboard, so in practice
+       * this lands immediately, and if the fetch fails the panel is the chips
+       * alone rather than a spinner or an empty box. It is also why this is
+       * the one part of the idle state that does not work from file://, the
+       * same caveat the search itself carries.
+       */
+      const mine = ++idleToken;
+      loadCatalog().then((products) => {
+        // The shopper may have typed, closed, or re-opened the panel while the
+        // fetch was in flight; any of those makes this paint stale.
+        if (mine !== idleToken || idle.hidden || !products) return;
+        const host = idle.querySelector("[data-search-recs]");
+        if (host) host.innerHTML = bestSellersHTML(products, 4);
+      });
+    }
+
+    function showIdle() {
+      renderIdle();
+      idle.hidden = false;
+      results.hidden = true;
+      results.innerHTML = "";
+      status.hidden = true;
+      if (scopes) {
+        scopes.hidden = true;
+        scopes.innerHTML = "";
+      }
+      if (empty) {
+        empty.hidden = true;
+        empty.innerHTML = "";
+      }
+      if (skeleton) skeleton.hidden = true;
+      hits = [];
+      terms = [];
+      scope = "all";
+      setActive(-1);
+      input.setAttribute("aria-expanded", "false");
+    }
+
+    /* Counts come off the rendered hit set, never off catalog.json's own
+       per-category totals — those count the client's whole 653-product
+       store, so a chip would promise more than this search can show. */
+    function scopeChipsHTML() {
+      const groups = [];
+      const index = {};
+      hits.forEach((p) => {
+        const slug = p.categorySlug;
+        const label = p.categoryAr || p.category;
+        if (!slug || !label) return;
+        if (!index[slug]) {
+          index[slug] = { slug: slug, label: label, n: 0 };
+          groups.push(index[slug]);
+        }
+        index[slug].n++;
+      });
+      if (groups.length < 2) return "";
+      groups.sort((a, b) => b.n - a.n);
+      const chip = (value, label, n, on) =>
+        `<button type="button" data-search-scope="${esc(value)}" aria-pressed="${on ? "true" : "false"}"
+           class="flex items-center gap-1.5 bg-interaction-base shrink-0 px-3.5 py-2 rounded-full min-h-11 text-[#062A1C] text-xs whitespace-nowrap transition-colors search-scope">${esc(
+             label,
+           )} <span class="latin" dir="ltr">(${n})</span></button>`;
+      return (
+        chip("all", t("الكل"), hits.length, scope === "all") +
+        groups.map((g) => chip(g.slug, g.label, g.n, scope === g.slug)).join("")
+      );
+    }
+
+    /*
+     * The best-seller block, shared by the idle panel and the no-results state
+     * rather than written twice — Ahmed asked (2026-09-17) for the idle panel
+     * to open on the same recommendation the empty state already showed, so
+     * there is now one renderer and the two can never drift apart.
+     *
+     * REAL data: `popularityRank` is the product's actual position in the
+     * client's 653-product store, fetched and never authored. Rank 1 first.
+     * A product without a rank is not a best seller and is left out rather
+     * than padded in, so if the client's sales change, this list changes.
+     */
+    function bestSellersHTML(products, n) {
+      const best = products
+        .filter((p) => Number(p.popularityRank))
+        .sort((a, b) => Number(a.popularityRank) - Number(b.popularityRank))
+        .slice(0, n);
+      if (!best.length) return "";
+      /*
+       * Returns the INNER content only. The caller supplies the `-mx-5` box
+       * that cancels the pane's px-5 so the rows go full bleed, and that box
+       * has to be a DIRECT child of the pane — the pane is overflow-y-auto,
+       * which computes overflow-x to auto and absorbs the 20px. Put a plain
+       * wrapper in between and that wrapper gets a real 20px horizontal
+       * scroll instead; measured, and the same defect the clear-recents
+       * button's -me-2 had. Hence the heading carries its own px-5 rather
+       * than inheriting the pane's.
+       */
+      return (
+        `<p class="px-5 mb-1 font-bold text-[#062A1C] text-sm">${esc(t("الأكثر مبيعاً"))}</p>` +
+        best.map((pr) => searchResultHTML(pr, [], null)).join("")
+      );
+    }
+
+    function renderEmpty(products, q) {
+      if (!empty) return;
+      const best = bestSellersHTML(products, 4);
+      const cats = [];
+      const seen = {};
+      products.forEach((p) => {
+        const slug = p.categorySlug;
+        const label = p.categoryAr || p.category;
+        if (!slug || !label || seen[slug]) return;
+        seen[slug] = true;
+        cats.push({ slug: slug, label: label });
+      });
+      empty.innerHTML =
+        `<p class="mb-5 text-neutral-secondary text-sm">${esc(
+          t("جرب اسم منتج أو فئة، أو ابدأ من الأكثر مبيعاً."),
+        )}</p>` +
+        (best ? `<div class="-mx-5 mb-5">${best}</div>` : "") +
+        (cats.length
+          ? `<p class="mb-3 font-bold text-[#062A1C] text-sm">${esc(t("تصفح الفئات"))}</p>
+             <div class="flex flex-wrap gap-2">${cats
+               .slice(0, 8)
+               .map(
+                 (c) =>
+                   `<a href="${esc(
+                     pageHref("/shop/" + c.slug),
+                   )}" class="flex items-center bg-interaction-base hover:bg-cta px-3 py-2 rounded-full min-h-11 text-[#062A1C] hover:text-white text-sm transition-colors">${esc(
+                     c.label,
+                   )}</a>`,
+               )
+               .join("")}</div>`
+          : "");
+      empty.hidden = false;
+    }
+
+    function paint(q) {
+      status.hidden = false;
+      if (skeleton) skeleton.hidden = true;
+      if (!hits.length) {
+        results.hidden = true;
+        results.innerHTML = "";
+        if (scopes) {
+          scopes.hidden = true;
+          scopes.innerHTML = "";
+        }
+        status.textContent = t("لا توجد نتائج لـ") + ' "' + String(q).trim() + '"';
+        input.setAttribute("aria-expanded", "false");
+        setActive(-1);
+        return;
+      }
+      if (empty) {
+        empty.hidden = true;
+        empty.innerHTML = "";
+      }
+      if (scopes) {
+        const chips = scopeChipsHTML();
+        scopes.innerHTML = chips;
+        scopes.hidden = !chips;
+      }
+      const shown =
+        scope === "all" ? hits : hits.filter((p) => p.categorySlug === scope);
+      const label = shown.length && shown[0] ? shown[0].categoryAr || shown[0].category : "";
+      status.textContent =
+        shown.length +
+        " " +
+        t("نتيجة") +
+        (scope === "all" || !label ? "" : " " + t("في") + " " + label);
+      results.innerHTML = shown
+        .map((p, i) => searchResultHTML(p, terms, "search-opt-" + i))
+        .join("");
+      results.hidden = false;
+      results.scrollTop = 0;
+      input.setAttribute("aria-expanded", "true");
+      setActive(-1);
+    }
 
     function render(q) {
       const mine = ++token;
-      if (!fold(q)) {
-        results.hidden = true;
-        status.hidden = true;
-        results.innerHTML = "";
-        idle.hidden = false;
+      terms = searchTerms(q);
+      if (!terms.length) {
+        showIdle();
         return;
       }
       idle.hidden = true;
+      scope = "all";
+      // Only the first query can be waiting on the fetch; after that the
+      // catalogue is cached and painting is synchronous, so a skeleton would
+      // be a flash of nothing.
+      if (!catalogReady && skeleton) {
+        skeleton.hidden = false;
+        status.hidden = true;
+        results.hidden = true;
+        if (empty) empty.hidden = true;
+        if (scopes) scopes.hidden = true;
+      }
       loadCatalog().then((products) => {
         // A slow response for an abandoned query must not overwrite the
         // results of the one the shopper is actually looking at.
         if (mine !== token) return;
-        status.hidden = false;
+        if (skeleton) skeleton.hidden = true;
         if (!products) {
+          hits = [];
           results.hidden = true;
           results.innerHTML = "";
+          if (scopes) scopes.hidden = true;
+          if (empty) empty.hidden = true;
+          status.hidden = false;
           status.textContent = t("تعذر تحميل نتائج البحث. حاول مرة أخرى.");
+          input.setAttribute("aria-expanded", "false");
           return;
         }
-        const hits = searchProducts(products, q);
-        if (!hits.length) {
-          results.hidden = true;
-          results.innerHTML = "";
-          status.textContent = t("لا توجد نتائج لـ") + ' "' + q.trim() + '"';
-          return;
-        }
-        status.textContent = hits.length + " " + t("نتيجة");
-        results.innerHTML = hits.map(searchResultHTML).join("");
-        results.hidden = false;
-        results.scrollTop = 0;
+        hits = searchProducts(products, q);
+        paint(q);
+        if (!hits.length) renderEmpty(products, q);
       });
     }
 
@@ -2391,24 +2911,81 @@
       timer = setTimeout(() => render(input.value), 140);
     });
 
-    // Enter with a single hit is unambiguous — go there rather than making
-    // the shopper reach for the mouse to click the only row on screen.
     input.addEventListener("keydown", (e) => {
-      if (e.key !== "Enter") return;
-      const first = results.querySelector("a");
-      if (first) {
+      const rows = options();
+      if (e.key === "ArrowDown") {
+        if (!rows.length) return;
         e.preventDefault();
-        window.location.href = first.getAttribute("href");
+        setActive(active + 1);
+        return;
+      }
+      if (e.key === "ArrowUp") {
+        if (!rows.length) return;
+        e.preventDefault();
+        setActive(active <= 0 ? rows.length - 1 : active - 1);
+        return;
+      }
+      // Enter with nothing highlighted goes to the first row, which is what
+      // it did before arrow keys existed.
+      if (e.key === "Enter") {
+        const target = active >= 0 ? rows[active] : rows[0];
+        if (!target) return;
+        e.preventDefault();
+        recentSearchAdd(input.value);
+        window.location.href = target.getAttribute("href");
+        return;
+      }
+      // Escape clears the query first and closes the modal only once it is
+      // empty (ARIA combobox behaviour). The document-level Escape handler
+      // does the closing, so this only has to stop the first press.
+      if (e.key === "Escape" && input.value) {
+        e.stopPropagation();
+        input.value = "";
+        clearTimeout(timer);
+        render("");
       }
     });
 
+    results.addEventListener("click", (e) => {
+      if (e.target.closest("a")) recentSearchAdd(input.value);
+    });
+
     modal.addEventListener("click", (e) => {
+      const sc = e.target.closest("[data-search-scope]");
+      if (sc) {
+        scope = sc.getAttribute("data-search-scope");
+        paint(input.value);
+        // paint() rebuilds the chip row, which destroys the very button that
+        // was just clicked — focus would land on <body> and a keyboard user
+        // would lose their place. Put it back on the chip's replacement.
+        // Deliberately NOT input.focus(): on a phone that throws the software
+        // keyboard back over the results the shopper just filtered.
+        if (scopes) {
+          const rows = scopes.querySelectorAll("[data-search-scope]");
+          for (let i = 0; i < rows.length; i++) {
+            if (rows[i].getAttribute("data-search-scope") === scope) {
+              rows[i].focus();
+              break;
+            }
+          }
+        }
+        return;
+      }
+      if (e.target.closest("[data-search-recent-clear]")) {
+        recentSearchClear();
+        renderIdle();
+        input.focus();
+        return;
+      }
       const seed = e.target.closest("[data-search-seed]");
       if (!seed) return;
       input.value = seed.dataset.searchSeed;
       input.focus();
+      clearTimeout(timer);
       render(input.value);
     });
+
+    showIdle();
   }
 
   /* ---------------------------------------------------------------
@@ -3263,6 +3840,26 @@
         return;
       }
       if (e.target.classList.contains("overlay-backdrop")) {
+        closeOverlay();
+        return;
+      }
+      /*
+       * The dimmed area AROUND a centred modal belongs to the .modal-shell,
+       * not to the backdrop — the shell is inset:0 at z-100 and the backdrop
+       * sits under it at z-90, so a click outside the box never reaches the
+       * rule above and tapping beside a modal did nothing at all. Site-wide,
+       * every .modal-shell, not a search-only patch.
+       *
+       * `classList.contains` on the TARGET is what keeps this safe: the shell
+       * is only ever the target when the pointer lands on the shell itself,
+       * because [data-modal-box] and everything inside it is a descendant.
+       * Same test the backdrop line above uses.
+       *
+       * This mattered less while the search sheet covered the whole screen.
+       * It is capped now and shows a strip of the darkened page underneath,
+       * which is an invitation to tap it.
+       */
+      if (e.target.classList.contains("modal-shell")) {
         closeOverlay();
       }
     });

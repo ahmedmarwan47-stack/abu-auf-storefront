@@ -537,6 +537,97 @@ on the number span alone (not the row — that would move the up/down chip out o
 the RTL start). `.latin` does not help; it sets the font family only.
 `DESIGN-NOTES.md` §8.
 
+## 5d. Session 2026-09-17 — the search modal, end to end
+
+Ahmed decided the search *backend* is the developers' problem (Meilisearch was
+the candidate) and asked what the design side could add on top. A search results
+page was explicitly ruled out, so all of this lives in the modal. **Nothing here
+touched `build/`** — the search modal is injected chrome, so the whole change is
+`scripts.js` + `styles.css`, and a rebuild produces no HTML diff.
+
+1. **Full-height sheet below `xl`**, field pinned at the top. Not a
+   `.bottom-sheet`: a software keyboard would cover a bottom-anchored field and
+   iOS does not resize the visual viewport, so there is nothing to recover from.
+   Reuses `.modal-shell`'s open/close, backdrop and Escape — only the box moves.
+2. **A real combobox** — arrow keys, `aria-activedescendant`, Escape clears
+   before it closes. Previously only the first row was reachable without a mouse.
+3. **Match highlighting** via a new `foldMap()` that keeps an index back into
+   the original string. `fold()` is now defined in terms of it.
+4. **Recent searches** under `abuauf:searches` — *not* `abuauf:recent`, which is
+   the recently-viewed product store.
+5. **Scope chips** with counts off the live hit set, and a **recovery empty
+   state** (real best sellers + categories) instead of a dead end.
+6. **A skeleton** for the one query that waits on the `catalog.json` fetch.
+
+**Three bugs found by measuring, all fixed here.** The search field was **22px
+tall**, under the WCAG 2.5.8 floor. `-me-2` on the clear-recents button hung it
+8px past its parent, which on an `overflow-y-auto` pane is a real horizontal
+scroll (the other axis computes to `auto`). And the i18n walker was translating
+the shopper's **own typed query** — a recent search for `تمر` rendered as
+"Dates" in English because the nav contains that word, while the chip's
+`data-search-seed` still carried the Arabic, so the label and what the chip
+searched had drifted apart. `inSkipped()` now honours a **`data-i18n-skip`**
+attribute; it is general, and any future surface showing user-authored text
+should carry it.
+
+**Verified:** build clean (34 + 99, no missing assets), `node --check` clean,
+koueider grep empty, rebuild produces no diff. Full sweep at 320/360/375/390/414
+— **0 contrast failures (6,842 nodes per width), 0 page-level horizontal
+scroll**. The sweep never opens the modal, so the modal was swept separately in
+all three states at 320/360/375/390/414/768/1280/1440: **0 contrast failures, 0
+targets under 24px, no horizontal scroll**; the one remaining overflow entry is
+the `.sr-only` label, the known artefact described in §5.
+
+Full rationale in `DESIGN-NOTES.md` §3.
+
+## 5e. Branch previews on GitHub Pages
+
+`deploy.yml` publishes `main` to Pages and a repository has exactly ONE Pages
+site, so a branch cannot simply be "deployed" without taking that URL over.
+`preview.yml` builds **both** and publishes them in one artifact:
+
+| Path | Content |
+|---|---|
+| `/` | `main`, exactly as `deploy.yml` would build it |
+| `/preview/<branch>/` | the branch under review |
+
+So the live site stays correct at the root for as long as a preview is up.
+That is the property that makes it safe to run on demand, and the reason this
+is not a `gh-pages` branch or a second repository.
+
+**Run it from `main`, from the Actions tab → "Deploy branch preview" → Run
+workflow, with the branch name in the input.** Running it from the feature
+branch does not work and the failure is silent: Pages deployments go through
+the `github-pages` environment, whose deployment-branch rule GitHub sets to
+default-branch-only when the Pages source is Actions. A run started on a
+feature branch is rejected **before its first step** — the build job passes,
+the deploy job dies in about a second, and **no log is produced at all**, which
+is what makes it confusing. Observed on run 35216745681; the identical deploy
+job succeeded from `main` minutes later. Running from `main` with the branch as
+an *input* satisfies the rule without loosening who may deploy to Pages.
+
+Three exits, each one step:
+
+* **Delete** the preview — re-run "Deploy to GitHub Pages" on `main`. It
+  publishes main alone and `/preview/` 404s. Nothing to clean up.
+* **Promote** it — merge the branch. `deploy.yml` runs on push and the preview
+  content becomes the root site.
+* **Replace** it — run the preview again with another branch. One preview is
+  live at a time, necessarily: a Pages deploy publishes a whole site, not a
+  patch.
+
+Both builds run the real `build/build.py`, `node --check` and the koueider
+grep, so a broken preview fails in CI rather than shipping. No robots work is
+needed — `ALLOW_INDEXING` is off, so every generated page already carries
+`noindex, nofollow` and the preview inherits it.
+
+Two things to know. `main` is rebuilt from its own commit on every preview run,
+so the root goes stale if `main` moves afterwards; the next push to `main`
+corrects it on its own. And **the sandbox cannot fetch `github.io`** — the
+egress proxy answers 403 to CONNECT — so a preview is verified from the run
+(both jobs green, `deploy-pages` reporting success, and the artifact roughly
+double the size of a main-only one: 76.3MB against 38.1MB), not by opening it.
+
 ## 6. The language toggle — what it is and isn't
 
 Ahmed asked for a working language switcher to test RTL. It:

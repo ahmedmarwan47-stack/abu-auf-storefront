@@ -693,6 +693,187 @@ body.no-scroll {
   overflow: hidden;
 }
 
+/* ------------------------------------------------------------------
+   Search modal
+   ------------------------------------------------------------------ */
+
+/* Below xl the search modal is a FULL-HEIGHT sheet, not a centred card.
+   See the rationale on the markup in scripts.js: it is the same objection
+   that turned the locale picker into a bottom sheet, but search cannot BE a
+   .bottom-sheet, because its input is the first thing the shopper touches and
+   a software keyboard would cover a bottom-anchored one. On iOS the visual
+   viewport does not resize for the keyboard, so there is no layout signal to
+   recover from that — the field has to start at the top of the screen.
+
+   The shell keeps its own opacity/visibility transition, so open/close,
+   backdrop and Escape all still run through the unchanged .modal-shell
+   machinery; only the box moves. */
+/* The switch happens at `lg` (1024px), NOT at the `xl` (1280px) the locale and
+   address sheets use. Ahmed reported (2026-09-17) having to widen the browser
+   on a laptop a long way before the centred dialog appeared, and he is right:
+   1280 is a threshold a maximised laptop window often does not clear, so the
+   full-width sheet was showing on screens that are plainly desktop. A
+   deliberate, scoped deviation from the one-breakpoint sheet rule, and it is
+   scoped for a reason — search is the widest of these panels and the only one
+   that wants the room, so moving the shared breakpoint to suit it would drag
+   the small pickers along with it. DESIGN-NOTES §3. */
+@media (max-width: 1023.98px) {
+  .modal-shell--search {
+    padding: 0;
+    align-items: flex-start;
+  }
+  /* TOP-anchored, and this is now settled by a real device rather than by
+     arithmetic.
+
+     It was bottom-anchored briefly, at a fixed 86dvh, on the reasoning that a
+     top edge at 14dvh would hold the field clear of a keyboard covering about
+     the bottom half. Ahmed checked it on a phone (2026-09-17): the keyboard
+     covered it anyway. That reasoning assumed the sheet stays where it is
+     painted, and a bottom-anchored fixed element does not — the keyboard does
+     not resize the layout viewport it is anchored to, so the sheet ends up
+     behind it. The geometry was measurable from here; the consequence was not,
+     and the device is what decided it.
+
+     So the field starts at the TOP of the screen, which is what every
+     keyboard-first search surface does, and the keyboard can then only cover
+     results the shopper scrolls anyway. Do not flip this back without testing
+     on a real handset — it has cost two rounds already.
+
+     Still not full height (Ahmed, same day): capped at 86dvh with rounded
+     BOTTOM corners, so a strip of dimmed page stays visible below it and it
+     reads as a panel over the page rather than a new page. It sizes to its
+     CONTENT up to that cap, which is safe here in a way it was not on the
+     bottom anchor — a short panel cannot move the field, because the field is
+     pinned to the top edge either way. */
+  .modal-shell--search [data-modal-box] {
+    width: 100%;
+    max-width: none;
+    min-height: 0;
+    max-height: 86vh;
+    max-height: 86dvh;
+    border-radius: 0 0 22px 22px;
+    transform: translateY(-1rem);
+    transition: transform 0.28s ease;
+  }
+  .modal-shell--search.is-open [data-modal-box] {
+    transform: none;
+  }
+  /* The field clears the notch/status bar, now that it is up there again. */
+  .modal-shell--search .search-row {
+    padding-top: calc(0.625rem + env(safe-area-inset-top));
+  }
+  /* Two utilities in one group tie on specificity and emit order wins, so
+     `max-h-[52vh]` is not beaten by another utility — these are authored here
+     on a two-class selector (0,2,0) instead. The scrolling region takes
+     whatever the sheet has left under the fixed field. */
+  .modal-shell--search [data-search-results],
+  .modal-shell--search [data-search-idle],
+  .modal-shell--search [data-search-empty] {
+    max-height: none;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+
+/* The centred dialog needs its own cap. The idle panel carries recommendation
+   rows now, so it is tall enough to outgrow a SHORT desktop window — measured
+   at 694px against a 600px viewport, which pushed the bottom of the dialog off
+   the screen with no way to scroll to it, because .modal-shell is not a scroll
+   container. The panes shrink and scroll inside the cap instead; `min-height:0`
+   is what lets them, since a flex child will not shrink below its content
+   without it. */
+@media (min-width: 1024px) {
+  .modal-shell--search [data-modal-box] {
+    max-height: 84vh;
+  }
+  .modal-shell--search [data-search-idle],
+  .modal-shell--search [data-search-empty] {
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-shell--search [data-modal-box] {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Match highlight. Weight plus a yellow wash UNDER the run rather than behind
+   it: a full-height background on an inline run inside a two-line clamp reads
+   as a block of colour, and the ink stays #062A1C either way so the contrast
+   measured for this row still holds. */
+[data-search-results] mark,
+[data-search-empty] mark {
+  background: transparent;
+  color: inherit;
+  font-weight: 800;
+  box-shadow: inset 0 -0.42em 0 rgba(237, 200, 67, 0.5);
+  border-radius: 2px;
+}
+
+/* The keyboard-active row. This is a SELECTED state and must not be painted
+   the way hover is (rule 8) — hover is the transient wash alone, active adds
+   an ink marker bar on the inline-start edge, so the row Enter will open is
+   never confused with a row the pointer merely crossed. */
+.search-opt.is-active {
+  background-color: #edefeb;
+}
+.search-opt.is-active::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 4px;
+  background: #163300;
+}
+.search-opt.is-active .search-opt__name {
+  color: #163300;
+}
+
+/* Scope chips: selected is filled ink with white text, hover on an unselected
+   chip is a wash. Authored here rather than as aria-pressed: variants so the
+   state cannot be beaten by the emit order of the base utility it overrides —
+   `[data-search-scope][aria-pressed="true"]` is (0,2,0) against `.bg-...`'s
+   (0,1,0). Same contract as the favourites heart: aria-pressed IS the state,
+   and the paint reads off it, so the two cannot drift. */
+.search-scope[aria-pressed="false"]:hover {
+  background-color: #d5dad1;
+}
+.search-scope[aria-pressed="true"] {
+  background-color: #163300;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Skeleton rows for the first query, which is the only one that waits on the
+   catalog.json fetch. Opacity only — nothing moves, and it is off entirely
+   under prefers-reduced-motion. */
+.search-skel__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+}
+.search-skel__pulse {
+  animation: searchSkelPulse 1.4s ease-in-out infinite;
+}
+@keyframes searchSkelPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .search-skel__pulse {
+    animation: none;
+  }
+}
+
+
 /* Accordion (FAQ) */
 .accordion-item .accordion-panel {
   overflow: hidden;
