@@ -720,47 +720,67 @@ body.no-scroll {
 @media (max-width: 1023.98px) {
   .modal-shell--search {
     padding: 0;
-    align-items: flex-start;
+    align-items: flex-end;
   }
-  /* NOT full height (Ahmed, 2026-09-17). It used to be height:100% with square
-     corners, which reads as a new PAGE rather than a panel over the one you
-     were on, and left no way to see you could dismiss it. It is anchored to
-     the TOP and capped instead, so the field still sits above the software
-     keyboard — that constraint has not gone away — while a strip of the
-     backdrop stays visible underneath.
+  /* It rises from the BOTTOM edge, like every other sheet on the site
+     (Ahmed, 2026-09-17). It was anchored to the top, which was a real
+     trade rather than an oversight — search is keyboard-first and a short
+     bottom sheet puts its own input behind the software keyboard, which on
+     iOS nothing in CSS can recover because the visual viewport does not
+     resize.
 
-     It also sizes to its CONTENT up to that cap, so the idle panel is a short
-     sheet and only a long result list reaches the limit.
+     A FIXED 86dvh height is what resolves that, and it is load-bearing: the
+     sheet's top edge lands at 14dvh, so the field — pinned at the top of the
+     sheet — sits well clear of a keyboard that covers roughly the bottom
+     half. Do NOT make this size to its content. A short idle panel would drop
+     the field back down the screen and straight behind the keyboard, which is
+     the exact bug the top anchor existed to dodge.
 
-     dvh after vh, not instead of it: dvh tracks the viewport as mobile browser
-     chrome collapses, and the vh line is the fallback for anything that does
-     not know it. */
+     86, not 100, because it must not reach the full height of the screen
+     (Ahmed, same round): a strip of the dimmed page stays visible above it,
+     so it reads as a panel over the page rather than as a new page, and that
+     strip is a tap target for dismissing it. */
   .modal-shell--search [data-modal-box] {
     width: 100%;
     max-width: none;
     min-height: 0;
-    max-height: 86vh;
-    max-height: 86dvh;
-    border-radius: 0 0 22px 22px;
-    transform: translateY(-1rem);
-    transition: transform 0.28s ease;
+    height: 86vh;
+    height: 86dvh;
+    max-height: none;
+    border-radius: 22px 22px 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
   }
   .modal-shell--search.is-open [data-modal-box] {
     transform: none;
   }
-  /* The field clears the notch/status bar when the sheet is full-bleed. */
-  .modal-shell--search .search-row {
-    padding-top: calc(0.625rem + env(safe-area-inset-top));
-  }
   /* Two utilities in one group tie on specificity and emit order wins, so
      `max-h-[52vh]` is not beaten by another utility — these are authored here
      on a two-class selector (0,2,0) instead. The scrolling region takes
-     whatever the capped sheet has left rather than a 52vh window. */
+     whatever the sheet has left under the fixed field. */
   .modal-shell--search [data-search-results],
   .modal-shell--search [data-search-idle],
   .modal-shell--search [data-search-empty] {
     max-height: none;
     flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+
+/* The centred dialog needs its own cap. The idle panel carries recommendation
+   rows now, so it is tall enough to outgrow a SHORT desktop window — measured
+   at 694px against a 600px viewport, which pushed the bottom of the dialog off
+   the screen with no way to scroll to it, because .modal-shell is not a scroll
+   container. The panes shrink and scroll inside the cap instead; `min-height:0`
+   is what lets them, since a flex child will not shrink below its content
+   without it. */
+@media (min-width: 1024px) {
+  .modal-shell--search [data-modal-box] {
+    max-height: 84vh;
+  }
+  .modal-shell--search [data-search-idle],
+  .modal-shell--search [data-search-empty] {
     min-height: 0;
   }
 }

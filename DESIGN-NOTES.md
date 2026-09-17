@@ -850,6 +850,47 @@ did nothing. Pre-existing and true of every `.modal-shell`, fixed site-wide
 rather than for search — it only became urgent because the capped sheet now
 shows a strip of darkened page, which is an invitation to tap it.
 
+**Third pass: it rises from the bottom, and it opens on a recommendation.**
+
+*Why it briefly came from the top, and why it does not any more.* Ahmed asked
+why these sheets came from above. It was a deliberate trade, not an oversight:
+search is keyboard-first, and a short bottom sheet puts its own input behind
+the software keyboard — on iOS nothing in CSS recovers that, because the visual
+viewport does not resize. The top anchor dodged it.
+
+The resolution is a **fixed** `86dvh` height anchored to the bottom, which is
+load-bearing rather than cosmetic. At that height the sheet's top edge lands at
+14dvh, so the field — pinned at the top of the sheet — sits at roughly 18–19%
+down the screen, well clear of a keyboard covering about the bottom half.
+Measured: field at y=110 of 568, y=148 of 844. **Do not let this sheet size to
+its content.** A short idle panel drops the field back down the screen and
+straight behind the keyboard, which is the exact bug the top anchor existed to
+avoid. It also keeps its grab handle and rounded top corners, so it is finally
+the same object as the locale and address sheets.
+
+*The idle panel opens on the best sellers.* Ahmed asked for the initial state
+to carry the recommendation rows the no-results state already had. There is now
+one `bestSellersHTML()` used by both, rather than the block written twice, so
+the two cannot drift. This is **real data** — `popularityRank` is the product's
+actual position in the client's 653-product store; a product with no rank is
+left out rather than padded in, so the list moves when their sales do.
+
+It fills **asynchronously**, after the chips are already painted: it needs
+`catalog.json`, `openOverlay()` already warms that fetch while the shopper is
+reaching for the keyboard, and a failed fetch leaves the chips alone rather
+than a spinner. It is therefore the one part of the idle panel that does not
+work from `file://` — the same caveat search itself carries.
+
+*Two bugs this pass.* The richer idle panel outgrew a **short desktop window** —
+694px against a 600px viewport, with the bottom of the dialog off-screen and no
+way to scroll to it, because `.modal-shell` is not a scroll container. The
+centred dialog is capped at `84vh` now and its panes shrink and scroll inside
+it (`min-height: 0`, without which a flex child will not shrink below its
+content). And a full-bleed `-mx-5` row block inside a plain wrapper gave that
+wrapper a real 20px horizontal scroll; the full-bleed box has to be a **direct
+child of the pane**, which is `overflow-y-auto` and absorbs it. Same defect as
+the clear-recents `-me-2`, caught the same way — by measuring, not by looking.
+
 **The combobox.** `role="combobox"` + `aria-expanded` + `aria-controls` +
 `aria-activedescendant` on the field, `role="listbox"` on the list, `role=
 "option"` on the rows. Before this, arrow keys did nothing at all and Enter

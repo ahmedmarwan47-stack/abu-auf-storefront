@@ -1915,6 +1915,11 @@
     -->
     <div data-modal="search" class="modal-shell modal-shell--search">
       <div class="flex flex-col bg-white shadow-custom3 rounded-2xl w-full max-w-[640px] overflow-hidden" data-modal-box>
+        <!-- Grab affordance, the same one the locale and address sheets carry,
+             so this reads as a sheet risen from the bottom edge. Meaningless
+             once it is a centred dialog, hence lg:hidden — lg and not the
+             xl those sheets use, because this panel switches earlier. -->
+        <div class="lg:hidden bg-neutral-200 mx-auto mt-3 mb-1 rounded-full w-10 h-1 shrink-0" aria-hidden="true"></div>
         <div class="flex items-center gap-3 px-5 py-2.5 border-transparent border-b search-row shrink-0">
           <span class="w-5 h-5 text-neutral-secondary shrink-0">${ICON.search}</span>
           <label class="sr-only" for="site-search">${esc(t("ابحث عن قهوة، مكسرات، تمور…"))}</label>
@@ -2622,6 +2627,7 @@
     let terms = [];
     let scope = "all";
     let active = -1;
+    let idleToken = 0;
 
     function options() {
       return results.querySelectorAll('[role="option"]');
@@ -2674,7 +2680,27 @@
       idle.innerHTML =
         recentBlock +
         `<p class="mb-3 text-neutral-secondary text-xs">${esc(t("اقتراحات البحث"))}</p>
-         <div class="flex flex-wrap gap-2">${SEARCH_SEEDS.map(seedChip).join("")}</div>`;
+         <div class="flex flex-wrap gap-2 mb-5">${SEARCH_SEEDS.map(seedChip).join("")}</div>
+         <div class="-mx-5" data-search-recs></div>`;
+
+      /*
+       * The recommendation rows are filled ASYNCHRONOUSLY, after the chips are
+       * already on screen. They need catalog.json, and the idle panel must not
+       * wait on a fetch to paint anything — openOverlay() warms the catalogue
+       * while the shopper is still reaching for the keyboard, so in practice
+       * this lands immediately, and if the fetch fails the panel is the chips
+       * alone rather than a spinner or an empty box. It is also why this is
+       * the one part of the idle state that does not work from file://, the
+       * same caveat the search itself carries.
+       */
+      const mine = ++idleToken;
+      loadCatalog().then((products) => {
+        // The shopper may have typed, closed, or re-opened the panel while the
+        // fetch was in flight; any of those makes this paint stale.
+        if (mine !== idleToken || idle.hidden || !products) return;
+        const host = idle.querySelector("[data-search-recs]");
+        if (host) host.innerHTML = bestSellersHTML(products, 4);
+      });
     }
 
     function showIdle() {
@@ -2728,12 +2754,42 @@
       );
     }
 
-    function renderEmpty(products, q) {
-      if (!empty) return;
+    /*
+     * The best-seller block, shared by the idle panel and the no-results state
+     * rather than written twice — Ahmed asked (2026-09-17) for the idle panel
+     * to open on the same recommendation the empty state already showed, so
+     * there is now one renderer and the two can never drift apart.
+     *
+     * REAL data: `popularityRank` is the product's actual position in the
+     * client's 653-product store, fetched and never authored. Rank 1 first.
+     * A product without a rank is not a best seller and is left out rather
+     * than padded in, so if the client's sales change, this list changes.
+     */
+    function bestSellersHTML(products, n) {
       const best = products
         .filter((p) => Number(p.popularityRank))
         .sort((a, b) => Number(a.popularityRank) - Number(b.popularityRank))
-        .slice(0, 4);
+        .slice(0, n);
+      if (!best.length) return "";
+      /*
+       * Returns the INNER content only. The caller supplies the `-mx-5` box
+       * that cancels the pane's px-5 so the rows go full bleed, and that box
+       * has to be a DIRECT child of the pane — the pane is overflow-y-auto,
+       * which computes overflow-x to auto and absorbs the 20px. Put a plain
+       * wrapper in between and that wrapper gets a real 20px horizontal
+       * scroll instead; measured, and the same defect the clear-recents
+       * button's -me-2 had. Hence the heading carries its own px-5 rather
+       * than inheriting the pane's.
+       */
+      return (
+        `<p class="px-5 mb-1 font-bold text-[#062A1C] text-sm">${esc(t("الأكثر مبيعاً"))}</p>` +
+        best.map((pr) => searchResultHTML(pr, [], null)).join("")
+      );
+    }
+
+    function renderEmpty(products, q) {
+      if (!empty) return;
+      const best = bestSellersHTML(products, 4);
       const cats = [];
       const seen = {};
       products.forEach((p) => {
@@ -2747,12 +2803,7 @@
         `<p class="mb-5 text-neutral-secondary text-sm">${esc(
           t("جرب اسم منتج أو فئة، أو ابدأ من الأكثر مبيعاً."),
         )}</p>` +
-        (best.length
-          ? `<p class="mb-1 font-bold text-[#062A1C] text-sm">${esc(t("الأكثر مبيعاً"))}</p>
-             <div class="-mx-5 mb-5">${best
-               .map((p) => searchResultHTML(p, [], null))
-               .join("")}</div>`
-          : "") +
+        (best ? `<div class="-mx-5 mb-5">${best}</div>` : "") +
         (cats.length
           ? `<p class="mb-3 font-bold text-[#062A1C] text-sm">${esc(t("تصفح الفئات"))}</p>
              <div class="flex flex-wrap gap-2">${cats
