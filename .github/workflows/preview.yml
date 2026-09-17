@@ -28,7 +28,19 @@
 # to main corrects it on its own.
 name: Deploy branch preview
 
+# The push trigger is not a convenience, it is the only one that works from
+# here: GitHub registers a workflow_dispatch workflow only once the file is on
+# the DEFAULT branch, so a dispatch-only preview cannot be launched from a
+# feature branch without first committing this to main. A push event runs the
+# workflow from the branch pushed to, with that branch's copy of this file, so
+# the mechanism needs nothing on main at all.
+#
+# workflow_dispatch is kept for the day this does land on main, where it makes
+# any branch previewable by name.
 on:
+  push:
+    branches:
+      - "claude/**"
   workflow_dispatch:
     inputs:
       branch:
