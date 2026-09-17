@@ -580,6 +580,54 @@ the `.sr-only` label, the known artefact described in §5.
 
 Full rationale in `DESIGN-NOTES.md` §3.
 
+## 5e. Branch previews on GitHub Pages
+
+`deploy.yml` publishes `main` to Pages and a repository has exactly ONE Pages
+site, so a branch cannot simply be "deployed" without taking that URL over.
+`preview.yml` builds **both** and publishes them in one artifact:
+
+| Path | Content |
+|---|---|
+| `/` | `main`, exactly as `deploy.yml` would build it |
+| `/preview/<branch>/` | the branch under review |
+
+So the live site stays correct at the root for as long as a preview is up.
+That is the property that makes it safe to run on demand, and the reason this
+is not a `gh-pages` branch or a second repository.
+
+**Run it from `main`, from the Actions tab → "Deploy branch preview" → Run
+workflow, with the branch name in the input.** Running it from the feature
+branch does not work and the failure is silent: Pages deployments go through
+the `github-pages` environment, whose deployment-branch rule GitHub sets to
+default-branch-only when the Pages source is Actions. A run started on a
+feature branch is rejected **before its first step** — the build job passes,
+the deploy job dies in about a second, and **no log is produced at all**, which
+is what makes it confusing. Observed on run 35216745681; the identical deploy
+job succeeded from `main` minutes later. Running from `main` with the branch as
+an *input* satisfies the rule without loosening who may deploy to Pages.
+
+Three exits, each one step:
+
+* **Delete** the preview — re-run "Deploy to GitHub Pages" on `main`. It
+  publishes main alone and `/preview/` 404s. Nothing to clean up.
+* **Promote** it — merge the branch. `deploy.yml` runs on push and the preview
+  content becomes the root site.
+* **Replace** it — run the preview again with another branch. One preview is
+  live at a time, necessarily: a Pages deploy publishes a whole site, not a
+  patch.
+
+Both builds run the real `build/build.py`, `node --check` and the koueider
+grep, so a broken preview fails in CI rather than shipping. No robots work is
+needed — `ALLOW_INDEXING` is off, so every generated page already carries
+`noindex, nofollow` and the preview inherits it.
+
+Two things to know. `main` is rebuilt from its own commit on every preview run,
+so the root goes stale if `main` moves afterwards; the next push to `main`
+corrects it on its own. And **the sandbox cannot fetch `github.io`** — the
+egress proxy answers 403 to CONNECT — so a preview is verified from the run
+(both jobs green, `deploy-pages` reporting success, and the artifact roughly
+double the size of a main-only one: 76.3MB against 38.1MB), not by opening it.
+
 ## 6. The language toggle — what it is and isn't
 
 Ahmed asked for a working language switcher to test RTL. It:
