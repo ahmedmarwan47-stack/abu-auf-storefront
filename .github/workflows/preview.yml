@@ -1,0 +1,159 @@
+# Publish a BRANCH as a reversible preview, alongside the live site.
+#
+# A repository has exactly one GitHub Pages site, and `deploy.yml` already
+# owns it from `main`. So this workflow does not take that URL over — it
+# rebuilds BOTH and publishes them together:
+#
+#     /                          main, exactly as deploy.yml would build it
+#     /preview/<branch>/         the branch under review
+#
+# The consequence worth knowing: production stays correct at the root the
+# whole time a preview is up. Putting a preview online is not a trade against
+# the live site, which is the only reason this is safe to run on demand.
+#
+# Three ways out, all one step:
+#
+#   * DELETE the preview      — re-run "Deploy to GitHub Pages" (it has
+#                               workflow_dispatch). It publishes main alone and
+#                               the /preview/ path 404s. Nothing to clean up.
+#   * PROMOTE it to main      — merge the branch. deploy.yml runs on push and
+#                               the preview content becomes the root site.
+#   * REPLACE it              — run this again with another branch. One preview
+#                               is live at a time, by design: each Pages deploy
+#                               publishes a whole site, not a patch, so a second
+#                               preview necessarily supersedes the first.
+#
+# Note that main is rebuilt from its own commit on every run, so a preview
+# deployed here goes stale at the root if main moves afterwards. The next push
+# to main corrects it on its own.
+name: Deploy branch preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to publish under /preview/. Defaults to the branch this is run from."
+        required: false
+        type: string
+
+# Same group as deploy.yml so a preview and a main deploy queue behind each
+# other instead of racing for the one Pages deployment.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      slug: ${{ steps.slug.outputs.slug }}
+    steps:
+      - name: Resolve the branch to preview
+        id: slug
+        env:
+          REQUESTED: ${{ inputs.branch }}
+          FALLBACK: ${{ github.ref_name }}
+        run: |
+          BRANCH="${REQUESTED:-$FALLBACK}"
+          # The path segment: slashes and anything else awkward in a URL become
+          # a dash, so claude/determined-pasteur-yaz2os is reachable as
+          # /preview/claude-determined-pasteur-yaz2os/.
+          SLUG=$(printf '%s' "$BRANCH" | tr -c 'A-Za-z0-9._-' '-')
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "Publishing '$BRANCH' at /preview/$SLUG/"
+
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+
+      - name: Check out the preview branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.slug.outputs.branch }}
+          path: preview
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Pinned to 3.9 for the same reason deploy.yml pins it: 3.9 rejects
+      # backslashes inside f-string expressions and this build has been bitten
+      # by that. A newer CI Python would accept code that fails locally.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      # Both builds run the real build/build.py, which exits non-zero on a
+      # missing asset, a template-literal hazard in scripts.js or a failed
+      # Tailwind run — so a broken preview fails here rather than shipping.
+      - name: Build main
+        working-directory: main
+        run: |
+          npm ci
+          python3 build/build.py
+          node --check static-export/scripts.js
+
+      - name: Build the preview branch
+        working-directory: preview
+        run: |
+          npm ci
+          python3 build/build.py
+          node --check static-export/scripts.js
+
+      # The rebrand is only complete while this returns nothing — held to the
+      # same line as deploy.yml, on the branch as well as on main.
+      - name: Check for stale brand references
+        run: |
+          if grep -ril 'koueider\|kouider' main/static-export/ preview/static-export/; then
+            echo "::error::stale brand references found"
+            exit 1
+          fi
+
+      - name: Assemble the site
+        env:
+          SLUG: ${{ steps.slug.outputs.slug }}
+          BRANCH: ${{ steps.slug.outputs.branch }}
+        run: |
+          mkdir -p _site
+          cp -r main/static-export/. _site/
+          mkdir -p "_site/preview/$SLUG"
+          cp -r preview/static-export/. "_site/preview/$SLUG/"
+          # .nojekyll rides along from static-export, but the preview copy needs
+          # its own: Pages applies the root one to the whole site, and a second
+          # here costs nothing and removes the question.
+          touch "_site/preview/$SLUG/.nojekyll"
+          echo "Root:    $(find _site -maxdepth 1 -name '*.html' | wc -l) pages"
+          echo "Preview: $(find "_site/preview/$SLUG" -maxdepth 1 -name '*.html' | wc -l) pages from $BRANCH"
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Where the preview landed
+        run: |
+          echo "### Preview published" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Preview: ${{ steps.deployment.outputs.page_url }}preview/${{ needs.build.outputs.slug }}/" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Live site (main), unchanged: ${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "To remove the preview, re-run **Deploy to GitHub Pages** on \`main\`." >> "$GITHUB_STEP_SUMMARY"
