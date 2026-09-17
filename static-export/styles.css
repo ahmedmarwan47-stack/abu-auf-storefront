@@ -720,40 +720,47 @@ body.no-scroll {
 @media (max-width: 1023.98px) {
   .modal-shell--search {
     padding: 0;
-    align-items: flex-end;
+    align-items: flex-start;
   }
-  /* It rises from the BOTTOM edge, like every other sheet on the site
-     (Ahmed, 2026-09-17). It was anchored to the top, which was a real
-     trade rather than an oversight — search is keyboard-first and a short
-     bottom sheet puts its own input behind the software keyboard, which on
-     iOS nothing in CSS can recover because the visual viewport does not
-     resize.
+  /* TOP-anchored, and this is now settled by a real device rather than by
+     arithmetic.
 
-     A FIXED 86dvh height is what resolves that, and it is load-bearing: the
-     sheet's top edge lands at 14dvh, so the field — pinned at the top of the
-     sheet — sits well clear of a keyboard that covers roughly the bottom
-     half. Do NOT make this size to its content. A short idle panel would drop
-     the field back down the screen and straight behind the keyboard, which is
-     the exact bug the top anchor existed to dodge.
+     It was bottom-anchored briefly, at a fixed 86dvh, on the reasoning that a
+     top edge at 14dvh would hold the field clear of a keyboard covering about
+     the bottom half. Ahmed checked it on a phone (2026-09-17): the keyboard
+     covered it anyway. That reasoning assumed the sheet stays where it is
+     painted, and a bottom-anchored fixed element does not — the keyboard does
+     not resize the layout viewport it is anchored to, so the sheet ends up
+     behind it. The geometry was measurable from here; the consequence was not,
+     and the device is what decided it.
 
-     86, not 100, because it must not reach the full height of the screen
-     (Ahmed, same round): a strip of the dimmed page stays visible above it,
-     so it reads as a panel over the page rather than as a new page, and that
-     strip is a tap target for dismissing it. */
+     So the field starts at the TOP of the screen, which is what every
+     keyboard-first search surface does, and the keyboard can then only cover
+     results the shopper scrolls anyway. Do not flip this back without testing
+     on a real handset — it has cost two rounds already.
+
+     Still not full height (Ahmed, same day): capped at 86dvh with rounded
+     BOTTOM corners, so a strip of dimmed page stays visible below it and it
+     reads as a panel over the page rather than a new page. It sizes to its
+     CONTENT up to that cap, which is safe here in a way it was not on the
+     bottom anchor — a short panel cannot move the field, because the field is
+     pinned to the top edge either way. */
   .modal-shell--search [data-modal-box] {
     width: 100%;
     max-width: none;
     min-height: 0;
-    height: 86vh;
-    height: 86dvh;
-    max-height: none;
-    border-radius: 22px 22px 0 0;
-    padding-bottom: env(safe-area-inset-bottom);
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
+    max-height: 86vh;
+    max-height: 86dvh;
+    border-radius: 0 0 22px 22px;
+    transform: translateY(-1rem);
+    transition: transform 0.28s ease;
   }
   .modal-shell--search.is-open [data-modal-box] {
     transform: none;
+  }
+  /* The field clears the notch/status bar, now that it is up there again. */
+  .modal-shell--search .search-row {
+    padding-top: calc(0.625rem + env(safe-area-inset-top));
   }
   /* Two utilities in one group tie on specificity and emit order wins, so
      `max-h-[52vh]` is not beaten by another utility — these are authored here

@@ -191,12 +191,13 @@ terms must match (AND, not OR), prefix matches outrank buried ones, and
 `popularityRank` breaks ties. Because it fetches, **search is the one feature
 that does not work from `file://`** — everything else still does.
 
-The modal around that matcher is a **bottom-anchored sheet below `lg`** at a
-**fixed** `86dvh` — fixed on purpose: that puts its top edge at 14dvh so the
-field, pinned at the top of the sheet, clears the software keyboard. Let it
-size to its content and a short idle panel drops the field behind the keyboard.
-(`lg` rather than the `xl` the other sheets use is a scoped deviation,
-DESIGN-NOTES §3.) The centred dialog above `lg` is capped at `84vh` so a short
+The modal around that matcher is a **top-anchored sheet below `lg`**, capped at
+`86dvh` and sizing to its content — the field starts at the top of the screen
+because that is the only placement a software keyboard cannot cover. It was
+flipped to a bottom anchor once on geometry that looked sound and **a real
+handset disproved**; this sandbox cannot test a software keyboard, so do not
+move this anchor without a device. (`lg` rather than the `xl` the other sheets
+use is a scoped deviation, DESIGN-NOTES §3.) The centred dialog above `lg` is capped at `84vh` so a short
 desktop window cannot push its bottom off-screen. The idle panel opens on the
 real best sellers via `bestSellersHTML()`, shared with the no-results state and
 filled asynchronously from `catalog.json`. A full-bleed `-mx-5` block must be a

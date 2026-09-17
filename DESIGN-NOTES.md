@@ -852,21 +852,30 @@ shows a strip of darkened page, which is an invitation to tap it.
 
 **Third pass: it rises from the bottom, and it opens on a recommendation.**
 
-*Why it briefly came from the top, and why it does not any more.* Ahmed asked
-why these sheets came from above. It was a deliberate trade, not an oversight:
-search is keyboard-first, and a short bottom sheet puts its own input behind
-the software keyboard — on iOS nothing in CSS recovers that, because the visual
-viewport does not resize. The top anchor dodged it.
+*The anchor: top, then bottom, then top again — and the third one is settled by
+a handset.* Ahmed asked why these sheets came from above. The top anchor was a
+deliberate trade: search is keyboard-first, and a short bottom sheet puts its
+own input behind the software keyboard, which on iOS nothing in CSS recovers
+because the visual viewport does not resize.
 
-The resolution is a **fixed** `86dvh` height anchored to the bottom, which is
-load-bearing rather than cosmetic. At that height the sheet's top edge lands at
-14dvh, so the field — pinned at the top of the sheet — sits at roughly 18–19%
-down the screen, well clear of a keyboard covering about the bottom half.
-Measured: field at y=110 of 568, y=148 of 844. **Do not let this sheet size to
-its content.** A short idle panel drops the field back down the screen and
-straight behind the keyboard, which is the exact bug the top anchor existed to
-avoid. It also keeps its grab handle and rounded top corners, so it is finally
-the same object as the locale and address sheets.
+It was flipped to the bottom at a **fixed** `86dvh`, on the reasoning that a
+top edge at 14dvh would hold the field clear of a keyboard covering about the
+bottom half. The geometry checked out here — field at y=110 of 568, y=148 of
+844. **Ahmed then opened it on a real phone and the keyboard covered it
+anyway**, and it is back to the top.
+
+Worth recording why the arithmetic was not enough, because it is the reusable
+part: it assumed the sheet stays where it is painted. A bottom-anchored fixed
+element does not — the keyboard does not resize the layout viewport it is
+anchored to, so the whole sheet ends up behind it, and measuring its resting
+position in a browser with no software keyboard can never show that. **This
+sandbox cannot test a software keyboard at all**, so any future change to this
+anchor needs a device, not a measurement. It has now cost two rounds.
+
+The sheet hangs from the top, capped at `86dvh`, rounded BOTTOM corners, and
+sizes to its content up to that cap — which is safe on this anchor in a way it
+was not on the other, because a short panel cannot move a field pinned to the
+top edge. The grab mark sits at the **bottom**, this sheet's free edge.
 
 *The idle panel opens on the best sellers.* Ahmed asked for the initial state
 to carry the recommendation rows the no-results state already had. There is now

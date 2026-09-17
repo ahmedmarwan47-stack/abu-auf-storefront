@@ -1915,11 +1915,6 @@
     -->
     <div data-modal="search" class="modal-shell modal-shell--search">
       <div class="flex flex-col bg-white shadow-custom3 rounded-2xl w-full max-w-[640px] overflow-hidden" data-modal-box>
-        <!-- Grab affordance, the same one the locale and address sheets carry,
-             so this reads as a sheet risen from the bottom edge. Meaningless
-             once it is a centred dialog, hence lg:hidden — lg and not the
-             xl those sheets use, because this panel switches earlier. -->
-        <div class="lg:hidden bg-neutral-200 mx-auto mt-3 mb-1 rounded-full w-10 h-1 shrink-0" aria-hidden="true"></div>
         <div class="flex items-center gap-3 px-5 py-2.5 border-transparent border-b search-row shrink-0">
           <span class="w-5 h-5 text-neutral-secondary shrink-0">${ICON.search}</span>
           <label class="sr-only" for="site-search">${esc(t("ابحث عن قهوة، مكسرات، تمور…"))}</label>
@@ -1982,6 +1977,14 @@
              offers the client's real best sellers (popularityRank, fetched
              not authored) and the categories to browse. -->
         <div class="px-5 pb-6 overflow-y-auto" data-search-empty hidden></div>
+
+        <!-- Grab affordance, the same mark the locale and address sheets
+             carry. It sits at the BOTTOM because that is this sheet's free
+             edge — it hangs from the top of the screen, so the bottom is the
+             edge that moves and the one a thumb pushes at. Meaningless once
+             this is a centred dialog, hence lg:hidden — lg, not the xl those
+             sheets use, because this panel switches earlier. -->
+        <div class="lg:hidden bg-neutral-200 mx-auto mt-1 mb-3 rounded-full w-10 h-1 shrink-0" aria-hidden="true"></div>
       </div>
     </div>
 
