@@ -15,7 +15,7 @@ mobile pass and a working commerce layer.
 
 | | |
 |---|---|
-| Pages | 31 core + 99 generated product pages (`product-<id>.html`, one per product) |
+| Pages | 35 core + 99 generated product pages (`product-<id>.html`, one per product) |
 | Koueider references | zero, verified across every file |
 | Products | 99, real names (Arabic + English), prices, images |
 | Product copy | client's own Arabic description + benefits on 97 / 99 (`fetch_descriptions.py`) |
@@ -191,7 +191,7 @@ as 10 and 11 above:**
 cd /path/to/order-base-ecommerce
 
 npm install                       # once; Tailwind CLI for the CSS build
-python3 build/build.py            # 31 page(s) + 99 fanned-out, no missing assets;
+python3 build/build.py            # 35 page(s) + 99 fanned-out, no missing assets;
                                   # also rebuilds static-export/tailwind.css
 node --check static-export/scripts.js
 grep -ril 'koueider\|kouider' static-export/    # must return nothing
@@ -234,6 +234,18 @@ when you next touch the sweep, or read the per-page `worst` entry rather than
 the clean count. What still means something unchanged is `pageOver` (the
 document's own horizontal scroll, 0 everywhere) and the contrast pass.
 
+**Seed a pending Google flow too, or two pages measure nothing.**
+`complete-mobile` and `verify` both redirect to `login.html` when
+`abuauf:authPending` is empty — that is the guard working, but it means the
+sweep silently measures the sign-in page twice instead. Before sweeping:
+
+```js
+localStorage.setItem("abuauf:authPending", JSON.stringify({
+  mode: "google", provider: "google", next: "",
+  name: "محمد عادل", nameEn: "Mohamed Adel",
+  email: "mohamed.adel@gmail.com", mobile: "", needsMobile: true }));
+```
+
 **Seed the cart with more than one item, and give some lines a two-digit
 quantity.** Product cards now swap their add button for a `−/n/+` stepper when
 the product is in the cart, so an empty cart means the sweep never measures
@@ -249,7 +261,7 @@ window.__sweep = async function (W) {
   // one layout: product-1322 is the rich case (multi-shot gallery, client
   // copy, best-seller strip), product-1631 the thin one (single image, no
   // client copy at all). Sweeping all 99 buys nothing over these two.
-  const pages = ["about","blog","blogs","branches","cart","checkout","contact-us","export","faqs","forget-password","index","login","my-account-addresses","my-account-favorites","my-account-order","my-account-orders","my-account-point","my-account-profile","my-account-wallet","my-account","privacy-policy","product","register","reset-password","return-policy","rewards","shop-category","shop","store-closed","terms-conditions","thank-you","product-1322","product-1631"];
+  const pages = ["about","blog","blogs","branches","cart","checkout","contact-us","export","faqs","forget-password","index","login","my-account-addresses","my-account-favorites","my-account-order","my-account-orders","my-account-point","my-account-profile","my-account-wallet","my-account","privacy-policy","product","register","reset-password","return-policy","rewards","shop-category","shop","store-closed","terms-conditions","thank-you","product-1322","product-1631","complete-mobile","verify"];
   const f = document.createElement("iframe");
   f.style.cssText = "position:fixed;left:-9999px;top:0;border:0;height:844px;width:" + W + "px";
   document.body.appendChild(f);

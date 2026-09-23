@@ -261,6 +261,7 @@
       "/login": "login.html",
       "/register": "register.html",
       "/verify": "verify.html",
+      "/complete-mobile": "complete-mobile.html",
       "/forget-password": "forget-password.html",
       "/reset-password": "reset-password.html",
       "/store-closed": "store-closed.html",
@@ -4263,6 +4264,18 @@
     mobile: "01000000000",
   };
 
+  /* The Google account the demo "sign in with Google" returns. It deliberately
+     carries NO mobile: Google never hands one back, and that absence is the
+     whole reason complete-mobile.html exists. `mobile: ""` is the case the
+     real integration must handle too, so the demo models it rather than
+     quietly seeding a number that would skip the page under test. */
+  const DEMO_GOOGLE = {
+    email: "mohamed.adel@gmail.com",
+    name: "محمد عادل",
+    nameEn: "Mohamed Adel",
+    mobile: "",
+  };
+
   const Auth = (function () {
     let user = null;
 
@@ -4322,6 +4335,39 @@
         writePending(p);
         return p;
       },
+      /* Google sign-in. The provider gives back a verified email and a name
+         and never a phone number, so the pending record starts WITHOUT a
+         mobile and `needsMobile` says so. The caller routes on that flag —
+         complete-mobile.html when it is true, straight to the OTP when the
+         account already has a number on file. Splitting the decision out
+         here keeps it one rule rather than one per sign-in button. */
+      startGoogle: function (profile, next) {
+        const prof = profile || {};
+        const mobile = String(prof.mobile || "").trim();
+        const p = {
+          mode: "google",
+          next: next || "",
+          provider: "google",
+          name: String(prof.name || "").trim(),
+          nameEn: String(prof.nameEn || "").trim(),
+          email: String(prof.email || "").trim(),
+          mobile: mobile,
+          needsMobile: !mobile,
+        };
+        writePending(p);
+        return p;
+      },
+      /* Attach the mobile the shopper just typed to the pending flow, so the
+         shared OTP page verifies THAT number. Returns the updated record, or
+         null when there is no flow to attach it to. */
+      setPendingMobile: function (mobile) {
+        const p = readPending();
+        if (!p) return null;
+        p.mobile = String(mobile || "").trim();
+        p.needsMobile = false;
+        writePending(p);
+        return p;
+      },
       startRegister: function (data, next) {
         const p = {
           mode: "register",
@@ -4343,7 +4389,20 @@
         if (!p) return { ok: false, reason: "no-pending" };
         // No SMS backend: any well-formed 6-digit code passes (demo).
         if (!/^\d{6}$/.test(String(code || "").trim())) return { ok: false, reason: "bad-otp" };
-        if (p.mode === "register") {
+        if (p.mode === "google") {
+          // The email arrived verified from the provider, so there is no
+          // dashboard email prompt for a Google account — only the mobile
+          // needed proving, and this OTP is what proved it.
+          user = {
+            name: p.name || DEMO_GOOGLE.name,
+            full: p.name || DEMO_GOOGLE.name,
+            nameEn: p.nameEn || DEMO_GOOGLE.nameEn,
+            email: p.email || "",
+            mobile: p.mobile,
+            provider: "google",
+            emailVerified: true,
+          };
+        } else if (p.mode === "register") {
           const full = [p.firstName, p.lastName].filter(Boolean).join(" ") || DEMO_USER.name;
           user = {
             name: p.firstName || DEMO_USER.name,
@@ -6440,6 +6499,103 @@
         window.location.href = pageHref("/verify");
       });
     });
+
+    /* ---- Field-level validation -------------------------------------
+       The error slot is built by `phone_field(error_id=...)` and already
+       carries the aria wiring, so this only flips `hidden` and the invalid
+       class. The message and the red border therefore cannot drift apart:
+       one call paints both, one call clears both. */
+    const setFieldError = (fieldEl, message) => {
+      if (!fieldEl) return;
+      const box = fieldEl.querySelector("[data-phone-box]");
+      const err = fieldEl.querySelector("[data-field-error]");
+      const txt = err && err.querySelector("[data-field-error-text]");
+      if (box) box.classList.toggle("is-invalid", !!message);
+      const input = fieldEl.querySelector("input");
+      if (input) input.setAttribute("aria-invalid", message ? "true" : "false");
+      if (!err) return;
+      if (message) {
+        if (txt) txt.textContent = message;
+        err.hidden = false;
+      } else {
+        err.hidden = true;
+      }
+    };
+
+    // GOOGLE sign-in. No provider SDK in a static export, so this stands in
+    // for the OAuth round-trip and returns the demo profile — which, like a
+    // real Google profile, has no phone number. The ROUTING below is the part
+    // that is not a stand-in: an account with no mobile cannot complete, so it
+    // goes to complete-mobile.html; one that already has a number goes
+    // straight to the shared OTP page.
+    document.querySelectorAll("[data-google-signin]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const p = Auth.startGoogle(DEMO_GOOGLE, safeNext(nextParam()));
+        window.location.href = pageHref(p.needsMobile ? "/complete-mobile" : "/verify");
+      });
+    });
+
+    // COMPLETE-MOBILE — the Google account's missing phone number.
+    const gForm = document.querySelector("[data-google-mobile-form]");
+    if (gForm) {
+      const pending = Auth.pending();
+      // Same guard verify.html uses: no pending Google flow means there is
+      // nothing to complete, so this page was reached directly.
+      if (!pending || pending.mode !== "google") {
+        window.location.href = pageHref("/login");
+        return;
+      }
+      // Paint the provider identity from the pending record — never baked
+      // into the page, the same rule the checkout address chooser follows.
+      const initial = (pending.name || pending.email || "?").trim().charAt(0);
+      const setText = (sel, val) =>
+        document.querySelectorAll(sel).forEach((el) => {
+          el.textContent = val;
+        });
+      setText("[data-google-name]", pending.name || pending.email || "");
+      setText("[data-google-email]", pending.email || "");
+      setText("[data-google-initial]", initial.toUpperCase());
+
+      const fieldEl = gForm.querySelector("[data-phone-field]");
+      const input = gForm.querySelector('[name="mobile"]');
+      const country = gForm.querySelector('[name="mobile-country"]');
+      // Clear the error the moment they start fixing it — an error that
+      // outlives the mistake reads as a field that will not accept anything.
+      if (input) input.addEventListener("input", () => setFieldError(fieldEl, ""));
+
+      gForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const raw = String((input && input.value) || "").trim();
+        const digits = raw.replace(/\D/g, "");
+        if (!raw) {
+          setFieldError(fieldEl, t("رقم الموبايل مطلوب لإكمال إنشاء الحساب"));
+          if (input) input.focus();
+          return;
+        }
+        if (digits.length < 8 || digits.length > 15) {
+          setFieldError(fieldEl, t("من فضلك أدخل رقم موبايل صحيح"));
+          if (input) input.focus();
+          return;
+        }
+        setFieldError(fieldEl, "");
+        const code = (country && country.value) || "+20";
+        // Stored with its dial code so the OTP page states the number the
+        // code was "sent" to in full, exactly as typed.
+        Auth.setPendingMobile(code + " " + digits);
+        window.location.href = pageHref("/verify");
+      });
+
+      // "Sign in with another account" — drop the half-finished Google flow
+      // rather than leave it pending, or the next visit to the OTP page would
+      // resume a sign-in the shopper just abandoned.
+      const cancel = gForm.querySelector("[data-google-cancel]");
+      if (cancel) {
+        cancel.addEventListener("click", () => {
+          Auth.logout();
+          window.location.href = pageHref("/login");
+        });
+      }
+    }
 
     // OTP verify page.
     const otpForm = document.querySelector("[data-otp-form]");

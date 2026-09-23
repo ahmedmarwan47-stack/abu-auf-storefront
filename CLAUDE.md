@@ -8,9 +8,10 @@ deviation.
 
 A **static Abu Auf storefront**, rebuilt from a Koueider/OrderBase static export
 against the Abu Auf Figma (`tQiydoANmIdYWq0IfmTsMz`) and, increasingly, against
-the live site at **abuauf.com**. 31 core pages plus a generated
-`product-<id>.html` for every catalogue product (130 HTML files), Arabic-first,
-right-to-left. No framework, no server — plain HTML + a build-time Tailwind
+the live site at **abuauf.com**. 35 core pages plus a generated
+`product-<id>.html` for every catalogue product (134 HTML files), Arabic-first,
+right-to-left. (Counts in the older notes below still say 31/130 — that figure
+went stale several pages ago; `len(PAGES)` in `build/build.py` is the truth.) No framework, no server — plain HTML + a build-time Tailwind
 stylesheet + vanilla JS.
 
 Abu Auf is the client; we have rights to their assets.
@@ -181,6 +182,32 @@ the plain form as always. `initCheckoutAddress()` reads the SAME store the
 account page writes (`abuauf:addresses` via `addrAll()`) — never bake a copy
 into the page. The block ships `hidden` so a JS failure degrades to the working
 form, never to an empty chooser.
+
+**Google sign-in has a second step, and it is not optional.** Google returns a
+verified email and a name and **never a phone number**, but the whole account
+model is keyed on the mobile — the OTP *is* the sign-in, orders track against
+it, the courier calls it. So `Auth.startGoogle()` writes a pending record with
+`mobile: ""` and `needsMobile: true`, and the button routes on that flag:
+`complete-mobile.html` when true, straight to `verify.html` when the account
+already has a number. That decision lives in **one place** (the
+`[data-google-signin]` handler), not per button. From complete-mobile the flow
+rejoins the shared OTP page every other sign-in uses — `setPendingMobile()`
+attaches the typed number to the SAME pending record, so `verifyOtp()` needs no
+Google-specific path beyond building the user from the provider profile.
+Both pages guard on the pending record and bounce to `/login` without one; that
+guard is why the sweep must seed `abuauf:authPending` (HANDOFF §5).
+
+The identity strip on that page is painted from the pending record at runtime,
+never baked into the markup, and carries **`data-i18n-skip`** — it shows a
+person's name and email, and the i18n walk is keyed on exact Arabic strings.
+
+`phone_field(country_select=True)` swaps the fixed `+20` chip for a real dial
+code `<select>`, used on that page **alone** (DESIGN-NOTES §3). It is a native
+select on purpose: the closed state IS the submitted value, so the painted
+country cannot drift from the sent one — the same contract as `aria-pressed` on
+the favourites button. Its width cap is **measured, not chosen**; read the
+comment in `styles.css` before changing it, because two passes at 320px clipped
+the dial code itself, which is the one thing the cap must never eat.
 
 **Search** — the **only** runtime reader of `catalog.json`. `loadCatalog()`
 fetches it once, lazily, on first modal open and caches the promise; a failed
@@ -354,7 +381,7 @@ These have each cost real time. Read them.
 
 ```bash
 npm install                               # once; Tailwind CLI (v3) for the CSS build
-python3 build/build.py                    # 31 page(s) + 99 fanned-out, no missing assets,
+python3 build/build.py                    # 35 page(s) + 99 fanned-out, no missing assets,
                                           # and rebuilds static-export/tailwind.css
 node --check static-export/scripts.js
 grep -ril 'koueider\|kouider' static-export/   # must return nothing
