@@ -1532,6 +1532,50 @@ no favourites/wishlist affordance to measure against). Implemented as a literal
 config token, because it is used in exactly one place. **The designer should
 be told** — same footing as the WCAG contrast deviation above.
 
+### `complete-mobile.html` has no Figma frame at all
+
+**Deviation, and the largest one in §3: this page is not in the Figma.** Ahmed
+asked (2026-09-23) for a mobile-number capture step for shoppers who sign in
+with Google and have no number on file. The Figma auth set
+(205:10427 / 206:9768 / 368:21314) covers sign-in, create-account and the OTP
+step and nothing else, so **every pixel of this page is assembled from existing
+components rather than measured off a frame**: the `_auth.py` single-card shell
+(the same `side=False, social=False` shape `verify.html` uses), `phone_field()`,
+the `btn-elevate` CTA, the bare 3D hero icon above the title. Nothing new was
+invented at the token level, but the *composition* is in-house and **needs the
+designer's sign-off before launch**, alongside the Arabic copy on it.
+
+The one genuinely new control is the **country dial-code picker**. That is a
+deliberate departure from the decision recorded above this section — Egypt-only,
+so `phone_field()` paints a fixed `+20` chip and not a picker. It is scoped:
+`phone_field(country_select=True)` is passed **on this page alone**; login,
+register and checkout keep the fixed chip. The reasoning is that a Google
+account is the one entry point that is plausibly not Egyptian, since it carries
+no country signal of its own. **If the client confirms Egypt-only accounts, drop
+the argument and this page falls back to the fixed chip with no other change.**
+The 21 dial codes in `COUNTRY_CODES` are public ITU codes, not client data.
+
+Two smaller things settled while building it:
+
+- **The seeded Google profile is placeholder** (`DEMO_GOOGLE` in `scripts.js`):
+  `mohamed.adel@gmail.com` / محمد عادل. It belongs with the rest of the demo
+  auth in §1 and is ripped out with it. Its `mobile: ""` is the point, not an
+  oversight — it is the case the page exists for, and seeding a number there
+  would skip the page under test.
+- **The form is `novalidate` while the input keeps `required`.** Without it the
+  browser swallows the submit event on an empty field and paints its own
+  bubble — untranslated, untinted, gone on the next click — instead of the
+  page's inline Arabic message. `required` stays for assistive tech and for a
+  JS-less fallback.
+
+Still open on this page: no EN dictionary entries, so switching to English
+leaves it in Arabic. That is the documented exact-match behaviour and it
+matches its neighbours — `verify.html`, `login.html` and `register.html` have
+no entries for their body copy either — but the whole auth flow needs a
+translation pass before launch.
+
+---
+
 ---
 
 ## 4. Where the live site beat the Figma

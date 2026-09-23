@@ -107,18 +107,10 @@
             <form class="contents" data-login-form>
               <div class="flex flex-1 flex-col justify-center">
 
-                <div class="flex flex-col gap-1.5">
+                <div class="flex flex-col gap-1.5" data-phone-field>
                   <label for="mobile" class="font-medium text-neutral-secondary text-sm">رقم الموبايل<span class="text-accent-error">*</span></label>
-                  <div dir="ltr" class="flex items-stretch bg-white border-2 border-neutral-divider focus-within:border-cta rounded-xl overflow-hidden transition-colors">
-                    <!-- Prefix sits on the SAME white as the number, NOT a filled
-                         (bg-interaction-base) cell: the tinted chip read as a
-                         nested compartment, and against the green focus border it
-                         looked like an inner border box (Ahmed, 2026-08-04). The
-                         only separator is the short divider below. -->
-                    <span class="flex items-center gap-1.5 ps-3.5 pe-3 shrink-0 font-semibold text-[#062A1C] text-sm">
-                      <span class="text-base leading-none" aria-hidden="true">🇪🇬</span>
-                      <span class="latin">+20</span>
-                    </span>
+                  <div dir="ltr" data-phone-box class="flex items-stretch bg-white border-2 border-neutral-divider focus-within:border-cta rounded-xl overflow-hidden transition-colors">
+                    <span class="flex items-center gap-1.5 ps-3.5 pe-3 shrink-0 font-semibold text-[#062A1C] text-sm"><span class="text-base leading-none" aria-hidden="true">🇪🇬</span><span class="latin">+20</span></span>
                     <!-- The prefix/number divider is a standalone rule, NOT a
                          border on the chip: `my-2.5` insets it top and bottom so
                          it stops short of the field's rounded edges. It stays
@@ -126,10 +118,18 @@
                          ONLY the outer field border darkens on focus (Ahmed,
                          2026-08-04). -->
                     <span aria-hidden="true" class="self-stretch bg-neutral-divider my-2.5 w-px shrink-0"></span>
+                    <!-- The placeholder is one UNBROKEN digit run, no spaces.
+                         styles.css forces `direction: rtl` on every tel input
+                         (so the digits align to the start like every other
+                         field), and an RTL paragraph reorders the three LTR
+                         runs of a spaced number: "100 123 4567" was painted as
+                         "4567 123 100" on login, register and here. A single
+                         run has nothing to reorder. -->
                     <input type="tel" id="mobile" name="mobile" required dir="ltr" value=""
-                           placeholder="100 123 4567"
+                           placeholder="1001234567"
                            class="flex-1 bg-transparent px-3 py-3 outline-none min-w-0 text-[#062A1C] text-base latin" />
                   </div>
+                  
                   <p class="text-neutral-secondary text-xs">هنبعتلك كود تأكيد من 6 أرقام على رقمك — من غير كلمة مرور.</p>
                 </div>
               </div>
@@ -141,7 +141,11 @@
                 
                 <div class="flex flex-col gap-3 pt-6 border-neutral-divider border-t">
                   <div class="gap-3 grid sm:grid-cols-2">
-                    <button type="button" class="flex justify-center items-center gap-2 hover:bg-interaction-base py-3 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
+                    <!-- Google returns a verified email and no phone number,
+                         so this button does NOT necessarily land on the
+                         dashboard: initAuthUI routes an account with no mobile
+                         on file to complete-mobile.html first. -->
+                    <button type="button" data-google-signin class="flex justify-center items-center gap-2 hover:bg-interaction-base py-3 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
                       <svg viewBox="0 0 24 24" class="w-5 h-5"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.6-.2-2.3H12v4.5h6c-.3 1.4-1.1 2.6-2.3 3.4v2.8h3.7c2.2-2 3.4-5 3.4-8.4Z"/><path fill="#34A853" d="M12 23c3.1 0 5.7-1 7.6-2.8l-3.7-2.8c-1 .7-2.3 1.1-3.9 1.1-3 0-5.5-2-6.4-4.7H1.8v2.9C3.7 20.5 7.6 23 12 23Z"/><path fill="#FBBC05" d="M5.6 13.8c-.2-.7-.4-1.4-.4-2.3s.1-1.6.4-2.3V6.3H1.8C1 7.9.5 9.9.5 11.5s.4 3.6 1.3 5.2l3.8-2.9Z"/><path fill="#EA4335" d="M12 4.6c1.7 0 3.2.6 4.4 1.7l3.3-3.3C17.7 1.2 15.1 0 12 0 7.6 0 3.7 2.5 1.8 6.3l3.8 2.9c.9-2.7 3.4-4.6 6.4-4.6Z"/></svg><span>سجل بأستخدام جوجل</span>
                     </button>
                     <button type="button" class="flex justify-center items-center gap-2 hover:bg-interaction-base py-3 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors">

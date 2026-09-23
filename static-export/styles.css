@@ -1794,6 +1794,92 @@ select.select-control {
   background-position: right 16px center;
 }
 
+/* --- Country dial-code picker (phone_field(country_select=True)) ---------
+   A native <select> sitting inside the phone control's white box, so the
+   closed state IS the submitted value and the painted country can never
+   drift from the one that gets sent (the `aria-pressed` lesson).
+
+   It lives inside a `dir="ltr"` box, so the chevron goes on the RIGHT and
+   the width is capped: option text runs flag, dial code, THEN country name,
+   and the cap clips the name rather than the code. The open listbox is sized
+   by the browser to the widest option, so the full name is always readable
+   where it matters. 7.25rem holds "+966" and a letter or two of the name at
+   the body size; at 360px that still leaves the number field ~150px, enough
+   for the 10-digit placeholder.
+
+   No border of its own: the ONLY separator in this control is the inset
+   divider rule the fixed-prefix variant already uses, and the only thing
+   that changes on focus is the outer field border. */
+select.country-select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 8.5rem;
+  max-width: 45%;
+  border: 0;
+  border-radius: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='m6 9 6 6 6-6' stroke='%23062A1C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  background-position: right 8px center;
+  padding-inline-end: 28px;
+}
+/* The options are rendered by the OS, which does not inherit the page font —
+   name it so the Arabic country names are not painted in a fallback face.
+
+   Direction stays LTR (inherited from the `dir="ltr"` phone box) rather than
+   being forced to rtl: Chromium paints the CLOSED state with the selected
+   option's own direction, and under rtl the clipped tail — and so the
+   ellipsis — landed at the reading START, left of the flag. In LTR the label
+   runs flag, code, name and the ellipsis sits at the end, on the name, which
+   is the part the open listbox is for. The Arabic name is a self-contained
+   RTL run either way, so it reads correctly in both. */
+select.country-select option {
+  font-family: inherit;
+  font-size: 0.9375rem;
+  background: #fff;
+  color: #062a1c;
+}
+@media (max-width: 380px) {
+  /* At the narrow end the picker gives up the country name and keeps flag +
+     dial code — the code is the one thing the cap must never eat, and two
+     passes at this width DID eat it ("+96\2026"). These numbers are measured,
+     not guessed. At 320px the box has 220px of inner width; the number field
+     needs 102px for the 10-digit placeholder plus 24px of padding = 126px,
+     which leaves 93px. The widest label, "\1F1F8\1F1E6 +966", measures 59px at
+     13px, so 88px with 28px of padding clears it with room to spare and the
+     number still fits.
+
+     `text-overflow: clip`, not ellipsis, for the same reason: the ellipsis
+     reserves its own width, and here that width comes straight out of the
+     dial code. There is nothing to elide at this size anyway. */
+  select.country-select {
+    width: 5.5rem;
+    max-width: 46%;
+    font-size: 0.8125rem;
+    text-overflow: clip;
+    padding-inline-start: 0.375rem;
+    padding-inline-end: 22px;
+    background-position: right 3px center;
+  }
+}
+
+/* --- Invalid field state -------------------------------------------------
+   Set together with the message by `setFieldError()` — one call paints the
+   border and the text, one call clears both, so a red field with no reason
+   given is not reachable. The tint is a WASH, not the border colour at full
+   strength: the border carries the state, the fill only draws the eye. */
+[data-phone-box].is-invalid {
+  border-color: #a8200d;
+  background: #fdf6f5;
+}
+[data-phone-box].is-invalid:focus-within {
+  border-color: #a8200d;
+}
+
 /* Telephone inputs render `direction: ltr` under Chromium even inside an RTL
    document, so the phone field's digits sat start-aligned to the LEFT while
    every other field aligned right (Ahmed, 2026-08-03). Force rtl to match:

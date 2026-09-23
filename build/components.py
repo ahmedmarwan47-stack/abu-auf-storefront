@@ -1110,29 +1110,110 @@ def field(label, name, type_="text", required=False, value="", placeholder="",
                 </div>"""
 
 
-def phone_field(label="رقم الموبايل", name="mobile", required=True, value="", help_text=""):
-    """Mobile input with a fixed Egypt country prefix (Ahmed, 2026-08-04): a flag
-    + +20 chip on the leading side, then an LTR number field. Egypt-only, so the
-    prefix is fixed rather than a country picker. The whole control is `dir=ltr`
-    so the +20 sits on the visual left and the digits read left-to-right, like a
-    phone number, inside the RTL form."""
+# Dial codes for the country selector, Egypt first (the home market) then the
+# rest of the Gulf/Levant and the diaspora markets Abu Auf ship to. These are
+# public ITU dial codes, not client data — nothing here is invented. Each entry
+# is (flag, Arabic country name, dial code).
+COUNTRY_CODES = [
+    ("\U0001F1EA\U0001F1EC", "مصر", "+20"),
+    ("\U0001F1F8\U0001F1E6", "السعودية", "+966"),
+    ("\U0001F1E6\U0001F1EA", "الإمارات", "+971"),
+    ("\U0001F1F0\U0001F1FC", "الكويت", "+965"),
+    ("\U0001F1F6\U0001F1E6", "قطر", "+974"),
+    ("\U0001F1E7\U0001F1ED", "البحرين", "+973"),
+    ("\U0001F1F4\U0001F1F2", "عُمان", "+968"),
+    ("\U0001F1EF\U0001F1F4", "الأردن", "+962"),
+    ("\U0001F1F1\U0001F1E7", "لبنان", "+961"),
+    ("\U0001F1F5\U0001F1F8", "فلسطين", "+970"),
+    ("\U0001F1EE\U0001F1F6", "العراق", "+964"),
+    ("\U0001F1F8\U0001F1E9", "السودان", "+249"),
+    ("\U0001F1F1\U0001F1FE", "ليبيا", "+218"),
+    ("\U0001F1F9\U0001F1F3", "تونس", "+216"),
+    ("\U0001F1E9\U0001F1FF", "الجزائر", "+213"),
+    ("\U0001F1F2\U0001F1E6", "المغرب", "+212"),
+    ("\U0001F1F9\U0001F1F7", "تركيا", "+90"),
+    ("\U0001F1EC\U0001F1E7", "بريطانيا", "+44"),
+    ("\U0001F1FA\U0001F1F8", "الولايات المتحدة", "+1"),
+    ("\U0001F1E9\U0001F1EA", "ألمانيا", "+49"),
+    ("\U0001F1EB\U0001F1F7", "فرنسا", "+33"),
+]
+
+
+def _country_select(name, selected="+20"):
+    """The dial-code picker that can stand in for the fixed +20 chip.
+
+    A NATIVE <select>, deliberately: it gets the OS wheel picker on a phone,
+    keyboard type-ahead on a desktop, and — the reason that matters here —
+    the closed state IS the value, so the painted country and the submitted
+    country can never drift the way a JS-painted chip over a hidden input
+    can (same lesson as `aria-pressed` on the favourites button).
+
+    Option text is flag, then dial code, THEN the country name, because the
+    closed state is width-capped and truncates from the end: the two things
+    that must survive the clip are the flag and the code, and the name is
+    what the open list is for.
+    """
+    opts = "".join(
+        '<option value="%s"%s>%s %s %s</option>'
+        % (e(code), " selected" if code == selected else "", flag, code, e(ar))
+        for flag, ar, code in COUNTRY_CODES
+    )
+    return (
+        '<select id="%s-country" name="%s-country" aria-label="كود الدولة" '
+        'class="country-select bg-transparent ps-3.5 pe-2 py-3 outline-none '
+        'font-semibold text-[#062A1C] text-sm shrink-0">%s</select>'
+        % (e(name), e(name), opts)
+    )
+
+
+def phone_field(label="رقم الموبايل", name="mobile", required=True, value="",
+                help_text="", country_select=False, error_id=""):
+    """Mobile input with a country prefix (Ahmed, 2026-08-04): a flag + dial
+    code on the leading side, then an LTR number field. The whole control is
+    `dir=ltr` so the code sits on the visual left and the digits read
+    left-to-right, like a phone number, inside the RTL form.
+
+    `country_select=True` swaps the fixed Egypt chip for a real dial-code
+    picker — used by the Google mobile-capture page, where the account may
+    well have been created outside Egypt. Everywhere else the prefix stays
+    fixed at +20 (DESIGN-NOTES §3).
+
+    `error_id` reserves an error slot under the field and wires
+    `aria-describedby`/`aria-errormessage` at build time, so the message the
+    validator reveals is already announced to a screen reader — the runtime
+    only flips `hidden` and the `is-invalid` class, never the wiring.
+    """
     star = '<span class="text-accent-error">*</span>' if required else ""
     hints = _field_hints(name, "tel")
     help_html = (f'<p class="text-neutral-secondary text-xs">{e(help_text)}</p>'
                  if help_text else "")
+    described = f' aria-describedby="{e(error_id)}" aria-errormessage="{e(error_id)}"' if error_id else ""
+    error_html = (
+        f'<p id="{e(error_id)}" data-field-error hidden role="alert" '
+        f'class="flex items-center gap-1.5 font-semibold text-accent-error text-xs">'
+        f'<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4 shrink-0">'
+        f'<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>'
+        f'<path d="M12 7.5v5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'
+        f'<circle cx="12" cy="16.4" r="1.05" fill="currentColor"/></svg>'
+        f'<span data-field-error-text></span></p>'
+    ) if error_id else ""
+    if country_select:
+        prefix = _country_select(name)
+    else:
+        # Prefix sits on the SAME white as the number, NOT a filled
+        # (bg-interaction-base) cell: the tinted chip read as a nested
+        # compartment, and against the green focus border it looked like an
+        # inner border box (Ahmed, 2026-08-04). The only separator is the
+        # short divider below.
+        prefix = ('<span class="flex items-center gap-1.5 ps-3.5 pe-3 shrink-0 '
+                  'font-semibold text-[#062A1C] text-sm">'
+                  '<span class="text-base leading-none" aria-hidden="true">\U0001F1EA\U0001F1EC</span>'
+                  '<span class="latin">+20</span></span>')
     return f"""
-                <div class="flex flex-col gap-1.5">
+                <div class="flex flex-col gap-1.5" data-phone-field>
                   <label for="{e(name)}" class="font-medium text-neutral-secondary text-sm">{e(label)}{star}</label>
-                  <div dir="ltr" class="flex items-stretch bg-white border-2 border-neutral-divider focus-within:border-cta rounded-xl overflow-hidden transition-colors">
-                    <!-- Prefix sits on the SAME white as the number, NOT a filled
-                         (bg-interaction-base) cell: the tinted chip read as a
-                         nested compartment, and against the green focus border it
-                         looked like an inner border box (Ahmed, 2026-08-04). The
-                         only separator is the short divider below. -->
-                    <span class="flex items-center gap-1.5 ps-3.5 pe-3 shrink-0 font-semibold text-[#062A1C] text-sm">
-                      <span class="text-base leading-none" aria-hidden="true">🇪🇬</span>
-                      <span class="latin">+20</span>
-                    </span>
+                  <div dir="ltr" data-phone-box class="flex items-stretch bg-white border-2 border-neutral-divider focus-within:border-cta rounded-xl overflow-hidden transition-colors">
+                    {prefix}
                     <!-- The prefix/number divider is a standalone rule, NOT a
                          border on the chip: `my-2.5` insets it top and bottom so
                          it stops short of the field's rounded edges. It stays
@@ -1140,10 +1221,18 @@ def phone_field(label="رقم الموبايل", name="mobile", required=True, v
                          ONLY the outer field border darkens on focus (Ahmed,
                          2026-08-04). -->
                     <span aria-hidden="true" class="self-stretch bg-neutral-divider my-2.5 w-px shrink-0"></span>
-                    <input type="tel" id="{e(name)}" name="{e(name)}"{' required' if required else ''}{hints} dir="ltr" value="{e(value)}"
-                           placeholder="100 123 4567"
+                    <!-- The placeholder is one UNBROKEN digit run, no spaces.
+                         styles.css forces `direction: rtl` on every tel input
+                         (so the digits align to the start like every other
+                         field), and an RTL paragraph reorders the three LTR
+                         runs of a spaced number: "100 123 4567" was painted as
+                         "4567 123 100" on login, register and here. A single
+                         run has nothing to reorder. -->
+                    <input type="tel" id="{e(name)}" name="{e(name)}"{' required' if required else ''}{hints}{described} dir="ltr" value="{e(value)}"
+                           placeholder="1001234567"
                            class="flex-1 bg-transparent px-3 py-3 outline-none min-w-0 text-[#062A1C] text-base latin" />
                   </div>
+                  {error_html}
                   {help_html}
                 </div>"""
 

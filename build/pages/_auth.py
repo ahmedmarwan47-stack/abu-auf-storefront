@@ -101,7 +101,11 @@ SIDE_CARD = f"""
 SOCIAL = f"""
                 <div class="flex flex-col gap-3 pt-6 border-neutral-divider border-t">
                   <div class="gap-3 grid sm:grid-cols-2">
-                    <button type="button" class="flex justify-center items-center gap-2 hover:bg-interaction-base py-3 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
+                    <!-- Google returns a verified email and no phone number,
+                         so this button does NOT necessarily land on the
+                         dashboard: initAuthUI routes an account with no mobile
+                         on file to complete-mobile.html first. -->
+                    <button type="button" data-google-signin class="flex justify-center items-center gap-2 hover:bg-interaction-base py-3 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors">
                       {ICON_GOOGLE}<span>سجل بأستخدام جوجل</span>
                     </button>
                     <button type="button" class="flex justify-center items-center gap-2 hover:bg-interaction-base py-3 border border-neutral-divider rounded-full font-semibold text-[#062A1C] text-sm transition-colors">

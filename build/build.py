@@ -28,7 +28,7 @@ PAGES = [
     # commerce
     "home", "shop", "shop_category", "product", "cart", "checkout", "payment", "thank_you",
     # auth
-    "login", "register", "verify", "forget_password", "reset_password",
+    "login", "register", "verify", "complete_mobile", "forget_password", "reset_password",
     # account
     "my_account", "my_account_orders", "my_account_order",
     "my_account_favorites", "my_account_addresses", "my_account_wallet",
