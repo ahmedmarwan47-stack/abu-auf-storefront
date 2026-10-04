@@ -792,6 +792,32 @@ def pack_tag(p):
             f'<span data-pack-value><span class="latin">{e(num)}</span> {e(unit)}</span></span>')
 
 
+def earned_points(p):
+    """Points earned by buying `p` once: 1 per EGP paid (the site's own rate,
+    see points_callout). One function so the card chip and the product-page
+    pill can never quote different numbers for the same product."""
+    return int(round(p.get("sale") or p.get("price") or 0))
+
+
+def card_points_chip(p):
+    """
+    "N نقطة" chip pinned to the top-left corner (inline-end in RTL)
+    of every product card's image plate (Ahmed, 2026-10-04). Same green reward
+    family and 3D icon as points_callout, so the two read as one feature.
+    Not aria-hidden: it is real information a screen reader should hear. It
+    sits inside the card's image link, so it never steals a tap.
+    """
+    pts = earned_points(p)
+    if pts <= 0:
+        return ""
+    # Number only (Ahmed, 2026-10-04): the card says "N نقطة"; the full
+    # "buy and earn" sentence lives on the product page (points_callout).
+    return ('<span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 '
+            'bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap">'
+            '<img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" />'
+            f'<span><span class="latin">{pts}</span> نقطة</span></span>')
+
+
 def points_callout(p):
     """
     "Earn N points" pill, shown beside the best-seller badge on every product
@@ -803,8 +829,7 @@ def points_callout(p):
     product page, the points page and the wallet is the same discipline the
     wallet balance already follows — see my_account_point.py and DESIGN-NOTES §1.
     """
-    price = p.get("sale") or p.get("price") or 0
-    pts = int(round(price))
+    pts = earned_points(p)
     if pts <= 0:
         return ""
     # Green "good news" pill, the same family as the discount/wallet chips, so
@@ -817,7 +842,7 @@ def points_callout(p):
             '<span class="inline-flex items-center gap-1 bg-[#E9F3E6] px-2.5 py-0.5 '
             'rounded-full font-bold text-[#163300] text-xs">'
             '<img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" />'
-            f'<span>اكسب <span class="latin">{pts}</span> نقطة بشرائك</span></span></span>')
+            f'<span>اشتري واحصل على <span class="latin">{pts}</span> نقطة</span></span></span>')
 
 
 def _sold_proof_label(p):
@@ -1880,6 +1905,7 @@ def product_card(p, slide=True, cat=None):
           <article class="product-card {wrapper}" {keys}>
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-{p.get('id', 0)}.html" class="product-card__media block relative bg-interaction-base p-4">
+                {card_points_chip(p)}
                 <img src="{e(p['image'])}" alt="{e(title(p))}"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
               </a>
