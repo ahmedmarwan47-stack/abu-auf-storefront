@@ -5901,9 +5901,19 @@
   function productFlightImg(scope) {
     return (
       document.querySelector("[data-gallery-main]") ||
-      (scope && scope.querySelector("img")) ||
+      cardImg(scope) ||
       null
     );
+  }
+
+  /* The product photo inside a card or row. Cards mark it [data-product-img]
+     because their first img is no longer the photo — the points chip's icon
+     sits before it in the image plate, and "first img" threw the coin at the
+     cart instead of the product. Falls back to the first img for scopes
+     (cart rows, bundles) that carry only the one. */
+  function cardImg(scope) {
+    if (!scope || !scope.querySelector) return null;
+    return scope.querySelector("[data-product-img]") || scope.querySelector("img");
   }
 
   function throwToCart(sourceEl, opts) {
@@ -6280,7 +6290,7 @@
            store updates now, only the badge waits, so nothing can desync.
            The hold has to start BEFORE the mutation, or Cart.add's
            `cart:change` repaints the badge on the way past. */
-        const img = scope.querySelector && scope.querySelector("img");
+        const img = cardImg(scope);
         const qty = qtyEl ? parseInt(qtyEl.textContent, 10) : 1;
         throwToCart(img, { card: true, tag: "+" + qty });
 
@@ -6333,7 +6343,7 @@
           toast("تمت الإزالة من السلة", "info");
           return;
         }
-        if (delta > 0) throwToCart(card && card.querySelector("img"), { card: true, quick: true, tag: "+1" });
+        if (delta > 0) throwToCart(cardImg(card), { card: true, quick: true, tag: "+1" });
         if (it) Cart.setQty(product.id, next);
         else Cart.add(product, 1);
 

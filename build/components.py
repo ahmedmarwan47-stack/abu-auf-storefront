@@ -1906,7 +1906,10 @@ def product_card(p, slide=True, cat=None):
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-{p.get('id', 0)}.html" class="product-card__media block relative bg-interaction-base p-4">
                 {card_points_chip(p)}
-                <img src="{e(p['image'])}" alt="{e(title(p))}"
+                <!-- data-product-img: the flight to the cart throws THIS, not
+                     the card's first <img> — the points chip's icon comes
+                     first in the DOM and was flying instead. -->
+                <img data-product-img src="{e(p['image'])}" alt="{e(title(p))}"
                      class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
