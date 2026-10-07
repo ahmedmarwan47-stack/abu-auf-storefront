@@ -30,8 +30,12 @@ def _otp_boxes(n=6):
 def build():
     form = f"""
               <p class="text-neutral-secondary text-sm text-center leading-6">
-                أدخل رمز التحقق المكوّن من 6 أرقام المُرسل إلى
-                <span class="font-semibold text-[#062A1C] latin" data-otp-mobile>—</span>
+                <!-- Copy and destination are repainted from the pending
+                     record's `channel` (whatsapp / email; none = the plain
+                     mobile wording login has always used). data-i18n-skip on
+                     the destination: it is the shopper's own number/email. -->
+                <span data-otp-lead>أدخل رمز التحقق المكوّن من 6 أرقام المُرسل إلى</span>
+                <span class="font-semibold text-[#062A1C] latin" dir="ltr" data-otp-mobile data-i18n-skip>—</span>
               </p>
               <div class="flex gap-2 sm:gap-3" dir="ltr">
 {_otp_boxes()}
@@ -46,4 +50,4 @@ def build():
                      "أدخل رمز التحقق المرسل إلى رقم موبايلك لإتمام تسجيل الدخول في أبو عوف.",
                      "التحقق من رقم الموبايل", form, "verify", "/verify",
                      "التحقق", side=False, social=False, form_attrs="data-otp-form",
-                     hero=hero)
+                     hero=hero, heading_attrs="data-otp-heading")

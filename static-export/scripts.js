@@ -406,6 +406,14 @@
    * inventing content. See the "Language" section in DESIGN-NOTES.
    */
   const EN = {
+    // register / verify — OTP channel
+    "استلام رمز التحقق عن طريق": "Receive the verification code by",
+    "واتساب": "WhatsApp",
+    "على رقم الموبايل": "On your mobile number",
+    "على الإيميل": "On your email",
+    "أدخل رمز التحقق المكوّن من 6 أرقام المُرسل على الإيميل": "Enter the 6-digit code sent to your email",
+    "أدخل رمز التحقق المكوّن من 6 أرقام المُرسل على واتساب إلى": "Enter the 6-digit code sent on WhatsApp to",
+    "التحقق من البريد الالكتروني": "Verify your email",
     // primary nav
     "العروض و الخصومات": "Offers & Discounts",
     "المكسرات": "Nuts",
@@ -4376,6 +4384,8 @@
           lastName: String(data.lastName || "").trim(),
           mobile: String(data.mobile || "").trim(),
           email: String(data.email || "").trim(),
+          // Where the OTP was sent: "whatsapp" (the mobile) or "email".
+          channel: data.channel === "email" ? "email" : "whatsapp",
         };
         writePending(p);
         return p;
@@ -4410,7 +4420,9 @@
             nameEn: DEMO_USER.nameEn,
             email: p.email || "",
             mobile: p.mobile,
-            emailVerified: false,
+            // A code sent by email proves the email, so the dashboard's
+            // verify-your-email prompt has nothing left to ask.
+            emailVerified: p.channel === "email",
           };
         } else {
           user = {
@@ -6465,8 +6477,18 @@
       });
       // The verify page shows the mobile the OTP was "sent" to.
       const p = Auth.pending();
+      // Register lets the shopper pick the channel; login has none and keeps
+      // the plain mobile wording.
+      const via = p && p.channel;
       document.querySelectorAll("[data-otp-mobile]").forEach((el) => {
-        el.textContent = (p && p.mobile) || "—";
+        el.textContent = (p && (via === "email" ? p.email : p.mobile)) || "—";
+      });
+      document.querySelectorAll("[data-otp-lead]").forEach((el) => {
+        if (via === "email") el.textContent = t("أدخل رمز التحقق المكوّن من 6 أرقام المُرسل على الإيميل");
+        else if (via === "whatsapp") el.textContent = t("أدخل رمز التحقق المكوّن من 6 أرقام المُرسل على واتساب إلى");
+      });
+      document.querySelectorAll("[data-otp-heading]").forEach((el) => {
+        if (via === "email") el.textContent = t("التحقق من البريد الالكتروني");
       });
     };
 
@@ -6503,6 +6525,7 @@
             lastName: val("last-name"),
             mobile: mobile,
             email: val("email"),
+            channel: (form.querySelector('[name="otp-channel"]:checked') || {}).value,
           },
           safeNext(nextParam()),
         );

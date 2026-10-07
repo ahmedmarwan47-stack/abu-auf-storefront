@@ -723,6 +723,27 @@ The digits are `.latin` + `tabular-nums` so the row cannot jitter as they tick,
 and the label ink is `#6B6255` (`onBeigeMuted`) — the token that clears 4.5:1 on
 this beige, which `neutral.secondary` does not.
 
+### Register asks where to send the code — WhatsApp or email (Ahmed, 2026-10-07)
+
+Not in the Figma. `register.html` now carries a two-option `radio_card` group
+under the email field — **واتساب** (to the mobile, default) or **البريد
+الالكتروني** — and the choice rides on the pending auth record as `channel`.
+`verify.html` repaints its heading, lead line and destination from it; login
+has no channel and keeps the original mobile wording.
+
+Open questions for the client / backend:
+
+- **Choosing email leaves the mobile unproven.** The account model is keyed on
+  the mobile (orders track against it, the courier calls it), yet an email
+  sign-up never proves that number. The demo marks the email verified and the
+  mobile simply unverified; the real backend needs a rule — prompt for the
+  mobile later, or require it at first checkout.
+- **WhatsApp delivery needs a WhatsApp Business sender** on the backend. There
+  is no SMS fallback offered in the UI; if WhatsApp delivery fails the shopper
+  has only "resend".
+- Login is still mobile-only with no channel choice — ask whether it should
+  offer the same option.
+
 ### Checkout asks a signed-in shopper to PICK an address, not retype one (Ahmed, 2026-09-13)
 
 The Figma's checkout has one delivery-address block: a blank form, always

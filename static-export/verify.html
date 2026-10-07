@@ -66,11 +66,15 @@
                on the same line as the create-account button (Ahmed, 2026-08-04). -->
           <div class="flex flex-col gap-6 bg-white shadow-custom4 p-8 xl:p-10 rounded-[20px] min-w-0">
             <div class="flex justify-center"><img src="images/abuauf/icons/otp-3d.png" alt="" class="w-20 h-20 object-contain" /></div>
-            <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl text-center">التحقق من رقم الموبايل</h1>
+            <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl text-center" data-otp-heading>التحقق من رقم الموبايل</h1>
             <form class="flex flex-col gap-5" data-otp-form>
               <p class="text-neutral-secondary text-sm text-center leading-6">
-                أدخل رمز التحقق المكوّن من 6 أرقام المُرسل إلى
-                <span class="font-semibold text-[#062A1C] latin" data-otp-mobile>—</span>
+                <!-- Copy and destination are repainted from the pending
+                     record's `channel` (whatsapp / email; none = the plain
+                     mobile wording login has always used). data-i18n-skip on
+                     the destination: it is the shopper's own number/email. -->
+                <span data-otp-lead>أدخل رمز التحقق المكوّن من 6 أرقام المُرسل إلى</span>
+                <span class="font-semibold text-[#062A1C] latin" dir="ltr" data-otp-mobile data-i18n-skip>—</span>
               </p>
               <div class="flex gap-2 sm:gap-3" dir="ltr">
 <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" placeholder=" " data-otp-box aria-label="خانة رقم 1" class="otp-box flex-1 min-w-0 h-14 rounded-xl text-center font-bold text-[#062A1C] text-2xl latin" /><input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" placeholder=" " data-otp-box aria-label="خانة رقم 2" class="otp-box flex-1 min-w-0 h-14 rounded-xl text-center font-bold text-[#062A1C] text-2xl latin" /><input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" placeholder=" " data-otp-box aria-label="خانة رقم 3" class="otp-box flex-1 min-w-0 h-14 rounded-xl text-center font-bold text-[#062A1C] text-2xl latin" /><input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" placeholder=" " data-otp-box aria-label="خانة رقم 4" class="otp-box flex-1 min-w-0 h-14 rounded-xl text-center font-bold text-[#062A1C] text-2xl latin" /><input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" placeholder=" " data-otp-box aria-label="خانة رقم 5" class="otp-box flex-1 min-w-0 h-14 rounded-xl text-center font-bold text-[#062A1C] text-2xl latin" /><input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" placeholder=" " data-otp-box aria-label="خانة رقم 6" class="otp-box flex-1 min-w-0 h-14 rounded-xl text-center font-bold text-[#062A1C] text-2xl latin" />

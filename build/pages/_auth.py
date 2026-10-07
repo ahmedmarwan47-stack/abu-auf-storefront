@@ -117,7 +117,7 @@ SOCIAL = f"""
 
 def auth_page(title_text, description, heading, form_html, page_id, path,
               crumb, side=True, social=True, form_attrs="", hero="",
-              form_contents=False):
+              form_contents=False, heading_attrs=""):
     # `form_attrs` lets a page tag its form for a specific handler — the
     # sign-in page uses data-login-form, which runs a real (demo) credential
     # check rather than the generic data-demo-form success toast.
@@ -128,6 +128,9 @@ def auth_page(title_text, description, heading, form_html, page_id, path,
     # its own flex-1 regions and centre the CTA in line with the create-account
     # card's button (see login.py).
     attrs = (" " + form_attrs) if form_attrs else ""
+    # `heading_attrs` tags the <h1> for runtime repainting — verify.html's
+    # heading names the channel the code went to (WhatsApp vs email).
+    h_attrs = (" " + heading_attrs) if heading_attrs else ""
     form_class = "contents" if form_contents else "flex flex-col gap-5"
     hero_html = f'<div class="flex justify-center">{hero}</div>' if hero else ""
     body = f"""{page_header("", [("الرئيسية", "index.html"), (crumb, None)])}
@@ -141,7 +144,7 @@ def auth_page(title_text, description, heading, form_html, page_id, path,
                on the same line as the create-account button (Ahmed, 2026-08-04). -->
           <div class="flex flex-col gap-6 bg-white shadow-custom4 p-8 xl:p-10 rounded-[20px] min-w-0">
             {hero_html}
-            <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl text-center">{e(heading)}</h1>
+            <h1 class="font-bold text-[#062A1C] text-2xl xl:text-3xl text-center"{h_attrs}>{e(heading)}</h1>
             <form class="{form_class}"{attrs}>{form_html}
             </form>
             {SOCIAL if social else ''}
