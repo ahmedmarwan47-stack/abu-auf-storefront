@@ -511,6 +511,14 @@ API fields and 6 of 99 products carry a genuine discount. See DESIGN-NOTES §1.)
 
 ### Deploying to GitHub Pages
 
+**Every page links its CSS/JS as `file?v=<content hash>`** — `stamp_assets()`
+in `build.py`, the build's last step. Pages serves them `max-age=600`, so
+without it a browser paired fresh HTML with a ten-minute-old `tailwind.css` /
+`scripts.js` after every push (new classes unstyled, new JS absent). The
+catch: the runtime layer is "refresh is enough" locally, but **run the build
+before you push** an edit to `styles.css` or `scripts.js`, or the deployed
+hash is stale and so is the cache.
+
 Checked and clean: no root-absolute paths (so a `/repo/` subpath works), no
 case-mismatched asset references (Pages is case-sensitive, macOS is not), no
 underscore-prefixed files, and `static-export/.nojekyll` is present so Pages

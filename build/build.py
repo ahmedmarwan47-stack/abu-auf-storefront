@@ -138,6 +138,54 @@ def check_runtime_js():
     return len(bad)
 
 
+# Files every page links whose CONTENT changes between deploys under a fixed
+# name. GitHub Pages serves them with `Cache-Control: max-age=600`, so after a
+# push a browser happily paired the NEW html with a 10-minute-old
+# tailwind.css / scripts.js — a new class rendered unstyled and new runtime
+# behaviour simply did not happen (Ahmed saw the DOB row stacked and the
+# Google names unfilled on 2026-10-07, both of which the live files had
+# right). The link carries a content hash, so a changed file is a new URL and
+# the cache cannot serve the old one. Local dev is unaffected: serve.py sends
+# no-store, so the query is ignored there.
+STAMPED = ("tailwind.css", "styles.css", "scripts.js", "i18n-en.js")
+_STAMP_RE = re.compile(r'((?:href|src)=")(' + "|".join(re.escape(f) for f in STAMPED)
+                       + r')(?:\?v=[0-9a-f]*)?(")')
+
+
+def stamp_assets():
+    """Rewrite every exported page's links to STAMPED files as file?v=<hash>.
+
+    Runs LAST — after the Tailwind build, which is what produces the final
+    tailwind.css — and over every .html in the export, not just this run's
+    targets, so a partial build cannot leave other pages pointing at a stale
+    hash. Deterministic: an unchanged file keeps its hash and a rebuild is
+    still a no-op diff.
+
+    It also means: if you edit styles.css or scripts.js (the runtime layer,
+    "refresh is enough"), RUN THE BUILD before you push, or the deployed links
+    keep the old hash and the 10-minute staleness comes back.
+    """
+    import hashlib
+    hashes = {}
+    for f in STAMPED:
+        with open(os.path.join(EXPORT, f), "rb") as fh:
+            hashes[f] = hashlib.sha1(fh.read()).hexdigest()[:10]
+    changed = 0
+    for name in sorted(os.listdir(EXPORT)):
+        if not name.endswith(".html"):
+            continue
+        path = os.path.join(EXPORT, name)
+        with open(path, encoding="utf-8") as fh:
+            html = fh.read()
+        new = _STAMP_RE.sub(lambda m: f"{m.group(1)}{m.group(2)}?v={hashes[m.group(2)]}{m.group(3)}", html)
+        if new != html:
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write(new)
+            changed += 1
+    print(f"  asset links stamped        {changed:>8} page(s)   "
+          + " ".join(f"{f}={h}" for f, h in hashes.items()))
+
+
 def main(only=None):
     targets = [p for p in PAGES if not only or p in only]
     if only:
@@ -188,6 +236,7 @@ def main(only=None):
 
     bad_js = check_runtime_js()
     css_failed = build_tailwind(partial=bool(only))
+    stamp_assets()
 
     print(f"\nbuilt {len(targets)} page(s)"
           + (f" + {extra_pages} fanned-out page(s)" if extra_pages else "")
