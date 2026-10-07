@@ -3668,9 +3668,17 @@
       <!-- =============================== ABOUT =============================== -->
       <section data-reveal class="bg-primary text-white">
         <div class="items-center grid lg:grid-cols-2 mx-auto max-w-[1536px]">
-          <div class="flex flex-col gap-6 px-4 xl:ps-[190px] xl:pe-20 py-12 xl:py-20">
+          <!-- Two-line heading (Ahmed, 2026-10-07). The old xl:ps-[190px] left
+               a 498px column at 1686 and the first half of the title alone
+               measures 570px at 48px, so it broke into three. The start inset
+               is now the page container's own 16px (the copy lines up with
+               the header's edge) and the end gap 40px, which leaves 584px at
+               1280 — the narrowest xl width — and more above it. text-balance
+               evens the two lines. No <br>: the i18n walk is keyed on the
+               whole string as one text node. -->
+          <div class="flex flex-col gap-6 px-4 xl:ps-4 xl:pe-10 py-12 xl:py-20">
             <p class="font-semibold text-accent-yellow text-lg xl:text-xl">عن أبو عوف</p>
-            <h2 class="font-bold text-3xl xl:text-5xl leading-tight">نحن نغير مفهوم الأكل الصحي في جميع أنحاء العالم</h2>
+            <h2 class="font-bold text-3xl xl:text-5xl text-balance leading-tight">نحن نغير مفهوم الأكل الصحي في جميع أنحاء العالم</h2>
             <p class="text-white/80 text-base xl:text-lg leading-8">تأسست شركة أبو عوف في عام 2010 وأصبحت من أشهر الأسماء في الأسواق لتقديم منتجات القهوة الطبيعية عالية الجودة والمكسرات وزبد المكسرات والأطعمة الصحية والفاكهة المجففة.. وأكثر. فلكل مُنتَج حكايته الخاصة؛ وبسبب اهتمامنا المستمر بالتفاصيل، فإن كل خطوة في عملية الإنتاج في أبو عوف تُدار بعناية لضمان إنتاج منتجات عالية الجودة يتم توصيلها بحب وملئها بالمكونات المغذية من الطبيعة الأم.</p>
             <a href="#" class="inline-flex justify-center items-center rounded-full font-semibold transition-colors w-full sm:w-auto px-8 py-4 text-base xl:text-lg bg-accent-yellow hover:bg-accent-500 text-[#062A1C] mt-2 self-start">اعرف المزيد</a>
           </div>
