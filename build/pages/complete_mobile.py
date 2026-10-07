@@ -13,10 +13,17 @@ A Google account that DOES already carry a mobile skips this page entirely;
 
 Arriving here with no pending Google flow bounces to /login, the same guard
 verify.py relies on.
+
+Ahmed, 2026-10-07: the page now collects the same personal info the profile
+page holds — first/last name (prefilled from the Google profile, still
+editable), the email read-only with a مؤكد pill (Google verified it), the
+mobile, date of birth and gender. The shared fields come from components.py
+(dob_field / gender_field / email_readonly), so this form and the profile
+form cannot drift. Names are required; DOB and gender are optional.
 """
 from _auth import auth_page
 from catalog import e
-from components import phone_field
+from components import dob_field, email_readonly, field, gender_field, phone_field
 
 SLUG = "complete-mobile.html"
 
@@ -56,31 +63,26 @@ def _why_list():
 
 
 def build():
-    # The Google identity strip. It ships with placeholder glyphs and is
-    # painted from the pending record at runtime ([data-google-name] /
-    # [data-google-email] / [data-google-initial]) — never baked in, the same
-    # rule the checkout address chooser follows. data-i18n-skip because the
-    # name and email belong to the SHOPPER: the i18n walk is keyed on exact
-    # Arabic strings and would happily rewrite a person's name.
-    identity = """
-              <div data-i18n-skip class="flex items-center gap-3 bg-interaction-base p-3 rounded-2xl">
-                <span data-google-initial aria-hidden="true"
-                      class="place-items-center grid bg-cta rounded-full font-bold text-white text-lg size-11 shrink-0">—</span>
-                <span class="flex flex-col min-w-0">
-                  <span data-google-name class="font-semibold text-[#062A1C] text-sm truncate">—</span>
-                  <span data-google-email class="text-neutral-secondary text-xs truncate latin" dir="ltr">—</span>
-                </span>
-              </div>"""
-
+    # Name and email are painted from the pending Google record at runtime
+    # (the inputs' values, [data-google-email]) — never baked in, the same
+    # rule the checkout address chooser follows. data-i18n-skip on the email
+    # because it is the SHOPPER's own text and the i18n walk is keyed on exact
+    # strings. Input values are not text nodes, so the names need no skip.
     form = f"""
               <p class="text-neutral-secondary text-sm text-center leading-7">
-                تم تسجيل دخولك بحساب جوجل بنجاح. فاضل خطوة واحدة — ضيف رقم موبايلك
-                عشان نقدر نأمّن حسابك ونوصّلك طلباتك.
+                تم تسجيل دخولك بحساب جوجل بنجاح. فاضل خطوة واحدة — راجع بياناتك وضيف
+                رقم موبايلك عشان نقدر نأمّن حسابك ونوصّلك طلباتك.
               </p>
-{identity}
+              <div class="gap-4 grid sm:grid-cols-2">
+{field("الاسم الأول", "first-name", required=True)}
+{field("الاسم الاخير", "last-name", required=True)}
+              </div>
+{email_readonly("—", verified=True, attrs="data-google-email data-i18n-skip")}
 {phone_field("رقم الموبايل", "mobile", required=True, country_select=True,
              error_id="mobile-error",
              help_text="هنبعتلك كود تأكيد من 6 أرقام على الرقم ده.")}
+{dob_field(prompts=True)}
+{gender_field()}
 {_why_list()}
               <button type="submit" data-mobile-submit
                       class="btn-elevate bg-cta hover:bg-cta-hover py-4 rounded-full font-semibold text-white text-base transition-colors">متابعة</button>
@@ -99,10 +101,10 @@ def build():
     # no tinted disc behind it. profile-3d because this step is the account
     # setup finishing, not an OTP — the OTP icon belongs to the next page.
     hero = '<img src="images/abuauf/icons/profile-3d.png" alt="" class="w-20 h-20 object-contain" />'
-    return auth_page("أضف رقم موبايلك | أبو عوف",
-                     "أضف رقم موبايلك لإكمال تسجيل الدخول بحساب جوجل في أبو عوف.",
-                     "أضف رقم موبايلك", form, "complete-mobile", "/complete-mobile",
-                     "إضافة رقم الموبايل", side=False, social=False,
+    return auth_page("أكمل بياناتك | أبو عوف",
+                     "أكمل بياناتك الشخصية وأضف رقم موبايلك لإكمال تسجيل الدخول بحساب جوجل في أبو عوف.",
+                     "أكمل بياناتك", form, "complete-mobile", "/complete-mobile",
+                     "أكمل بياناتك", side=False, social=False,
                      # `novalidate` with `required` still ON the input: the
                      # attribute keeps the semantics for assistive tech and
                      # for a JS-less fallback, while novalidate hands the

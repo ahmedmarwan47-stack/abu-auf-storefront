@@ -8,38 +8,9 @@ inputs (the "very wide inputs" complaint). The password card is gone — auth is
 passwordless now (mobile + OTP), so there is no password to change.
 """
 from _account import CUSTOMER, account_page, account_title, card
-from components import field
+from components import dob_field, email_readonly, field, gender_field
 
 SLUG = "my-account-profile.html"
-
-_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
-           "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
-
-
-def _sel(options, selected=""):
-    """A bare select (no own label) for the date-of-birth row."""
-    opts = "".join(
-        f'<option{" selected" if str(o) == str(selected) else ""}>{o}</option>'
-        for o in options
-    )
-    return ('<select class="select-control bg-white px-3 py-3 border-2 border-neutral-divider '
-            'focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base '
-            f'transition-colors">{opts}</select>')
-
-
-def _gender_card(val, label, checked):
-    # peer + .radio-dot is the project's established radio pattern (styles.css):
-    # the input sits immediately before the card span, so `peer-checked` lights
-    # the border and `input:checked + span .radio-dot` fills the dot.
-    return f"""
-                  <label class="cursor-pointer">
-                    <input type="radio" name="gender" value="{val}"{' checked' if checked else ''} class="peer sr-only" />
-                    <span class="flex items-center gap-2.5 bg-white px-4 py-3 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors">
-                      <span class="radio-dot shrink-0"></span>
-                      <span class="font-medium text-[#062A1C] text-sm">{label}</span>
-                    </span>
-                  </label>"""
-
 
 def build():
     # Demo DOB — placeholder like the rest of CUSTOMER (no profile endpoint).
@@ -53,40 +24,14 @@ def build():
                 </div>
 
                 <!-- Email is read-only here: it is verified separately (the
-                     dashboard shows a verify prompt), not edited on this form.
-                     A span, not an input — read-only text truncates cleanly
-                     rather than scrolling inside a fixed-width field. -->
-                <div class="flex flex-col gap-1.5">
-                  <span class="font-medium text-neutral-secondary text-sm">البريد الالكتروني</span>
-                  <div class="flex items-center gap-2 bg-interaction-base px-4 py-3 border-2 border-transparent rounded-xl">
-                    <span class="flex-1 min-w-0 truncate text-neutral-secondary text-base latin">{CUSTOMER['email']}</span>
-                    <!-- Opaque tint, NOT bg-accent-error/10: an alpha tint reads
-                         ~1:1 to the contrast sweep (ink on its own colour); the
-                         opaque blend (#F6E9E7 ≈ error at 10% over white) is
-                         legible to both the eye and the checker — the same trap
-                         the checkout stepper's #E9F3E6 documents. -->
-                    <span class="inline-flex items-center shrink-0 bg-[#F6E9E7] px-2 py-0.5 rounded-full font-semibold text-accent-error text-[11px]">غير مؤكد</span>
-                  </div>
-                </div>
+                     dashboard shows a verify prompt), not edited on this form. -->
+{email_readonly(CUSTOMER['email'])}
 
 {field("رقم الهاتف", "phone", "tel", value=CUSTOMER['phone'], required=True)}
 
-                <div class="flex flex-col gap-1.5">
-                  <span class="font-medium text-neutral-secondary text-sm">تاريخ الميلاد</span>
-                  <div class="gap-3 grid grid-cols-3">
-                    {_sel(range(1, 32), dob_day)}
-                    {_sel(_MONTHS, dob_month)}
-                    {_sel(range(2010, 1949, -1), dob_year)}
-                  </div>
-                </div>
+{dob_field(dob_day, dob_month, dob_year)}
 
-                <div class="flex flex-col gap-1.5">
-                  <span class="font-medium text-neutral-secondary text-sm">النوع</span>
-                  <div class="gap-3 grid grid-cols-2">
-{_gender_card("female", "أنثى", True)}
-{_gender_card("male", "ذكر", False)}
-                  </div>
-                </div>
+{gender_field("female")}
 
                 <button type="submit" class="bg-cta hover:bg-cta-hover mt-1 py-3.5 rounded-full w-full font-semibold text-white text-sm transition-colors">حفظ التعديلات</button>
               </form>"""

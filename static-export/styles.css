@@ -1793,6 +1793,24 @@ select.select-control {
 [dir="ltr"] select.select-control {
   background-position: right 16px center;
 }
+/* Date-of-birth row (dob_field): three selects in one row. On a 320px
+   phone inside an auth card each cell is ~66px, and the 44px chevron
+   reservation above left ~10px of text — "يوم" painted as one letter
+   (2026-10-07). Below sm the chevron shrinks and moves in, the inline
+   padding drops, and the text steps down to 14px. Selector is (0,2,1) so it
+   outranks both the rule above and Tailwind's px-3 / text-base. */
+@media (max-width: 639.98px) {
+  [data-dob] select.select-control {
+    background-size: 14px 14px;
+    background-position: left 6px center;
+    padding-inline-start: 6px;
+    padding-inline-end: 24px;
+    font-size: 14px;
+  }
+  [dir="ltr"] [data-dob] select.select-control {
+    background-position: right 6px center;
+  }
+}
 
 /* --- Country dial-code picker (phone_field(country_select=True)) ---------
    A native <select> sitting inside the phone control's white box, so the
@@ -1878,6 +1896,13 @@ select.country-select option {
 }
 [data-phone-box].is-invalid:focus-within {
   border-color: #a8200d;
+}
+/* Same state on a plain field() input — complete-mobile's required names.
+   Driven by aria-invalid alone, so the announced state and the painted one
+   cannot drift. The phone input is excluded: its box above carries it. */
+input[aria-invalid="true"]:not([data-phone-box] input) {
+  border-color: #a8200d;
+  background: #fdf6f5;
 }
 
 /* Telephone inputs render `direction: ltr` under Chromium even inside an RTL

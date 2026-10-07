@@ -723,6 +723,22 @@ The digits are `.latin` + `tabular-nums` so the row cannot jitter as they tick,
 and the label ink is `#6B6255` (`onBeigeMuted`) — the token that clears 4.5:1 on
 this beige, which `neutral.secondary` does not.
 
+### Google sign-up completes the whole profile, not just the mobile (Ahmed, 2026-10-07)
+
+`complete-mobile.html` (heading now أكمل بياناتك) collects the same personal
+info as `my-account-profile.html`: first/last name **prefilled from Google but
+editable**, the email read-only with a مؤكد pill, the mobile, date of birth
+and gender. The DOB, gender and read-only-email blocks moved into
+`components.py` (`dob_field` / `gender_field` / `email_readonly`) so the two
+forms are one markup. Names are required; DOB and gender optional, and a
+half-chosen date is dropped rather than stored.
+
+Google returns ONE display name; we split it at the first space (first word =
+first name). Wrong for some compound names — that is why the fields stay
+editable. Still open: the profile page itself shows the baked demo
+`CUSTOMER`, not the signed-in user, so what this step saves is not yet
+reflected there.
+
 ### Register asks where to send the code — WhatsApp or email (Ahmed, 2026-10-07)
 
 Not in the Figma. `register.html` now carries a two-option `radio_card` group

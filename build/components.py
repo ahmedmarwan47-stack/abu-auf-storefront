@@ -1135,6 +1135,98 @@ def field(label, name, type_="text", required=False, value="", placeholder="",
                 </div>"""
 
 
+MONTHS_AR = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+             "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
+
+
+def _dob_select(name, label, options, selected="", prompt=""):
+    """One of the three date-of-birth selects. The row has a single visible
+    label, so each select carries its own aria-label (day / month / year) —
+    without it a screen reader announces three anonymous combo boxes.
+    `prompt` adds an empty first option for a form the shopper fills from
+    blank (complete-mobile); the profile page has a stored value instead."""
+    first = f'<option value="">{e(prompt)}</option>' if prompt else ""
+    opts = "".join(
+        f'<option{" selected" if str(o) == str(selected) else ""}>{o}</option>'
+        for o in options
+    )
+    return (f'<select name="{e(name)}" aria-label="{e(label)}" '
+            'class="select-control bg-white px-3 py-3 border-2 border-neutral-divider '
+            'focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base '
+            f'transition-colors">{first}{opts}</select>')
+
+
+def dob_field(day="", month="", year="", prompts=False):
+    """Date of birth as day / month / year selects — shared by the profile
+    page and the Google complete-profile step so the two cannot drift.
+    prompts=True starts all three on an empty يوم / شهر / سنة option — NOT
+    اليوم, which also means "today" and is already the checkout delivery-time
+    label; the exact-match i18n dictionary cannot hold both meanings."""
+    return f"""
+                <div class="flex flex-col gap-1.5">
+                  <span class="font-medium text-neutral-secondary text-sm">تاريخ الميلاد</span>
+                  <!-- Month gets the widest track (سبتمبر is the longest
+                       value), day the narrowest. data-dob scopes the compact
+                       phone padding in styles.css. -->
+                  <div data-dob class="gap-2 sm:gap-3 grid grid-cols-[5fr_8fr_6.5fr]">
+                    {_dob_select("dob-day", "يوم", range(1, 32), day, "يوم" if prompts else "")}
+                    {_dob_select("dob-month", "شهر", MONTHS_AR, month, "شهر" if prompts else "")}
+                    {_dob_select("dob-year", "سنة", range(2010, 1949, -1), year, "سنة" if prompts else "")}
+                  </div>
+                </div>"""
+
+
+def _gender_card(val, label, checked):
+    # peer + .radio-dot is the project's established radio pattern (styles.css):
+    # the input sits immediately before the card span, so `peer-checked` lights
+    # the border and `input:checked + span .radio-dot` fills the dot.
+    return f"""
+                  <label class="cursor-pointer">
+                    <input type="radio" name="gender" value="{val}"{' checked' if checked else ''} class="peer sr-only" />
+                    <span class="flex items-center gap-2.5 bg-white px-4 py-3 border-2 border-neutral-divider peer-checked:border-cta rounded-xl transition-colors">
+                      <span class="radio-dot shrink-0"></span>
+                      <span class="font-medium text-[#062A1C] text-sm">{label}</span>
+                    </span>
+                  </label>"""
+
+
+def gender_field(selected=""):
+    """أنثى / ذكر radio pair. `selected` is "female", "male" or "" (none —
+    a new account has not told us, so nothing is pre-chosen for them)."""
+    return f"""
+                <div class="flex flex-col gap-1.5">
+                  <span class="font-medium text-neutral-secondary text-sm">النوع</span>
+                  <div class="gap-3 grid grid-cols-2">
+{_gender_card("female", "أنثى", selected == "female")}
+{_gender_card("male", "ذكر", selected == "male")}
+                  </div>
+                </div>"""
+
+
+def email_readonly(email="", verified=False, attrs=""):
+    """The email as read-only text with a verified / unverified pill.
+
+    A span, not an input — read-only text truncates cleanly rather than
+    scrolling inside a fixed-width field. `attrs` lets a page tag the value
+    span for runtime painting (complete-mobile fills it from the pending
+    Google record). Both pill tints are OPAQUE (#E9F3E6 / #F6E9E7), never an
+    alpha wash: an alpha tint reads ~1:1 to the contrast sweep."""
+    pill = (
+        '<span class="inline-flex items-center shrink-0 bg-[#E9F3E6] px-2 py-0.5 rounded-full font-semibold text-[#163300] text-[11px]">مؤكد</span>'
+        if verified else
+        '<span class="inline-flex items-center shrink-0 bg-[#F6E9E7] px-2 py-0.5 rounded-full font-semibold text-accent-error text-[11px]">غير مؤكد</span>'
+    )
+    a = (" " + attrs) if attrs else ""
+    return f"""
+                <div class="flex flex-col gap-1.5">
+                  <span class="font-medium text-neutral-secondary text-sm">البريد الالكتروني</span>
+                  <div class="flex items-center gap-2 bg-interaction-base px-4 py-3 border-2 border-transparent rounded-xl">
+                    <span class="flex-1 min-w-0 truncate text-neutral-secondary text-base latin"{a}>{e(email)}</span>
+                    {pill}
+                  </div>
+                </div>"""
+
+
 # Dial codes for the country selector, Egypt first (the home market) then the
 # rest of the Gulf/Levant and the diaspora markets Abu Auf ship to. These are
 # public ITU dial codes, not client data — nothing here is invented. Each entry

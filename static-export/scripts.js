@@ -406,6 +406,14 @@
    * inventing content. See the "Language" section in DESIGN-NOTES.
    */
   const EN = {
+    // complete-mobile — personal info
+    "أكمل بياناتك": "Complete your details",
+    "مؤكد": "Verified",
+    "يوم": "Day",
+    "شهر": "Month",
+    "سنة": "Year",
+    "من فضلك أدخل الاسم الأول": "Please enter your first name",
+    "من فضلك أدخل الاسم الاخير": "Please enter your last name",
     // register / verify — OTP channel
     "استلام رمز التحقق عن طريق": "Receive the verification code by",
     "واتساب": "WhatsApp",
@@ -4376,6 +4384,21 @@
         writePending(p);
         return p;
       },
+      /* The personal info complete-mobile.html collects alongside the
+         number (names, date of birth, gender). Carried on the pending record
+         so verifyOtp builds the account from what the shopper confirmed,
+         not from the raw Google profile. */
+      setPendingProfile: function (info) {
+        const p = readPending();
+        if (!p) return null;
+        const d = info || {};
+        p.firstName = String(d.firstName || "").trim();
+        p.lastName = String(d.lastName || "").trim();
+        p.dob = d.dob || null;
+        p.gender = d.gender || "";
+        writePending(p);
+        return p;
+      },
       startRegister: function (data, next) {
         const p = {
           mode: "register",
@@ -4403,10 +4426,15 @@
           // The email arrived verified from the provider, so there is no
           // dashboard email prompt for a Google account — only the mobile
           // needed proving, and this OTP is what proved it.
+          // Prefer the names the shopper confirmed on complete-mobile over
+          // the raw provider name.
+          const gFull = [p.firstName, p.lastName].filter(Boolean).join(" ") || p.name || DEMO_GOOGLE.name;
           user = {
-            name: p.name || DEMO_GOOGLE.name,
-            full: p.name || DEMO_GOOGLE.name,
+            name: p.firstName || gFull,
+            full: gFull,
             nameEn: p.nameEn || DEMO_GOOGLE.nameEn,
+            dob: p.dob || null,
+            gender: p.gender || "",
             email: p.email || "",
             mobile: p.mobile,
             provider: "google",
@@ -6580,14 +6608,24 @@
       }
       // Paint the provider identity from the pending record — never baked
       // into the page, the same rule the checkout address chooser follows.
-      const initial = (pending.name || pending.email || "?").trim().charAt(0);
-      const setText = (sel, val) =>
-        document.querySelectorAll(sel).forEach((el) => {
-          el.textContent = val;
-        });
-      setText("[data-google-name]", pending.name || pending.email || "");
-      setText("[data-google-email]", pending.email || "");
-      setText("[data-google-initial]", initial.toUpperCase());
+      // Google gives one display name; the first word is the first name and
+      // the rest the last name, prefilled but still editable. A value the
+      // shopper already typed (or confirmed on an earlier visit) wins.
+      document.querySelectorAll("[data-google-email]").forEach((el) => {
+        el.textContent = pending.email || "";
+      });
+      const gField = (n) => gForm.querySelector('[name="' + n + '"]');
+      const parts = String(pending.name || "").trim().split(/\s+/).filter(Boolean);
+      const fillIfEmpty = (n, v) => {
+        const el = gField(n);
+        if (el && !el.value && v) el.value = v;
+      };
+      fillIfEmpty("first-name", pending.firstName || parts[0] || "");
+      fillIfEmpty("last-name", pending.lastName || parts.slice(1).join(" "));
+      ["first-name", "last-name"].forEach((n) => {
+        const el = gField(n);
+        if (el) el.addEventListener("input", () => el.removeAttribute("aria-invalid"));
+      });
 
       const fieldEl = gForm.querySelector("[data-phone-field]");
       const input = gForm.querySelector('[name="mobile"]');
@@ -6598,6 +6636,17 @@
 
       gForm.addEventListener("submit", (e) => {
         e.preventDefault();
+        // Names first, in reading order. The form is novalidate (see
+        // complete_mobile.py), so the required check is ours.
+        for (const n of ["first-name", "last-name"]) {
+          const el = gField(n);
+          if (el && !el.value.trim()) {
+            el.setAttribute("aria-invalid", "true");
+            toast(t(n === "first-name" ? "من فضلك أدخل الاسم الأول" : "من فضلك أدخل الاسم الاخير"), "error");
+            el.focus();
+            return;
+          }
+        }
         const raw = String((input && input.value) || "").trim();
         const digits = raw.replace(/\D/g, "");
         if (!raw) {
@@ -6615,6 +6664,20 @@
         // Stored with its dial code so the OTP page states the number the
         // code was "sent" to in full, exactly as typed.
         Auth.setPendingMobile(code + " " + digits);
+        // Date of birth only counts when all three parts are chosen; a half
+        // date is dropped rather than stored as a guess.
+        const dv = (n) => ((gField(n) || {}).value || "").trim();
+        const dob =
+          dv("dob-day") && dv("dob-month") && dv("dob-year")
+            ? { day: dv("dob-day"), month: dv("dob-month"), year: dv("dob-year") }
+            : null;
+        const g = gForm.querySelector('[name="gender"]:checked');
+        Auth.setPendingProfile({
+          firstName: dv("first-name"),
+          lastName: dv("last-name"),
+          dob: dob,
+          gender: g ? g.value : "",
+        });
         window.location.href = pageHref("/verify");
       });
 
