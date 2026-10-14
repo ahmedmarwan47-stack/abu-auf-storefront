@@ -5,7 +5,7 @@ All eight my-account pages are this sidebar plus a content column, so the
 sidebar, membership badge and help links are defined once here.
 """
 from catalog import e, in_category, money, title as _ptitle
-from components import WALLET_BALANCE, page, page_header
+from components import ICON as _CICON, WALLET_BALANCE, page, page_header
 
 # `wallet` comes from components.WALLET_BALANCE rather than a second literal:
 # the cart/checkout wallet toggle offers to spend this exact balance, so if the
@@ -395,6 +395,21 @@ def order_tracker(step, subs=None):
 _order_tracker = order_tracker
 
 
+def order_review_btn(o):
+    """'Rate your order' on a DELIVERED order (Ahmed, 2026-10-14) — one review
+    for the order as a whole, not one per product. Opens the shared
+    reviewWrite sheet (initReviews) with the order shown at its head; the
+    item photos ride along in data-images. Submitting only confirms, nothing
+    is posted."""
+    images = ",".join(p["image"] for p, q in o["items"])
+    return (f'<button type="button" data-review-order="{e(o["no"])}" data-date="{e(o["date"])}" '
+            f'data-images="{e(images)}" '
+            f'class="inline-flex justify-center items-center gap-2 hover:bg-interaction-base py-3 border border-neutral-divider '
+            f'rounded-full w-full font-semibold text-[#062A1C] text-sm transition-colors">'
+            f'<span class="w-4 h-4 text-accent-yellow" aria-hidden="true">{_CICON["star"]}</span>'
+            f'<span data-review-order-label>قيّم طلبك</span></button>')
+
+
 def _order_lines(o):
     return "".join(f"""
                 <div class="flex items-center gap-3 py-3 border-neutral-divider border-b last:border-0">
@@ -422,6 +437,11 @@ def order_panel(o):
     # opens the orderCancel confirm sheet (initOrders) — never cancels on its
     # own.
     cancel = ""
+    # Only a delivered order can be reviewed — you cannot rate what has not
+    # arrived, and a cancelled order never did. It takes the same action slot
+    # the cancel link uses on an ongoing order; the two never coexist.
+    if o["tone"] == "green":
+        cancel = order_review_btn(o)
     if o["tone"] == "amber":
         cancel = (f'<button type="button" data-order-cancel="{e(o["no"])}" '
                   f'class="link-sweep self-start py-2 font-semibold '

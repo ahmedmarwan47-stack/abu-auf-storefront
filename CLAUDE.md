@@ -165,6 +165,12 @@ meaningless.
 `scripts.js` runs it. **Submitting a review only confirms it** — the sheet swaps
 its form for a "received, will appear after review" panel (`[data-review-done]`)
 and nothing is written or added to the list, by client request (2026-10-14).
+The same sheet rates a **delivered order as a whole** — one "قيّم طلبك"
+button per order in the order drawer, never one per product
+(`[data-review-order]`, `order_review_btn()` in `_account.py`). The sheet then
+shows the order (photos, number, date) at its head and asks about the order;
+closing it hands back to that order, as the cancel sheet does. The
+"تم إرسال تقييمك" state on the button is DOM-only.
 The storage path below is still read on load but no longer written. A written review was stored under `abuauf:reviews` **keyed
 by the product's `catalog.json` id** (same rule as the cart and favourites — a
 barcode key files it against the wrong product), and folded into the printed

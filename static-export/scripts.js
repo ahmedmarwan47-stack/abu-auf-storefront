@@ -2267,6 +2267,16 @@
         <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
       </div>
       <form data-review-form class="flex flex-col gap-4">
+        <!-- Which ORDER is being rated. Shown only when the sheet is opened
+             from a delivered order; on a product page the product is the page.
+             Filled at runtime, hence i18n-skip on the photos and number. -->
+        <div data-review-subject hidden class="flex items-center gap-3 bg-interaction-base p-3 rounded-xl">
+          <div data-review-subject-imgs data-i18n-skip class="flex -space-x-3 rtl:space-x-reverse shrink-0"></div>
+          <div class="flex flex-col min-w-0">
+            <span data-review-subject-no data-i18n-skip class="font-semibold text-[#062A1C] text-sm"></span>
+            <span data-review-subject-date class="text-neutral-secondary text-xs"></span>
+          </div>
+        </div>
         <div class="flex flex-col gap-2">
           <span class="font-medium text-neutral-secondary text-sm">${esc(t("تقييمك"))}</span>
           <div class="flex items-center gap-1 -ms-2" role="radiogroup" aria-label="${esc(t("تقييمك"))}" data-review-stars>
@@ -2279,7 +2289,7 @@
           </div>
         </div>
         <label class="flex flex-col gap-2">
-          <span class="font-medium text-neutral-secondary text-sm">${esc(t("رأيك في المنتج"))}</span>
+          <span data-review-text-label class="font-medium text-neutral-secondary text-sm">${esc(t("رأيك في المنتج"))}</span>
           <textarea data-review-text rows="4" maxlength="600"
                     placeholder="${esc(t("احكيلنا إيه اللي عجبك في المنتج…"))}"
                     class="bg-white p-3 border border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-sm leading-7 transition-colors resize-none"></textarea>
@@ -7725,9 +7735,14 @@
      can be viewed in turn without leaving the list. Buttons carrying
      data-order-open (the dashboard's tracker/detail) fire the same path
      natively; the keydown covers the <tr role="button"> rows. */
+  // Set by initOrders so other overlays (the review sheet) can hand the
+  // shopper back to the order they came from.
+  let openOrderPanel = null;
+
   function initOrders() {
     const drawer = document.querySelector('[data-drawer="order"]');
     if (!drawer) return;
+    openOrderPanel = open;
     function open(id) {
       drawer.querySelectorAll("[data-order-panel]").forEach((panel) => {
         panel.hidden = panel.getAttribute("data-order-id") !== id;
@@ -8239,18 +8254,78 @@
       g.addEventListener("mouseleave", () => paint(0)),
     );
 
+    const subject = sheet.querySelector("[data-review-subject]");
+    const textLabel = sheet.querySelector("[data-review-text-label]");
     // Reset on every open, so a second review never starts pre-filled with the
-    // first one's words.
+    // first one's words. `orderBtn` is the order's "rate" button the sheet was
+    // opened from, or null on the product page — the copy asks about the
+    // product or the order accordingly.
+    let fromOrder = null;
+    const reset = (orderBtn) => {
+      picked = 0;
+      if (textEl) textEl.value = "";
+      setMsg("");
+      paint(0);
+      showDone(false);
+      fromOrder = orderBtn || null;
+      if (textLabel) textLabel.textContent = t(fromOrder ? "رأيك في الطلب" : "رأيك في المنتج");
+      if (textEl)
+        textEl.placeholder = t(
+          fromOrder ? "احكيلنا عن تجربتك مع الطلب…" : "احكيلنا إيه اللي عجبك في المنتج…",
+        );
+      if (!subject) return;
+      subject.hidden = !fromOrder;
+      if (!fromOrder) return;
+      // Up to three overlapping item photos — enough to recognise the order.
+      const imgs = (fromOrder.dataset.images || "").split(",").filter(Boolean).slice(0, 3);
+      subject.querySelector("[data-review-subject-imgs]").innerHTML = imgs
+        .map(
+          (src) =>
+            `<img src="${esc(src)}" alt="" class="bg-white p-1 border-2 border-interaction-base rounded-lg w-11 h-11 object-contain" />`,
+        )
+        .join("");
+      // Built here in the current language: the dictionary only knows this
+      // string as the "طلب رقم {0}" template, which a runtime fill never meets.
+      const no = fromOrder.dataset.reviewOrder || "";
+      subject.querySelector("[data-review-subject-no]").textContent =
+        currentLang() === "en" ? "Order " + no : "طلب رقم " + no;
+      subject.querySelector("[data-review-subject-date]").textContent = fromOrder.dataset.date || "";
+    };
     document.querySelectorAll('[data-open="reviewWrite"]').forEach((b) =>
-      b.addEventListener("click", () => {
-        picked = 0;
-        if (textEl) textEl.value = "";
-        setMsg("");
-        paint(0);
-        showDone(false);
-      }),
+      b.addEventListener("click", () => reset(null)),
     );
     paint(0);
+
+    /* Rate a delivered order as a whole (Ahmed, 2026-10-14) — one review per
+       order, not per product. Same sheet, same confirm-only submit. The drawer
+       is handled the way the cancel sheet handles it: below xl the sheet
+       REPLACES the drawer rather than stacking a second sliding layer on a
+       phone, and closing the sheet lands the shopper back on the order. */
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-review-order]");
+      if (!btn || btn.disabled) return;
+      reset(btn);
+      const drawer = document.querySelector('[data-drawer="order"]');
+      if (drawer && !window.matchMedia("(min-width: 1280px)").matches) {
+        drawer.classList.remove("is-open");
+      }
+      openOverlay("reviewWrite");
+    });
+    // Capture phase on the sheet, so this runs BEFORE the document-level
+    // [data-close] handler — which would otherwise close the drawer too and
+    // leave nothing to return to.
+    sheet.addEventListener(
+      "click",
+      (e) => {
+        if (!fromOrder || !e.target.closest("[data-close]")) return;
+        e.stopPropagation();
+        const orderId = fromOrder.dataset.reviewOrder;
+        fromOrder = null;
+        closeOverlay();
+        if (orderId && openOrderPanel) openOrderPanel(orderId);
+      },
+      true,
+    );
 
     const form = sheet.querySelector("[data-review-form]");
     if (!form) return;
@@ -8268,6 +8343,14 @@
       // Confirmation only — nothing is written or added to the list. The
       // sheet stays open on the "received" panel until the shopper closes it.
       showDone(true);
+      if (fromOrder) {
+        // DOM-only: the order reads as rated until a reload, nothing stored.
+        fromOrder.disabled = true;
+        fromOrder.classList.remove("hover:bg-interaction-base", "text-[#062A1C]");
+        fromOrder.classList.add("text-neutral-secondary", "cursor-default");
+        const label = fromOrder.querySelector("[data-review-order-label]");
+        if (label) label.textContent = t("تم إرسال تقييمك");
+      }
       const ok = done && done.querySelector("[data-close]");
       if (ok) ok.focus();
     });
