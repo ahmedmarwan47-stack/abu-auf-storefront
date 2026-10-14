@@ -481,7 +481,9 @@ UI = {
     "إرسال التقييم": "Submit review",
     "من 5": "of 5",
     "زائر": "Guest",
-    "شكراً لك! تم نشر تقييمك": "Thank you! Your review has been posted",
+    "شكراً لتقييمك!": "Thanks for your review!",
+    "تم": "Done",
+    "استلمنا تقييمك وسيظهر بعد مراجعته.": "We've received your review. It will appear once it has been checked.",
     "من فضلك اختر تقييمك بالنجوم أولاً": "Please choose a star rating first",
     "اكتب كلمة عن المنتج قبل الإرسال": "Write a few words about the product before sending",
 

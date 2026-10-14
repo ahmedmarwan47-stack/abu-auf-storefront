@@ -162,7 +162,10 @@ does this) or below-fold content is measured at opacity 0 and the run is
 meaningless.
 
 **Product reviews** — `reviews_section()` builds the block; `initReviews()` in
-`scripts.js` runs it. A written review is stored under `abuauf:reviews` **keyed
+`scripts.js` runs it. **Submitting a review only confirms it** — the sheet swaps
+its form for a "received, will appear after review" panel (`[data-review-done]`)
+and nothing is written or added to the list, by client request (2026-10-14).
+The storage path below is still read on load but no longer written. A written review was stored under `abuauf:reviews` **keyed
 by the product's `catalog.json` id** (same rule as the cart and favourites — a
 barcode key files it against the wrong product), and folded into the printed
 average as a weighted mean over the seeded base rather than replacing it, so

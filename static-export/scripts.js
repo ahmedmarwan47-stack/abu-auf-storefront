@@ -2261,6 +2261,7 @@
          favourites heart uses). -->
     <div data-sheet="reviewWrite" class="bottom-sheet bottom-sheet--modal" role="dialog" aria-modal="true" aria-labelledby="reviewWrite-sheet-title">
       <div class="xl:hidden bg-neutral-200 mx-auto mb-4 rounded-full w-10 h-1"></div>
+      <div data-review-compose>
       <div class="flex justify-between items-center mb-4">
         <h2 id="reviewWrite-sheet-title" class="font-bold text-[#062A1C] text-lg">${esc(t("اكتب تقييمك"))}</h2>
         <button type="button" data-close class="place-items-center grid hover:bg-interaction-base rounded-full w-9 h-9 -me-1.5 text-[#062A1C]" aria-label="إغلاق"><span class="w-5 h-5">${ICON.close}</span></button>
@@ -2286,6 +2287,17 @@
         <p data-review-msg hidden class="font-semibold text-accent-error text-xs"></p>
         <button type="submit" data-review-submit class="bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm transition-colors">${esc(t("إرسال التقييم"))}</button>
       </form>
+      </div>
+      <!-- Sent. The review is NOT added to the list on the page: a real
+           review goes to moderation first, so the honest confirmation is
+           "received", not "published". Swapped in place of the form, inside
+           the same sheet, so there is no second overlay to stack. -->
+      <div data-review-done hidden class="flex flex-col items-center gap-3 pt-2 text-center" role="status">
+        <span class="place-items-center grid bg-interaction-base rounded-full w-16 h-16 text-cta"><span class="w-8 h-8"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+        <h2 class="font-bold text-[#062A1C] text-lg">${esc(t("شكراً لتقييمك!"))}</h2>
+        <p class="text-neutral-secondary text-sm leading-6">${esc(t("استلمنا تقييمك وسيظهر بعد مراجعته."))}</p>
+        <button type="button" data-close class="bg-cta hover:bg-cta-hover mt-2 py-3 rounded-full w-full font-semibold text-white text-sm transition-colors">${esc(t("تم"))}</button>
+      </div>
     </div>
 
     <div id="toast-container"></div>`;
@@ -8191,6 +8203,12 @@
       msg.textContent = m || "";
       msg.hidden = !m;
     };
+    const compose = sheet.querySelector("[data-review-compose]");
+    const done = sheet.querySelector("[data-review-done]");
+    const showDone = (on) => {
+      if (compose) compose.hidden = on;
+      if (done) done.hidden = !on;
+    };
 
     stars.forEach((b, i) => {
       const n = i + 1;
@@ -8229,6 +8247,7 @@
         if (textEl) textEl.value = "";
         setMsg("");
         paint(0);
+        showDone(false);
       }),
     );
     paint(0);
@@ -8246,22 +8265,11 @@
         setMsg(t("اكتب كلمة عن المنتج قبل الإرسال"));
         return;
       }
-      const id = reviewProductId();
-      if (!id) return;
-      const u = Auth.isAuthed() ? Auth.user() : null;
-      const list = reviewsFor(id);
-      list.push({
-        // A signed-in shopper reviews under their own name; a guest is labelled
-        // a guest rather than given an invented one.
-        name: (u && (currentLang() === "en" ? u.nameEn : u.name)) || t("زائر"),
-        score: picked,
-        text: body,
-        date: fmtDateAr(new Date()),
-      });
-      reviewsWrite(id, list);
-      renderMyReviews();
-      closeOverlay();
-      toast(t("شكراً لك! تم نشر تقييمك"));
+      // Confirmation only — nothing is written or added to the list. The
+      // sheet stays open on the "received" panel until the shopper closes it.
+      showDone(true);
+      const ok = done && done.querySelector("[data-close]");
+      if (ok) ok.focus();
     });
   }
 
