@@ -38,7 +38,7 @@
          merges it. A plain script rather than a fetch, so the language switch
          still works from file://. -->
     <script defer src="i18n-en.js?v=bc812ba791"></script>
-    <script defer src="scripts.js?v=959e5369c0"></script>
+    <script defer src="scripts.js?v=12a99b3a6c"></script>
   </head>
   <body data-page="register" data-path="/register" class="antialiased bg-white">
     <!-- First focusable thing on the page. The header is three bands and a
@@ -84,44 +84,15 @@
                          class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
                 </div>
               </div>
-
-                <div class="flex flex-col gap-1.5" data-phone-field>
-                  <label for="phone" class="font-medium text-neutral-secondary text-sm">رقم الموبايل<span class="text-accent-error">*</span></label>
-                  <div dir="ltr" data-phone-box class="flex items-stretch bg-white border-2 border-neutral-divider focus-within:border-cta rounded-xl overflow-hidden transition-colors">
-                    <span class="flex items-center gap-1.5 ps-3.5 pe-3 shrink-0 font-semibold text-[#062A1C] text-sm"><span class="text-base leading-none" aria-hidden="true">🇪🇬</span><span class="latin">+20</span></span>
-                    <!-- The prefix/number divider is a standalone rule, NOT a
-                         border on the chip: `my-2.5` insets it top and bottom so
-                         it stops short of the field's rounded edges. It stays
-                         CONSTANT in every state — same colour, same width — while
-                         ONLY the outer field border darkens on focus (Ahmed,
-                         2026-08-04). -->
-                    <span aria-hidden="true" class="self-stretch bg-neutral-divider my-2.5 w-px shrink-0"></span>
-                    <!-- The placeholder is one UNBROKEN digit run, no spaces.
-                         styles.css forces `direction: rtl` on every tel input
-                         (so the digits align to the start like every other
-                         field), and an RTL paragraph reorders the three LTR
-                         runs of a spaced number: "100 123 4567" was painted as
-                         "4567 123 100" on login, register and here. A single
-                         run has nothing to reorder. -->
-                    <input type="tel" id="phone" name="phone" required autocomplete="tel" dir="ltr" value=""
-                           placeholder="1001234567"
-                           class="flex-1 bg-transparent px-3 py-3 outline-none min-w-0 text-[#062A1C] text-base latin" />
-                  </div>
-                  
-                  
-                </div>
-
-                <div class="flex flex-col gap-1.5 ">
-                  <label for="email" class="font-medium text-neutral-secondary text-sm">البريد الالكتروني<span class="text-accent-error">*</span></label>
-                  <input type="email" id="email" name="email" required autocomplete="email"
-                         value="" placeholder=""
-                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
-                </div>
-              <!-- Where the OTP goes. Real radios (radio_card), so the checked
-                   state IS the submitted value — scripts.js reads
-                   [name="otp-channel"]:checked and nothing else. -->
+              <!-- How the shopper signs up — and so where the OTP goes. Real
+                   radios (radio_card), so the checked state IS the submitted
+                   value; scripts.js reads [name="otp-channel"]:checked and
+                   nothing else. It sits ABOVE the two contact fields because
+                   it decides which of them is mandatory: the field whose
+                   data-required-when matches the choice carries the star and
+                   `required`, the other is optional (Ahmed, 2026-10-18). -->
               <fieldset class="flex flex-col gap-1.5">
-                <legend class="mb-1.5 font-medium text-neutral-secondary text-sm">استلام رمز التحقق عن طريق</legend>
+                <legend class="mb-1.5 font-medium text-neutral-secondary text-sm">التسجيل باستخدام</legend>
                 <div class="flex sm:flex-row flex-col gap-3">
 
                 <!-- min-w-0 on BOTH nested flex children. A flex item's
@@ -141,8 +112,8 @@
                     <span class="radio-card__body flex items-center gap-3 min-w-0">
                       <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="#25D366" class="w-5 h-5"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.2c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.03c-.24.68-1.42 1.3-1.95 1.35-.5.05-.97.23-3.27-.68-2.77-1.09-4.52-3.92-4.66-4.1-.13-.18-1.1-1.47-1.1-2.8 0-1.34.7-2 .95-2.27.25-.27.54-.34.72-.34h.52c.17 0 .4-.06.62.47.24.56.8 1.94.87 2.08.07.14.12.3.02.48-.09.18-.14.3-.27.46-.14.16-.29.36-.41.48-.14.14-.28.29-.12.56.16.27.71 1.17 1.52 1.9 1.05.93 1.93 1.22 2.2 1.36.28.14.44.11.6-.07.16-.18.69-.8.88-1.08.18-.27.37-.23.62-.14.25.09 1.6.75 1.87.89.28.14.46.2.53.32.07.11.07.66-.17 1.34Z"/></svg></span>
                       <span class="flex flex-col min-w-0">
-                        <span class="font-semibold text-[#062A1C] text-base">واتساب</span>
-                        <span class="text-neutral-secondary text-xs">على رقم الموبايل</span>
+                        <span class="font-semibold text-[#062A1C] text-base">رقم الموبايل</span>
+                        <span class="text-neutral-secondary text-xs">رمز التحقق على واتساب</span>
                       </span>
                     </span>
                     <span class="radio-dot shrink-0" aria-hidden="true"></span>
@@ -167,7 +138,7 @@
                       <span class="text-cta shrink-0"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="m2 7 10 6 10-6" stroke="currentColor" stroke-width="1.7"/></svg></span>
                       <span class="flex flex-col min-w-0">
                         <span class="font-semibold text-[#062A1C] text-base">البريد الالكتروني</span>
-                        <span class="text-neutral-secondary text-xs">على الإيميل</span>
+                        <span class="text-neutral-secondary text-xs">رمز التحقق على الإيميل</span>
                       </span>
                     </span>
                     <span class="radio-dot shrink-0" aria-hidden="true"></span>
@@ -175,6 +146,39 @@
                 </label>
                 </div>
               </fieldset>
+
+                <div class="flex flex-col gap-1.5" data-phone-field data-required-when="whatsapp">
+                  <label for="phone" class="font-medium text-neutral-secondary text-sm">رقم الموبايل<span class="text-accent-error" data-required-star>*</span></label>
+                  <div dir="ltr" data-phone-box class="flex items-stretch bg-white border-2 border-neutral-divider focus-within:border-cta rounded-xl overflow-hidden transition-colors">
+                    <span class="flex items-center gap-1.5 ps-3.5 pe-3 shrink-0 font-semibold text-[#062A1C] text-sm"><span class="text-base leading-none" aria-hidden="true">🇪🇬</span><span class="latin">+20</span></span>
+                    <!-- The prefix/number divider is a standalone rule, NOT a
+                         border on the chip: `my-2.5` insets it top and bottom so
+                         it stops short of the field's rounded edges. It stays
+                         CONSTANT in every state — same colour, same width — while
+                         ONLY the outer field border darkens on focus (Ahmed,
+                         2026-08-04). -->
+                    <span aria-hidden="true" class="self-stretch bg-neutral-divider my-2.5 w-px shrink-0"></span>
+                    <!-- The placeholder is one UNBROKEN digit run, no spaces.
+                         styles.css forces `direction: rtl` on every tel input
+                         (so the digits align to the start like every other
+                         field), and an RTL paragraph reorders the three LTR
+                         runs of a spaced number: "100 123 4567" was painted as
+                         "4567 123 100" on login, register and here. A single
+                         run has nothing to reorder. -->
+                    <input type="tel" id="phone" name="phone" required autocomplete="tel" dir="ltr" value=""
+                           placeholder="1001234567"
+                           class="flex-1 bg-transparent px-3 py-3 outline-none min-w-0 text-[#062A1C] text-base latin" />
+                  </div>
+                  
+                  
+                </div>
+
+                <div class="flex flex-col gap-1.5 " data-required-when="email">
+                  <label for="email" class="font-medium text-neutral-secondary text-sm">البريد الالكتروني<span class="text-accent-error" data-required-star hidden>*</span></label>
+                  <input type="email" id="email" name="email" autocomplete="email"
+                         value="" placeholder=""
+                         class="bg-white px-4 py-3 border-2 border-neutral-divider focus:border-cta rounded-xl outline-none w-full text-[#062A1C] text-base transition-colors" />
+                </div>
               <label class="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" required class="mt-1 accent-[#163300] w-4 h-4" />
                 <span class="text-neutral-secondary text-sm leading-6">

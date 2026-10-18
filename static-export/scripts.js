@@ -415,10 +415,10 @@
     "من فضلك أدخل الاسم الأول": "Please enter your first name",
     "من فضلك أدخل الاسم الاخير": "Please enter your last name",
     // register / verify — OTP channel
-    "استلام رمز التحقق عن طريق": "Receive the verification code by",
+    "التسجيل باستخدام": "Sign up with",
     "واتساب": "WhatsApp",
-    "على رقم الموبايل": "On your mobile number",
-    "على الإيميل": "On your email",
+    "رمز التحقق على واتساب": "Code sent on WhatsApp",
+    "رمز التحقق على الإيميل": "Code sent to your email",
     "أدخل رمز التحقق المكوّن من 6 أرقام المُرسل على الإيميل": "Enter the 6-digit code sent to your email",
     "أدخل رمز التحقق المكوّن من 6 أرقام المُرسل على واتساب إلى": "Enter the 6-digit code sent on WhatsApp to",
     "التحقق من البريد الالكتروني": "Verify your email",
@@ -6560,12 +6560,34 @@
     });
 
     // REGISTER — capture the details, then hand off to the same OTP page.
+    // The sign-up method decides which contact field is mandatory: the
+    // wrapper whose data-required-when names the checked method gets
+    // required on its input AND its star shown; the other loses both. One
+    // function paints both, so the star can never promise a rule the form
+    // does not enforce.
     document.querySelectorAll("[data-register-form]").forEach((form) => {
+      const channel = () => (form.querySelector('[name="otp-channel"]:checked') || {}).value || "whatsapp";
+      const syncRequired = () => {
+        const via = channel();
+        form.querySelectorAll("[data-required-when]").forEach((wrap) => {
+          const on = wrap.getAttribute("data-required-when") === via;
+          const input = wrap.querySelector("input");
+          if (input) input.required = on;
+          const star = wrap.querySelector("[data-required-star]");
+          if (star) star.hidden = !on;
+        });
+      };
+      form.querySelectorAll('[name="otp-channel"]').forEach((r) => r.addEventListener("change", syncRequired));
+      syncRequired();
+
       form.addEventListener("submit", (e) => {
         e.preventDefault();
         const val = (n) => (form.querySelector('[name="' + n + '"]') || {}).value || "";
         const mobile = val("phone") || val("mobile");
-        if (String(mobile).replace(/\D/g, "").length < 6) {
+        // Mandatory only for a mobile sign-up; with email chosen it is
+        // optional, but a number that WAS typed must still be a number.
+        const digits = String(mobile).replace(/\D/g, "").length;
+        if ((channel() === "whatsapp" || digits > 0) && digits < 6) {
           toast(t("من فضلك أدخل رقم موبايل صحيح"), "error");
           return;
         }
@@ -6575,7 +6597,7 @@
             lastName: val("last-name"),
             mobile: mobile,
             email: val("email"),
-            channel: (form.querySelector('[name="otp-channel"]:checked') || {}).value,
+            channel: channel(),
           },
           safeNext(nextParam()),
         );

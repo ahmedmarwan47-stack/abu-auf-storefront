@@ -11,6 +11,11 @@ the mobile) or email. The choice rides on the pending record as `channel`, and
 verify.html paints its heading and "sent to" line from it. Choosing email
 verifies the email at the same step, so the dashboard's email prompt does not
 fire for that account; the mobile is then unproven (DESIGN-NOTES §3).
+
+Ahmed, 2026-10-18: the choice is now framed as the sign-up METHOD (mobile or
+email) and moved up under the names, and it decides which contact field is
+mandatory — the other becomes optional. An email sign-up may therefore have
+no mobile at all (DESIGN-NOTES §3).
 """
 from _auth import ICON_MAIL, auth_page
 from components import field, phone_field, radio_card
@@ -33,18 +38,22 @@ def build():
 {field("الاسم الأول", "first-name", required=True)}
 {field("الاسم الاخير", "last-name", required=True)}
               </div>
-{phone_field("رقم الموبايل", "phone")}
-{field("البريد الالكتروني", "email", "email", required=True)}
-              <!-- Where the OTP goes. Real radios (radio_card), so the checked
-                   state IS the submitted value — scripts.js reads
-                   [name="otp-channel"]:checked and nothing else. -->
+              <!-- How the shopper signs up — and so where the OTP goes. Real
+                   radios (radio_card), so the checked state IS the submitted
+                   value; scripts.js reads [name="otp-channel"]:checked and
+                   nothing else. It sits ABOVE the two contact fields because
+                   it decides which of them is mandatory: the field whose
+                   data-required-when matches the choice carries the star and
+                   `required`, the other is optional (Ahmed, 2026-10-18). -->
               <fieldset class="flex flex-col gap-1.5">
-                <legend class="mb-1.5 font-medium text-neutral-secondary text-sm">استلام رمز التحقق عن طريق</legend>
+                <legend class="mb-1.5 font-medium text-neutral-secondary text-sm">التسجيل باستخدام</legend>
                 <div class="flex sm:flex-row flex-col gap-3">
-{radio_card("otp-channel", "whatsapp", "واتساب", "على رقم الموبايل", ICON_WHATSAPP, checked=True)}
-{radio_card("otp-channel", "email", "البريد الالكتروني", "على الإيميل", ICON_MAIL)}
+{radio_card("otp-channel", "whatsapp", "رقم الموبايل", "رمز التحقق على واتساب", ICON_WHATSAPP, checked=True)}
+{radio_card("otp-channel", "email", "البريد الالكتروني", "رمز التحقق على الإيميل", ICON_MAIL)}
                 </div>
               </fieldset>
+{phone_field("رقم الموبايل", "phone", required=True, required_when="whatsapp")}
+{field("البريد الالكتروني", "email", "email", required_when="email")}
               <label class="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" required class="mt-1 accent-[#163300] w-4 h-4" />
                 <span class="text-neutral-secondary text-sm leading-6">

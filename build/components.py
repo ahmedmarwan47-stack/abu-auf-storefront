@@ -1122,12 +1122,26 @@ def _field_hints(name, type_, autocomplete=None):
     return out
 
 
+def _required_star(required, required_when):
+    """The red asterisk. With `required_when` the star is ALWAYS emitted and
+    tagged `data-required-star`, and only hidden when the field starts
+    optional: a form that swaps which field is mandatory (register: mobile or
+    email, by the chosen sign-up method) toggles `hidden` on it and `required`
+    on the input together, so the painted star and the enforced rule are one
+    decision in scripts.js."""
+    if required_when:
+        return ('<span class="text-accent-error" data-required-star'
+                f'{"" if required else " hidden"}>*</span>')
+    return '<span class="text-accent-error">*</span>' if required else ""
+
+
 def field(label, name, type_="text", required=False, value="", placeholder="",
-          wrap="", autocomplete=None):
-    star = '<span class="text-accent-error">*</span>' if required else ""
+          wrap="", autocomplete=None, required_when=""):
+    star = _required_star(required, required_when)
     hints = _field_hints(name, type_, autocomplete)
+    when = f' data-required-when="{e(required_when)}"' if required_when else ""
     return f"""
-                <div class="flex flex-col gap-1.5 {wrap}">
+                <div class="flex flex-col gap-1.5 {wrap}"{when}>
                   <label for="{e(name)}" class="font-medium text-neutral-secondary text-sm">{e(label)}{star}</label>
                   <input type="{e(type_)}" id="{e(name)}" name="{e(name)}"{' required' if required else ''}{hints}
                          value="{e(value)}" placeholder="{e(placeholder)}"
@@ -1284,7 +1298,7 @@ def _country_select(name, selected="+20"):
 
 
 def phone_field(label="رقم الموبايل", name="mobile", required=True, value="",
-                help_text="", country_select=False, error_id=""):
+                help_text="", country_select=False, error_id="", required_when=""):
     """Mobile input with a country prefix (Ahmed, 2026-08-04): a flag + dial
     code on the leading side, then an LTR number field. The whole control is
     `dir=ltr` so the code sits on the visual left and the digits read
@@ -1295,12 +1309,15 @@ def phone_field(label="رقم الموبايل", name="mobile", required=True, v
     well have been created outside Egypt. Everywhere else the prefix stays
     fixed at +20 (DESIGN-NOTES §3).
 
+    `required_when` — see `_required_star()`.
+
     `error_id` reserves an error slot under the field and wires
     `aria-describedby`/`aria-errormessage` at build time, so the message the
     validator reveals is already announced to a screen reader — the runtime
     only flips `hidden` and the `is-invalid` class, never the wiring.
     """
-    star = '<span class="text-accent-error">*</span>' if required else ""
+    star = _required_star(required, required_when)
+    when = f' data-required-when="{e(required_when)}"' if required_when else ""
     hints = _field_hints(name, "tel")
     help_html = (f'<p class="text-neutral-secondary text-xs">{e(help_text)}</p>'
                  if help_text else "")
@@ -1327,7 +1344,7 @@ def phone_field(label="رقم الموبايل", name="mobile", required=True, v
                   '<span class="text-base leading-none" aria-hidden="true">\U0001F1EA\U0001F1EC</span>'
                   '<span class="latin">+20</span></span>')
     return f"""
-                <div class="flex flex-col gap-1.5" data-phone-field>
+                <div class="flex flex-col gap-1.5" data-phone-field{when}>
                   <label for="{e(name)}" class="font-medium text-neutral-secondary text-sm">{e(label)}{star}</label>
                   <div dir="ltr" data-phone-box class="flex items-stretch bg-white border-2 border-neutral-divider focus-within:border-cta rounded-xl overflow-hidden transition-colors">
                     {prefix}
