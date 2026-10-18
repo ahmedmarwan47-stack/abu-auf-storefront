@@ -13,9 +13,8 @@ verifies the email at the same step, so the dashboard's email prompt does not
 fire for that account; the mobile is then unproven (DESIGN-NOTES §3).
 
 Ahmed, 2026-10-18: the choice is now framed as the sign-up METHOD (mobile or
-email) and moved up under the names, and it decides which contact field is
-mandatory — the other becomes optional. An email sign-up may therefore have
-no mobile at all (DESIGN-NOTES §3).
+email) and moved up under the names. The mobile stays required either way;
+the email becomes required only when it is the chosen method.
 """
 from _auth import ICON_MAIL, auth_page
 from components import field, phone_field, radio_card
@@ -42,9 +41,9 @@ def build():
                    radios (radio_card), so the checked state IS the submitted
                    value; scripts.js reads [name="otp-channel"]:checked and
                    nothing else. It sits ABOVE the two contact fields because
-                   it decides which of them is mandatory: the field whose
-                   data-required-when matches the choice carries the star and
-                   `required`, the other is optional (Ahmed, 2026-10-18). -->
+                   it decides whether the email is mandatory. The mobile is
+                   ALWAYS required; the email carries the star and `required`
+                   only for an email sign-up (Ahmed, 2026-10-18). -->
               <fieldset class="flex flex-col gap-1.5">
                 <legend class="mb-1.5 font-medium text-neutral-secondary text-sm">التسجيل باستخدام</legend>
                 <div class="flex sm:flex-row flex-col gap-3">
@@ -52,7 +51,7 @@ def build():
 {radio_card("otp-channel", "email", "البريد الالكتروني", "رمز التحقق على الإيميل", ICON_MAIL)}
                 </div>
               </fieldset>
-{phone_field("رقم الموبايل", "phone", required=True, required_when="whatsapp")}
+{phone_field("رقم الموبايل", "phone")}
 {field("البريد الالكتروني", "email", "email", required_when="email")}
               <label class="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" required class="mt-1 accent-[#163300] w-4 h-4" />

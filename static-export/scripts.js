@@ -6560,10 +6560,10 @@
     });
 
     // REGISTER — capture the details, then hand off to the same OTP page.
-    // The sign-up method decides which contact field is mandatory: the
-    // wrapper whose data-required-when names the checked method gets
-    // required on its input AND its star shown; the other loses both. One
-    // function paints both, so the star can never promise a rule the form
+    // The sign-up method decides whether the email is mandatory (the mobile
+    // always is): a wrapper whose data-required-when names the checked method
+    // gets required on its input AND its star shown, otherwise it loses both.
+    // One function paints both, so the star can never promise a rule the form
     // does not enforce.
     document.querySelectorAll("[data-register-form]").forEach((form) => {
       const channel = () => (form.querySelector('[name="otp-channel"]:checked') || {}).value || "whatsapp";
@@ -6584,10 +6584,7 @@
         e.preventDefault();
         const val = (n) => (form.querySelector('[name="' + n + '"]') || {}).value || "";
         const mobile = val("phone") || val("mobile");
-        // Mandatory only for a mobile sign-up; with email chosen it is
-        // optional, but a number that WAS typed must still be a number.
-        const digits = String(mobile).replace(/\D/g, "").length;
-        if ((channel() === "whatsapp" || digits > 0) && digits < 6) {
+        if (String(mobile).replace(/\D/g, "").length < 6) {
           toast(t("من فضلك أدخل رقم موبايل صحيح"), "error");
           return;
         }

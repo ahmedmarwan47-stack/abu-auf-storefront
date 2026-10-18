@@ -750,20 +750,17 @@ has no channel and keeps the original mobile wording.
 **Reframed as the sign-up method (Ahmed, 2026-10-18).** The group now sits
 directly under the name fields, is labelled **التسجيل باستخدام** ("sign up
 with"), and its cards read **رقم الموبايل** (code on WhatsApp) / **البريد
-الالكتروني** (code by email). The choice decides which contact field is
-mandatory: the mobile carries the red star and `required` for a mobile
-sign-up, the email for an email sign-up, and the other field is optional.
-Both fields carry `data-required-when`; `syncRequired()` in `scripts.js`
-flips `required` and the star (`data-required-star`) together, so the star
-cannot promise a rule the form does not enforce. With JS off the form
-degrades to the default (mobile required, email optional). A mobile typed
-into an email sign-up is still checked for being a number.
+الالكتروني** (code by email). The mobile is
+**always** required, whichever method is chosen — the account is keyed on it.
+The choice only decides the email: it carries the red star and `required`
+for an email sign-up and is optional for a mobile one. The email field
+carries `data-required-when="email"`; `syncRequired()` in `scripts.js` flips
+`required` and the star (`data-required-star`) together, so the star cannot
+promise a rule the form does not enforce. With JS off the form degrades to
+the default (email optional).
 
 Open questions for the client / backend:
 
-- **An email sign-up may now have NO mobile at all**, not just an unproven
-  one — the field is optional there by request. The account model is still
-  keyed on the mobile, so checkout must collect it for such an account.
 - **Choosing email leaves the mobile unproven.** The account model is keyed on
   the mobile (orders track against it, the courier calls it), yet an email
   sign-up never proves that number. The demo marks the email verified and the

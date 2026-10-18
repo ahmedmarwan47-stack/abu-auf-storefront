@@ -38,7 +38,7 @@
          merges it. A plain script rather than a fetch, so the language switch
          still works from file://. -->
     <script defer src="i18n-en.js?v=bc812ba791"></script>
-    <script defer src="scripts.js?v=12a99b3a6c"></script>
+    <script defer src="scripts.js?v=ddafa8c7e6"></script>
   </head>
   <body data-page="register" data-path="/register" class="antialiased bg-white">
     <!-- First focusable thing on the page. The header is three bands and a
@@ -88,9 +88,9 @@
                    radios (radio_card), so the checked state IS the submitted
                    value; scripts.js reads [name="otp-channel"]:checked and
                    nothing else. It sits ABOVE the two contact fields because
-                   it decides which of them is mandatory: the field whose
-                   data-required-when matches the choice carries the star and
-                   `required`, the other is optional (Ahmed, 2026-10-18). -->
+                   it decides whether the email is mandatory. The mobile is
+                   ALWAYS required; the email carries the star and `required`
+                   only for an email sign-up (Ahmed, 2026-10-18). -->
               <fieldset class="flex flex-col gap-1.5">
                 <legend class="mb-1.5 font-medium text-neutral-secondary text-sm">التسجيل باستخدام</legend>
                 <div class="flex sm:flex-row flex-col gap-3">
@@ -147,8 +147,8 @@
                 </div>
               </fieldset>
 
-                <div class="flex flex-col gap-1.5" data-phone-field data-required-when="whatsapp">
-                  <label for="phone" class="font-medium text-neutral-secondary text-sm">رقم الموبايل<span class="text-accent-error" data-required-star>*</span></label>
+                <div class="flex flex-col gap-1.5" data-phone-field>
+                  <label for="phone" class="font-medium text-neutral-secondary text-sm">رقم الموبايل<span class="text-accent-error">*</span></label>
                   <div dir="ltr" data-phone-box class="flex items-stretch bg-white border-2 border-neutral-divider focus-within:border-cta rounded-xl overflow-hidden transition-colors">
                     <span class="flex items-center gap-1.5 ps-3.5 pe-3 shrink-0 font-semibold text-[#062A1C] text-sm"><span class="text-base leading-none" aria-hidden="true">🇪🇬</span><span class="latin">+20</span></span>
                     <!-- The prefix/number divider is a standalone rule, NOT a
