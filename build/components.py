@@ -124,6 +124,12 @@ ICON = {
             '<path d="M20 12v9H4v-9M22 7H2v5h20V7ZM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7Z'
             'M12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.7" '
             'stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    # Chain link — the recipe page's "copy link" share control.
+    "link": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
+            '<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1" stroke="currentColor" '
+            'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>'
+            '<path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" stroke="currentColor" '
+            'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     "check": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
              '<path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" '
              'stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -2296,7 +2302,7 @@ def blog_card(img, tag, heading, excerpt, href="blog.html"):
         </article>"""
 
 
-def recipe_card(img, tag, heading, excerpt, minutes, href="blog.html"):
+def recipe_card(img, tag, heading, excerpt, minutes, href="recipe.html"):
     return f"""
         <article class="flex bg-white shadow-custom4 rounded-2xl overflow-hidden">
           <!-- min-w-0: the image is a fixed 160px shrink-0, so without this the

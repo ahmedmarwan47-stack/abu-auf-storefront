@@ -252,6 +252,7 @@
       "/terms-conditions": "terms-conditions.html",
       "/return-policy": "return-policy.html",
       "/blogs": "blogs.html",
+      "/recipes": "recipe.html",
       "/rewards": "rewards.html",
       "/export": "export.html",
       "/shop": "shop.html",
@@ -286,6 +287,8 @@
     }
     if (clean.startsWith("/products/")) return "product.html";
     if (clean.startsWith("/blogs/")) return "blog.html";
+    // One recipe page exists, so every recipe route opens it (DESIGN-NOTES §1).
+    if (clean.startsWith("/recipes/")) return "recipe.html";
     if (clean.startsWith("/my-account/"))
       return "my-account-" + clean.split("/")[2] + ".html";
     return "index.html";
@@ -7441,28 +7444,56 @@
     }
 
     document.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-copy-ref]");
+      const btn = e.target.closest("[data-copy-ref], [data-copy-url]");
       if (!btn || btn.dataset.copied) return;
-      const link = (btn.closest("div") || document).querySelector("[data-ref-link]");
-      const text = link ? link.textContent.trim() : "";
+      /* data-copy-url copies the page's own address (the recipe share row);
+         data-copy-ref copies the referral link printed beside the button. */
+      let text = "";
+      if (btn.hasAttribute("data-copy-url")) {
+        text = location.href.split("#")[0];
+      } else {
+        const link = (btn.closest("div") || document).querySelector("[data-ref-link]");
+        text = link ? link.textContent.trim() : "";
+      }
       if (!text) return;
+      /* A button that carries an icon names its text span data-copy-label, so
+         the feedback swaps the words and leaves the glyph in place. */
+      const label = btn.querySelector("[data-copy-label]") || btn;
       copyText(text).then(
         () => {
           /* The copied state lives on the button itself — a toast alone is
              off in the corner, and the question being answered is "did THIS
              button work". Reverts after a beat so it can be used again. */
           btn.dataset.copied = "true";
-          const old = btn.textContent;
-          btn.textContent = t("تم النسخ ✓");
+          const old = label.textContent;
+          label.textContent = t("تم النسخ ✓");
           btn.classList.add("pointer-events-none");
           setTimeout(() => {
-            btn.textContent = old;
+            label.textContent = old;
             btn.classList.remove("pointer-events-none");
             delete btn.dataset.copied;
           }, 2600);
         },
         () => toast("تعذر النسخ — انسخ الرابط يدوياً", "error"),
       );
+    });
+  }
+
+  /* Share links on the recipe page. The page's address is only known here
+     (SITE_ORIGIN is empty at build time), so the links ship hidden with no
+     href and are revealed once filled — never a share link that goes nowhere. */
+  function initShareLinks() {
+    const url = location.href.split("#")[0];
+    const msg = document.title + " " + url;
+    const nets = {
+      whatsapp: "https://wa.me/?text=" + encodeURIComponent(msg),
+      facebook: "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url),
+    };
+    document.querySelectorAll("a[data-share-net]").forEach((a) => {
+      const href = nets[a.dataset.shareNet];
+      if (!href) return;
+      a.href = href;
+      a.hidden = false;
     });
   }
 
@@ -8545,6 +8576,7 @@
     initRecentlyViewed();
     initOrderNotes();
     initReferralCopy();
+    initShareLinks();
     initAddresses();
     initCheckoutAddress();
     initPointsRedeem();

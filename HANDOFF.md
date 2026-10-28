@@ -261,7 +261,7 @@ window.__sweep = async function (W) {
   // one layout: product-1322 is the rich case (multi-shot gallery, client
   // copy, best-seller strip), product-1631 the thin one (single image, no
   // client copy at all). Sweeping all 99 buys nothing over these two.
-  const pages = ["about","blog","blogs","branches","cart","checkout","contact-us","export","faqs","forget-password","index","login","my-account-addresses","my-account-favorites","my-account-order","my-account-orders","my-account-point","my-account-profile","my-account-wallet","my-account","privacy-policy","product","register","reset-password","return-policy","rewards","shop-category","shop","store-closed","terms-conditions","thank-you","product-1322","product-1631","complete-mobile","verify"];
+  const pages = ["about","blog","blogs","branches","cart","checkout","contact-us","export","faqs","forget-password","index","login","my-account-addresses","my-account-favorites","my-account-order","my-account-orders","my-account-point","my-account-profile","my-account-wallet","my-account","privacy-policy","product","register","reset-password","return-policy","rewards","shop-category","shop","store-closed","terms-conditions","thank-you","recipe","product-1322","product-1631","complete-mobile","verify"];
   const f = document.createElement("iframe");
   f.style.cssText = "position:fixed;left:-9999px;top:0;border:0;height:844px;width:" + W + "px";
   document.body.appendChild(f);

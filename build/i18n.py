@@ -57,6 +57,19 @@ UI = {
     "اضف الى السلة": "Add to cart",
     "عرض المزيد": "Show more",
     "شاهد الوصفة": "View recipe",
+    # recipe page — the first five are the live recipe page's own Arabic
+    # labels; the English is ours
+    "المكونات": "Ingredients",
+    "طريقة الطبخ": "Method",
+    "الوقت الكلي": "Total time",
+    "حصص": "Servings",
+    "وصفات مماثلة": "Similar recipes",
+    "منتجات أبو عوف في الوصفة": "Abu Auf products in this recipe",
+    "شارك الوصفة": "Share this recipe",
+    "نسخ الرابط": "Copy link",
+    "واتساب": "WhatsApp",
+    "فيسبوك": "Facebook",
+    "دقيقة": "min",
     "الوصفات": "Recipes",
     "الرئيسية": "Home",
     "تخطي إلى المحتوى": "Skip to content",
@@ -1718,6 +1731,17 @@ def _catalog_names():
     return out
 
 
+def _recipe_names():
+    """Recipe titles, from the client's own English `name` field — the same
+    reasoning as _catalog_names(). Only the titles: the client's English
+    ingredients and method are split into different numbers of items than
+    the Arabic, so they cannot be paired line for line and stay Arabic."""
+    path = os.path.join(EXPORT, "data", "recipes.json")
+    with open(path, encoding="utf-8") as f:
+        recipes = json.load(f)
+    return {r["nameAr"]: r["name"] for r in recipes if r.get("nameAr") and r.get("name")}
+
+
 def _generated():
     """Formulaic families — looped rather than listed.
 
@@ -1803,6 +1827,7 @@ def build_dictionary():
     text.update(GOVERNORATES)
     text.update(DISTRICTS)
     text.update(_catalog_names())
+    text.update(_recipe_names())
     text.update(COPY)
     text.update(COPY2)
     text.update(CHROME)

@@ -8,8 +8,8 @@ deviation.
 
 A **static Abu Auf storefront**, rebuilt from a Koueider/OrderBase static export
 against the Abu Auf Figma (`tQiydoANmIdYWq0IfmTsMz`) and, increasingly, against
-the live site at **abuauf.com**. 35 core pages plus a generated
-`product-<id>.html` for every catalogue product (134 HTML files), Arabic-first,
+the live site at **abuauf.com**. 36 core pages plus a generated
+`product-<id>.html` for every catalogue product (135 HTML files), Arabic-first,
 right-to-left. (Counts in the older notes below still say 31/130 — that figure
 went stale several pages ago; `len(PAGES)` in `build/build.py` is the truth.) No framework, no server — plain HTML + a build-time Tailwind
 stylesheet + vanilla JS.
@@ -390,7 +390,7 @@ These have each cost real time. Read them.
 
 ```bash
 npm install                               # once; Tailwind CLI (v3) for the CSS build
-python3 build/build.py                    # 35 page(s) + 99 fanned-out, no missing assets,
+python3 build/build.py                    # 36 page(s) + 99 fanned-out, no missing assets,
                                           # and rebuilds static-export/tailwind.css
 node --check static-export/scripts.js
 grep -ril 'koueider\|kouider' static-export/   # must return nothing
@@ -481,7 +481,8 @@ does not exist.
 Scrapers: `build/scrape_assets.py`, `build/fetch_arabic_names.py`,
 `build/fill_missing_names.py`, `build/fetch_galleries.py`,
 `build/fetch_popularity.py`, `build/fetch_sizes.py`,
-`build/fetch_descriptions.py`.
+`build/fetch_descriptions.py`, `build/fetch_recipes.py` (the client's 17
+recipes → `data/recipes.json`; `recipe.html` renders one — DESIGN-NOTES §1).
 
 `descAr`/`descHtmlAr` are the client's own Arabic `short_description` and
 benefits `description` HTML, pulled by `fetch_descriptions.py` from the

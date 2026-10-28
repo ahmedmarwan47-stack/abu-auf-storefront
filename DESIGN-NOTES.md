@@ -480,6 +480,53 @@ Signed-in state drives `[data-account-link]` / `[data-account-label]` in the
 masthead and `[data-authed-only]` / `[data-anon-only]` anywhere; wiring a real
 session to the same attributes keeps the chrome working.
 
+### Recipe page — the client's own recipe, with four gaps (2026-10-28)
+
+`recipe.html` (`build/pages/recipe.py`) is laid out after fambeef.org's recipe
+page — media beside a details card, ingredients, numbered method, the products
+used, share, related band — and built from our own parts: the product page's
+sticky media column and lg-only card, `product_card()`, `recipe_card()`.
+
+**The recipe itself is real.** abuauf.com does publish recipes (17); the list
+comes from `/wp-json/apis/v2/posts?post_type=recipe`, and the ingredients and
+method from each detail page's flight payload. `build/fetch_recipes.py` writes
+them to `data/recipes.json` and the photos to `images/abuauf/recipes/`. The
+section labels (المكونات, طريقة الطبخ, الوقت الكلي, حصص, وصفات مماثلة) are the
+live recipe page's own strings. Featured: أصابع جرانولا التمر والشوكولاتة
+الداكنة. Related cards are the client's list order with this recipe excluded,
+which is what the live rail does.
+
+What is NOT the client's, or not right in their data:
+
+- **One page, seventeen recipes.** Every related card, and every recipe card
+  on the home and product pages (whose default `href` is now `recipe.html`,
+  not `blog.html`), opens this same recipe. The data for all 17 is already
+  fetched; fanning out `recipe-<slug>.html` the way product pages are would
+  close this.
+- **The client's times do not add up.** This recipe has prep 2 / cooking 10 /
+  total 10 min, and step 5 freezes it for two hours. Many recipes have
+  prep = cooking = total (30/30/30). So the page shows the client's
+  **total** only, in the chip and the facts strip, and not the split; it is
+  still the client's figure, and it is still wrong here.
+- **The photo is 395×320** — the only image the client has for it. The media
+  column is capped at 440px instead of half the row so it is not drawn at 2×.
+  Needs a larger original.
+- **Two typos corrected:** the source has "فوق سوداني" for "فول سوداني" in an
+  ingredient and in step 2. Fixed at render time (`TYPOS` in `recipe.py`), not
+  in the JSON. The scraper also maps Persian ی/ک to Arabic ي/ك — several
+  client titles were typed with them, which search's `fold()` would never match.
+- **Ours, needs sign-off:** the "منتجات أبو عوف في الوصفة" heading and the
+  product mapping in `USES` (only the peanut butter is in our 99 — the recipe
+  also calls for Abu Auf sokkari dates and original granola, which are not),
+  and the share row. The ingredients carry plain check marks — not tickable. The
+  breadcrumb has no "وصفاتنا" middle step because there is no recipes index
+  page. The English for the labels is in-house; the recipe **titles** use the
+  client's own English `name`, while ingredients and method stay Arabic in
+  English mode — the client's English splits them into different numbers of
+  items, so they cannot be paired line for line.
+- Not in `DEMO_DEAD_PAGES`: the nav's "وصفاتنا" link (`/recipes`) now opens
+  this page rather than falling through to the home page.
+
 ## 2. Placeholder copy needing sign-off
 
 Everything below is written in-house in Abu Auf's voice. It is plausible and
@@ -489,7 +536,7 @@ on-brand, and it is **not** the client's approved copy.
 |---|---|
 | **Legal pages** (privacy, terms, return policy) | Written in-house. **Must be replaced with the client's legal text — do not launch on these.** |
 | FAQs (`build/pages/faqs.py`) | 9 Q&As. Delivery times and the 14-day return window are **assumptions**. The minimum order now reads 150 EGP, matching the live site and the cart constants |
-| Blog & recipes (`build/pages/_posts.py`) | 6 posts; the live blog is client-rendered so its Arabic copy is not scrapable |
+| Blog & recipes (`build/pages/_posts.py`) | 6 posts; the live blog is client-rendered so its Arabic copy is not scrapable. The recipe cards on home/product are still in-house, but `recipe.html` is the client's own recipe — see §1 "Recipe page" |
 | Home page reviews | 4 invented testimonials with invented names. **There is no real substitute** — see below |
 | Account pages | Sample customer "محمد عادل", order numbers and wallet balances are illustrative |
 | Product **specs block** (`SPECS_TAGLINE`/`SPECS_DESC`/`SPECS_POINTS` in `build/pages/product.py`, rendered by `specs_block`) | 2026-08-02: the spec strip is now **uniform on all 99 pages** — a tagline, a description and three leaf-marked sentences — at Ahmed's request for handoff consistency. It replaced the per-product icon/label tiles, which took their text from the client's benefit lines and so ranged from full sentences to single words (`مخبوزة`). Brand-level reassurance, no auditable SKU claim. The client's own benefit copy still shows in the الفوائد accordion. Needs sign-off |

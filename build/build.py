@@ -34,7 +34,7 @@ PAGES = [
     "my_account_favorites", "my_account_addresses", "my_account_wallet",
     "my_account_vouchers", "my_account_point", "my_account_profile",
     # content
-    "about", "contact_us", "faqs", "branches", "blogs", "blog",
+    "about", "contact_us", "faqs", "branches", "blogs", "blog", "recipe",
     "export", "rewards",
     # legal
     "privacy_policy", "terms_conditions", "return_policy",
