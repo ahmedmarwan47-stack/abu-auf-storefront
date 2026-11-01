@@ -44,10 +44,13 @@ HERO = [
 #
 # The clip is portrait and covers the frame at every width (Mark, 2026-11-01:
 # full width, cropped). In the 3:1 desktop frame that keeps only the middle
-# band of each shot; phones lose far less in their 3:4 frame. Text sits
-# bottom-left and the play button top-right, placed with end/start (left and
-# right in RTL). dir="ltr" goes on the headline only, to left-align it: on the
-# positioned box it would flip that box's own end/start to the other side.
+# band of each shot; phones lose far less in their 3:4 frame. The layout
+# follows the page language (Mark, 2026-11-01): text at the start, aligned to
+# the start, play button at the end on the Shop Now row — so text right and
+# play left in Arabic, mirrored in English. The headline is English either
+# way, so each line is its own dir="ltr" run: that keeps "Flavors," from
+# having its comma pushed to the wrong end in RTL, while the paragraph itself
+# keeps the page direction and so its alignment.
 # data-autoplay-hold keeps the carousel on this slide until the clip has
 # played through once (initCarousel autoplay).
 FILM = {
@@ -70,12 +73,12 @@ def _film_slide():
                          preload="metadata" aria-hidden="true" tabindex="-1"></video>
                   <div class="absolute inset-0 hero-film__scrim" aria-hidden="true"></div>
                   <button type="button" data-open="video" data-video-src="{f['src']}"
-                          class="top-4 md:top-6 start-4 md:start-6 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom3 rounded-full text-cta transition btn-elevate size-14 md:size-16"
+                          class="bottom-6 md:bottom-12 end-4 md:end-16 absolute place-items-center grid bg-white/90 shadow-custom3 rounded-full text-cta size-14 md:size-16 film-play"
                           aria-label="تشغيل الفيديو بالصوت">
-                    <span class="size-6 md:size-7">{ICON['play']}</span>
+                    <span class="size-6 md:size-7 film-play__icon">{ICON['play']}</span>
                   </button>
-                  <div class="bottom-6 md:bottom-12 absolute flex flex-col items-end gap-4 md:gap-5 end-5 md:end-16 start-5 md:start-auto max-w-[520px] md:max-w-none" lang="en">
-                    <p dir="ltr" class="w-full font-bold text-white text-3xl md:text-5xl leading-tight latin hero-film__headline">{_film_headline(f['headline'])}</p>
+                  <div class="bottom-6 md:bottom-12 absolute flex flex-col items-start gap-4 md:gap-5 start-5 md:start-16 end-5 md:end-auto max-w-[520px] md:max-w-none" lang="en">
+                    <p class="w-full font-bold text-white text-3xl md:text-5xl leading-tight latin hero-film__headline">{_film_headline(f['headline'])}</p>
                     <a href="{f['href']}" class="inline-flex items-center gap-2 bg-white hover:bg-beige px-7 py-3 rounded-full min-h-11 font-semibold text-[#062A1C] text-base transition-colors latin btn-elevate">
                       {e(f['cta'])}
                     </a>
@@ -90,8 +93,9 @@ def _film_headline(text):
     can never break before "Flavors"; a phone may still wrap inside it."""
     first, _, rest = text.partition(", ")
     if not rest:
-        return e(text)
-    return f'<span class="md:whitespace-nowrap">{e(first)},</span><br>{e(rest)}'
+        return f'<span dir="ltr">{e(text)}</span>'
+    return (f'<span dir="ltr" class="md:whitespace-nowrap">{e(first)},</span><br>'
+            f'<span dir="ltr">{e(rest)}</span>')
 
 
 def _with_film_slide(slides_html):

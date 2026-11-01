@@ -440,6 +440,69 @@ select {
   text-shadow: 0 2px 16px rgb(0 0 0 / 0.45);
 }
 
+/* Hero film play button (home.py _film_slide). On hover or keyboard focus
+   it lifts and grows a touch, the triangle nudges forward, and two rings
+   ripple out from it on a loop, so it reads as "this plays" rather than as
+   one more white circle. Its own transform, not .btn-elevate, because the
+   two would fight over the same property. Reduced motion keeps the colour
+   and shadow change and drops the movement. */
+.film-play {
+  transition:
+    transform 0.25s var(--ease-out),
+    background-color 0.2s var(--ease-out),
+    box-shadow 0.25s var(--ease-out);
+}
+.film-play::before,
+.film-play::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid rgb(255 255 255 / 0.85);
+  opacity: 0;
+  pointer-events: none;
+}
+.film-play__icon {
+  display: block;
+  transition: transform 0.25s var(--ease-out);
+}
+.film-play:hover,
+.film-play:focus-visible {
+  background-color: #fff;
+  box-shadow: var(--lift-shadow);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .film-play:hover,
+  .film-play:focus-visible {
+    transform: scale(1.08);
+  }
+  .film-play:hover .film-play__icon,
+  .film-play:focus-visible .film-play__icon {
+    transform: translateX(2px) scale(1.08);
+  }
+  .film-play:hover::before,
+  .film-play:focus-visible::before {
+    animation: filmPlayRipple 1.6s var(--ease-out) infinite;
+  }
+  .film-play:hover::after,
+  .film-play:focus-visible::after {
+    animation: filmPlayRipple 1.6s var(--ease-out) 0.8s infinite;
+  }
+  .film-play:active {
+    transform: scale(0.96);
+  }
+}
+@keyframes filmPlayRipple {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
 /* Full-screen film player ([data-modal="video"]). Reuses the .modal-shell
    open/close, Escape and outside-click plumbing; only the box differs: no
    padding and a black stage, with the clip letterboxed by object-fit. */

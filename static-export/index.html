@@ -25,8 +25,8 @@
          styles.css contains rules whose whole purpose is to beat a utility
          ([hidden] !important, the focus ring re-armed over `outline-none`,
          the sticky-nav selector). Reverse these two and they stop working. -->
-    <link rel="stylesheet" href="tailwind.css?v=fd44569b14" />
-    <link rel="stylesheet" href="styles.css?v=4c532f6e91" />
+    <link rel="stylesheet" href="tailwind.css?v=dcf7c819a3" />
+    <link rel="stylesheet" href="styles.css?v=c4f65b0043" />
     <!-- The client's 3D leaf mark as the tab icon (Ahmed, 2026-08-05) — the
          same spec-leaf.png the mega-panel bullets and product benefits use, so
          the favicon is a recognisable brand glyph rather than the white
@@ -84,12 +84,12 @@
                          preload="metadata" aria-hidden="true" tabindex="-1"></video>
                   <div class="absolute inset-0 hero-film__scrim" aria-hidden="true"></div>
                   <button type="button" data-open="video" data-video-src="videos/hero-film.mp4"
-                          class="top-4 md:top-6 start-4 md:start-6 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom3 rounded-full text-cta transition btn-elevate size-14 md:size-16"
+                          class="bottom-6 md:bottom-12 end-4 md:end-16 absolute place-items-center grid bg-white/90 shadow-custom3 rounded-full text-cta size-14 md:size-16 film-play"
                           aria-label="تشغيل الفيديو بالصوت">
-                    <span class="size-6 md:size-7"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M8.5 5.6v12.8a1 1 0 0 0 1.53.85l10.2-6.4a1 1 0 0 0 0-1.7l-10.2-6.4A1 1 0 0 0 8.5 5.6Z"/></svg></span>
+                    <span class="size-6 md:size-7 film-play__icon"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M8.5 5.6v12.8a1 1 0 0 0 1.53.85l10.2-6.4a1 1 0 0 0 0-1.7l-10.2-6.4A1 1 0 0 0 8.5 5.6Z"/></svg></span>
                   </button>
-                  <div class="bottom-6 md:bottom-12 absolute flex flex-col items-end gap-4 md:gap-5 end-5 md:end-16 start-5 md:start-auto max-w-[520px] md:max-w-none" lang="en">
-                    <p dir="ltr" class="w-full font-bold text-white text-3xl md:text-5xl leading-tight latin hero-film__headline"><span class="md:whitespace-nowrap">More Popcorn Flavors,</span><br>More Moods</p>
+                  <div class="bottom-6 md:bottom-12 absolute flex flex-col items-start gap-4 md:gap-5 start-5 md:start-16 end-5 md:end-auto max-w-[520px] md:max-w-none" lang="en">
+                    <p class="w-full font-bold text-white text-3xl md:text-5xl leading-tight latin hero-film__headline"><span dir="ltr" class="md:whitespace-nowrap">More Popcorn Flavors,</span><br><span dir="ltr">More Moods</span></p>
                     <a href="product-1331.html" class="inline-flex items-center gap-2 bg-white hover:bg-beige px-7 py-3 rounded-full min-h-11 font-semibold text-[#062A1C] text-base transition-colors latin btn-elevate">
                       Shop Now
                     </a>
