@@ -34,6 +34,73 @@ HERO = [
     ("hero-nuts-mix.webp", "hero-nuts-mix-mob.webp", "مكسرات مشكلة فاخرة وطبيعية", "shop.html#nuts-crackers"),
 ]
 
+# The film slide (Mark, 2026-11-01): a 12s 720x1280 popcorn clip, muted and
+# looping in the banner, with a play button that opens it full screen WITH
+# sound ([data-open="video"], the modal in scripts.js). Headline and button
+# copy are the requested English, verbatim — DESIGN-NOTES §1.
+#
+# It is the SECOND slide on purpose: the seamless loop clones slide one, and a
+# cloned film would decode the video twice more for a frame nobody sees.
+#
+# The clip is portrait and covers the frame at every width (Mark, 2026-11-01:
+# full width, cropped). In the 3:1 desktop frame that keeps only the middle
+# band of each shot; phones lose far less in their 3:4 frame. Text sits
+# bottom-left and the play button top-right, placed with end/start (left and
+# right in RTL). dir="ltr" goes on the headline only, to left-align it: on the
+# positioned box it would flip that box's own end/start to the other side.
+# data-autoplay-hold keeps the carousel on this slide until the clip has
+# played through once (initCarousel autoplay).
+FILM = {
+    "src": "videos/hero-film.mp4",
+    "poster": "videos/hero-film-poster.webp",
+    "headline": "More Popcorn Flavors, More Moods",
+    "cta": "Shop Now",
+    # No popcorn category exists; caramel popcorn is the closest landing.
+    "href": "product-1331.html",
+}
+
+
+def _film_slide():
+    f = FILM
+    return f"""
+              <div class="carousel-slide w-full">
+                <div class="relative bg-[#1b1b1b] rounded-[20px] md:rounded-none w-full md:aspect-[3/1] aspect-[3/4] overflow-hidden hero-film">
+                  <video class="block w-full h-full object-cover" data-autoplay-hold
+                         src="{f['src']}" poster="{f['poster']}" autoplay muted loop playsinline
+                         preload="metadata" aria-hidden="true" tabindex="-1"></video>
+                  <div class="absolute inset-0 hero-film__scrim" aria-hidden="true"></div>
+                  <button type="button" data-open="video" data-video-src="{f['src']}"
+                          class="top-4 md:top-6 start-4 md:start-6 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom3 rounded-full text-cta transition btn-elevate size-14 md:size-16"
+                          aria-label="تشغيل الفيديو بالصوت">
+                    <span class="size-6 md:size-7">{ICON['play']}</span>
+                  </button>
+                  <div class="bottom-6 md:bottom-12 absolute flex flex-col items-end gap-4 md:gap-5 end-5 md:end-16 start-5 md:start-auto max-w-[520px] md:max-w-none" lang="en">
+                    <p dir="ltr" class="w-full font-bold text-white text-3xl md:text-5xl leading-tight latin hero-film__headline">{_film_headline(f['headline'])}</p>
+                    <a href="{f['href']}" class="inline-flex items-center gap-2 bg-white hover:bg-beige px-7 py-3 rounded-full min-h-11 font-semibold text-[#062A1C] text-base transition-colors latin btn-elevate">
+                      {e(f['cta'])}
+                    </a>
+                  </div>
+                </div>
+              </div>"""
+
+
+def _film_headline(text):
+    """Break after the comma, so "Flavors," ends line one (Mark, 2026-11-01).
+    From md the first line is nowrap and the box drops its width cap, so it
+    can never break before "Flavors"; a phone may still wrap inside it."""
+    first, _, rest = text.partition(", ")
+    if not rest:
+        return e(text)
+    return f'<span class="md:whitespace-nowrap">{e(first)},</span><br>{e(rest)}'
+
+
+def _with_film_slide(slides_html):
+    """Insert the film as slide two (see FILM for why not slide one)."""
+    marker = '<div class="carousel-slide w-full">'
+    first_end = slides_html.find(marker, slides_html.find(marker) + 1)
+    return slides_html[:first_end] + _film_slide().lstrip("\n") + "\n" + slides_html[first_end:]
+
+
 CATEGORY_ORDER = [
     ("Dates & Dried Fruits", "التمور والفواكه المجففة"),
     ("Nuts | Seeds & Crackers", "المكسرات"),
@@ -111,7 +178,7 @@ def build():
     hero_slides = "".join(
         f"""
               <div class="carousel-slide w-full">
-                <a href="{href}" class="block relative rounded-[20px] w-full overflow-hidden">
+                <a href="{href}" class="block relative rounded-[20px] md:rounded-none w-full overflow-hidden">
                   <picture>
                     <source media="(min-width: 768px)" srcset="images/abuauf/site/{d}" />
                     <img src="images/abuauf/site/{m}" alt="{e(alt)}"
@@ -121,6 +188,7 @@ def build():
               </div>"""
         for i, (d, m, alt, href) in enumerate(HERO)
     )
+    hero_slides = _with_film_slide(hero_slides)
 
     tiles = "".join(
         category_tile(category(api), label)
@@ -141,21 +209,28 @@ def build():
 
     body = f"""
       <!-- ============================== HERO ============================== -->
-      <section class="bg-white pt-4 md:pt-6 w-full">
+      <section class="bg-white pt-4 md:pt-0 w-full">
         <!-- The hero is banner artwork, so the home page had no h1 at all and
              its outline started at h2. Screen readers and search engines both
              read the h1 as the page's name, so it is given here rather than
              painted — the visible identity is the masthead logo. -->
         <h1 class="sr-only">أبو عوف — قهوة ومكسرات وتمور وسناكس صحية</h1>
-        <div class="mx-auto px-4 max-w-[1536px]">
+        <!-- From md up the hero is full bleed, flush under the nav, with
+             square corners: 640px tall at 1920 against ~500 inside the
+             1536 cap. It stays at the art's own 3:1 - every banner's CTA
+             runs to within ~40px of its right edge, so any taller box
+             (object-cover trims the sides) cuts the button off. Taller
+             needs taller art from the client. Phones keep the gutter and
+             the portrait art. -->
+        <div class="mx-auto px-4 md:px-0 max-w-[1536px] md:max-w-none">
           <div class="relative carousel hero-banners" data-autoplay data-carousel-seamless style="--carousel-gap:16px">
             <div class="carousel-track">{hero_slides}
             </div>
-            <!-- Offset is set in styles.css, scoped to .hero-banners: the 64px
-                 circle is pulled out by half its width so its centre lands ON the
-                 banner's side border (Ahmed, 2026-07-29 — "in the middle of the
-                 border"). A start/end utility here would tie on specificity with
-                 the global .carousel-prev -10px and lose on source order. -->
+            <!-- Offset is set in styles.css, scoped to .hero-banners. The arrows
+                 used to straddle the banner's side border; with the hero full
+                 bleed that border is the screen edge, so they now sit inside
+                 it. A start/end utility here would tie on specificity with the
+                 global .carousel-prev and lose on source order. -->
             <button type="button" class="hidden md:grid top-1/2 absolute place-items-center bg-white/90 hover:bg-white shadow-custom3 -translate-y-1/2 rounded-full text-cta transition size-16 carousel-prev" aria-label="السابق">
               <span class="rtl:scale-flip">{ICON['arrow']}</span>
             </button>

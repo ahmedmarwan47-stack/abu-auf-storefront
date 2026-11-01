@@ -417,16 +417,43 @@ select {
 .carousel-next {
   inset-inline-end: -22px;
 }
-/* Hero arrows are 64px and Ahmed wants their centre ON the banner's side
-   border, straddling it, rather than tucked inside. -32px = half the circle.
-   Scoped to .hero-banners (0,2,0) so it beats the global .carousel-prev
-   (0,1,0) default above without disturbing the smaller rail arrows. */
+/* Hero arrows are 64px. They used to straddle the banner's side border
+   (-32px, Ahmed 2026-07-29), but the hero is now full bleed from md up, where
+   that border is the screen edge and half the circle would be off-screen, so
+   they sit 24px inside it. Below md they are hidden. Scoped to .hero-banners
+   (0,2,0) so it beats the global .carousel-prev (0,1,0) default above without
+   disturbing the smaller rail arrows. */
 .hero-banners .carousel-prev {
-  inset-inline-start: -32px;
+  inset-inline-start: 24px;
 }
 .hero-banners .carousel-next {
-  inset-inline-end: -32px;
+  inset-inline-end: 24px;
 }
+/* Hero film slide (home.py FILM). The scrim darkens the lower part so the
+   white headline and button hold up over any scene, and the shadow covers
+   the bright frames. */
+.hero-film__scrim {
+  background: linear-gradient(to top, rgb(0 0 0 / 0.6), rgb(0 0 0 / 0) 60%);
+  pointer-events: none;
+}
+.hero-film__headline {
+  text-shadow: 0 2px 16px rgb(0 0 0 / 0.45);
+}
+
+/* Full-screen film player ([data-modal="video"]). Reuses the .modal-shell
+   open/close, Escape and outside-click plumbing; only the box differs: no
+   padding and a black stage, with the clip letterboxed by object-fit. */
+.modal-shell--video {
+  padding: 0;
+  align-items: center;
+  background: #000;
+}
+.modal-shell--video video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .carousel-dots {
   display: flex;
   justify-content: center;

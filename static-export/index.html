@@ -25,8 +25,8 @@
          styles.css contains rules whose whole purpose is to beat a utility
          ([hidden] !important, the focus ring re-armed over `outline-none`,
          the sticky-nav selector). Reverse these two and they stop working. -->
-    <link rel="stylesheet" href="tailwind.css?v=bf84a38bf3" />
-    <link rel="stylesheet" href="styles.css?v=1f23c1892a" />
+    <link rel="stylesheet" href="tailwind.css?v=fd44569b14" />
+    <link rel="stylesheet" href="styles.css?v=4c532f6e91" />
     <!-- The client's 3D leaf mark as the tab icon (Ahmed, 2026-08-05) — the
          same spec-leaf.png the mega-panel bullets and product benefits use, so
          the favicon is a recognisable brand glyph rather than the white
@@ -38,7 +38,7 @@
          merges it. A plain script rather than a fetch, so the language switch
          still works from file://. -->
     <script defer src="i18n-en.js?v=6f95ae1208"></script>
-    <script defer src="scripts.js?v=49400612ec"></script>
+    <script defer src="scripts.js?v=40031f0b27"></script>
   </head>
   <body data-page="home" data-path="/" class="antialiased bg-white">
     <!-- First focusable thing on the page. The header is three bands and a
@@ -52,17 +52,24 @@
 
     <main id="main" tabindex="-1" class="overflow-x-clip">
       <!-- ============================== HERO ============================== -->
-      <section data-reveal class="bg-white pt-4 md:pt-6 w-full">
+      <section data-reveal class="bg-white pt-4 md:pt-0 w-full">
         <!-- The hero is banner artwork, so the home page had no h1 at all and
              its outline started at h2. Screen readers and search engines both
              read the h1 as the page's name, so it is given here rather than
              painted — the visible identity is the masthead logo. -->
         <h1 class="sr-only">أبو عوف — قهوة ومكسرات وتمور وسناكس صحية</h1>
-        <div class="mx-auto px-4 max-w-[1536px]">
+        <!-- From md up the hero is full bleed, flush under the nav, with
+             square corners: 640px tall at 1920 against ~500 inside the
+             1536 cap. It stays at the art's own 3:1 - every banner's CTA
+             runs to within ~40px of its right edge, so any taller box
+             (object-cover trims the sides) cuts the button off. Taller
+             needs taller art from the client. Phones keep the gutter and
+             the portrait art. -->
+        <div class="mx-auto px-4 md:px-0 max-w-[1536px] md:max-w-none">
           <div class="relative carousel hero-banners" data-autoplay data-carousel-seamless style="--carousel-gap:16px">
             <div class="carousel-track">
               <div class="carousel-slide w-full">
-                <a href="shop-category.html" class="block relative rounded-[20px] w-full overflow-hidden">
+                <a href="shop-category.html" class="block relative rounded-[20px] md:rounded-none w-full overflow-hidden">
                   <picture>
                     <source media="(min-width: 768px)" srcset="images/abuauf/site/hero-coffee.webp" />
                     <img src="images/abuauf/site/hero-coffee-mob.webp" alt="قهوة طازجة تُطحن لك"
@@ -70,8 +77,27 @@
                   </picture>
                 </a>
               </div>
-              <div class="carousel-slide w-full">
-                <a href="shop.html#nuts-crackers" class="block relative rounded-[20px] w-full overflow-hidden">
+                            <div class="carousel-slide w-full">
+                <div class="relative bg-[#1b1b1b] rounded-[20px] md:rounded-none w-full md:aspect-[3/1] aspect-[3/4] overflow-hidden hero-film">
+                  <video class="block w-full h-full object-cover" data-autoplay-hold
+                         src="videos/hero-film.mp4" poster="videos/hero-film-poster.webp" autoplay muted loop playsinline
+                         preload="metadata" aria-hidden="true" tabindex="-1"></video>
+                  <div class="absolute inset-0 hero-film__scrim" aria-hidden="true"></div>
+                  <button type="button" data-open="video" data-video-src="videos/hero-film.mp4"
+                          class="top-4 md:top-6 start-4 md:start-6 absolute place-items-center grid bg-white/90 hover:bg-white shadow-custom3 rounded-full text-cta transition btn-elevate size-14 md:size-16"
+                          aria-label="تشغيل الفيديو بالصوت">
+                    <span class="size-6 md:size-7"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M8.5 5.6v12.8a1 1 0 0 0 1.53.85l10.2-6.4a1 1 0 0 0 0-1.7l-10.2-6.4A1 1 0 0 0 8.5 5.6Z"/></svg></span>
+                  </button>
+                  <div class="bottom-6 md:bottom-12 absolute flex flex-col items-end gap-4 md:gap-5 end-5 md:end-16 start-5 md:start-auto max-w-[520px] md:max-w-none" lang="en">
+                    <p dir="ltr" class="w-full font-bold text-white text-3xl md:text-5xl leading-tight latin hero-film__headline"><span class="md:whitespace-nowrap">More Popcorn Flavors,</span><br>More Moods</p>
+                    <a href="product-1331.html" class="inline-flex items-center gap-2 bg-white hover:bg-beige px-7 py-3 rounded-full min-h-11 font-semibold text-[#062A1C] text-base transition-colors latin btn-elevate">
+                      Shop Now
+                    </a>
+                  </div>
+                </div>
+              </div>
+<div class="carousel-slide w-full">
+                <a href="shop.html#nuts-crackers" class="block relative rounded-[20px] md:rounded-none w-full overflow-hidden">
                   <picture>
                     <source media="(min-width: 768px)" srcset="images/abuauf/site/hero-pistachio.webp" />
                     <img src="images/abuauf/site/hero-pistachio-mob.webp" alt="فستق أمريكي محمص ومملح"
@@ -80,7 +106,7 @@
                 </a>
               </div>
               <div class="carousel-slide w-full">
-                <a href="shop.html#dates-dried-fruits" class="block relative rounded-[20px] w-full overflow-hidden">
+                <a href="shop.html#dates-dried-fruits" class="block relative rounded-[20px] md:rounded-none w-full overflow-hidden">
                   <picture>
                     <source media="(min-width: 768px)" srcset="images/abuauf/site/hero-dates.webp" />
                     <img src="images/abuauf/site/hero-dates-mob.webp" alt="تمور صحراوية فاخرة وطبيعية"
@@ -89,7 +115,7 @@
                 </a>
               </div>
               <div class="carousel-slide w-full">
-                <a href="shop.html#nuts-crackers" class="block relative rounded-[20px] w-full overflow-hidden">
+                <a href="shop.html#nuts-crackers" class="block relative rounded-[20px] md:rounded-none w-full overflow-hidden">
                   <picture>
                     <source media="(min-width: 768px)" srcset="images/abuauf/site/hero-nuts-mix.webp" />
                     <img src="images/abuauf/site/hero-nuts-mix-mob.webp" alt="مكسرات مشكلة فاخرة وطبيعية"
@@ -98,11 +124,11 @@
                 </a>
               </div>
             </div>
-            <!-- Offset is set in styles.css, scoped to .hero-banners: the 64px
-                 circle is pulled out by half its width so its centre lands ON the
-                 banner's side border (Ahmed, 2026-07-29 — "in the middle of the
-                 border"). A start/end utility here would tie on specificity with
-                 the global .carousel-prev -10px and lose on source order. -->
+            <!-- Offset is set in styles.css, scoped to .hero-banners. The arrows
+                 used to straddle the banner's side border; with the hero full
+                 bleed that border is the screen edge, so they now sit inside
+                 it. A start/end utility here would tie on specificity with the
+                 global .carousel-prev and lose on source order. -->
             <button type="button" class="hidden md:grid top-1/2 absolute place-items-center bg-white/90 hover:bg-white shadow-custom3 -translate-y-1/2 rounded-full text-cta transition size-16 carousel-prev" aria-label="السابق">
               <span class="rtl:scale-flip"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </button>

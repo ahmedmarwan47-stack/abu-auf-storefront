@@ -37,6 +37,10 @@ ICON = {
             '<rect x="4" y="3.5" width="16" height="17" rx="3" stroke="currentColor" stroke-width="1.7"/>'
             '<path d="M8 8.5h8M8 12h8M8 15.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
     # X — removes an applied note / promo. Wrapper-driven.
+    # Play triangle, nudged right of centre so it reads optically centred
+    # inside a circle. Opens the hero film's full-screen player.
+    "play": '<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full">'
+            '<path d="M8.5 5.6v12.8a1 1 0 0 0 1.53.85l10.2-6.4a1 1 0 0 0 0-1.7l-10.2-6.4A1 1 0 0 0 8.5 5.6Z"/></svg>',
     "close": '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full">'
              '<path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>',
     # Rounded warning triangle (Ahmed's alert-01.svg, 2026-08-04) — the

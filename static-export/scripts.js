@@ -594,6 +594,8 @@
     "مرحبا": "Welcome",
     "تأكيد": "Confirm",
     "إغلاق": "Close",
+    "فيديو": "Video",
+    "تشغيل الفيديو بالصوت": "Play video with sound",
     "بحث": "Search",
     "الفروع": "Branches",
   };
@@ -1933,6 +1935,16 @@
          keys used to do nothing at all: Enter jumped to the first row and no
          other row was reachable without a pointer.
     -->
+    <!-- Full-screen film player, opened from the hero film's play button
+         (data-open="video" + data-video-src). The banner copy plays muted;
+         this one plays with sound, which browsers allow because the press is
+         a user gesture. Paused in closeOverlay, so Escape, the close button
+         and an outside tap all stop the audio. -->
+    <div data-modal="video" class="modal-shell modal-shell--video" role="dialog" aria-modal="true" aria-label="${esc(t("فيديو"))}">
+      <video data-video-player controls playsinline preload="none"></video>
+      <button type="button" data-close class="top-4 end-4 absolute place-items-center grid bg-white/15 hover:bg-white/30 rounded-full size-12 text-white transition-colors" aria-label="إغلاق"><span class="size-6">${ICON.close}</span></button>
+    </div>
+
     <div data-modal="search" class="modal-shell modal-shell--search">
       <div class="flex flex-col bg-white shadow-custom3 rounded-2xl w-full max-w-[640px] overflow-hidden" data-modal-box>
         <div class="flex items-center gap-3 px-5 py-2.5 border-transparent border-b search-row shrink-0">
@@ -2326,6 +2338,7 @@
     order: '[data-drawer="order"]',
     menu: '[data-drawer="menu"]',
     search: '[data-modal="search"]',
+    video: '[data-modal="video"]',
     locale: '[data-sheet="locale"]',
     address: '[data-sheet="address"]',
     location: '[data-sheet="location"]',
@@ -2338,7 +2351,7 @@
   };
   let openEl = null;
 
-  function openOverlay(key) {
+  function openOverlay(key, opener) {
     const sel = openMap[key];
     if (!sel) return;
     const el = document.querySelector(sel);
@@ -2348,6 +2361,16 @@
     el.classList.add("is-open");
     if (backdrop) backdrop.classList.add("is-open");
     document.body.classList.add("no-scroll");
+    const player = el.querySelector("[data-video-player]");
+    const src = opener && opener.getAttribute("data-video-src");
+    if (player && src) {
+      if (player.getAttribute("src") !== src) player.setAttribute("src", src);
+      player.currentTime = 0;
+      player.muted = false;
+      const playing = player.play();
+      if (playing) playing.catch(() => {});
+      setTimeout(() => player.focus(), 80);
+    }
     const input = el.querySelector("[data-search-input]");
     if (input) {
       // Warm the catalogue while the shopper is still reaching for the
@@ -2361,6 +2384,7 @@
     document
       .querySelectorAll(".side-drawer.is-open, .modal-shell.is-open, .bottom-sheet.is-open")
       .forEach((el) => el.classList.remove("is-open"));
+    document.querySelectorAll("[data-video-player]").forEach((v) => v.pause());
     const backdrop = document.querySelector("[data-backdrop]");
     if (backdrop) backdrop.classList.remove("is-open");
     document.body.classList.remove("no-scroll");
@@ -2844,10 +2868,28 @@
         seen[slug] = true;
         cats.push({ slug: slug, label: label });
       });
+      /*
+       * The "nothing found" answer leads, centred on a tinted plate with an
+       * icon, so it reads as the outcome of the search and not as a caption
+       * over the best sellers. A divider then hands over to the recovery
+       * content. The query is the shopper's own text, so it carries
+       * data-i18n-skip (see the note on that attribute).
+       */
       empty.innerHTML =
-        `<p class="mb-5 text-neutral-secondary text-sm">${esc(
-          t("جرب اسم منتج أو فئة، أو ابدأ من الأكثر مبيعاً."),
-        )}</p>` +
+        `<div class="flex flex-col items-center gap-2 bg-cta-light mt-2 px-5 py-7 rounded-2xl text-center">
+           <span class="place-items-center grid bg-white shadow-sm mb-2 rounded-full size-16 text-cta" aria-hidden="true">
+             <span class="block size-7">${ICON.search}</span>
+           </span>
+           <p class="max-w-full font-bold text-[#062A1C] text-lg break-words">${esc(
+             t("لا توجد نتائج لـ"),
+           )} <mark class="bg-beige px-1.5 rounded text-[#062A1C]" data-i18n-skip>${esc(
+             String(q).trim(),
+           )}</mark></p>
+           <p class="text-neutral-secondary text-sm">${esc(
+             t("جرب اسم منتج أو فئة، أو ابدأ من الأكثر مبيعاً."),
+           )}</p>
+         </div>
+         <hr class="my-6 border-neutral-200">` +
         (best ? `<div class="-mx-5 mb-5">${best}</div>` : "") +
         (cats.length
           ? `<p class="mb-3 font-bold text-[#062A1C] text-sm">${esc(t("تصفح الفئات"))}</p>
@@ -2868,6 +2910,7 @@
 
     function paint(q) {
       status.hidden = false;
+      status.classList.remove("sr-only");
       if (skeleton) skeleton.hidden = true;
       if (!hits.length) {
         results.hidden = true;
@@ -2876,6 +2919,9 @@
           scopes.hidden = true;
           scopes.innerHTML = "";
         }
+        // The visible answer is the empty-state plate; the status line stays
+        // as the live region a screen reader hears, but painted only once.
+        status.classList.add("sr-only");
         status.textContent = t("لا توجد نتائج لـ") + ' "' + String(q).trim() + '"';
         input.setAttribute("aria-expanded", "false");
         setActive(-1);
@@ -2938,6 +2984,7 @@
           if (scopes) scopes.hidden = true;
           if (empty) empty.hidden = true;
           status.hidden = false;
+          status.classList.remove("sr-only");
           status.textContent = t("تعذر تحميل نتائج البحث. حاول مرة أخرى.");
           input.setAttribute("aria-expanded", "false");
           return;
@@ -3418,8 +3465,23 @@
            is precisely the motion the preference asks us not to make.
 
          Now it stops on hidden, stops while a pointer or the keyboard is
-         inside the carousel, and never starts at all under reduced motion. */
+         inside the carousel, and never starts at all under reduced motion.
+
+         A slide carrying a [data-autoplay-hold] video (the hero film) is
+         held until that clip has played through once: the tick skips while
+         it runs, and the moment it wraps round the rail advances and the
+         next slide gets its full interval. Arriving on it by autoplay starts
+         the clip from the top. A clip that is not actually playing (no
+         autoplay, failed load) holds nothing, so it can never stall the
+         rail. */
       let timer = null;
+      const slideAt = () =>
+        track.querySelectorAll(".carousel-slide")[Math.round(getPos() / slideStep())];
+      const holding = () => {
+        const cur = slideAt();
+        const film = cur && cur.querySelector("[data-autoplay-hold]");
+        return !!film && !film.paused && film.readyState >= 2 && !film.dataset.played;
+      };
       const stop = () => {
         if (timer) clearInterval(timer);
         timer = null;
@@ -3427,22 +3489,54 @@
       const start = () => {
         if (timer || reduceMotion() || document.hidden) return;
         timer = setInterval(() => {
-          if (seamless) {
-            if (getPos() >= maxPos() - 1) {
-              // On the clone (a copy of slide 1) — reset to the real slide 1
-              // with no animation, then advance. The rail never rewinds.
-              jumpInstant(0);
-              setPos(slideStep());
-            } else {
-              setPos(getPos() + slideStep());
-            }
-          } else if (getPos() >= maxPos()) {
-            setPos(0);
+          if (holding()) return;
+          advance();
+        }, 4500);
+      };
+      // The last playhead seen per clip. arrive() zeroes it alongside the
+      // rewind, or the rewind itself reads as a wrap and skips the slide.
+      const lastTime = new WeakMap();
+      root.querySelectorAll("[data-autoplay-hold]").forEach((film) => {
+        film.addEventListener("timeupdate", () => {
+          const wrapped = film.currentTime < (lastTime.get(film) || 0) - 1;
+          lastTime.set(film, film.currentTime);
+          if (!wrapped) return;
+          film.dataset.played = "1";
+          if (timer && slideAt() && slideAt().contains(film)) {
+            stop();
+            advance();
+            start();
+          }
+        });
+      });
+      function arrive() {
+        // Let the smooth scroll settle before reading which slide is current.
+        setTimeout(() => {
+          const cur = slideAt();
+          const film = cur && cur.querySelector("[data-autoplay-hold]");
+          if (!film) return;
+          delete film.dataset.played;
+          lastTime.set(film, 0);
+          film.currentTime = 0;
+        }, 700);
+      }
+      function advance() {
+        if (seamless) {
+          if (getPos() >= maxPos() - 1) {
+            // On the clone (a copy of slide 1) — reset to the real slide 1
+            // with no animation, then advance. The rail never rewinds.
+            jumpInstant(0);
+            setPos(slideStep());
           } else {
             setPos(getPos() + slideStep());
           }
-        }, 4500);
-      };
+        } else if (getPos() >= maxPos()) {
+          setPos(0);
+        } else {
+          setPos(getPos() + slideStep());
+        }
+        arrive();
+      }
       root.addEventListener("pointerenter", stop);
       root.addEventListener("pointerleave", start);
       root.addEventListener("focusin", stop);
@@ -3874,7 +3968,7 @@
       const opener = e.target.closest("[data-open]");
       if (opener) {
         e.preventDefault();
-        openOverlay(opener.getAttribute("data-open"));
+        openOverlay(opener.getAttribute("data-open"), opener);
         return;
       }
       if (e.target.closest("[data-close]")) {

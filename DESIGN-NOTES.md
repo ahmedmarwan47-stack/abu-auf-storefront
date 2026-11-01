@@ -21,6 +21,19 @@ Organised by what you need it for, not by when it was written:
 
 **These are not oversights. Each was left missing rather than invented.**
 
+### Hero film slide — English copy and a stand-in link (2026-11-01)
+
+The home hero's second slide is a 12s popcorn clip (`videos/hero-film.mp4`,
+supplied by Mark) that plays muted in the banner and full screen with sound
+from its play button. Its headline "More Popcorn Flavors, More Moods" and
+button "Shop Now" are **English on an Arabic-first page**, verbatim as
+requested; there is no Arabic version yet and the i18n dictionary has no
+entry for either. The button links to caramel popcorn (`product-1331.html`)
+because the catalogue has no popcorn category — three popcorn SKUs sit in
+two unrelated categories. Needs: Arabic copy, and a landing the client
+chooses. The white headline sits over moving video on a dark scrim, so its
+contrast is not something the sweep can measure; it was checked by eye.
+
 ### Branch phone numbers and directions — `branches.html`
 
 The Figma (`426:33692`) shows a phone row and an `اتجاهات` link on every branch
