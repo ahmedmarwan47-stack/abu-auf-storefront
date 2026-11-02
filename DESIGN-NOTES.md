@@ -68,8 +68,10 @@ card per flavour (photo, name, "علبة 12 قطعة", a −/n/+ on a grey track
 then مسح الكل, then the full-width CTA. Cards never expand or collapse —
 smart-light's rows opened into variant pickers; ours have no variants. Below
 `sm` the stepper sits under the name inside the same card (the 44px stepper
-left the name ~50px at 320). The offer's sticky CTA is bottom-docked at every
-width, unlike the product page's bar, which moves to the top at lg.
+left the name too narrow at 320). Cards are compact to the smart-light density
+(Ahmed, 2026-11-02): 64px photo, `py-2.5`, and **36px stepper buttons** — under
+the 44px goal, above the 24px floor, chosen because the track sets the card's
+height. The offer's sticky bar follows the site: bottom on mobile, top at lg.
 Selected card = ink outline + bold name (rule 8), never a wash.
 
 **Open for the client:** the builder sells mixes that are not one of the four

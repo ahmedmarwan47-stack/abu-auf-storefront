@@ -3339,18 +3339,6 @@ input:checked + .radio-card-accent {
   font-weight: 700;
 }
 
-/* The offer's sticky CTA stays at the BOTTOM at every width. The base
-   .sticky-buybar moves to the top at lg (the product page's bar); this
-   outranks that rule while hidden and leaves .is-visible to bring it in. */
-@media (min-width: 1024px) {
-  .sticky-buybar.sticky-buybar--bottom:not(.is-visible) {
-    transform: translateY(110%);
-  }
-  .sticky-buybar.sticky-buybar--bottom {
-    box-shadow: 0 -8px 24px -12px rgba(6, 42, 28, 0.25);
-  }
-}
-
 .offer-left {
   color: #5f5f5f;
 }

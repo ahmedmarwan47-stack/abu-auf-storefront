@@ -35,28 +35,32 @@ def _row(b, it):
     name = e(it["ar"])
     return f"""
                 <li data-offer-row data-key="{e(it['key'])}" data-picked="false"
-                    class="offer-row items-center gap-x-3 sm:gap-x-4 gap-y-2 grid grid-cols-[auto_minmax(0,1fr)] sm:grid-cols-[auto_minmax(0,1fr)_auto] bg-white p-3 sm:p-4 border border-neutral-divider rounded-2xl">
-                  <!-- One grid, two shapes. From sm: [photo | name | stepper]
-                       on one line. Below sm the 44px stepper (~126px) left the
-                       name ~50px at 320 and clipped "بالشيكولاتة", so the
+                    class="offer-row items-center gap-x-3 gap-y-2 grid grid-cols-[auto_minmax(0,1fr)] min-[360px]:grid-cols-[auto_minmax(0,1fr)_auto] bg-white px-3 py-2.5 border border-neutral-divider rounded-2xl">
+                  <!-- One grid, two shapes. From 360px: [photo | name | stepper]
+                       on one line. At 320 the stepper left the
+                       name ~75px and clipped "بالشيكولاتة", so the
                        stepper drops under the name in the same card — the
                        card never opens or closes, it just reflows. -->
                   <img src="{e(it['img'])}" alt="{name}" loading="lazy"
-                       class="row-span-2 sm:row-span-1 bg-interaction-base p-1.5 rounded-xl w-20 sm:w-24 h-20 sm:h-24 object-contain" />
+                       class="row-span-2 min-[360px]:row-span-1 bg-interaction-base p-1 rounded-xl w-16 h-16 object-contain" />
                   <span class="flex flex-col gap-1 min-w-0">
-                    <span data-offer-name class="font-semibold text-[#062A1C] text-base sm:text-lg leading-6">{name}</span>
+                    <span data-offer-name class="font-semibold text-[#062A1C] text-sm sm:text-base leading-5">{name}</span>
                     {sub}
                   </span>
                   <!-- The stepper as a grey track with the buttons inside it.
                        dir="ltr" pins + to the right, as the cart drawer does.
-                       size-11: the audited 44px tap target. -->
+                       size-9 (36px), not the 44px goal: the compact card Ahmed
+                       asked for (2026-11-02, "smaller like smart light") is
+                       sized by this track, and 36px stays well clear of the
+                       24px floor with the count between the two buttons.
+                       DESIGN-NOTES §7. -->
                   <div dir="ltr" role="group" aria-label="{name}"
-                       class="inline-flex justify-self-end sm:justify-self-auto items-center gap-1 bg-interaction-base p-1 rounded-full">
+                       class="inline-flex justify-self-end min-[360px]:justify-self-auto items-center gap-0.5 bg-interaction-base p-0.5 rounded-full">
                     <button type="button" data-offer-step="-1" disabled aria-label="إنقاص {name}"
-                            class="place-items-center grid disabled:opacity-40 hover:bg-white rounded-full size-11 text-[#062A1C] transition-colors disabled:cursor-not-allowed"><span class="w-5 h-5">{ICON['minus']}</span></button>
-                    <output data-offer-qty aria-live="polite" class="min-w-[2.5ch] font-bold text-[#062A1C] text-lg text-center latin">0</output>
+                            class="place-items-center grid disabled:opacity-40 hover:bg-white rounded-full size-9 text-[#062A1C] transition-colors disabled:cursor-not-allowed"><span class="w-4 h-4">{ICON['minus']}</span></button>
+                    <output data-offer-qty aria-live="polite" class="min-w-[2.5ch] font-bold text-[#062A1C] text-base text-center latin">0</output>
                     <button type="button" data-offer-step="1" aria-label="زيادة {name}"
-                            class="offer-plus place-items-center grid bg-white disabled:opacity-40 rounded-full size-11 text-[#062A1C] transition-colors disabled:cursor-not-allowed"><span class="w-5 h-5">{ICON['plus']}</span></button>
+                            class="offer-plus place-items-center grid bg-white disabled:opacity-40 rounded-full size-9 text-[#062A1C] transition-colors disabled:cursor-not-allowed"><span class="w-4 h-4">{ICON['plus']}</span></button>
                   </div>
                 </li>"""
 
@@ -126,7 +130,7 @@ def builder_html(b):
               </div>
 
               <h2 class="sr-only">اختر النكهات</h2>
-              <ul data-offer-rows class="flex flex-col gap-3">{rows}
+              <ul data-offer-rows class="flex flex-col gap-2">{rows}
               </ul>
 
               <div>
@@ -146,13 +150,12 @@ def builder_html(b):
 
 def sticky_html(b):
     """The product page's sticky bar, for an offer: forwards to
-    [data-offer-add], owns no state. Docked at the BOTTOM at every width
-    (Ahmed, 2026-11-02: "the CTA should be at the bottom") — the product
-    page's own bar moves to the top at lg; this one does not."""
+    [data-offer-add], owns no state. Same placement as the product page's bar
+    — bottom on mobile, under the sticky nav at lg (Ahmed, 2026-11-02)."""
     return f"""
       <div data-offer-sticky aria-hidden="true"
-           class="sticky-buybar sticky-buybar--bottom fixed inset-x-0 bottom-0 z-30
-                  bg-white border-neutral-divider border-t">
+           class="sticky-buybar fixed inset-x-0 bottom-0 lg:bottom-auto lg:top-12 z-30
+                  bg-white border-neutral-divider border-t lg:border-t-0 lg:border-b">
         <div class="flex items-center gap-3 lg:gap-6 mx-auto px-4 max-w-[1536px] py-3">
           <img src="{e(b["images"][0])}" alt=""
                class="hidden sm:block bg-interaction-base p-1 rounded-xl w-12 xl:w-14 h-12 xl:h-14 object-contain shrink-0" />
