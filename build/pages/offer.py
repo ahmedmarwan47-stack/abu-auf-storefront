@@ -19,7 +19,7 @@ swap). With JS off the page is the full product page with a disabled button.
 """
 import json
 
-from bundles import BUNDLES, offer_slug, pack_line, units_ar
+from bundles import BUNDLES, offer_slug, pack_line
 from catalog import PRODUCTS, e, money
 from components import ICON
 
@@ -27,27 +27,36 @@ SLUG = offer_slug(BUNDLES[0])
 
 
 def _row(b, it):
-    sub = (f'<span class="text-neutral-secondary text-xs">{e(b["pack_ar"])}</span>'
+    """One flavour, one card — and it stays one card. It never expands into
+    variant lines or a picker the way the smart-light rows did: the flavour IS
+    the choice, so the stepper on the card is the whole interaction."""
+    sub = (f'<span class="text-neutral-secondary text-sm">{e(b["unit_ar"])} {e(b["pack_ar"])}</span>'
            if b.get("pack_ar") else "")
     name = e(it["ar"])
     return f"""
                 <li data-offer-row data-key="{e(it['key'])}" data-picked="false"
-                    class="offer-row relative flex items-center gap-3 py-3 ps-3 border-neutral-divider border-b last:border-b-0">
+                    class="offer-row items-center gap-x-3 sm:gap-x-4 gap-y-2 grid grid-cols-[auto_minmax(0,1fr)] sm:grid-cols-[auto_minmax(0,1fr)_auto] bg-white p-3 sm:p-4 border border-neutral-divider rounded-2xl">
+                  <!-- One grid, two shapes. From sm: [photo | name | stepper]
+                       on one line. Below sm the 44px stepper (~126px) left the
+                       name ~50px at 320 and clipped "بالشيكولاتة", so the
+                       stepper drops under the name in the same card — the
+                       card never opens or closes, it just reflows. -->
                   <img src="{e(it['img'])}" alt="{name}" loading="lazy"
-                       class="offer-thumb bg-interaction-base p-1 rounded-xl w-14 h-14 object-contain shrink-0" />
-                  <span class="flex flex-col flex-1 gap-0.5 min-w-0">
-                    <span data-offer-name class="font-semibold text-[#062A1C] text-sm xl:text-base leading-5">{name}</span>
+                       class="row-span-2 sm:row-span-1 bg-interaction-base p-1.5 rounded-xl w-20 sm:w-24 h-20 sm:h-24 object-contain" />
+                  <span class="flex flex-col gap-1 min-w-0">
+                    <span data-offer-name class="font-semibold text-[#062A1C] text-base sm:text-lg leading-6">{name}</span>
                     {sub}
                   </span>
-                  <!-- dir="ltr" pins + to the right, as the cart drawer and the
-                       sticky buy bar already do. size-11: the audited 44px. -->
+                  <!-- The stepper as a grey track with the buttons inside it.
+                       dir="ltr" pins + to the right, as the cart drawer does.
+                       size-11: the audited 44px tap target. -->
                   <div dir="ltr" role="group" aria-label="{name}"
-                       class="inline-flex items-center gap-1 bg-white p-1 border border-neutral-divider rounded-full shrink-0">
+                       class="inline-flex justify-self-end sm:justify-self-auto items-center gap-1 bg-interaction-base p-1 rounded-full">
                     <button type="button" data-offer-step="-1" disabled aria-label="إنقاص {name}"
-                            class="place-items-center grid disabled:opacity-40 border border-neutral-divider hover:bg-interaction-base disabled:hover:bg-transparent rounded-full size-11 text-[#062A1C] transition-colors disabled:cursor-not-allowed"><span class="w-5 h-5">{ICON['minus']}</span></button>
-                    <output data-offer-qty aria-live="polite" class="min-w-[2.5ch] font-bold text-[#062A1C] text-base text-center latin">0</output>
+                            class="place-items-center grid disabled:opacity-40 hover:bg-white rounded-full size-11 text-[#062A1C] transition-colors disabled:cursor-not-allowed"><span class="w-5 h-5">{ICON['minus']}</span></button>
+                    <output data-offer-qty aria-live="polite" class="min-w-[2.5ch] font-bold text-[#062A1C] text-lg text-center latin">0</output>
                     <button type="button" data-offer-step="1" aria-label="زيادة {name}"
-                            class="place-items-center grid bg-cta hover:bg-cta-hover disabled:bg-cta-light rounded-full size-11 text-white disabled:text-neutral-secondary transition-colors disabled:cursor-not-allowed"><span class="w-5 h-5">{ICON['plus']}</span></button>
+                            class="offer-plus place-items-center grid bg-white disabled:opacity-40 rounded-full size-11 text-[#062A1C] transition-colors disabled:cursor-not-allowed"><span class="w-5 h-5">{ICON['plus']}</span></button>
                   </div>
                 </li>"""
 
@@ -61,7 +70,6 @@ def pack_html(b):
 def builder_html(b):
     """Stands in for the product page's size chips + price + buy block."""
     size = b["size"]
-    units = units_ar(b, size)
     config = {
         "slug": b["slug"],
         "id": "offer:" + b["slug"],
@@ -100,48 +108,51 @@ def builder_html(b):
                 {save_chip}
               </div>
 
-              <!-- Progress towards the offer's size. One text node per word,
-                   so the exact-match dictionary translates each and the
-                   English reads in the same order: "Picked 1 of 4 boxes". -->
-              <div class="flex flex-col gap-2.5 bg-interaction-base p-4 rounded-2xl">
+              <!-- Progress, then the cards, then "clear", then the CTA — the
+                   smart-light builder's order, so the add button is always the
+                   last thing in the builder. One text node per word, so the
+                   exact-match dictionary translates each and the English reads
+                   "0 of 4 selected". -->
+              <div class="flex flex-col gap-3">
                 <div class="flex flex-wrap justify-between items-baseline gap-2">
-                  <p class="font-semibold text-[#062A1C] text-sm"><span>اخترت</span> <span data-offer-total class="latin">0</span> <span>من</span> <span class="latin">{size}</span> <span>{e(units)}</span></p>
-                  <p data-offer-left data-done="false" class="offer-left font-semibold text-sm">متبقي <span class="latin">{size}</span></p>
+                  <p class="text-[#062A1C] text-base sm:text-lg"><strong data-offer-total class="font-bold text-2xl latin">0</strong> <span>من</span> <span class="latin">{size}</span> <span>تم اختيارها</span></p>
+                  <p data-offer-left data-done="false" class="offer-left text-base sm:text-lg">متبقي <span class="latin">{size}</span> للاختيار</p>
                 </div>
                 <div data-offer-bar role="progressbar" aria-label="تقدّم اختيار العرض" aria-valuemin="0" aria-valuemax="{size}" aria-valuenow="0"
-                     class="bg-white rounded-full h-2 overflow-hidden">
+                     class="bg-interaction-base rounded-full h-2 overflow-hidden">
                   <div data-offer-fill class="offer-fill bg-cta rounded-full h-full" style="width:0%"></div>
                 </div>
                 {cap_note}
               </div>
 
-              <div class="flex flex-col gap-1">
-                <div class="flex justify-between items-center gap-3">
-                  <h2 class="font-bold text-[#062A1C] text-lg">اختر النكهات</h2>
-                  <button type="button" data-offer-clear hidden
-                          class="px-2 min-h-11 font-semibold text-cta text-sm underline">مسح الاختيار</button>
-                </div>
-                <ul data-offer-rows class="flex flex-col">{rows}
-                </ul>
+              <h2 class="sr-only">اختر النكهات</h2>
+              <ul data-offer-rows class="flex flex-col gap-3">{rows}
+              </ul>
+
+              <div>
+                <button type="button" data-offer-clear
+                        class="min-h-11 font-semibold text-cta text-base underline underline-offset-4">مسح الكل</button>
               </div>
 
-              <div data-offer-cta-block class="flex flex-col gap-2">
+              <div data-offer-cta-block class="flex flex-col gap-3">
                 <button type="button" data-offer-add disabled
-                        class="btn-elevate bg-cta hover:bg-cta-hover disabled:bg-cta-light py-4 rounded-full w-full font-semibold text-white disabled:text-neutral-secondary text-base transition-colors disabled:cursor-not-allowed">
-                  <span data-offer-label>اختر <span class="latin">{size}</span> {e(units)} للمتابعة</span>
+                        class="btn-elevate bg-cta hover:bg-cta-hover disabled:bg-neutral-divider py-4 sm:py-5 rounded-full w-full font-semibold text-white disabled:text-neutral-secondary text-base sm:text-lg transition-colors disabled:cursor-not-allowed">
+                  <span data-offer-label>أضف <span class="latin">{size}</span> للمتابعة</span>
                 </button>
-                <p class="text-neutral-secondary text-xs text-center">السعر ثابت مهما اختلف توزيع النكهات.</p>
+                <p class="text-neutral-secondary text-sm text-center">السعر ثابت مهما اختلف توزيع النكهات.</p>
               </div>
             </div>"""
 
 
 def sticky_html(b):
     """The product page's sticky bar, for an offer: forwards to
-    [data-offer-add], owns no state."""
+    [data-offer-add], owns no state. Docked at the BOTTOM at every width
+    (Ahmed, 2026-11-02: "the CTA should be at the bottom") — the product
+    page's own bar moves to the top at lg; this one does not."""
     return f"""
       <div data-offer-sticky aria-hidden="true"
-           class="sticky-buybar fixed inset-x-0 bottom-0 lg:bottom-auto lg:top-12 z-30
-                  bg-white border-neutral-divider border-t lg:border-t-0 lg:border-b">
+           class="sticky-buybar sticky-buybar--bottom fixed inset-x-0 bottom-0 z-30
+                  bg-white border-neutral-divider border-t">
         <div class="flex items-center gap-3 lg:gap-6 mx-auto px-4 max-w-[1536px] py-3">
           <img src="{e(b["images"][0])}" alt=""
                class="hidden sm:block bg-interaction-base p-1 rounded-xl w-12 xl:w-14 h-12 xl:h-14 object-contain shrink-0" />

@@ -62,6 +62,16 @@ English), its second description sentence (the first is the client's own 1571
 copy; its fixed flavour list was dropped because the builder makes it untrue),
 and the builder UI strings.
 
+**Builder layout (Ahmed, 2026-11-02, from the smart-light screenshot):**
+"0 من 4 تم اختيارها" / "متبقي 4 للاختيار" over a thin bar, then one bordered
+card per flavour (photo, name, "علبة 12 قطعة", a −/n/+ on a grey track),
+then مسح الكل, then the full-width CTA. Cards never expand or collapse —
+smart-light's rows opened into variant pickers; ours have no variants. Below
+`sm` the stepper sits under the name inside the same card (the 44px stepper
+left the name ~50px at 320). The offer's sticky CTA is bottom-docked at every
+width, unlike the product page's bar, which moves to the top at lg.
+Selected card = ink outline + bold name (rule 8), never a wash.
+
 **Open for the client:** the builder sells mixes that are not one of the four
 SKUs (e.g. 2 strawberry + 2 white chocolate). Within the cap that is the point
 of the feature, but fulfilment has to be able to pick any combination.

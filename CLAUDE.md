@@ -115,7 +115,10 @@ the layout, or the offer silently loses whatever the product page gains next.
 `[data-product]` host. `initOffer()` repaints server-rendered rows (never
 innerHTML), keeps the draft under `abuauf:offer:<slug>`, and adds ONE cart line
 `offer:<slug>:<mix>` carrying `mix`/`offer`, printed by `offerMixHTML()`. Real
-photos only — DESIGN-NOTES §1.
+photos only — DESIGN-NOTES §1. The builder's order is fixed (Ahmed,
+2026-11-02, to the smart-light reference): progress → one bordered card per
+flavour that **never expands or collapses** → مسح الكل → the CTA last. The
+offer's sticky CTA stays at the **bottom** at every width (`.sticky-buybar--bottom`).
 
 **Any seeded product must be keyed by its `catalog.json` id**, not its barcode.
 Both stores dedupe on id against the `data-id` on product cards; a barcode key

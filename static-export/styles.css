@@ -3316,28 +3316,39 @@ input:checked + .radio-card-accent {
    bundle_card() in components.py, initOffer() in scripts.js.
    =================================================================== */
 
-/* A flavour with units in the mix is SELECTED, and selected is painted the
-   way CLAUDE.md rule 8 requires — a marker bar on the inline start, bolder
-   ink, a ring on the photo — never a background wash, which is what hover
-   uses elsewhere. The row has no hover state at all: its buttons carry it. */
-.offer-row[data-picked="true"]::before {
-  content: "";
-  position: absolute;
-  inset-inline-start: 0;
-  top: 14px;
-  bottom: 14px;
-  width: 3px;
-  border-radius: 3px;
-  background: #163300;
+/* The + is the white circle on the grey track; it lifts on hover. */
+.offer-plus {
+  box-shadow: 0 1px 3px rgba(6, 42, 28, 0.12);
+}
+.offer-plus:not(:disabled):hover {
+  box-shadow: 0 3px 8px rgba(6, 42, 28, 0.18);
+}
+
+/* A flavour card with units in the mix is SELECTED, and selected is painted
+   the way CLAUDE.md rule 8 requires — the card's outline takes the ink colour
+   and weight, the name goes bold — never a background wash, which is what
+   hover uses elsewhere. The card itself has no hover state: its buttons do. */
+.offer-row {
+  transition: border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+}
+.offer-row[data-picked="true"] {
+  border-color: #163300;
+  box-shadow: inset 0 0 0 1px #163300;
 }
 .offer-row[data-picked="true"] [data-offer-name] {
   font-weight: 700;
 }
-.offer-thumb {
-  transition: box-shadow 0.2s var(--ease-out);
-}
-.offer-row[data-picked="true"] .offer-thumb {
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #163300;
+
+/* The offer's sticky CTA stays at the BOTTOM at every width. The base
+   .sticky-buybar moves to the top at lg (the product page's bar); this
+   outranks that rule while hidden and leaves .is-visible to bring it in. */
+@media (min-width: 1024px) {
+  .sticky-buybar.sticky-buybar--bottom:not(.is-visible) {
+    transform: translateY(110%);
+  }
+  .sticky-buybar.sticky-buybar--bottom {
+    box-shadow: 0 -8px 24px -12px rgba(6, 42, 28, 0.25);
+  }
 }
 
 .offer-left {
@@ -3351,7 +3362,7 @@ input:checked + .radio-card-accent {
 }
 @media (prefers-reduced-motion: reduce) {
   .offer-fill,
-  .offer-thumb {
+  .offer-row {
     transition: none;
   }
 }

@@ -118,17 +118,20 @@ UI = {
     # mix-and-match offers (build/bundles.py, offer.py, initOffer)
     "كوّن عرضك": "Build your offer",
     "اختر النكهات": "Choose flavours",
-    "مسح الاختيار": "Clear selection",
+    "مسح الكل": "Clear all",
+    "تم اختيارها": "selected",
+    "للاختيار": "left to pick",
+    "أضف": "Add",
     "اكتمل العرض": "Offer complete",
     "متبقي": "Left",
     "اختر": "Pick",
-    "للمتابعة": "to continue",
+    "للمتابعة": "more to continue",
     "أضف العرض للسلة": "Add offer to cart",
     "أضف للسلة": "Add to cart",
     "تمت إضافة العرض إلى السلة": "Offer added to cart",
     "السعر ثابت مهما اختلف توزيع النكهات.": "The price stays the same whatever the mix.",
     "تقدّم اختيار العرض": "Offer progress",
-    "اخترت": "Picked", "من": "of", "12 قطعة": "12 pieces",
+    "من": "of",
     "علبة": "box", "علب": "boxes",
     "شيكولاتة بيضاء": "White chocolate", "سادة": "Plain", "قرفة": "Cinnamon",
     "شيكولاتة": "Chocolate", "فراولة": "Strawberry",
@@ -1791,6 +1794,8 @@ def _generated():
         out[b["name_ar"]] = b["name_en"]
         out[pack_line(b)[0]] = pack_line(b)[1]
         out[b["desc_ar"]] = b["desc_en"]
+        if b.get("pack_ar"):
+            out[f"{b['unit_ar']} {b['pack_ar']}"] = f"Box of {b['pack_en']}"
         for it in b["items"]:
             out[it["ar"]] = "Maamoul - " + it["en"]
     return out

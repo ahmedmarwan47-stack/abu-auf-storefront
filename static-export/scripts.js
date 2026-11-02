@@ -8731,7 +8731,6 @@
     const bar = root.querySelector("[data-offer-bar]");
     const add = root.querySelector("[data-offer-add]");
     const label = root.querySelector("[data-offer-label]");
-    const clear = root.querySelector("[data-offer-clear]");
     const sticky = document.querySelector("[data-offer-sticky]");
     const stickyAdd = sticky && sticky.querySelector("[data-offer-sticky-add]");
 
@@ -8753,7 +8752,7 @@
       left.dataset.done = String(done);
       left.innerHTML = done
         ? esc(t("اكتمل العرض")) + " ✓"
-        : esc(t("متبقي")) + ' <span class="latin">' + rest + "</span>";
+        : esc(t("متبقي")) + ' <span class="latin">' + rest + "</span> " + esc(t("للاختيار"));
       rows.forEach((row) => {
         const k = row.dataset.key;
         const q = mix[k] || 0;
@@ -8762,13 +8761,11 @@
         row.querySelector('[data-offer-step="-1"]').disabled = q === 0;
         row.querySelector('[data-offer-step="1"]').disabled = done || cap(k);
       });
-      clear.hidden = n === 0;
       add.disabled = !done;
       if (stickyAdd) stickyAdd.disabled = !done;
       label.innerHTML = done
         ? esc(t("أضف العرض للسلة")) + ' — <span class="latin">' + egp(cfg.price) + "</span>"
-        : esc(t("اختر")) + ' <span class="latin">' + rest + "</span> " +
-          esc(t(rest >= 3 && rest <= 10 ? cfg.units : cfg.unit)) + " " + esc(t("للمتابعة"));
+        : esc(t("أضف")) + ' <span class="latin">' + rest + "</span> " + esc(t("للمتابعة"));
     }
 
     root.addEventListener("click", (e) => {
