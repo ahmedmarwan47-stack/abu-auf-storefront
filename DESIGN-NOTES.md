@@ -74,6 +74,13 @@ the 44px goal, above the 24px floor, chosen because the track sets the card's
 height. The offer's sticky bar follows the site: bottom on mobile, top at lg.
 Selected card = ink outline + bold name (rule 8), never a wash.
 
+The offer's sticky bar sets `html.buybar-shown` exactly as the product
+page's does, so on desktop it pushes the floating search/cart pill below it
+(2026-11-02 — it was sliding in underneath). Both bars now also check on a
+passive scroll, not only an IntersectionObserver: a buy block that starts
+below the fold (the offer always, product pages on phones) can be flung
+straight past without ever "intersecting", and the bar never appeared.
+
 **Open for the client:** the builder sells mixes that are not one of the four
 SKUs (e.g. 2 strawberry + 2 white chocolate). Within the cap that is the point
 of the feature, but fulfilment has to be able to pick any combination.

@@ -5627,22 +5627,27 @@
     mirror();
 
     // Visible only once the block has left past the top edge.
+    let shown = null;
+    const syncBar = () => {
+      const past = buyBlock.getBoundingClientRect().bottom < 0;
+      if (past === shown) return;
+      shown = past;
+      bar.classList.toggle("is-visible", past);
+      bar.setAttribute("aria-hidden", past ? "false" : "true");
+      // Lets styles.css drop the floating search/cart pill below the bar
+      // on desktop, where the two share the top edge (see .buybar-shown).
+      document.documentElement.classList.toggle("buybar-shown", past);
+    };
+    /* On a phone the buy block starts below the fold, so a fling or a jump
+       straight past it goes from "not intersecting" to "not intersecting" and
+       the observer alone never reports — the bar stayed away. The passive
+       scroll check catches that; the observer covers everything else. Same
+       pair as initOffer's bar. */
     if (window.IntersectionObserver) {
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((en) => {
-            const past = !en.isIntersecting && en.boundingClientRect.top < 0;
-            bar.classList.toggle("is-visible", past);
-            bar.setAttribute("aria-hidden", past ? "false" : "true");
-            // Lets styles.css drop the floating search/cart pill below the bar
-            // on desktop, where the two share the top edge (see .buybar-shown).
-            document.documentElement.classList.toggle("buybar-shown", past);
-          });
-        },
-        { threshold: 0 },
-      );
-      io.observe(buyBlock);
+      new IntersectionObserver(syncBar, { threshold: 0 }).observe(buyBlock);
     }
+    window.addEventListener("scroll", syncBar, { passive: true });
+    syncBar();
   }
 
   /* ---------------------------------------------------------------
@@ -8821,18 +8826,32 @@
 
     if (stickyAdd) stickyAdd.addEventListener("click", () => add.click());
 
-    /* Sticky bar: shown while the real CTA block is off-screen in EITHER
-       direction — on a phone the flavour rows push it below the fold, which
-       is exactly when a shortcut to it helps. No observer, no bar: it ships
-       hidden, so the worst case is the page without the shortcut. */
+    /* Sticky bar: the product page's rule exactly — shown once the real CTA
+       block has scrolled up past the top edge — and the same side effect:
+       html.buybar-shown, which styles.css uses to drop the floating
+       search/cart pill below the bar. Without it the bar slid in under the
+       pill instead of pushing it down. No observer, no bar: it ships hidden. */
     const block = root.querySelector("[data-offer-cta-block]");
-    if (sticky && block && "IntersectionObserver" in window) {
-      new IntersectionObserver((entries) => {
-        const off = !entries[0].isIntersecting;
-        sticky.classList.toggle("is-visible", off);
-        sticky.setAttribute("aria-hidden", off ? "false" : "true");
-        if (stickyAdd) stickyAdd.tabIndex = off ? 0 : -1;
-      }).observe(block);
+    if (sticky && block) {
+      let shown = null;
+      const sync = () => {
+        const past = block.getBoundingClientRect().bottom < 0;
+        if (past === shown) return;
+        shown = past;
+        sticky.classList.toggle("is-visible", past);
+        sticky.setAttribute("aria-hidden", past ? "false" : "true");
+        if (stickyAdd) stickyAdd.tabIndex = past ? 0 : -1;
+        document.documentElement.classList.toggle("buybar-shown", past);
+      };
+      /* Unlike the product page, this block STARTS below the fold, so a fling
+         or a jump straight past it goes from "not intersecting" to "not
+         intersecting" and the observer never reports. The passive scroll
+         check catches that case; the observer covers everything else. */
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(sync, { threshold: 0 }).observe(block);
+      }
+      window.addEventListener("scroll", sync, { passive: true });
+      sync();
     }
 
     paint();

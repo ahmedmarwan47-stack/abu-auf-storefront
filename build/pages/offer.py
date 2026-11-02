@@ -116,10 +116,11 @@ def builder_html(b):
                    smart-light builder's order, so the add button is always the
                    last thing in the builder. One text node per word, so the
                    exact-match dictionary translates each and the English reads
-                   "0 of 4 selected". -->
+                   "0 of 4 selected". The count is the same size and weight as the
+                   words around it (Ahmed, 2026-11-02). -->
               <div class="flex flex-col gap-3">
                 <div class="flex flex-wrap justify-between items-baseline gap-2">
-                  <p class="text-[#062A1C] text-base sm:text-lg"><strong data-offer-total class="font-bold text-2xl latin">0</strong> <span>من</span> <span class="latin">{size}</span> <span>تم اختيارها</span></p>
+                  <p class="font-semibold text-[#062A1C] text-base sm:text-lg"><span data-offer-total class="latin">0</span> <span>من</span> <span class="latin">{size}</span> <span>تم اختيارها</span></p>
                   <p data-offer-left data-done="false" class="offer-left text-base sm:text-lg">متبقي <span class="latin">{size}</span> للاختيار</p>
                 </div>
                 <div data-offer-bar role="progressbar" aria-label="تقدّم اختيار العرض" aria-valuemin="0" aria-valuemax="{size}" aria-valuenow="0"
