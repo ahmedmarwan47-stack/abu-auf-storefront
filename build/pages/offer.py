@@ -92,10 +92,6 @@ def builder_html(b):
         f'<span class="text-neutral-secondary text-xl line-through latin">EGP {money(b["compare_at"])}</span>'
         if b.get("compare_at") else ""
     )
-    save_chip = (
-        f'<span class="bg-primary px-2.5 py-1 rounded-full font-semibold text-white text-xs">وفّر <span class="latin">EGP {money(b["compare_at"] - b["price"])}</span></span>'
-        if b.get("compare_at") else ""
-    )
     cap_note = (
         f'<p class="text-neutral-secondary text-xs">حد أقصى <span class="latin">{b["max_each"]}</span> من كل نكهة.</p>'
         if b.get("max_each") else ""
@@ -109,7 +105,6 @@ def builder_html(b):
               <div class="flex flex-wrap items-center gap-3">
                 {old_price}
                 <span style="line-height:.6" class="bg-accent-yellow px-3 rounded font-bold text-[#062A1C] text-2xl latin">EGP {money(b["price"])}</span>
-                {save_chip}
               </div>
 
               <!-- Progress, then the cards, then "clear", then the CTA — the
