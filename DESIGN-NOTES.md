@@ -34,6 +34,45 @@ two unrelated categories. Needs: Arabic copy, and a landing the client
 chooses. The white headline sits over moving video on a dark scrim, so its
 contrast is not something the sweep can measure; it was checked by eye.
 
+### Mix-and-match offers ("كوّن عرضك") — what is real, what is in-house (2026-11-02)
+
+A fixed-price "pick any N" builder, after the smart-light bundle feature
+(`ahmedmarwan47-stack/smart-light`, `mirror/_bundle/bundle.js`) and the
+client's own offer pages (`abuauf.com/offers/<slug>`). One source:
+`build/bundles.py`. The page `offer-<slug>.html` is **the base SKU's product
+page** (`product._render(p, offer=b)`) with only the purchase controls swapped
+for the builder (`offer.py`), so it carries every section product-1571 does —
+rating, social proof, points, specs, delivery strip, accordion, FAQ, related
+list, reviews, recipes, rails, recently viewed, sticky bar (Ahmed: "follow the
+same content as product-1571, don't cut off content"). Cards via
+`bundle_card()` lead the shop grid and the home "العروض" rail; SKUs 1571 /
+1572 / 39400 / 62393 link to the builder under their buy button.
+
+**The one offer is the maamoul offer, and everything about it is real data:**
+4 boxes, EGP 250, regular EGP 325, the five flavours — all from those four
+SKUs in `catalog.json`; "12 قطعة" per box is printed on every box in the
+client's photographs; `max_each` = 2 because no real SKU carries more than two
+of a flavour. **Photos are real only** (Ahmed): the gallery is the four SKUs'
+own shots, and each flavour row's picture is that flavour's box cropped out of
+them (`images/abuauf/offers/maamoul-*.webp` — plain/cinnamon/chocolate/white
+chocolate from 330-thumb, strawberry from 349-thumb).
+
+In-house, pending sign-off: the offer's name ("عرض معمول - اختر 4 علب" /
+English), its second description sentence (the first is the client's own 1571
+copy; its fixed flavour list was dropped because the builder makes it untrue),
+and the builder UI strings.
+
+**Open for the client:** the builder sells mixes that are not one of the four
+SKUs (e.g. 2 strawberry + 2 white chocolate). Within the cap that is the point
+of the feature, but fulfilment has to be able to pick any combination.
+
+**Why not the Didos offer the brief cited:** abuauf.com and every image host
+were refused by the sandbox network policy, and no Didos photograph was
+reachable anywhere, so it could not meet "real pictures only". Ahmed confirmed
+it does not have to be Didos. Its known facts (five 16-piece flavours, EGP 330,
+"Please select all products") are enough to add it as a second entry in
+`BUNDLES` once a photo exists.
+
 ### Branch phone numbers and directions — `branches.html`
 
 The Figma (`426:33692`) shows a phone row and an `اتجاهات` link on every branch

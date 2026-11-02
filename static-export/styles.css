@@ -3310,3 +3310,48 @@ input:checked + .radio-card-accent {
     animation: none;
   }
 }
+
+/* ===================================================================
+   Mix-and-match offers ("كوّن عرضك") — build/pages/offer.py,
+   bundle_card() in components.py, initOffer() in scripts.js.
+   =================================================================== */
+
+/* A flavour with units in the mix is SELECTED, and selected is painted the
+   way CLAUDE.md rule 8 requires — a marker bar on the inline start, bolder
+   ink, a ring on the photo — never a background wash, which is what hover
+   uses elsewhere. The row has no hover state at all: its buttons carry it. */
+.offer-row[data-picked="true"]::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 3px;
+  border-radius: 3px;
+  background: #163300;
+}
+.offer-row[data-picked="true"] [data-offer-name] {
+  font-weight: 700;
+}
+.offer-thumb {
+  transition: box-shadow 0.2s var(--ease-out);
+}
+.offer-row[data-picked="true"] .offer-thumb {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #163300;
+}
+
+.offer-left {
+  color: #5f5f5f;
+}
+.offer-left[data-done="true"] {
+  color: #163300;
+}
+.offer-fill {
+  transition: width 0.35s var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .offer-fill,
+  .offer-thumb {
+    transition: none;
+  }
+}

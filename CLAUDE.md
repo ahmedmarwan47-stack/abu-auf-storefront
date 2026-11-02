@@ -105,6 +105,18 @@ host that declares `data-sizes` and has no `[data-size-chips]` inside it does
 not add — it routes. The product page passes that test because its chips
 repoint `data-id`/`data-price` at the chosen SKU. See DESIGN-NOTES §3.
 
+**Mix-and-match offers ("كوّن عرضك")** — `build/bundles.py` is the only
+place an offer is defined: one fixed `price` for `size` units spread across
+its flavours any way the shopper likes (the smart-light bundle mechanic). The
+offer page is **the base SKU's product page**, `product._render(p, offer=b)`,
+with only the purchase controls swapped for `offer.builder_html()` — never fork
+the layout, or the offer silently loses whatever the product page gains next.
+`bundle_card()` leads the shop grid and home offers rail and is **not** a
+`[data-product]` host. `initOffer()` repaints server-rendered rows (never
+innerHTML), keeps the draft under `abuauf:offer:<slug>`, and adds ONE cart line
+`offer:<slug>:<mix>` carrying `mix`/`offer`, printed by `offerMixHTML()`. Real
+photos only — DESIGN-NOTES §1.
+
 **Any seeded product must be keyed by its `catalog.json` id**, not its barcode.
 Both stores dedupe on id against the `data-id` on product cards; a barcode key
 silently creates a second line for a product already in the cart.
@@ -390,7 +402,7 @@ These have each cost real time. Read them.
 
 ```bash
 npm install                               # once; Tailwind CLI (v3) for the CSS build
-python3 build/build.py                    # 36 page(s) + 99 fanned-out, no missing assets,
+python3 build/build.py                    # 37 page(s) + 99 fanned-out, no missing assets,
                                           # and rebuilds static-export/tailwind.css
 node --check static-export/scripts.js
 grep -ril 'koueider\|kouider' static-export/   # must return nothing

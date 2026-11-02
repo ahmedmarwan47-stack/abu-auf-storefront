@@ -1,5 +1,7 @@
 """Home page — Figma node 4842:55826."""
 from catalog import e, home_categories, new_arrivals, rail_products, category
+from bundles import BUNDLES
+from components import bundle_card
 from components import (
     ICON, blog_card, button, carousel, category_tile, info_card, page,
     product_card, recipe_card, review_card, section_heading,
@@ -207,7 +209,8 @@ def build():
     )
     tab_panels = "".join(
         f'<div class="tab-panel" data-panel="{key}"{"" if i == 0 else " hidden"}>'
-        f'{carousel("".join(product_card(p) for p in rail_products(*cats)))}</div>'
+        # The offers rail opens on the mix-and-match offers (build/bundles.py).
+        f'{carousel(("".join(bundle_card(b) for b in BUNDLES) if key == "offers" else "") + "".join(product_card(p) for p in rail_products(*cats)))}</div>'
         for i, (key, _, cats) in enumerate(RAILS)
     )
 

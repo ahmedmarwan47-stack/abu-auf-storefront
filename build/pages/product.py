@@ -241,8 +241,15 @@ def _plain(text):
     return re.sub(r"\s+", " ", unescape(stripped)).strip()
 
 
-def _render(p):
-    hero = p["id"] == _hero()["id"]
+def _render(p, offer=None):
+    """`offer` — a mix-and-match offer from build/bundles.py. The page is then
+    this SKU's product page with ONLY the purchase controls swapped for the
+    builder (offer.py): same sections, same order, nothing cut. Name, photos,
+    description and price come from the offer; rank, points, reviews, related
+    list and rails from the base SKU `p`, which is the offer the client sells.
+    """
+    hero = p["id"] == _hero()["id"] and not offer
+    name = offer["name_ar"] if offer else title(p)
     on_sale = p.get("sale") and p["sale"] < p["regular"]
     old_price = (
         f'<span class="text-neutral-secondary text-xl line-through latin">EGP {money(p["regular"])}</span>'
@@ -254,7 +261,7 @@ def _render(p):
 
     # Description: the hero's curated paragraph, or the client's own Arabic
     # short_description. No fallback prose — absence is honest, filler is not.
-    desc = DESCRIPTION if hero else _plain(p.get("descAr"))
+    desc = DESCRIPTION if hero else (offer["desc_ar"] if offer else _plain(p.get("descAr")))
     desc_html = (
         f'<p class="text-neutral-800 text-base leading-8">{e(desc)}</p>' if desc else ""
     )
@@ -301,7 +308,7 @@ def _render(p):
     n_sizes = size_count(p)
     sizes_attr = f' data-sizes="{n_sizes}"' if n_sizes >= 2 else ""
 
-    gallery_images = [i for i in (p.get("images") or [p["image"]]) if i]
+    gallery_images = offer["images"] if offer else [i for i in (p.get("images") or [p["image"]]) if i]
     related_inset = " md:ms-[96px]" if len(gallery_images) > 1 else ""
     related_list = ""
     if similar:
@@ -337,69 +344,19 @@ def _render(p):
 
     # Breadcrumb category read off the product, not typed in — it said
     # "التمور والفواكه المجففة" on a coffee page until this was made dynamic.
-    body = f"""{page_header("", [("الرئيسية", "index.html"),
-                                 (p.get("categoryAr") or "المنتجات", "shop-category.html"),
-                                 (title(p), None)])}
-
-      <!-- ============================ PRODUCT ============================ -->
-      <section class="pt-6 pb-12">
-        <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 max-w-[1536px]">
-
-          <!-- Media column FIRST in the DOM, so it leads the reading order in
-               both directions: in RTL (the default) first means the RIGHT
-               column, in LTR the left one. It holds the gallery AND (at lg
-               only) the related list, and the WHOLE column is the sticky one
-               — `items-start` on the grid is load-bearing, it is what lets a
-               grid child be shorter than its row so sticky has room to move.
-               Sticky scoped to lg; below it the columns stack and there is
-               nothing to scroll past. Works only because <main> is
-               overflow-x-clip (see page()).
-
-               On mobile the related list is NOT rendered here — Ahmed
-               reversed the earlier call (2026-07-29): it must sit BELOW the
-               product-details card, not between the gallery and the details.
-               `hidden lg:block` keeps it out of the mobile flow entirely; a
-               second copy after the details column (`lg:hidden` below) is the
-               one mobile actually sees. Duplicating the markup rather than
-               reordering with grid-template-areas avoids reworking the sticky
-               column's row/track sizing, which is tuned exactly for this
-               2-column shape. -->
-          <div class="flex flex-col gap-6 min-w-0 lg:self-start lg:sticky lg:top-[60px]">
-          {product_gallery(p.get("images") or [p["image"]], title(p), p)}
-          <div class="hidden lg:block">{related_list}</div>
-          </div>
-
-          <!-- Details second: the RTL-left / LTR-right column. data-product
-               lets the cart store read this product straight off the DOM, same
-               as a product card. -->
-          <!-- The white card is desktop-only (Ahmed, 2026-08-02): on mobile the
-               info column drops its container so the content sits inline with
-               the page grid, like the gallery beside it. lg+ keeps the card. -->
-          <div class="flex flex-col gap-5 lg:bg-white lg:shadow-custom4 lg:p-6 xl:p-8 lg:rounded-[20px]"
-               data-product data-record-view{sizes_attr} data-id="{p.get('id', 0)}" data-name="{e(title(p))}"
-               data-price="{p.get('sale') or p.get('price') or 0}" data-image="{e(p['image'])}">
-            <div class="flex flex-col gap-3">
-              {best_seller_badge(p)}
-              <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">{e(title(p))}</h1>
-              <!-- Pack size immediately under the title (Ahmed, 2026-09-13):
-                   "80 جم", "12 قطعة". Read off the client's own name, the only
-                   place the figure exists — see catalog.pack_label(). Renders
-                   nothing for a gift box or a multi-item offer, which have no
-                   single pack size to state. -->
-{pack_tag(p)}
-              <!-- Points callout sits with the rating + social-proof line, right
-                   beside the red "best seller" proof text (Ahmed, 2026-08-04) —
-                   not up by the yellow best-seller badge. Wraps on a narrow
-                   column instead of colliding. -->
-              <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-                {rating(REVIEW_SCORE, REVIEW_COUNT, sync=True)}
-                {sold_proof(p)}
-                {points_callout(p)}
-              </div>
-            </div>
-            {desc_html}
-
-            {size_chips(p)}
+    # Purchase controls: the product's own (size chips, price, cart-bound
+    # stepper, buy now) or, for an offer, the builder. Everything else on the
+    # page is shared, so an offer can never lose a section a product has.
+    if offer:
+        from offer import builder_html, pack_html, sticky_html as offer_sticky
+        purchase_html = builder_html(offer)
+        offer_pack = pack_html(offer)
+        sticky_html = offer_sticky(offer)
+        # Not a [data-product] host: the cart, favourites and sticky-buy-bar
+        # handlers must not treat the offer as the base SKU.
+        host_attrs = f' data-offer-page="{e(offer["slug"])}"'
+    else:
+        purchase_html = f"""            {size_chips(p)}
 
             <!-- The yellow is a marker BAND shorter than the digits, not a tall
                  pill around them (Ahmed, 2026-08-02): the inline line-height
@@ -438,6 +395,123 @@ def _render(p):
                 اشتري الان
               </button>
             </div>
+
+"""
+        offer_pack = ""
+        sticky_html = f"""      <!-- ========================= STICKY BUY BAR =========================
+           A re-CTA that appears once the real buy block scrolls above the
+           viewport: fixed to the BOTTOM on mobile, and under the sticky nav at
+           the TOP on desktop (lg). It owns no state — its −/＋ and CTA forward
+           to the real cart-bound stepper and buy button, and its title/price/
+           quantity mirror them, so there is one writer of the cart. Enter/exit
+           and the hidden rest state live in styles.css (.sticky-buybar); JS
+           only toggles .is-visible. -->
+      <div data-sticky-buybar aria-hidden="true"
+           class="sticky-buybar fixed inset-x-0 bottom-0 lg:bottom-auto lg:top-12 z-30
+                  bg-white border-neutral-divider border-t lg:border-t-0 lg:border-b">
+        <div class="flex items-center gap-3 lg:gap-6 mx-auto px-4 max-w-[1536px] py-3">
+          <img src="{e(p['image'])}" alt=""
+               class="hidden sm:block bg-interaction-base p-1 rounded-xl w-12 xl:w-14 h-12 xl:h-14 object-contain shrink-0" />
+          <div class="flex flex-col flex-1 min-w-0">
+            <p class="font-bold text-[#062A1C] text-sm xl:text-base truncate">{e(name)}</p>
+            <span data-sticky-price class="font-bold text-primary text-sm xl:text-base latin">EGP {money(p['price'])}</span>
+          </div>
+          <!-- Quantity mirror — buttons forward to the real cart-bound stepper.
+               dir="ltr" so the + always sits on the RIGHT (Ahmed, 2026-07-29):
+               in the page's RTL flow the − would otherwise take the right slot.
+               The digit is latin already, so forcing LTR here changes nothing
+               but the button order. -->
+          <div dir="ltr" class="inline-flex items-center gap-1 bg-white p-1 border border-neutral-divider rounded-full shrink-0">
+            <button type="button" data-sticky-step="-1" aria-label="إنقاص"
+                    class="place-items-center grid border border-neutral-divider hover:bg-interaction-base rounded-full size-9 text-[#062A1C] transition-colors"><span class="w-4 h-4">{ICON['minus']}</span></button>
+            <span data-sticky-qty class="min-w-[2ch] font-bold text-[#062A1C] text-sm text-center latin">1</span>
+            <button type="button" data-sticky-step="1" aria-label="زيادة"
+                    class="place-items-center grid bg-cta hover:bg-cta-hover rounded-full size-9 text-white transition-colors"><span class="w-4 h-4">{ICON['plus']}</span></button>
+          </div>
+          <!-- Buy now — forwards to the real buy CTA, which opens the side cart
+               after the quantity is set (Ahmed, 2026-07-29). This mirrors the
+               main block's own button; it is deliberately NOT a plain add. -->
+          <button type="button" data-sticky-buy
+                  class="bg-cta hover:bg-cta-hover px-5 xl:px-8 py-2.5 rounded-full font-semibold text-white text-sm whitespace-nowrap transition-colors shrink-0">اشتري الان</button>
+        </div>
+      </div>"""
+        _pid = p.get("id", 0)
+        _price = p.get("sale") or p.get("price") or 0
+        host_attrs = (f'\n               data-product data-record-view{sizes_attr} data-id="{_pid}" data-name="{e(name)}"'
+                      f'\n               data-price="{_price}" data-image="{e(p["image"])}"')
+    # The fixed SKUs an offer generalises point at it — the same four boxes,
+    # any flavours.
+    from bundles import offer_for_source, offer_slug
+    src_offer = None if offer else offer_for_source(p.get("id"))
+    offer_link = (f"""
+            <a href="{offer_slug(src_offer)}" class="tile-lift flex items-center gap-3 bg-interaction-base px-4 py-3 rounded-xl">
+              <span class="bg-accent-yellow px-2.5 py-1 rounded-full font-bold text-[#062A1C] text-xs shrink-0">كوّن عرضك</span>
+              <span class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm">{e(src_offer["tagline_ar"])}</span>
+              <span class="w-4 h-4 text-cta shrink-0 rtl:scale-flip">{ICON['arrow']}</span>
+            </a>""" if src_offer else "")
+
+    body = f"""{page_header("", [("الرئيسية", "index.html"),
+                                 (p.get("categoryAr") or "المنتجات", "shop-category.html"),
+                                 (name, None)])}
+
+      <!-- ============================ PRODUCT ============================ -->
+      <section class="pt-6 pb-12">
+        <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 max-w-[1536px]">
+
+          <!-- Media column FIRST in the DOM, so it leads the reading order in
+               both directions: in RTL (the default) first means the RIGHT
+               column, in LTR the left one. It holds the gallery AND (at lg
+               only) the related list, and the WHOLE column is the sticky one
+               — `items-start` on the grid is load-bearing, it is what lets a
+               grid child be shorter than its row so sticky has room to move.
+               Sticky scoped to lg; below it the columns stack and there is
+               nothing to scroll past. Works only because <main> is
+               overflow-x-clip (see page()).
+
+               On mobile the related list is NOT rendered here — Ahmed
+               reversed the earlier call (2026-07-29): it must sit BELOW the
+               product-details card, not between the gallery and the details.
+               `hidden lg:block` keeps it out of the mobile flow entirely; a
+               second copy after the details column (`lg:hidden` below) is the
+               one mobile actually sees. Duplicating the markup rather than
+               reordering with grid-template-areas avoids reworking the sticky
+               column's row/track sizing, which is tuned exactly for this
+               2-column shape. -->
+          <div class="flex flex-col gap-6 min-w-0 lg:self-start lg:sticky lg:top-[60px]">
+          {product_gallery(gallery_images, name, None if offer else p)}
+          <div class="hidden lg:block">{related_list}</div>
+          </div>
+
+          <!-- Details second: the RTL-left / LTR-right column. data-product
+               lets the cart store read this product straight off the DOM, same
+               as a product card. -->
+          <!-- The white card is desktop-only (Ahmed, 2026-08-02): on mobile the
+               info column drops its container so the content sits inline with
+               the page grid, like the gallery beside it. lg+ keeps the card. -->
+          <div class="flex flex-col gap-5 lg:bg-white lg:shadow-custom4 lg:p-6 xl:p-8 lg:rounded-[20px] min-w-0"{host_attrs}>
+            <div class="flex flex-col gap-3">
+              {best_seller_badge(p)}
+              <h1 class="font-bold text-[#062A1C] text-2xl xl:text-4xl leading-tight">{e(name)}</h1>
+              <!-- Pack size immediately under the title (Ahmed, 2026-09-13):
+                   "80 جم", "12 قطعة". Read off the client's own name, the only
+                   place the figure exists — see catalog.pack_label(). Renders
+                   nothing for a gift box or a multi-item offer, which have no
+                   single pack size to state. -->
+{offer_pack if offer else pack_tag(p)}
+              <!-- Points callout sits with the rating + social-proof line, right
+                   beside the red "best seller" proof text (Ahmed, 2026-08-04) —
+                   not up by the yellow best-seller badge. Wraps on a narrow
+                   column instead of colliding. -->
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+                {rating(REVIEW_SCORE, REVIEW_COUNT, sync=True)}
+                {sold_proof(p)}
+                {points_callout(p)}
+              </div>
+            </div>
+            {desc_html}
+
+{purchase_html}
+{offer_link}
 
             <!-- Divider between the CTA and the product specs below it. It is a
                  plain flex child, so it sits inside the card's own p-6/xl:p-8
@@ -509,49 +583,13 @@ def _render(p):
         </div>
       </section>
 
-      <!-- ========================= STICKY BUY BAR =========================
-           A re-CTA that appears once the real buy block scrolls above the
-           viewport: fixed to the BOTTOM on mobile, and under the sticky nav at
-           the TOP on desktop (lg). It owns no state — its −/＋ and CTA forward
-           to the real cart-bound stepper and buy button, and its title/price/
-           quantity mirror them, so there is one writer of the cart. Enter/exit
-           and the hidden rest state live in styles.css (.sticky-buybar); JS
-           only toggles .is-visible. -->
-      <div data-sticky-buybar aria-hidden="true"
-           class="sticky-buybar fixed inset-x-0 bottom-0 lg:bottom-auto lg:top-12 z-30
-                  bg-white border-neutral-divider border-t lg:border-t-0 lg:border-b">
-        <div class="flex items-center gap-3 lg:gap-6 mx-auto px-4 max-w-[1536px] py-3">
-          <img src="{e(p['image'])}" alt=""
-               class="hidden sm:block bg-interaction-base p-1 rounded-xl w-12 xl:w-14 h-12 xl:h-14 object-contain shrink-0" />
-          <div class="flex flex-col flex-1 min-w-0">
-            <p class="font-bold text-[#062A1C] text-sm xl:text-base truncate">{e(title(p))}</p>
-            <span data-sticky-price class="font-bold text-primary text-sm xl:text-base latin">EGP {money(p['price'])}</span>
-          </div>
-          <!-- Quantity mirror — buttons forward to the real cart-bound stepper.
-               dir="ltr" so the + always sits on the RIGHT (Ahmed, 2026-07-29):
-               in the page's RTL flow the − would otherwise take the right slot.
-               The digit is latin already, so forcing LTR here changes nothing
-               but the button order. -->
-          <div dir="ltr" class="inline-flex items-center gap-1 bg-white p-1 border border-neutral-divider rounded-full shrink-0">
-            <button type="button" data-sticky-step="-1" aria-label="إنقاص"
-                    class="place-items-center grid border border-neutral-divider hover:bg-interaction-base rounded-full size-9 text-[#062A1C] transition-colors"><span class="w-4 h-4">{ICON['minus']}</span></button>
-            <span data-sticky-qty class="min-w-[2ch] font-bold text-[#062A1C] text-sm text-center latin">1</span>
-            <button type="button" data-sticky-step="1" aria-label="زيادة"
-                    class="place-items-center grid bg-cta hover:bg-cta-hover rounded-full size-9 text-white transition-colors"><span class="w-4 h-4">{ICON['plus']}</span></button>
-          </div>
-          <!-- Buy now — forwards to the real buy CTA, which opens the side cart
-               after the quantity is set (Ahmed, 2026-07-29). This mirrors the
-               main block's own button; it is deliberately NOT a plain add. -->
-          <button type="button" data-sticky-buy
-                  class="bg-cta hover:bg-cta-hover px-5 xl:px-8 py-2.5 rounded-full font-semibold text-white text-sm whitespace-nowrap transition-colors shrink-0">اشتري الان</button>
-        </div>
-      </div>"""
+{sticky_html}"""
 
     return page(
-        f"{title(p)} | أبو عوف",
-        f"اشتري {title(p)} من أبو عوف أونلاين — جودة عالية وتوصيل سريع لكل مصر.",
-        body, "product",
-        f"/products/{p['slug']}" if p.get("slug") else "/product",
+        f"{name} | أبو عوف",
+        f"اشتري {name} من أبو عوف أونلاين — جودة عالية وتوصيل سريع لكل مصر.",
+        body, "offer" if offer else "product",
+        f"/offers/{offer['slug']}" if offer else (f"/products/{p['slug']}" if p.get("slug") else "/product"),
     )
 
 

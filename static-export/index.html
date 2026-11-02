@@ -25,8 +25,8 @@
          styles.css contains rules whose whole purpose is to beat a utility
          ([hidden] !important, the focus ring re-armed over `outline-none`,
          the sticky-nav selector). Reverse these two and they stop working. -->
-    <link rel="stylesheet" href="tailwind.css?v=dcf7c819a3" />
-    <link rel="stylesheet" href="styles.css?v=c4f65b0043" />
+    <link rel="stylesheet" href="tailwind.css?v=c936e76f6f" />
+    <link rel="stylesheet" href="styles.css?v=7c098e1044" />
     <!-- The client's 3D leaf mark as the tab icon (Ahmed, 2026-08-05) — the
          same spec-leaf.png the mega-panel bullets and product benefits use, so
          the favicon is a recognisable brand glyph rather than the white
@@ -37,8 +37,8 @@
          always defined window.ABUAUF_I18N by the time scripts.js boots and
          merges it. A plain script rather than a fetch, so the language switch
          still works from file://. -->
-    <script defer src="i18n-en.js?v=6f95ae1208"></script>
-    <script defer src="scripts.js?v=40031f0b27"></script>
+    <script defer src="i18n-en.js?v=d2886cd334"></script>
+    <script defer src="scripts.js?v=88cbdde51c"></script>
   </head>
   <body data-page="home" data-path="/" class="antialiased bg-white">
     <!-- First focusable thing on the page. The header is three bands and a
@@ -1839,6 +1839,35 @@
           </div></div><div class="tab-panel" data-panel="offers" hidden>
           <div class="relative carousel " style="--carousel-gap:24px">
             <div class="carousel-track">
+          <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-offer-card data-cat="offers-promotions"
+                   data-price="250" data-id="900001" data-name="عرض معمول - اختر 4 علب"
+                   data-name-en="Maamoul offer - pick any 4 boxes">
+            <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="offer-maamoul-offer-any-4-boxes.html" class="product-card__media block relative bg-interaction-base p-4">
+                <!-- The count is the offer: "pick 5" is what makes this card
+                     different from its neighbours, so it rides on the plate
+                     where the points chip sits on a product card. -->
+                <span class="top-3 start-3 z-[1] absolute bg-accent-yellow px-2.5 py-1 rounded-full font-bold text-[#062A1C] text-xs">اختر <span class="latin">4</span> علب</span>
+                <img src="images/abuauf/products/330-thumb.webp" alt="عرض معمول - اختر 4 علب"
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+              </a>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="offer-maamoul-offer-any-4-boxes.html" class="hover:text-primary transition-colors">عرض معمول - اختر 4 علب</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    <span class="text-neutral-secondary text-sm line-through latin">EGP 325</span>
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP 250</span>
+                  </div>
+                </div>
+                <div class="mt-auto pt-1">
+                  <a href="offer-maamoul-offer-any-4-boxes.html" data-offer-build
+                     class="btn-elevate block bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm text-center">كوّن عرضك</a>
+                </div>
+              </div>
+            </div>
+          </article>
           <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="offers-promotions" data-price="250.0" data-id="1571" data-name="عرض معمول (1سادة + 1 قرفه + 1 شيكولاتة و 1 معمول بالشيكولاتة البيضاء )" data-name-en="Maamoul offer (1 Plain + 1 Cinnamon + 1 Chocolate + 1 White chocolate)" data-image="images/abuauf/products/330-thumb.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1571.html" class="product-card__media block relative bg-interaction-base p-4">

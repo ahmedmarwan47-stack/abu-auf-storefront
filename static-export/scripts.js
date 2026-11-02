@@ -286,6 +286,8 @@
       return CATEGORY_PAGE[cat] || "shop.html#" + cat;
     }
     if (clean.startsWith("/products/")) return "product.html";
+    // Mix-and-match offers: one page per offer, built from build/bundles.py.
+    if (clean.startsWith("/offers/")) return "offer-" + clean.split("/")[2] + ".html";
     if (clean.startsWith("/blogs/")) return "blog.html";
     // One recipe page exists, so every recipe route opens it (DESIGN-NOTES §1).
     if (clean.startsWith("/recipes/")) return "recipe.html";
@@ -4140,7 +4142,18 @@
         qty = Math.max(1, parseInt(qty, 10) || 1);
         const existing = items.find((it) => String(it.id) === String(product.id));
         if (existing) existing.qty += qty;
-        else items.push({ id: product.id, name: product.name, price: Number(product.price), image: product.image, qty: qty });
+        else {
+          const line = { id: product.id, name: product.name, price: Number(product.price), image: product.image, qty: qty };
+          /* A mix-and-match offer (initOffer) is ONE line at ONE fixed price;
+             what the shopper chose rides along as `mix` so the drawer, the cart
+             page and checkout can say what is in it. The mix is part of the
+             line's id, so two different mixes are two lines. */
+          if (product.offer) {
+            line.offer = product.offer;
+            line.mix = (product.mix || []).map((m) => ({ name: m.name, qty: m.qty }));
+          }
+          items.push(line);
+        }
         emit("add", product);
         return this;
       },
@@ -5103,6 +5116,24 @@
     );
   }
 
+  /* The contents of an offer line — "سادة ×2 · فراولة ×2". Each entry is
+     its own nowrap run so a long mix wraps between flavours, never inside one,
+     and the count sits in its own LTR span (the bidi note in CLAUDE.md). */
+  function offerMixHTML(it) {
+    if (!it.mix || !it.mix.length) return "";
+    return (
+      '<p class="flex flex-wrap gap-x-2 gap-y-0.5 text-neutral-secondary text-xs leading-5" data-line-mix>' +
+      it.mix
+        .map(
+          (m) =>
+            '<span class="whitespace-nowrap">' + esc(t(m.name)) +
+            ' <span class="latin" dir="ltr">×' + esc(String(m.qty)) + "</span></span>",
+        )
+        .join("") +
+      "</p>"
+    );
+  }
+
   function cartLineHTML(it) {
     /* On checkout/payment the order is LOCKED (Ahmed, 2026-08-02): no stepper,
        no remove, and a COMPACT row. The shopper has already decided what they
@@ -5117,6 +5148,7 @@
         <img src="${esc(it.image)}" alt="${esc(it.name)}" class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
         <div class="flex flex-col flex-1 min-w-0">
           <p class="font-semibold text-[#062A1C] text-sm line-clamp-1">${esc(it.name)}</p>
+          ${offerMixHTML(it)}
           <p class="text-neutral-secondary text-xs">${esc(t("العدد"))}: <span class="latin" data-line-qty>${it.qty}</span></p>
         </div>
         <span data-line-total class="font-bold text-[#062A1C] text-sm latin shrink-0">${egp(it.price * it.qty)}</span>
@@ -5145,6 +5177,7 @@
             <p class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm line-clamp-2">${esc(it.name)}</p>
             <span data-line-total class="bg-accent-yellow shrink-0 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">${egp(it.price * it.qty)}</span>
           </div>
+          ${offerMixHTML(it)}
           <p class="mt-1 text-neutral-secondary text-xs">العدد: <span class="latin" data-line-qty>${it.qty}</span></p>
           <!-- gap-1 until sm: at 320 the stepper (122) + حذف (24) + gap (8)
                came to 154 inside a 141px column, overflowing the row by 13px.
@@ -8642,6 +8675,173 @@
   };
 
   /* ---------------------------------------------------------------
+     Mix-and-match offer builder ("كوّن عرضك")
+
+     The smart-light bundle mechanic on this storefront: ONE fixed price for
+     `size` units spread across an offer's flavours however the shopper likes.
+     Data comes from build/bundles.py via the JSON in [data-offer-config]; the
+     rows are server-rendered and this only repaints numbers and disabled
+     states, so focus stays on the button that was pressed.
+
+     One rule drives every control: when the mix is full, every + is disabled
+     (and so is a + whose flavour has reached maxEach). The add button is live
+     only at exactly `size`.
+
+     The draft mix persists under abuauf:offer:<slug>, so a reload or a trip
+     to the cart does not lose a half-built offer. Adding it puts ONE line in
+     the cart store — id "offer:<slug>:<mix>", the offer's fixed price, the
+     mix riding along — so re-adding the same mix bumps that line's quantity
+     and a different mix is a second line, exactly like the cart treats SKUs.
+     --------------------------------------------------------------- */
+  function initOffer() {
+    const root = document.querySelector("[data-offer]");
+    if (!root) return;
+    let cfg;
+    try {
+      cfg = JSON.parse(root.querySelector("[data-offer-config]").textContent);
+    } catch (e) {
+      return;
+    }
+    const KEY = "abuauf:offer:" + cfg.slug;
+    const valid = new Set(cfg.items.map((it) => it.key));
+    let mix = {};
+    try {
+      const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+      Object.keys(saved || {}).forEach((k) => {
+        const n = parseInt(saved[k], 10) || 0;
+        if (valid.has(k) && n > 0) mix[k] = n;
+      });
+    } catch (e) {
+      mix = {};
+    }
+
+    const total = () => Object.keys(mix).reduce((a, k) => a + mix[k], 0);
+    // A stale draft from before the offer was resized cannot exceed it.
+    while (total() > cfg.size) {
+      const k = Object.keys(mix).pop();
+      mix[k] -= 1;
+      if (!mix[k]) delete mix[k];
+    }
+    const cap = (k) => (cfg.maxEach ? mix[k] >= cfg.maxEach : false);
+
+    const rows = [...root.querySelectorAll("[data-offer-row]")];
+    const totals = [...document.querySelectorAll("[data-offer-total]")];
+    const left = root.querySelector("[data-offer-left]");
+    const fill = root.querySelector("[data-offer-fill]");
+    const bar = root.querySelector("[data-offer-bar]");
+    const add = root.querySelector("[data-offer-add]");
+    const label = root.querySelector("[data-offer-label]");
+    const clear = root.querySelector("[data-offer-clear]");
+    const sticky = document.querySelector("[data-offer-sticky]");
+    const stickyAdd = sticky && sticky.querySelector("[data-offer-sticky-add]");
+
+    function save() {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(mix));
+      } catch (e) {
+        /* private mode — the draft lives for this page view */
+      }
+    }
+
+    function paint() {
+      const n = total();
+      const done = n === cfg.size;
+      const rest = cfg.size - n;
+      totals.forEach((el) => (el.textContent = n));
+      fill.style.width = (n / cfg.size) * 100 + "%";
+      bar.setAttribute("aria-valuenow", String(n));
+      left.dataset.done = String(done);
+      left.innerHTML = done
+        ? esc(t("اكتمل العرض")) + " ✓"
+        : esc(t("متبقي")) + ' <span class="latin">' + rest + "</span>";
+      rows.forEach((row) => {
+        const k = row.dataset.key;
+        const q = mix[k] || 0;
+        row.dataset.picked = String(q > 0);
+        row.querySelector("[data-offer-qty]").textContent = q;
+        row.querySelector('[data-offer-step="-1"]').disabled = q === 0;
+        row.querySelector('[data-offer-step="1"]').disabled = done || cap(k);
+      });
+      clear.hidden = n === 0;
+      add.disabled = !done;
+      if (stickyAdd) stickyAdd.disabled = !done;
+      label.innerHTML = done
+        ? esc(t("أضف العرض للسلة")) + ' — <span class="latin">' + egp(cfg.price) + "</span>"
+        : esc(t("اختر")) + ' <span class="latin">' + rest + "</span> " +
+          esc(t(rest >= 3 && rest <= 10 ? cfg.units : cfg.unit)) + " " + esc(t("للمتابعة"));
+    }
+
+    root.addEventListener("click", (e) => {
+      const step = e.target.closest("[data-offer-step]");
+      if (step && !step.disabled) {
+        const k = step.closest("[data-offer-row]").dataset.key;
+        if (step.dataset.offerStep === "1") {
+          if (total() < cfg.size && !cap(k)) mix[k] = (mix[k] || 0) + 1;
+        } else if (mix[k]) {
+          mix[k] -= 1;
+          if (!mix[k]) delete mix[k];
+        }
+        save();
+        paint();
+        /* The press that completes the offer disables the very + that made
+           it, which would drop focus to <body>. Hand it to the add button —
+           the next thing to do — instead. */
+        if (step.disabled && document.activeElement === step) {
+          (add.disabled ? step.closest("[data-offer-row]").querySelector('[data-offer-step="-1"]') : add).focus();
+        }
+        return;
+      }
+      if (e.target.closest("[data-offer-clear]")) {
+        mix = {};
+        save();
+        paint();
+        const first = root.querySelector('[data-offer-step="1"]');
+        if (first) first.focus();
+        return;
+      }
+      if (e.target.closest("[data-offer-add]")) addToCart();
+    });
+
+    function addToCart() {
+      if (total() !== cfg.size) return;
+      const picked = cfg.items.filter((it) => mix[it.key]);
+      const product = {
+        id: cfg.id + ":" + picked.map((it) => it.key + "-" + mix[it.key]).join("."),
+        name: cfg.name,
+        price: cfg.price,
+        image: cfg.image,
+        offer: cfg.slug,
+        mix: picked.map((it) => ({ name: it.short, qty: mix[it.key] })),
+      };
+      throwToCart(document.querySelector("[data-gallery-main]") || root.querySelector("img"), {
+        card: true,
+        tag: "+1",
+        onLand: () => openOverlay("cart"),
+      });
+      Cart.add(product, 1);
+      toast(t("تمت إضافة العرض إلى السلة"), "cart");
+    }
+
+    if (stickyAdd) stickyAdd.addEventListener("click", () => add.click());
+
+    /* Sticky bar: shown while the real CTA block is off-screen in EITHER
+       direction — on a phone the flavour rows push it below the fold, which
+       is exactly when a shortcut to it helps. No observer, no bar: it ships
+       hidden, so the worst case is the page without the shortcut. */
+    const block = root.querySelector("[data-offer-cta-block]");
+    if (sticky && block && "IntersectionObserver" in window) {
+      new IntersectionObserver((entries) => {
+        const off = !entries[0].isIntersecting;
+        sticky.classList.toggle("is-visible", off);
+        sticky.setAttribute("aria-hidden", off ? "false" : "true");
+        if (stickyAdd) stickyAdd.tabIndex = off ? 0 : -1;
+      }).observe(block);
+    }
+
+    paint();
+  }
+
+  /* ---------------------------------------------------------------
      Boot
      --------------------------------------------------------------- */
   function boot() {
@@ -8689,6 +8889,8 @@
     // Once per page, after the buy block and its host are in the DOM. Guards
     // itself off [data-sticky-buybar], so it is a no-op everywhere but product.
     initStickyBuyBar();
+    // Mix-and-match offer builder; a no-op on every page without [data-offer].
+    initOffer();
   }
 
   if (document.readyState === "loading") {

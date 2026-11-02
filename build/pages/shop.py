@@ -1,6 +1,8 @@
 """Shop — all products. Figma 'Collection' (173:17211)."""
 from _listing import listing
+from bundles import BUNDLES
 from catalog import PRODUCTS, nav_categories
+from components import bundle_card
 
 SLUG = "shop.html"
 
@@ -24,4 +26,8 @@ def build():
         page_id="shop",
         path="/shop",
         active_chip="كل المنتجات",
+        # The mix-and-match offers lead the grid, as the smart-light bundles
+        # lead their carousel; they carry data-cat="offers-promotions", so the
+        # العروض chip (and the nav's /shop/offers-promotions route) finds them.
+        lead=("".join(bundle_card(b, slide=False) for b in BUNDLES), len(BUNDLES)),
     )

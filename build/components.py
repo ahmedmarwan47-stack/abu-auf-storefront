@@ -372,7 +372,7 @@ def page_header(heading, trail=None):
 
 
 def product_grid(products, cols="grid-cols-2 md:grid-cols-3 xl:grid-cols-4", attrs="",
-                 cat_of=None):
+                 cat_of=None, lead=""):
     """`attrs` lets a caller tag the grid (e.g. the favourites page marks its
     own with data-favs-grid) without duplicating the card markup.
 
@@ -384,7 +384,10 @@ def product_grid(products, cols="grid-cols-2 md:grid-cols-3 xl:grid-cols-4", att
         for p in products
     )
     extra = (" " + attrs) if attrs else ""
-    return f'<div data-product-grid{extra} class="gap-4 xl:gap-6 grid {cols}">{cards}\n          </div>'
+    # `lead` — pre-rendered cards placed before the products (the offer cards
+    # from bundles.py on the shop grid). They are plain grid children, so the
+    # listing's filter and sort handle them like any other card.
+    return f'<div data-product-grid{extra} class="gap-4 xl:gap-6 grid {cols}">{lead}{cards}\n          </div>'
 
 
 def rating(score="4.8", count=None, size="sm", sync=False, show_score=True):
@@ -2085,6 +2088,60 @@ def product_card(p, slide=True, cat=None):
                     <button type="button" data-card-step="1" aria-label="زيادة"
                             class="place-items-center grid rounded-full size-11 min-w-9"><span class="stepper-face place-items-center grid rounded-full size-9"><span class="w-4 h-4">{ICON['plus']}</span></span></button>
                   </div>
+                </div>
+              </div>
+            </div>
+          </article>"""
+
+
+def bundle_card(b, slide=True):
+    """
+    The card for a mix-and-match offer (build/bundles.py). Built on the SAME
+    shell as product_card — frame, media plate, name/price row, one full-width
+    CTA in the same 44px box — so in a rail or the shop grid it reads as one
+    more product, which is the whole point of the mechanic: one card, one
+    fixed price.
+
+    Deliberately NOT a [data-product] host. An offer cannot be added from its
+    card any more than a multi-size product can — there is a choice to make
+    first — so the CTA is a link to the builder, in the same position and box
+    as the "اختر الحجم" link. Without data-product the cart, favourites and
+    card-stepper handlers never see it.
+
+    It carries the listing keys (data-cat / data-price / data-id) so the shop
+    chips and the sort treat it like any other card.
+    """
+    from bundles import offer_slug
+    href = offer_slug(b)
+    wrapper = ("carousel-slide w-[260px] xl:w-[300px] shrink-0" if slide else "w-full")
+    old = (f'<span class="text-neutral-secondary text-sm line-through latin">EGP {money(b["compare_at"])}</span>'
+           if b.get("compare_at") else "")
+    return f"""
+          <article class="product-card {wrapper}" data-offer-card data-cat="offers-promotions"
+                   data-price="{b['price']}" data-id="{b['num_id']}" data-name="{e(b['name_ar'])}"
+                   data-name-en="{e(b['name_en'])}">
+            <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
+              <a href="{href}" class="product-card__media block relative bg-interaction-base p-4">
+                <!-- The count is the offer: "pick 5" is what makes this card
+                     different from its neighbours, so it rides on the plate
+                     where the points chip sits on a product card. -->
+                <span class="top-3 start-3 z-[1] absolute bg-accent-yellow px-2.5 py-1 rounded-full font-bold text-[#062A1C] text-xs">اختر <span class="latin">{b['size']}</span> {e(b['unit_plural_ar'])}</span>
+                <img src="{e(b['images'][0])}" alt="{e(b['name_ar'])}"
+                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+              </a>
+              <div class="flex flex-col flex-1 gap-2 p-4">
+                <div class="flex items-start gap-2">
+                  <h3 class="flex-1 min-w-0 font-semibold text-[#062A1C] text-sm xl:text-base leading-5 line-clamp-2">
+                    <a href="{href}" class="hover:text-primary transition-colors">{e(b['name_ar'])}</a>
+                  </h3>
+                  <div class="flex flex-col items-end gap-0.5 shrink-0">
+                    {old}
+                    <span style="line-height:.62" class="bg-accent-yellow px-2 rounded font-bold text-[#062A1C] text-sm latin">EGP {money(b['price'])}</span>
+                  </div>
+                </div>
+                <div class="mt-auto pt-1">
+                  <a href="{href}" data-offer-build
+                     class="btn-elevate block bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm text-center">كوّن عرضك</a>
                 </div>
               </div>
             </div>

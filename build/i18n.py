@@ -115,6 +115,23 @@ UI = {
     "وصفات بالمنتج": "Recipes with this product",
     "منتجات مشابهة": "Similar products",
     "اختر الحجم": "Choose a size",
+    # mix-and-match offers (build/bundles.py, offer.py, initOffer)
+    "كوّن عرضك": "Build your offer",
+    "اختر النكهات": "Choose flavours",
+    "مسح الاختيار": "Clear selection",
+    "اكتمل العرض": "Offer complete",
+    "متبقي": "Left",
+    "اختر": "Pick",
+    "للمتابعة": "to continue",
+    "أضف العرض للسلة": "Add offer to cart",
+    "أضف للسلة": "Add to cart",
+    "تمت إضافة العرض إلى السلة": "Offer added to cart",
+    "السعر ثابت مهما اختلف توزيع النكهات.": "The price stays the same whatever the mix.",
+    "تقدّم اختيار العرض": "Offer progress",
+    "اخترت": "Picked", "من": "of", "12 قطعة": "12 pieces",
+    "علبة": "box", "علب": "boxes",
+    "شيكولاتة بيضاء": "White chocolate", "سادة": "Plain", "قرفة": "Cinnamon",
+    "شيكولاتة": "Chocolate", "فراولة": "Strawberry",
     "الفوائد": "Benefits",
     "الفوائد:": "Benefits:",
     "الوصف:": "Description:",
@@ -1764,6 +1781,18 @@ def _generated():
     for ar, en in NAV_CATEGORIES.items():
         out["تسوق كل " + ar] = "Shop all " + en
         out["جميع " + ar] = "All " + en
+
+    # Mix-and-match offers: names and copy from bundles.py — in-house English
+    # (DESIGN-NOTES, offers section).
+    import sys
+    sys.path.insert(0, HERE)
+    from bundles import BUNDLES, pack_line
+    for b in BUNDLES:
+        out[b["name_ar"]] = b["name_en"]
+        out[pack_line(b)[0]] = pack_line(b)[1]
+        out[b["desc_ar"]] = b["desc_en"]
+        for it in b["items"]:
+            out[it["ar"]] = "Maamoul - " + it["en"]
     return out
 
 
