@@ -25,8 +25,8 @@
          styles.css contains rules whose whole purpose is to beat a utility
          ([hidden] !important, the focus ring re-armed over `outline-none`,
          the sticky-nav selector). Reverse these two and they stop working. -->
-    <link rel="stylesheet" href="tailwind.css?v=1d40fe3d24" />
-    <link rel="stylesheet" href="styles.css?v=3d7ffbd5f3" />
+    <link rel="stylesheet" href="tailwind.css?v=f5408b48e6" />
+    <link rel="stylesheet" href="styles.css?v=f0802b002d" />
     <!-- The client's 3D leaf mark as the tab icon (Ahmed, 2026-08-05) — the
          same spec-leaf.png the mega-panel bullets and product benefits use, so
          the favicon is a recognisable brand glyph rather than the white
@@ -37,8 +37,8 @@
          always defined window.ABUAUF_I18N by the time scripts.js boots and
          merges it. A plain script rather than a fetch, so the language switch
          still works from file://. -->
-    <script defer src="i18n-en.js?v=1153febd79"></script>
-    <script defer src="scripts.js?v=1434ce2f86"></script>
+    <script defer src="i18n-en.js?v=12c4caa5ee"></script>
+    <script defer src="scripts.js?v=4ec1ad87af"></script>
   </head>
   <body data-page="product" data-path="/products/abu-auf-mixed-nuts-275-gm-offer" class="antialiased bg-white">
     <!-- First focusable thing on the page. The header is three bands and a
@@ -189,7 +189,7 @@
                info column drops its container so the content sits inline with
                the page grid, like the gallery beside it. lg+ keeps the card. -->
           <div class="flex flex-col gap-5 lg:bg-white lg:shadow-custom4 lg:p-6 xl:p-8 lg:rounded-[20px] min-w-0"
-               data-product data-record-view data-id="1321" data-name="ابوعوف مكسرات مشكلة - 275 جم"
+               data-product data-record-view data-has-gift data-id="1321" data-name="ابوعوف مكسرات مشكلة - 275 جم"
                data-price="355.0" data-image="images/abuauf/products/Pr-666.webp">
             <div class="flex flex-col gap-3">
               <span data-best-seller class="inline-flex self-start items-center bg-accent-yellow px-3 py-1.5 rounded-full font-bold text-[#062A1C] text-xs"><span class="relative top-[2px] leading-none">الأكثر مبيعاً</span></span>
@@ -226,6 +226,87 @@
               <span data-price-display data-unit-price="355.0"
                     style="line-height:.6"
                     class="bg-accent-yellow px-3 rounded font-bold text-[#062A1C] text-2xl latin">EGP 355</span>
+            </div>
+
+            <!-- Free gift with every pack, the shopper's pick — renders nothing
+                 unless catalog.GIFT_OFFERS names this product. Above the buy
+                 block so the gift is chosen before the add, not after. -->
+
+            <div data-gift-offer class="flex flex-col gap-3 bg-[#fdf7e6] p-4 rounded-2xl">
+              <div class="flex items-center gap-3">
+                <span class="w-6 h-6 text-cta shrink-0" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M20 12v9H4v-9M22 7H2v5h20V7ZM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <div class="flex flex-col min-w-0">
+                  <h2 id="gift-offer-title" class="font-bold text-[#062A1C] text-base">هدية مجانية مع كل عبوة</h2>
+                  <p class="text-neutral-secondary text-xs leading-5">اختر هديتك وهتوصلك مع طلبك مجاناً</p>
+                </div>
+              </div>
+              <div role="radiogroup" aria-labelledby="gift-offer-title"
+                   class="gap-2 grid sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                <label class="gift-option block cursor-pointer">
+                  <input type="radio" name="gift" class="sr-only" data-gift-option checked
+                         data-gift-id="1358" data-gift-name="بن أبو عوف ساده فاتح - 100 جم" data-gift-image="images/abuauf/products/2000466000000.webp" />
+                  <span class="gift-option__face flex items-center gap-3 bg-white px-3 py-2.5 border border-neutral-divider rounded-2xl h-full">
+                    <img src="images/abuauf/products/2000466000000.webp" alt="" loading="lazy"
+                         class="bg-interaction-base p-1 rounded-xl w-14 h-14 object-contain shrink-0" />
+                    <span class="flex flex-col flex-1 gap-0.5 min-w-0">
+                      <span class="gift-option__name font-semibold text-[#062A1C] text-sm leading-5 line-clamp-2">بن أبو عوف ساده فاتح - 100 جم</span>
+                      <span class="flex flex-wrap items-center gap-x-2 text-xs">
+                        <span class="text-neutral-secondary line-through latin">EGP 91</span>
+                        <span class="font-bold text-primary">مجاناً</span>
+                      </span>
+                    </span>
+                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                  </span>
+                </label>
+                <label class="gift-option block cursor-pointer">
+                  <input type="radio" name="gift" class="sr-only" data-gift-option
+                         data-gift-id="1320" data-gift-name="فول سوداني بالشيكولاتة - 100 جم" data-gift-image="images/abuauf/products/2000208000000.webp" />
+                  <span class="gift-option__face flex items-center gap-3 bg-white px-3 py-2.5 border border-neutral-divider rounded-2xl h-full">
+                    <img src="images/abuauf/products/2000208000000.webp" alt="" loading="lazy"
+                         class="bg-interaction-base p-1 rounded-xl w-14 h-14 object-contain shrink-0" />
+                    <span class="flex flex-col flex-1 gap-0.5 min-w-0">
+                      <span class="gift-option__name font-semibold text-[#062A1C] text-sm leading-5 line-clamp-2">فول سوداني بالشيكولاتة - 100 جم</span>
+                      <span class="flex flex-wrap items-center gap-x-2 text-xs">
+                        <span class="text-neutral-secondary line-through latin">EGP 35.5</span>
+                        <span class="font-bold text-primary">مجاناً</span>
+                      </span>
+                    </span>
+                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                  </span>
+                </label>
+                <label class="gift-option block cursor-pointer">
+                  <input type="radio" name="gift" class="sr-only" data-gift-option
+                         data-gift-id="1319" data-gift-name="فول سودانى بطعم الجبنه - 100 جم" data-gift-image="images/abuauf/products/Thumb-2000150000000.webp" />
+                  <span class="gift-option__face flex items-center gap-3 bg-white px-3 py-2.5 border border-neutral-divider rounded-2xl h-full">
+                    <img src="images/abuauf/products/Thumb-2000150000000.webp" alt="" loading="lazy"
+                         class="bg-interaction-base p-1 rounded-xl w-14 h-14 object-contain shrink-0" />
+                    <span class="flex flex-col flex-1 gap-0.5 min-w-0">
+                      <span class="gift-option__name font-semibold text-[#062A1C] text-sm leading-5 line-clamp-2">فول سودانى بطعم الجبنه - 100 جم</span>
+                      <span class="flex flex-wrap items-center gap-x-2 text-xs">
+                        <span class="text-neutral-secondary line-through latin">EGP 33</span>
+                        <span class="font-bold text-primary">مجاناً</span>
+                      </span>
+                    </span>
+                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                  </span>
+                </label>
+                <label class="gift-option block cursor-pointer">
+                  <input type="radio" name="gift" class="sr-only" data-gift-option
+                         data-gift-id="1437" data-gift-name="زبيب أبو عوف جولدن - 100 جم" data-gift-image="images/abuauf/products/2000401000000.webp" />
+                  <span class="gift-option__face flex items-center gap-3 bg-white px-3 py-2.5 border border-neutral-divider rounded-2xl h-full">
+                    <img src="images/abuauf/products/2000401000000.webp" alt="" loading="lazy"
+                         class="bg-interaction-base p-1 rounded-xl w-14 h-14 object-contain shrink-0" />
+                    <span class="flex flex-col flex-1 gap-0.5 min-w-0">
+                      <span class="gift-option__name font-semibold text-[#062A1C] text-sm leading-5 line-clamp-2">زبيب أبو عوف جولدن - 100 جم</span>
+                      <span class="flex flex-wrap items-center gap-x-2 text-xs">
+                        <span class="text-neutral-secondary line-through latin">EGP 40.5</span>
+                        <span class="font-bold text-primary">مجاناً</span>
+                      </span>
+                    </span>
+                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                  </span>
+                </label>
+              </div>
             </div>
 
             <!-- The stepper IS the add control (Ahmed, 2026-07-26). There is
@@ -640,6 +721,7 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1320.html" class="product-card__media block relative bg-interaction-base p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">36</span> نقطة</span></span>
+                
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
@@ -709,6 +791,7 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1280.html" class="product-card__media block relative bg-interaction-base p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">121</span> نقطة</span></span>
+                
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
@@ -778,6 +861,7 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1287.html" class="product-card__media block relative bg-interaction-base p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">156</span> نقطة</span></span>
+                
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
@@ -847,6 +931,7 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-10573.html" class="product-card__media block relative bg-interaction-base p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">17</span> نقطة</span></span>
+                
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
@@ -916,6 +1001,7 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1288.html" class="product-card__media block relative bg-interaction-base p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">146</span> نقطة</span></span>
+                
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
@@ -985,6 +1071,7 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1319.html" class="product-card__media block relative bg-interaction-base p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">33</span> نقطة</span></span>
+                
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
@@ -1054,6 +1141,7 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1343.html" class="product-card__media block relative bg-interaction-base p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">45</span> نقطة</span></span>
+                
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
@@ -1123,6 +1211,7 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1282.html" class="product-card__media block relative bg-interaction-base p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">132</span> نقطة</span></span>
+                
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
@@ -1192,6 +1281,7 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-1358.html" class="product-card__media block relative bg-interaction-base p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">91</span> نقطة</span></span>
+                
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
@@ -1261,6 +1351,7 @@
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-8560.html" class="product-card__media block relative bg-interaction-base p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">82</span> نقطة</span></span>
+                
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->

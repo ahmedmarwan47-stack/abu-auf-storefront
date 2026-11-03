@@ -121,6 +121,16 @@ flavour that **never expands or collapses** → مسح الكل → the CTA last
 are compact (64px photo, 36px stepper buttons). The offer's sticky bar uses the
 product page's placement: bottom on mobile, under the nav at `lg`.
 
+**Free gift with every pack** — `GIFT_OFFERS` in `build/catalog.py` maps a
+product id to the ids its gift can be chosen from; `gift_picker()` renders the
+radios on that product's page, and the card for it routes (`data-has-gift`,
+`اختر هديتك`) the way a multi-size card does. The gift is **a `gift` field on
+the product's own cart line**, never a line of its own: it follows the
+quantity, costs nothing, and keeps the line's id so cards and steppers still
+find it. `productFrom()` reads the checked radio, so every add path carries it;
+`initGiftOffer()` restores the held gift on arrival and swaps it via
+`Cart.setGift()`. The offer is invented placeholder — DESIGN-NOTES §1.
+
 **Any seeded product must be keyed by its `catalog.json` id**, not its barcode.
 Both stores dedupe on id against the `data-id` on product cards; a barcode key
 silently creates a second line for a product already in the cart.

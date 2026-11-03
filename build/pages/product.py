@@ -23,12 +23,12 @@ ours — same rule as the branch phone numbers.
 import re
 from html import unescape
 
-from catalog import PRODUCTS, e, in_category, money, rail_products, size_count, title
+from catalog import PRODUCTS, e, gift_options, in_category, money, rail_products, size_count, title
 from components import (
     ICON, accordion, best_seller_badge, button, carousel, page, page_header,
     pack_tag, points_callout, product_card, product_gallery, qty_stepper, rating,
     recipe_card, reviews_section, size_chips, sold_proof, specs_block,
-    bundle_item, section_heading,
+    bundle_item, gift_picker, section_heading,
 )
 
 SLUG = "product.html"
@@ -307,6 +307,10 @@ def _render(p, offer=None):
     # rail reads the host through productFrom) inherits the size count.
     n_sizes = size_count(p)
     sizes_attr = f' data-sizes="{n_sizes}"' if n_sizes >= 2 else ""
+    # Recorded with the view, so a recently-viewed card of this product routes
+    # to the gift choice instead of adding without one.
+    if gift_options(p):
+        sizes_attr += " data-has-gift"
 
     gallery_images = offer["images"] if offer else [i for i in (p.get("images") or [p["image"]]) if i]
     related_inset = " md:ms-[96px]" if len(gallery_images) > 1 else ""
@@ -371,6 +375,11 @@ def _render(p, offer=None):
                     style="line-height:.6"
                     class="bg-accent-yellow px-3 rounded font-bold text-[#062A1C] text-2xl latin">EGP {money(p['price'])}</span>
             </div>
+
+            <!-- Free gift with every pack, the shopper's pick — renders nothing
+                 unless catalog.GIFT_OFFERS names this product. Above the buy
+                 block so the gift is chosen before the add, not after. -->
+{gift_picker(p)}
 
             <!-- The stepper IS the add control (Ahmed, 2026-07-26). There is
                  no "add to cart" press any more: + puts the product in the

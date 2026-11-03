@@ -3354,3 +3354,32 @@ input:checked + .radio-card-accent {
     transition: none;
   }
 }
+
+/* Free-gift picker (gift_picker() in components.py). The chosen gift is
+   SELECTED and painted per CLAUDE.md rule 8 — ink outline, inset ring, bold
+   name, and the shared .radio-dot — while hover is only a wash, so the
+   option a pointer just left never looks chosen. The input is sr-only, so
+   the face carries its focus ring. */
+.gift-option__face {
+  transition: border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out),
+    background-color 0.2s var(--ease-out);
+}
+.gift-option:hover input:not(:checked) + .gift-option__face {
+  background-color: #f6f7f4;
+}
+.gift-option input:checked + .gift-option__face {
+  border-color: #163300;
+  box-shadow: inset 0 0 0 1px #163300;
+}
+.gift-option input:checked + .gift-option__face .gift-option__name {
+  font-weight: 700;
+}
+.gift-option input:focus-visible + .gift-option__face {
+  outline: 2px solid #163300;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gift-option__face {
+    transition: none;
+  }
+}

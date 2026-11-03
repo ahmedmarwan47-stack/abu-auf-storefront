@@ -115,6 +115,13 @@ UI = {
     "وصفات بالمنتج": "Recipes with this product",
     "منتجات مشابهة": "Similar products",
     "اختر الحجم": "Choose a size",
+    # free gift with every pack (catalog.GIFT_OFFERS, gift_picker, initGiftOffer)
+    "هدية مجانية مع كل عبوة": "A free gift with every pack",
+    "اختر هديتك وهتوصلك مع طلبك مجاناً": "Pick your gift and it ships free with your order",
+    "مجاناً": "Free",
+    "هدية مجانية": "Free gift",
+    "اختر هديتك": "Choose your gift",
+    "تم تغيير هديتك": "Your gift has been changed",
     # mix-and-match offers (build/bundles.py, offer.py, initOffer)
     "كوّن عرضك": "Build your offer",
     "اختر النكهات": "Choose flavours",

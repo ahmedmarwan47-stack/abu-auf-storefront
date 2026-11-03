@@ -18,7 +18,7 @@ Split of responsibilities:
 import html as html_mod
 import re
 
-from catalog import e, money, pack_label, size_count, title
+from catalog import e, gift_options, money, pack_label, size_count, title
 
 # --------------------------------------------------------------------------
 # Icons — generic UI glyphs. Brand marks and Figma-authored icons are real
@@ -510,6 +510,61 @@ def size_chips(p):
             </div>"""
 
 
+def gift_picker(p):
+    """
+    "Free gift with every pack — pick yours": a radio list of real products,
+    one of which rides along free on this product's cart line (Ahmed,
+    2026-11-03). Renders nothing unless catalog.GIFT_OFFERS names the product.
+
+    Native radios, first one checked, like the size chips: the closed state IS
+    the choice, so there is never a moment where the product is in the basket
+    with no gift. The gift is not its own cart line — it rides on the
+    product's line as `gift`, so it follows that line's quantity and goes when
+    the line goes (initGiftOffer in scripts.js). Each option shows that
+    product's own price struck through beside "مجاناً", so the value of the
+    gift is a real figure, not a claim.
+
+    Selected is painted per rule 8 — ink outline, inset ring, bold name, the
+    radio dot — and hover is only a wash (.gift-option in styles.css).
+    """
+    opts = gift_options(p)
+    if not opts:
+        return ""
+    rows = "".join(
+        f"""
+                <label class="gift-option block cursor-pointer">
+                  <input type="radio" name="gift" class="sr-only" data-gift-option{' checked' if i == 0 else ''}
+                         data-gift-id="{g['id']}" data-gift-name="{e(title(g))}" data-gift-image="{e(g['image'])}" />
+                  <span class="gift-option__face flex items-center gap-3 bg-white px-3 py-2.5 border border-neutral-divider rounded-2xl h-full">
+                    <img src="{e(g['image'])}" alt="" loading="lazy"
+                         class="bg-interaction-base p-1 rounded-xl w-14 h-14 object-contain shrink-0" />
+                    <span class="flex flex-col flex-1 gap-0.5 min-w-0">
+                      <span class="gift-option__name font-semibold text-[#062A1C] text-sm leading-5 line-clamp-2">{e(title(g))}</span>
+                      <span class="flex flex-wrap items-center gap-x-2 text-xs">
+                        <span class="text-neutral-secondary line-through latin">EGP {money(g['price'])}</span>
+                        <span class="font-bold text-primary">مجاناً</span>
+                      </span>
+                    </span>
+                    <span class="radio-dot shrink-0" aria-hidden="true"></span>
+                  </span>
+                </label>"""
+        for i, g in enumerate(opts)
+    )
+    return f"""
+            <div data-gift-offer class="flex flex-col gap-3 bg-[#fdf7e6] p-4 rounded-2xl">
+              <div class="flex items-center gap-3">
+                <span class="w-6 h-6 text-cta shrink-0" aria-hidden="true">{ICON['gift']}</span>
+                <div class="flex flex-col min-w-0">
+                  <h2 id="gift-offer-title" class="font-bold text-[#062A1C] text-base">هدية مجانية مع كل عبوة</h2>
+                  <p class="text-neutral-secondary text-xs leading-5">اختر هديتك وهتوصلك مع طلبك مجاناً</p>
+                </div>
+              </div>
+              <div role="radiogroup" aria-labelledby="gift-offer-title"
+                   class="gap-2 grid sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">{rows}
+              </div>
+            </div>"""
+
+
 def qty_stepper(cart_bound=False):
     """
     The reference Ahmed supplied draws the stepper as a padded container with
@@ -829,6 +884,19 @@ def card_points_chip(p):
             'bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap">'
             '<img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" />'
             f'<span><span class="latin">{pts}</span> نقطة</span></span>')
+
+
+def card_gift_badge():
+    """"+ هدية" on a card whose product carries a free-gift offer. The
+    inline-START corner, opposite the points chip, where the offer cards put
+    their own yellow "اختر 4 علب" badge — so an offer reads the same wherever
+    it sits in the grid."""
+    return ('<span class="inline-flex top-2 sm:top-3 start-2 sm:start-3 z-10 absolute items-center gap-1 '
+            'bg-accent-yellow px-1.5 sm:px-2 py-1 rounded-full font-bold text-[#062A1C] text-xs whitespace-nowrap">'
+            f'<span class="w-3.5 h-3.5 shrink-0" aria-hidden="true">{ICON["gift"]}</span>'
+            # Icon only on the narrow two-up grid, where the words collided
+            # with the points chip at 320; still read out there.
+            '<span class="sr-only sm:not-sr-only">هدية مجانية</span></span>')
 
 
 def points_callout(p):
@@ -2000,6 +2068,11 @@ def product_card(p, slide=True, cat=None):
     # offers no chips to pick one cannot add to the cart.
     n_sizes = size_count(p)
     sizes_attr = f' data-sizes="{n_sizes}"' if n_sizes >= 2 else ""
+    # A product with a free-gift offer routes to its page, same as a
+    # multi-size one: the gift is a choice, and the card cannot offer it.
+    has_gift = bool(gift_options(p))
+    if has_gift:
+        sizes_attr += " data-has-gift"
     keys = (f'data-product data-cat="{e(cat_slug)}"{sizes_attr} '
             f'data-price="{p.get("sale") or p.get("price") or 0}" '
             f'data-id="{p.get("id", 0)}" '
@@ -2019,6 +2092,9 @@ def product_card(p, slide=True, cat=None):
     if n_sizes >= 2:
         cta = (f'<a href="product-{p.get("id", 0)}.html" data-card-choose{_cta_break}'
                f'class="btn-elevate block bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm text-center">اختر الحجم</a>')
+    elif has_gift:
+        cta = (f'<a href="product-{p.get("id", 0)}.html" data-card-choose{_cta_break}'
+               f'class="btn-elevate block bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm text-center">اختر هديتك</a>')
     else:
         cta = (f'<button type="button" data-add-to-cart{_cta_break}'
                f'class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>')
@@ -2028,6 +2104,7 @@ def product_card(p, slide=True, cat=None):
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
               <a href="product-{p.get('id', 0)}.html" class="product-card__media block relative bg-interaction-base p-4">
                 {card_points_chip(p)}
+                {card_gift_badge() if has_gift else ""}
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->

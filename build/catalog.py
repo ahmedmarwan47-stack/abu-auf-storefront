@@ -96,6 +96,26 @@ except (OSError, AttributeError, TypeError, ValueError):
 BRANCH_GROUPS = _govs
 
 
+# Free-gift offers: buy the product, get one of these free with every pack,
+# the shopper picking which (Ahmed, 2026-11-03). Keyed by catalog.json id ->
+# the ids the gift may be chosen from, in display order; the first is the
+# default selection. The OFFER is invented placeholder — Abu Auf's Store API
+# carries no gift-with-purchase data — so it lives here, one dict, and is
+# flagged in DESIGN-NOTES §1. Every name, photo and price it shows is real.
+GIFT_OFFERS = {
+    1321: [1358, 1320, 1319, 1437],
+}
+
+_BY_ID = {x["id"]: x for x in PRODUCTS}
+
+
+def gift_options(p):
+    """The products a shopper can pick as this product's free gift, or [].
+    An id missing from the catalogue raises — a gift that silently vanished
+    from the picker would be the same failure as a missing asset."""
+    return [_BY_ID[i] for i in GIFT_OFFERS.get(p.get("id"), [])]
+
+
 def size_count(p):
     """
     How many real SKUs this product is sold as (`sizes` in catalog.json, written

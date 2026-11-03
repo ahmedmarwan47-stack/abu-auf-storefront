@@ -92,6 +92,34 @@ it does not have to be Didos. Its known facts (five 16-piece flavours, EGP 330,
 "Please select all products") are enough to add it as a second entry in
 `BUNDLES` once a photo exists.
 
+### Free gift with every pack — the offer is invented, the gifts are real (2026-11-03)
+
+Ahmed asked for a "buy this, get an item free, and choose which" offer, tried
+on **one product: 1321, ابوعوف مكسرات مشكلة - 275 جم**. The product page shows
+a picker of four gifts above the buy block; the chosen one rides free on the
+product's cart line, one per pack, and the drawer, cart page and checkout print
+it under the line ("هدية مجانية: … ×2").
+
+* **In-house, needs client sign-off:** the OFFER itself. Abu Auf's Store API
+  carries no gift-with-purchase data, so which product carries a gift and the
+  four it can be chosen from are our call — `GIFT_OFFERS` in `build/catalog.py`,
+  the only place either is written. The picks are cheap single-size SKUs from
+  the same shelf (the 100 جم light-roast coffee, two 100 جم peanuts, golden
+  raisins). Also in-house: the copy "هدية مجانية مع كل عبوة" / "اختر هديتك
+  وهتوصلك مع طلبك مجاناً" and the "one gift per pack" rule.
+* **Real:** every gift's name, photo and price. Each option shows its own
+  catalogue price struck through beside "مجاناً", so the gift's value is the
+  client's figure, not a claim.
+* **The gift is not a cart line.** It is `gift` on the product's own line, so
+  it never touches the subtotal, follows the quantity, and leaves when the line
+  leaves. An order system downstream would need to read that field — today
+  nothing does, because nothing places a real order.
+* **Cards route, they don't add.** Same rule as multi-size products (§3): a
+  card for a gift product carries a "هدية مجانية" badge (icon-only below `sm`,
+  where the words hit the points chip at 320) and an `اختر هديتك` link to the
+  page that offers the choice. Adding without choosing would silently forfeit
+  the gift.
+
 ### Branch phone numbers and directions — `branches.html`
 
 The Figma (`426:33692`) shows a phone row and an `اتجاهات` link on every branch

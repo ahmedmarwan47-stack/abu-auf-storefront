@@ -339,6 +339,9 @@
        path cannot drift. */
     plus: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
     minus: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    // Same glyph as ICON["gift"] in components.py — the free-gift row on a
+    // cart line (giftLineHTML).
+    gift: '<svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M20 12v9H4v-9M22 7H2v5h20V7ZM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     // Rounded warning triangle (Ahmed's alert-01.svg) — the below-minimum
     // notice. currentColor so it inherits the error ink from its wrapper.
     alert:
@@ -4141,8 +4144,10 @@
       add: function (product, qty) {
         qty = Math.max(1, parseInt(qty, 10) || 1);
         const existing = items.find((it) => String(it.id) === String(product.id));
-        if (existing) existing.qty += qty;
-        else {
+        if (existing) {
+          existing.qty += qty;
+          if (product.gift) existing.gift = product.gift;
+        } else {
           const line = { id: product.id, name: product.name, price: Number(product.price), image: product.image, qty: qty };
           /* A mix-and-match offer (initOffer) is ONE line at ONE fixed price;
              what the shopper chose rides along as `mix` so the drawer, the cart
@@ -4152,9 +4157,24 @@
             line.offer = product.offer;
             line.mix = (product.mix || []).map((m) => ({ name: m.name, qty: m.qty }));
           }
+          /* A free-gift offer (initGiftOffer): the chosen gift rides on the
+             product's OWN line rather than being a line of its own, so it
+             follows that line's quantity — one gift per pack — goes when the
+             line goes, and never touches the subtotal. The line keeps the
+             product's id, so cards and steppers still find it. */
+          if (product.gift) line.gift = product.gift;
           items.push(line);
         }
         emit("add", product);
+        return this;
+      },
+      /* Swap the free gift on a line already in the basket — the shopper
+         changed their pick on the product page after adding. */
+      setGift: function (id, gift) {
+        const it = items.find((x) => String(x.id) === String(id));
+        if (!it || !gift) return this;
+        it.gift = gift;
+        emit("gift", it);
         return this;
       },
       setQty: function (id, qty) {
@@ -4370,6 +4390,8 @@
           name: product.name,
           price: Number(product.price) || 0,
           image: product.image,
+          sizes: product.sizes || 0,
+          hasGift: !!product.hasGift,
         });
         if (items.length > RECENT_MAX) items.length = RECENT_MAX;
         emit("add");
@@ -4632,7 +4654,18 @@
       price: Number(d.price) || 0,
       image: d.image || "",
       sizes: Number(d.sizes) || 0,
+      // `data-has-gift`: the product carries a free-gift offer. Off the page
+      // that offers the choice it routes there, like a multi-size product;
+      // on it, the checked [data-gift-option] is the gift that rides along.
+      hasGift: "hasGift" in d,
+      gift: giftFrom(host),
     };
+  }
+
+  function giftFrom(host) {
+    const pick = host.querySelector("[data-gift-option]:checked");
+    if (!pick) return null;
+    return { id: pick.dataset.giftId, name: pick.dataset.giftName, image: pick.dataset.giftImage };
   }
 
   const egp = (n) => "EGP " + (Math.round(n * 100) / 100).toFixed(2);
@@ -5134,6 +5167,21 @@
     );
   }
 
+  /* The free gift riding on a line — "🎁 هدية مجانية: بن أبو عوف ×2". One
+     per pack, so the count is the line's own quantity. Lives in a
+     [data-line-gift] slot that renderCart refills, because the gift can change
+     on a line that already exists (initGiftOffer → Cart.setGift). */
+  function giftLineHTML(it) {
+    if (!it.gift) return "";
+    return (
+      '<p class="flex items-start gap-1.5 text-xs leading-5">' +
+      '<span class="mt-0.5 w-4 h-4 text-cta shrink-0" aria-hidden="true">' + ICON.gift + "</span>" +
+      '<span class="min-w-0"><span class="font-bold text-primary">' + esc(t("هدية مجانية")) + ":</span> " +
+      '<span class="text-[#062A1C]">' + esc(t(it.gift.name)) + "</span> " +
+      '<span class="latin" dir="ltr">×' + esc(String(it.qty)) + "</span></span></p>"
+    );
+  }
+
   function cartLineHTML(it) {
     /* On checkout/payment the order is LOCKED (Ahmed, 2026-08-02): no stepper,
        no remove, and a COMPACT row. The shopper has already decided what they
@@ -5149,6 +5197,7 @@
         <div class="flex flex-col flex-1 min-w-0">
           <p class="font-semibold text-[#062A1C] text-sm line-clamp-1">${esc(it.name)}</p>
           ${offerMixHTML(it)}
+          <div data-line-gift class="empty:hidden">${giftLineHTML(it)}</div>
           <p class="text-neutral-secondary text-xs">${esc(t("العدد"))}: <span class="latin" data-line-qty>${it.qty}</span></p>
         </div>
         <span data-line-total class="font-bold text-[#062A1C] text-sm latin shrink-0">${egp(it.price * it.qty)}</span>
@@ -5178,6 +5227,7 @@
             <span data-line-total class="bg-accent-yellow shrink-0 px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin">${egp(it.price * it.qty)}</span>
           </div>
           ${offerMixHTML(it)}
+          <div data-line-gift class="empty:hidden">${giftLineHTML(it)}</div>
           <p class="mt-1 text-neutral-secondary text-xs">العدد: <span class="latin" data-line-qty>${it.qty}</span></p>
           <!-- gap-1 until sm: at 320 the stepper (122) + حذف (24) + gap (8)
                came to 154 inside a 141px column, overflowing the row by 13px.
@@ -6004,6 +6054,12 @@
           const qtyNum = row.querySelector("[data-line-qty-num]");
           if (price) price.textContent = egp(it.price * it.qty);
           if (qtyTxt) qtyTxt.textContent = it.qty;
+          // The gift row is the one part of a line rebuilt as markup: its
+          // product can be swapped, not just its count. Only on a change, so
+          // an unrelated cart:change does not churn it.
+          const giftSlot = row.querySelector("[data-line-gift]");
+          const giftNow = giftLineHTML(it);
+          if (giftSlot && giftSlot.innerHTML !== giftNow) giftSlot.innerHTML = giftNow;
           if (qtyNum) {
             rollTo(qtyNum, it.qty, it.qty > (parseInt(qtyNum.textContent, 10) || 0) ? 1 : -1);
           }
@@ -6477,6 +6533,12 @@
            Cards render a link rather than a button, so this is the backstop
            for anything built at runtime; it never fires on a normal card. */
         if (product.sizes >= 2 && !scope.querySelector("[data-size-chips]")) {
+          window.location.href = "product-" + product.id + ".html";
+          return;
+        }
+        // Same backstop for a free-gift offer: the gift is a choice, and only
+        // the product page offers it.
+        if (product.hasGift && !scope.querySelector("[data-gift-offer]")) {
           window.location.href = "product-" + product.id + ".html";
           return;
         }
@@ -6989,9 +7051,10 @@
     // to the choice instead of offering an add. Entries stored before the size
     // count existed simply come back as 0 and behave as they always did.
     const sizes = Number(p.sizes) || 0;
+    const choose = sizes >= 2 ? "اختر الحجم" : p.hasGift ? "اختر هديتك" : "";
     return `
       <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0"
-               data-product data-id="${id}" data-name="${name}" data-price="${Number(p.price) || 0}" data-image="${esc(p.image || "")}"${sizes >= 2 ? ` data-sizes="${sizes}"` : ""}>
+               data-product data-id="${id}" data-name="${name}" data-price="${Number(p.price) || 0}" data-image="${esc(p.image || "")}"${sizes >= 2 ? ` data-sizes="${sizes}"` : ""}${p.hasGift ? " data-has-gift" : ""}>
         <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
           <a href="product-${id}.html" class="product-card__media block relative bg-interaction-base p-4">
             <img src="${esc(p.image || "")}" alt="${name}" class="mx-auto w-full h-[180px] xl:h-[200px] object-contain" loading="lazy" />
@@ -7005,8 +7068,8 @@
             </div>
             <div class="pt-2">
               ${
-                sizes >= 2
-                  ? `<a href="product-${id}.html" data-card-choose class="btn-elevate block bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm text-center">${esc(t("اختر الحجم"))}</a>`
+                choose
+                  ? `<a href="product-${id}.html" data-card-choose class="btn-elevate block bg-cta hover:bg-cta-hover py-3 rounded-full w-full font-semibold text-white text-sm text-center">${esc(t(choose))}</a>`
                   : `<button type="button" data-add-to-cart
                       class="btn-elevate w-full bg-cta hover:bg-cta-hover py-3 rounded-full font-semibold text-white text-sm">اضف الى السلة</button>`
               }
@@ -8680,6 +8743,41 @@
   };
 
   /* ---------------------------------------------------------------
+     Free gift with every pack (gift_picker() in components.py)
+
+     The picker is native radios inside the product page's [data-product]
+     host, so productFrom() already reads the checked one into `gift` and
+     every add path — the cart-bound stepper, buy now, the sticky bar —
+     carries it with no gift-specific code. What is left is the case where
+     the product is ALREADY in the basket:
+
+       * on arrival, the picker shows the gift the basket holds, so the page
+         and the drawer never name two different gifts;
+       * a line added before it had a gift (an older visit) gets the default;
+       * changing the pick swaps the gift on that line, live.
+     --------------------------------------------------------------- */
+  function initGiftOffer() {
+    const box = document.querySelector("[data-gift-offer]");
+    const host = box && box.closest("[data-product]");
+    if (!host) return;
+    const line = Cart.find(host.dataset.id);
+    if (line && line.gift) {
+      const held = box.querySelector(
+        '[data-gift-option][data-gift-id="' + CSS.escape(String(line.gift.id)) + '"]',
+      );
+      if (held) held.checked = true;
+    } else if (line) {
+      Cart.setGift(line.id, giftFrom(host));
+    }
+    box.addEventListener("change", (e) => {
+      if (!e.target.closest("[data-gift-option]")) return;
+      if (!Cart.find(host.dataset.id)) return; // not added yet — the add carries it
+      Cart.setGift(host.dataset.id, giftFrom(host));
+      toast(t("تم تغيير هديتك"), "cart");
+    });
+  }
+
+  /* ---------------------------------------------------------------
      Mix-and-match offer builder ("كوّن عرضك")
 
      The smart-light bundle mechanic on this storefront: ONE fixed price for
@@ -8907,6 +9005,8 @@
     initStickyBuyBar();
     // Mix-and-match offer builder; a no-op on every page without [data-offer].
     initOffer();
+    // Free-gift picker; a no-op on every page without [data-gift-offer].
+    initGiftOffer();
   }
 
   if (document.readyState === "loading") {
