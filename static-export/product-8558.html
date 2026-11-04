@@ -25,7 +25,7 @@
          styles.css contains rules whose whole purpose is to beat a utility
          ([hidden] !important, the focus ring re-armed over `outline-none`,
          the sticky-nav selector). Reverse these two and they stop working. -->
-    <link rel="stylesheet" href="tailwind.css?v=f5408b48e6" />
+    <link rel="stylesheet" href="tailwind.css?v=842f4a8e8e" />
     <link rel="stylesheet" href="styles.css?v=f0802b002d" />
     <!-- The client's 3D leaf mark as the tab icon (Ahmed, 2026-08-05) — the
          same spec-leaf.png the mega-panel bullets and product benefits use, so
@@ -95,8 +95,9 @@
                The wrapper owns `lg:self-start lg:sticky lg:top-[60px]`; this
                only works because <main> is `overflow-x-clip` (see page()). -->
           <div data-gallery class="flex md:flex-row flex-col-reverse gap-4 min-w-0">
-            <div class="flex md:flex-col gap-3 md:max-h-[348px] xl:max-h-[520px]
-                        overflow-x-auto md:overflow-x-hidden md:overflow-y-auto no-scrollbar shrink-0">
+            <div class="md:relative md:w-20 shrink-0">
+              <div class="flex md:flex-col md:absolute md:inset-0 gap-3
+                          overflow-x-auto md:overflow-x-hidden md:overflow-y-auto no-scrollbar">
                 <button type="button" data-gallery-thumb aria-pressed="true"
                         aria-label="عرض الصورة 1 من 3"
                         data-fill="contain"
@@ -118,21 +119,23 @@
                   <img src="images/abuauf/products/gallery/2000502000000-2.webp" alt=""
                        class="w-full h-full object-cover" loading="lazy" />
                 </button>
+              </div>
             </div>
             <!-- The plate keeps its own padding for the cut-out main shot;
                  scripts.js swaps data-fill to "cover" for the photographs,
                  which drops the padding and lets them bleed to the rounded
                  corners. Both states are the same box, so switching between
                  them never resizes the column. -->
-            <!-- Fixed height on the PLATE, not the image, with border-box
-                 padding. The two fill modes then swap the padding without the
-                 outer box moving a pixel — otherwise switching to a photograph
-                 would shrink the column by the padding it just dropped, and
-                 the whole page would jump on every thumbnail click. The height
-                 is also what the thumbnail strip is capped to. -->
+            <!-- Square PLATE, not image, with border-box padding. The two
+                 fill modes then swap the padding without the outer box moving
+                 a pixel — otherwise switching to a photograph would shrink the
+                 column by the padding it just dropped, and the whole page
+                 would jump on every thumbnail click. Square to match the
+                 product cards (Ahmed, 2026-11-04), so a pack shot fits whole
+                 in both places. -->
             <div data-gallery-plate data-fill="contain"
                  class="gallery-plate relative flex-1 bg-interaction-base rounded-[20px] min-w-0 overflow-hidden
-                        h-[348px] xl:h-[520px]">
+                        aspect-square">
               <img data-gallery-main src="images/abuauf/products/2000502000000.webp" alt="بن برازيلى فاتح محوج - 100 جم"
                    class="mx-auto w-full h-full" />
               <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة" data-product data-id="8558" data-name="بن برازيلى فاتح محوج - 100 جم" data-price="99.0" data-image="images/abuauf/products/2000502000000.webp" class="fav-btn btn-elevate absolute top-4 end-4 z-10 place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-cta size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
@@ -655,14 +658,14 @@
             <div class="carousel-track">
           <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="35.5" data-id="1320" data-name="فول سوداني بالشيكولاتة - 100 جم" data-name-en="Chocolate Peanuts – 100 gm" data-image="images/abuauf/products/2000208000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product-1320.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-1320.html" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">36</span> نقطة</span></span>
                 
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
                 <img data-product-img src="images/abuauf/products/2000208000000.webp" alt="فول سوداني بالشيكولاتة - 100 جم"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -725,14 +728,14 @@
           </article>
           <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="121.0" data-id="1280" data-name="عين جمل مقشر - 100 جم" data-name-en="Shelled Walnuts – 100 gm" data-image="images/abuauf/products/2000079000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product-1280.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-1280.html" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">121</span> نقطة</span></span>
                 
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
                 <img data-product-img src="images/abuauf/products/2000079000000.webp" alt="عين جمل مقشر - 100 جم"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -795,14 +798,14 @@
           </article>
           <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="156.0" data-id="1287" data-name="كاجو محمص ملح جامبو - 100 جم" data-name-en="Roasted Salted Cashews Jumbo – 100 gm" data-image="images/abuauf/products/2000404000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product-1287.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-1287.html" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">156</span> نقطة</span></span>
                 
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
                 <img data-product-img src="images/abuauf/products/2000404000000.webp" alt="كاجو محمص ملح جامبو - 100 جم"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -865,14 +868,14 @@
           </article>
           <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="17.0" data-id="10573" data-name="سودانى كرى كرى بطعم الجبنة -45 جم" data-name-en="Peanuts Krikri Cheese Flavor – 45 gm" data-image="images/abuauf/products/6223011434013-6.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product-10573.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-10573.html" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">17</span> نقطة</span></span>
                 
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
                 <img data-product-img src="images/abuauf/products/6223011434013-6.webp" alt="سودانى كرى كرى بطعم الجبنة -45 جم"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -935,14 +938,14 @@
           </article>
           <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="146.5" data-id="1288" data-name="فستق امريكى ملح - 100 جم" data-name-en="American Pistachios – 100 gm" data-image="images/abuauf/products/2000197000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product-1288.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-1288.html" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">146</span> نقطة</span></span>
                 
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
                 <img data-product-img src="images/abuauf/products/2000197000000.webp" alt="فستق امريكى ملح - 100 جم"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -1005,14 +1008,14 @@
           </article>
           <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="33.0" data-id="1319" data-name="فول سودانى بطعم الجبنه - 100 جم" data-name-en="Cheese Peanuts – 100 gm" data-image="images/abuauf/products/Thumb-2000150000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product-1319.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-1319.html" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">33</span> نقطة</span></span>
                 
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
                 <img data-product-img src="images/abuauf/products/Thumb-2000150000000.webp" alt="فول سودانى بطعم الجبنه - 100 جم"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -1075,14 +1078,14 @@
           </article>
           <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-sizes="2" data-price="45.0" data-id="1343" data-name="مقرمشات صينية - 100 جم" data-name-en="Chinese Crackers – 100 gm" data-image="images/abuauf/products/2000048000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product-1343.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-1343.html" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">45</span> نقطة</span></span>
                 
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
                 <img data-product-img src="images/abuauf/products/2000048000000.webp" alt="مقرمشات صينية - 100 جم"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -1145,14 +1148,14 @@
           </article>
           <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="nuts-crackers" data-price="132.0" data-id="1282" data-name="لوز نىء - 100 جم" data-name-en="Raw Almond – 100 gm" data-image="images/abuauf/products/2000065000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product-1282.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-1282.html" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">132</span> نقطة</span></span>
                 
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
                 <img data-product-img src="images/abuauf/products/2000065000000.webp" alt="لوز نىء - 100 جم"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -1215,14 +1218,14 @@
           </article>
           <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="coffee-beverage" data-price="91.0" data-id="1358" data-name="بن أبو عوف ساده فاتح - 100 جم" data-name-en="Light roasted plain Abu Auf Coffee – 100 gm" data-image="images/abuauf/products/2000466000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product-1358.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-1358.html" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">91</span> نقطة</span></span>
                 
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
                 <img data-product-img src="images/abuauf/products/2000466000000.webp" alt="بن أبو عوف ساده فاتح - 100 جم"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -1285,14 +1288,14 @@
           </article>
           <article class="product-card carousel-slide w-[260px] xl:w-[300px] shrink-0" data-product data-cat="coffee-beverage" data-sizes="3" data-price="82.5" data-id="8560" data-name="قهوة بن برازيلى سادة فاتح - 100 جم" data-name-en="Light roasted plain Brazilian Coffee – 100 gm" data-image="images/abuauf/products/2000463000000.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product-8560.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-8560.html" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">82</span> نقطة</span></span>
                 
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
                 <img data-product-img src="images/abuauf/products/2000463000000.webp" alt="قهوة بن برازيلى سادة فاتح - 100 جم"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the

@@ -702,11 +702,15 @@ def product_gallery(images, alt, p=None):
         # scrolls past that. Without the cap, nine 80px thumbnails stack 720px
         # tall, make themselves the tallest thing in the row and drag the whole
         # product header down with them — the richest galleries, which are the
-        # ones worth having, broke the layout worst. The cap is the plate's own
-        # box: p-6 + 300 at md, p-10 + 440 at xl.
+        # ones worth having, broke the layout worst. The plate is square, so its
+        # height follows the column width and no fixed cap can match it: from
+        # md the strip is absolutely positioned inside an 80px-wide flex item,
+        # contributes no height to the row, and stretches to the plate's.
         strip = f"""
-            <div class="flex md:flex-col gap-3 md:max-h-[348px] xl:max-h-[520px]
-                        overflow-x-auto md:overflow-x-hidden md:overflow-y-auto no-scrollbar shrink-0">{thumb_html}
+            <div class="md:relative md:w-20 shrink-0">
+              <div class="flex md:flex-col md:absolute md:inset-0 gap-3
+                          overflow-x-auto md:overflow-x-hidden md:overflow-y-auto no-scrollbar">{thumb_html}
+              </div>
             </div>"""
 
     return f"""
@@ -728,15 +732,16 @@ def product_gallery(images, alt, p=None):
                  which drops the padding and lets them bleed to the rounded
                  corners. Both states are the same box, so switching between
                  them never resizes the column. -->
-            <!-- Fixed height on the PLATE, not the image, with border-box
-                 padding. The two fill modes then swap the padding without the
-                 outer box moving a pixel — otherwise switching to a photograph
-                 would shrink the column by the padding it just dropped, and
-                 the whole page would jump on every thumbnail click. The height
-                 is also what the thumbnail strip is capped to. -->
+            <!-- Square PLATE, not image, with border-box padding. The two
+                 fill modes then swap the padding without the outer box moving
+                 a pixel — otherwise switching to a photograph would shrink the
+                 column by the padding it just dropped, and the whole page
+                 would jump on every thumbnail click. Square to match the
+                 product cards (Ahmed, 2026-11-04), so a pack shot fits whole
+                 in both places. -->
             <div data-gallery-plate data-fill="{'cover' if '/gallery/' in main_img else 'contain'}"
                  class="gallery-plate relative flex-1 bg-interaction-base rounded-[20px] min-w-0 overflow-hidden
-                        h-[348px] xl:h-[520px]">
+                        aspect-square">
               <img data-gallery-main src="{e(main_img)}" alt="{e(alt)}"
                    class="mx-auto w-full h-full" />
               {fav_btn}
@@ -2102,14 +2107,14 @@ def product_card(p, slide=True, cat=None):
     return f"""
           <article class="product-card {wrapper}" {keys}>
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product-{p.get('id', 0)}.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-{p.get('id', 0)}.html" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 {card_points_chip(p)}
                 {card_gift_badge() if has_gift else ""}
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
                 <img data-product-img src="{e(p['image'])}" alt="{e(title(p))}"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
@@ -2198,13 +2203,13 @@ def bundle_card(b, slide=True):
                    data-price="{b['price']}" data-id="{b['num_id']}" data-name="{e(b['name_ar'])}"
                    data-name-en="{e(b['name_en'])}">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="{href}" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="{href}" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 <!-- The count is the offer: "pick 5" is what makes this card
                      different from its neighbours, so it rides on the plate
                      where the points chip sits on a product card. -->
                 <span class="top-3 start-3 z-[1] absolute bg-accent-yellow px-2.5 py-1 rounded-full font-bold text-[#062A1C] text-xs">اختر <span class="latin">{b['size']}</span> {e(b['unit_plural_ar'])}</span>
                 <img src="{e(b['images'][0])}" alt="{e(b['name_ar'])}"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <div class="flex items-start gap-2">

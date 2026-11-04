@@ -25,7 +25,7 @@
          styles.css contains rules whose whole purpose is to beat a utility
          ([hidden] !important, the focus ring re-armed over `outline-none`,
          the sticky-nav selector). Reverse these two and they stop working. -->
-    <link rel="stylesheet" href="tailwind.css?v=f5408b48e6" />
+    <link rel="stylesheet" href="tailwind.css?v=842f4a8e8e" />
     <link rel="stylesheet" href="styles.css?v=f0802b002d" />
     <!-- The client's 3D leaf mark as the tab icon (Ahmed, 2026-08-05) — the
          same spec-leaf.png the mega-panel bullets and product benefits use, so
@@ -159,14 +159,14 @@
               <div class="gap-4 grid grid-cols-2 xl:grid-cols-3">
           <article class="product-card w-full" data-product data-cat="kitchen-baking" data-price="175.0" data-id="1402" data-name="زبده الفول السوداني - 330 جم" data-name-en="Peanut Butter – 330 gm" data-image="images/abuauf/products/6223004763762-1-1.webp">
             <div class="product-card__frame flex flex-col bg-white shadow-custom4 rounded-2xl h-full overflow-hidden">
-              <a href="product-1402.html" class="product-card__media block relative bg-interaction-base p-4">
+              <a href="product-1402.html" class="product-card__media block relative bg-interaction-base aspect-square p-4">
                 <span data-card-points class="inline-flex top-2 sm:top-3 end-2 sm:end-3 z-10 absolute items-center gap-1 bg-[#E9F3E6] shadow-custom4 px-2 py-1 rounded-full font-bold text-[#163300] text-xs whitespace-nowrap"><img src="images/abuauf/icons/points-3d.png" alt="" class="w-4 h-4 shrink-0 object-contain" /><span><span class="latin">175</span> نقطة</span></span>
                 
                 <!-- data-product-img: the flight to the cart throws THIS, not
                      the card's first <img> — the points chip's icon comes
                      first in the DOM and was flying instead. -->
                 <img data-product-img src="images/abuauf/products/6223004763762-1-1.webp" alt="زبده الفول السوداني - 330 جم"
-                     class="mx-auto w-full h-[210px] xl:h-[240px] object-contain" loading="lazy" />
+                     class="mx-auto w-full h-full object-contain" loading="lazy" />
               </a>
               <div class="flex flex-col flex-1 gap-2 p-4">
                 <!-- Name and price share one row now (Ahmed, 2026-08-02): the
