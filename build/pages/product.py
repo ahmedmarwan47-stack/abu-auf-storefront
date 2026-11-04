@@ -314,13 +314,21 @@ def _render(p, offer=None):
 
     gallery_images = offer["images"] if offer else [i for i in (p.get("images") or [p["image"]]) if i]
     related_inset = " md:ms-[96px]" if len(gallery_images) > 1 else ""
+    # The media column is exactly as wide as the gallery: the square plate
+    # (348px, 520px from xl) plus, with a thumbnail strip, its 80px + 16px gap.
+    # The related list beneath matches it, and the details column takes the
+    # rest. Literal strings — Tailwind cannot see an interpolated width.
+    grid_cols = ("lg:grid-cols-[444px_minmax(0,1fr)] xl:grid-cols-[616px_minmax(0,1fr)]"
+                 if len(gallery_images) > 1 else
+                 "lg:grid-cols-[348px_minmax(0,1fr)] xl:grid-cols-[520px_minmax(0,1fr)]")
     related_list = ""
     if similar:
         # Multi-size companions are left out rather than listed: a bundle row
         # is a price and a checkbox, and for a product sold in four weights
         # there is no single price to put there. Its own card routes to the
         # size choice instead — see product_card in components.py.
-        picks = [x for x in similar if size_count(x) < 2][:4]
+        # Two picks, not four (Ahmed, 2026-11-04).
+        picks = [x for x in similar if size_count(x) < 2][:2]
         related_total = sum(x["price"] for x in picks)
         rows = "".join(bundle_item(x) for x in picks)
         related_list = f"""
@@ -465,7 +473,7 @@ def _render(p, offer=None):
 
       <!-- ============================ PRODUCT ============================ -->
       <section class="pt-6 pb-12">
-        <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 max-w-[1536px]">
+        <div class="items-start gap-8 xl:gap-12 grid {grid_cols} mx-auto px-4 max-w-[1536px]">
 
           <!-- Media column FIRST in the DOM, so it leads the reading order in
                both directions: in RTL (the default) first means the RIGHT

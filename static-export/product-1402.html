@@ -25,7 +25,7 @@
          styles.css contains rules whose whole purpose is to beat a utility
          ([hidden] !important, the focus ring re-armed over `outline-none`,
          the sticky-nav selector). Reverse these two and they stop working. -->
-    <link rel="stylesheet" href="tailwind.css?v=842f4a8e8e" />
+    <link rel="stylesheet" href="tailwind.css?v=97e272b4d9" />
     <link rel="stylesheet" href="styles.css?v=f0802b002d" />
     <!-- The client's 3D leaf mark as the tab icon (Ahmed, 2026-08-05) — the
          same spec-leaf.png the mega-panel bullets and product benefits use, so
@@ -59,7 +59,7 @@
 
       <!-- ============================ PRODUCT ============================ -->
       <section data-reveal class="pt-6 pb-12">
-        <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-2 mx-auto px-4 max-w-[1536px]">
+        <div class="items-start gap-8 xl:gap-12 grid lg:grid-cols-[348px_minmax(0,1fr)] xl:grid-cols-[520px_minmax(0,1fr)] mx-auto px-4 max-w-[1536px]">
 
           <!-- Media column FIRST in the DOM, so it leads the reading order in
                both directions: in RTL (the default) first means the RIGHT
@@ -104,12 +104,12 @@
                  fill modes then swap the padding without the outer box moving
                  a pixel — otherwise switching to a photograph would shrink the
                  column by the padding it just dropped, and the whole page
-                 would jump on every thumbnail click. Square to match the
-                 product cards (Ahmed, 2026-11-04), so a pack shot fits whole
-                 in both places. -->
+                 would jump on every thumbnail click. Square at the reference
+                 site's heights (Ahmed, 2026-11-04): 348px, 520px from xl. Where
+                 the column is narrower than that it shrinks and stays square. -->
             <div data-gallery-plate data-fill="contain"
-                 class="gallery-plate relative flex-1 bg-interaction-base rounded-[20px] min-w-0 overflow-hidden
-                        aspect-square">
+                 class="gallery-plate relative shrink-0 bg-interaction-base rounded-[20px] overflow-hidden
+                        mx-auto md:mx-0 w-full max-w-[348px] xl:max-w-[520px] aspect-square">
               <img data-gallery-main src="images/abuauf/products/6223004763762-1-1.webp" alt="زبده الفول السوداني - 330 جم"
                    class="mx-auto w-full h-full" />
               <button type="button" data-fav-toggle aria-pressed="false" aria-label="أضف إلى المفضلة" data-product data-id="1402" data-name="زبده الفول السوداني - 330 جم" data-price="175.0" data-image="images/abuauf/products/6223004763762-1-1.webp" class="fav-btn btn-elevate absolute top-4 end-4 z-10 place-items-center grid bg-white/90 hover:bg-white shadow-custom4 rounded-full text-cta size-11"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 20.5s-7.5-4.6-7.5-9.6a4.4 4.4 0 0 1 7.5-3.1 4.4 4.4 0 0 1 7.5 3.1c0 5-7.5 9.6-7.5 9.6Z"/></svg></button>
@@ -137,29 +137,11 @@
                   <span class="flex-1 min-w-0 text-[#062A1C] text-sm leading-5 line-clamp-2">لب سورى مقشر</span>
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 175</span>
                 </label>
-                <label data-product data-bundle-item
-                       data-id="1387" data-name="حبوب الشيا - 400 جم"
-                       data-price="160.0" data-image="images/abuauf/products/6223004760549.webp"
-                       class="flex items-center gap-3 py-2 cursor-pointer">
-                  <input type="checkbox" data-bundle-check checked class="accent-[#163300] shrink-0 rounded w-5 h-5" />
-                  <img src="images/abuauf/products/6223004760549.webp" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
-                  <span class="flex-1 min-w-0 text-[#062A1C] text-sm leading-5 line-clamp-2">حبوب الشيا - 400 جم</span>
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 160</span>
-                </label>
-                <label data-product data-bundle-item
-                       data-id="1366" data-name="ملح الهيمالايا الصخري ناعم - 400 جم"
-                       data-price="45.0" data-image="images/abuauf/products/6223004768972.webp"
-                       class="flex items-center gap-3 py-2 cursor-pointer">
-                  <input type="checkbox" data-bundle-check checked class="accent-[#163300] shrink-0 rounded w-5 h-5" />
-                  <img src="images/abuauf/products/6223004768972.webp" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
-                  <span class="flex-1 min-w-0 text-[#062A1C] text-sm leading-5 line-clamp-2">ملح الهيمالايا الصخري ناعم - 400 جم</span>
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 45</span>
-                </label>
             </div>
             <div class="flex flex-wrap justify-between items-center gap-3 mt-3 px-2 pt-3 border-neutral-divider border-t">
               <div class="flex flex-col">
                 <span class="text-neutral-secondary text-xs">الإجمالي</span>
-                <span class="font-bold text-[#062A1C] text-lg latin" data-bundle-total>EGP 640</span>
+                <span class="font-bold text-[#062A1C] text-lg latin" data-bundle-total>EGP 435</span>
               </div>
               <button type="button" data-bundle-add class="bg-cta hover:bg-cta-hover px-5 py-2.5 rounded-full font-semibold text-white text-sm whitespace-nowrap transition-colors">أضف الكل للسلة</button>
             </div>
@@ -411,29 +393,11 @@
                   <span class="flex-1 min-w-0 text-[#062A1C] text-sm leading-5 line-clamp-2">لب سورى مقشر</span>
                   <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 175</span>
                 </label>
-                <label data-product data-bundle-item
-                       data-id="1387" data-name="حبوب الشيا - 400 جم"
-                       data-price="160.0" data-image="images/abuauf/products/6223004760549.webp"
-                       class="flex items-center gap-3 py-2 cursor-pointer">
-                  <input type="checkbox" data-bundle-check checked class="accent-[#163300] shrink-0 rounded w-5 h-5" />
-                  <img src="images/abuauf/products/6223004760549.webp" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
-                  <span class="flex-1 min-w-0 text-[#062A1C] text-sm leading-5 line-clamp-2">حبوب الشيا - 400 جم</span>
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 160</span>
-                </label>
-                <label data-product data-bundle-item
-                       data-id="1366" data-name="ملح الهيمالايا الصخري ناعم - 400 جم"
-                       data-price="45.0" data-image="images/abuauf/products/6223004768972.webp"
-                       class="flex items-center gap-3 py-2 cursor-pointer">
-                  <input type="checkbox" data-bundle-check checked class="accent-[#163300] shrink-0 rounded w-5 h-5" />
-                  <img src="images/abuauf/products/6223004768972.webp" alt="" class="bg-interaction-base shrink-0 p-1 rounded-lg w-12 h-12 object-contain" loading="lazy" />
-                  <span class="flex-1 min-w-0 text-[#062A1C] text-sm leading-5 line-clamp-2">ملح الهيمالايا الصخري ناعم - 400 جم</span>
-                  <span class="bg-accent-yellow px-2 py-0.5 rounded font-bold text-[#062A1C] text-xs latin shrink-0">EGP 45</span>
-                </label>
             </div>
             <div class="flex flex-wrap justify-between items-center gap-3 mt-3 px-2 pt-3 border-neutral-divider border-t">
               <div class="flex flex-col">
                 <span class="text-neutral-secondary text-xs">الإجمالي</span>
-                <span class="font-bold text-[#062A1C] text-lg latin" data-bundle-total>EGP 640</span>
+                <span class="font-bold text-[#062A1C] text-lg latin" data-bundle-total>EGP 435</span>
               </div>
               <button type="button" data-bundle-add class="bg-cta hover:bg-cta-hover px-5 py-2.5 rounded-full font-semibold text-white text-sm whitespace-nowrap transition-colors">أضف الكل للسلة</button>
             </div>

@@ -736,12 +736,12 @@ def product_gallery(images, alt, p=None):
                  fill modes then swap the padding without the outer box moving
                  a pixel — otherwise switching to a photograph would shrink the
                  column by the padding it just dropped, and the whole page
-                 would jump on every thumbnail click. Square to match the
-                 product cards (Ahmed, 2026-11-04), so a pack shot fits whole
-                 in both places. -->
+                 would jump on every thumbnail click. Square at the reference
+                 site's heights (Ahmed, 2026-11-04): 348px, 520px from xl. Where
+                 the column is narrower than that it shrinks and stays square. -->
             <div data-gallery-plate data-fill="{'cover' if '/gallery/' in main_img else 'contain'}"
-                 class="gallery-plate relative flex-1 bg-interaction-base rounded-[20px] min-w-0 overflow-hidden
-                        aspect-square">
+                 class="gallery-plate relative shrink-0 bg-interaction-base rounded-[20px] overflow-hidden
+                        mx-auto md:mx-0 w-full max-w-[348px] xl:max-w-[520px] aspect-square">
               <img data-gallery-main src="{e(main_img)}" alt="{e(alt)}"
                    class="mx-auto w-full h-full" />
               {fav_btn}
